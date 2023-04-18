@@ -29,8 +29,6 @@ int main() {
     stdio_init_all();
     printf("Hello, multicore!\n");
 
-    /// \tag::setup_multicore[]
-
     multicore_launch_core1(core1_entry);
 
     // Wait for it to start up
