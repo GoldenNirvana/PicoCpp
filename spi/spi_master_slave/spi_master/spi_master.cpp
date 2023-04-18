@@ -10,24 +10,26 @@
 int main()
 {
   Decoder decoder(4, 5, 6);
+  GpioPort conv(7);
+  conv.enable();
   Spi spi;
   GpioPort resetPort(9);
   resetPort.disable();
-  InputPort buzy(6);
+//  InputPort buzy(6);
   GpioPort ledPort(PICO_DEFAULT_LED_PIN);
   ledPort.enable();
 
-  multicore_launch_core1(core1);
+//  multicore_launch_core1(core1);
 
-  // INDICATOR
+  //// INDICATOR
 
   char msg[BUF_LEN];
 
-  // MAIN LOOP
+  //// MAIN LOOP
   while (true)
   {
     scanf("%20s", msg);
-    // PARSING
+    //// PARSING
     Parser parser(msg, ',');
     static int vector[10];
     for (int c = 0; c < 10; c++)
@@ -39,10 +41,11 @@ int main()
     {
       inputBuf[i] = 0;
     }
-    // SET PROPERTIES
+    //// SET PROPERTIES
     decoder.activePort(vector[1]);
     Spi::setProperties(vector[2], vector[3], vector[4]);
-    // MAIN SWITCH
+    //// MAIN SWITCH
+
     switch (vector[0])
     {
       case 0:
@@ -74,8 +77,16 @@ int main()
         resetPort.disable();
         break;
       case 12:
-
+        conv.enable();
+        conv.disable();
+        sleep_us(10);
+        conv.enable();
+        sleep_us(500); // todo
+        spi_read16_blocking(spi_default, 0, inputBuf, 8);
+        serialPrintBuffer(inputBuf, 8);
+        sleep_ms(1);
         break;
+
       default:
         while (true)
         {

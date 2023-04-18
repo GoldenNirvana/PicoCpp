@@ -17,21 +17,7 @@ void serialPrintBuffer(const uint16_t *const buf, int len)
 
 void core1()
 {
-  GpioPort conv(7);
-  while (true)
-  {
-    conv.enable();
-    while (ADC)
-    {
-      conv.disable();
-      sleep_us(10);
-      conv.enable();
-      sleep_us(500); // todo
-      spi_read16_blocking(spi_default, 0, inputBuf, 8);
-      serialPrintBuffer(inputBuf, 8);
-      sleep_ms(1);
-    }
-  }
+
 }
 
 #endif
