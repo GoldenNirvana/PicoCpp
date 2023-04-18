@@ -18,7 +18,7 @@ int main()
   resetPort.disable();
   GpioPort ledPort(PICO_DEFAULT_LED_PIN);
   ledPort.enable();
-  char msg[BUF_LEN];
+  static int vector[10];
 
 
 //  multicore_launch_core1(core1);
@@ -26,23 +26,11 @@ int main()
   /// MAIN LOOP
   while (true)
   {
-    scanf("%20s", msg);
     /// PARSING
-    Parser parser(msg, ',');
-    static int vector[10];
-    for (int c = 0; c < 10; c++)
-    {
-      vector[c] = -1;
-    }
-    parser.parseInts(vector);
-    for (int i = 0; i < 8; ++i)
-    {
-      inputBuf[i] = 0;
-    }
+    parse(vector);
     /// SET PROPERTIES
     decoder.activePort(vector[1]);
     Spi::setProperties(vector[2], vector[3], vector[4]);
-
     /// MAIN SWITCH
     switch (vector[0])
     {
@@ -56,7 +44,7 @@ int main()
         }
         Spi::write(buf, 2);
         break;
-      case 5:
+      case 5: // ad8400
         uint16_t inBuf[1];
         inBuf[0] = vector[5];
         spi_write16_blocking(spi_default, inBuf, 1);
@@ -92,7 +80,7 @@ int main()
         dec.disable();
         spi_write_blocking(spi_default, inBuf1, 3);
         dec.enable();
-      break;
+        break;
       default:
         while (true)
         {
