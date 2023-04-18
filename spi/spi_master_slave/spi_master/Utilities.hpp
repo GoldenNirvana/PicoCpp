@@ -20,4 +20,9 @@ void core1()
 
 }
 
+void parse(int *vector)
+{
+
+}
+
 #endif
