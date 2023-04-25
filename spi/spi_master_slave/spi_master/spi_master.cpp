@@ -8,21 +8,11 @@
 
 int main()
 {
-  Decoder decoder(4, 5, 6);
-  GpioPort conv(7);
-  GpioPort dec(10);
+/// BASIC SETTINGS
   dec.enable();
   conv.enable();
-  Spi spi;
-  GpioPort resetPort(9);
   resetPort.disable();
-  GpioPort ledPort(PICO_DEFAULT_LED_PIN);
   ledPort.enable();
-  static int vector[10];
-
-
-//  multicore_launch_core1(core1);
-
   /// MAIN LOOP
   while (true)
   {
@@ -45,16 +35,18 @@ int main()
         Spi::write(buf, 2);
         break;
       case 5: // ad8400
-        uint16_t inBuf[1];
+        uint8_t inBuf[1];
         inBuf[0] = vector[5];
-        spi_write16_blocking(spi_default, inBuf, 1);
+        spi_write_blocking(spi_default, inBuf, 1);
         break;
       case 6:
         if (vector[5] == 1)
-          ADC = false;
-        if (vector[5] == 0)
         {
-          ADC = true;
+          isADC = false;
+        }
+        else if (vector[5] == 0)
+        {
+          isADC = true;
         }
         break;
       case 11:
@@ -82,13 +74,7 @@ int main()
         dec.enable();
         break;
       default:
-        while (true)
-        {
-          ledPort.enable();
-          sleep_ms(100);
-          ledPort.disable();
-          sleep_ms(100);
-        }
+        error
     }
   }
 }
