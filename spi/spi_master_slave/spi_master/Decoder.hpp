@@ -40,6 +40,13 @@ public:
     gpio_put(port_, false);
   }
 
+  void blink() const
+  {
+    gpio_put(port_, true);
+    sleep_us(10);
+    gpio_put(port_, false);
+  }
+
   int getPort() const
   {
     return port_;

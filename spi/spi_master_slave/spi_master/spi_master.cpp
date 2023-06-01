@@ -1,4 +1,5 @@
 #include <cstdio>
+#include <pico/multicore.h>
 #include "pico/stdlib.h"
 #include "Parser.h"
 #include "Spi.hpp"
@@ -7,17 +8,52 @@
 #include "hardware/irq.h"
 #include "hardware/gpio.h"
 
+bool AD9833_SENDER = false;
+bool AD8400_SENDER = false;
+bool AD7606_ENABLE_DISABLE = false;
+bool AD7606_RESET = false;
+bool AD7606_READ = false;
+bool AD5664_SENDER = false;
+
 void comReceiveISR(uint a, uint32_t b)
 {
-//  uint16_t buf[2];
-//  buf[0] = a;
-//  buf[1] = b;
-//  serialPrintBuffer(buf, 2);
-//  std::cout << "TRIGGER\n:";
   spi_read16_blocking(spi_default, 0, inputBuf, 8);
   serialPrintBuffer(inputBuf, 8);
 }
 
+void launchOnCore1()
+{
+  while (true)
+  {
+    /// PARSING
+    parse(vector);
+    decoder.activePort(vector[1]);
+    Spi::setProperties(vector[2], vector[3], vector[4]);
+    switch (vector[0])
+    {
+      case 1:
+        AD9833_SENDER = true;
+        break;
+      case 5:
+        AD8400_SENDER = true;
+        break;
+      case 6:
+        AD7606_ENABLE_DISABLE = true;
+        break;
+      case 11:
+        AD7606_RESET = true;
+        break;
+      case 12:
+        AD7606_READ = true;
+        break;
+      case 20:
+        AD5664_SENDER = true;
+        break;
+      default:
+        error
+    }
+  }
+}
 
 int main()
 {
@@ -27,11 +63,10 @@ int main()
   gpio_pull_down(resetPort.getPort());
   gpio_set_irq_enabled_with_callback(port, GPIO_IRQ_EDGE_FALL, true, comReceiveISR);
 
-//  spi_set_slave(spi_default, true);
-//  irq_set_enabled(USBCTRL_IRQ, true);
-//  irq_set_exclusive_handler(USBCTRL_IRQ, comReceiveISR);
+  multicore_launch_core1(launchOnCore1);
+  multicore_fifo_clear_irq();
 
-/// BASIC SETTINGS
+  /// BASIC SETTINGS
   dec.enable();
   conv.enable();
   resetPort.disable();
@@ -40,62 +75,61 @@ int main()
   /// MAIN LOOP
   while (true)
   {
-    /// PARSING
-    parse(vector);
-    /// SET PROPERTIES
-    decoder.activePort(vector[1]);
-    Spi::setProperties(vector[2], vector[3], vector[4]);
-    /// MAIN SWITCH
-    switch (vector[0])
+    /// MAIN IF
+    if (AD9833_SENDER)
     {
-      case 1: // AD9833
-        uint8_t buf[2];
-        for (int j = 0; j < 2; ++j)
-        {
-          buf[j] = vector[5 + j];
-        }
-        Spi::write(buf, 2);
-        break;
-      case 5: // ad8400
-        uint8_t inBuf[1];
-        inBuf[0] = vector[5];
-        spi_write_blocking(spi_default, inBuf, 1);
-        break;
-      case 6:
-        if (vector[5] == 1)
-        {
-          isADC = false;
-        }
-        else if (vector[5] == 0)
-        {
-          isADC = true;
-        }
-        break;
-      case 11:
-        resetPort.enable();
-        sleep_us(10);
-        resetPort.disable();
-        break;
-      case 12:
-        conv.enable();
-        conv.disable();
-        sleep_us(10);
-        conv.enable();
-//        sleep_us(500);
-//        spi_read16_blocking(spi_default, 0, inputBuf, 8);
-//        serialPrintBuffer(inputBuf, 8);
-        break;
-      case 20:
-        uint8_t inBuf1[3];
-        inBuf1[0] = vector[5];
-        inBuf1[1] = vector[6];
-        inBuf1[2] = vector[7];
-        dec.disable();
-        spi_write_blocking(spi_default, inBuf1, 3);
-        dec.enable();
-        break;
-      default:
-        error
+      AD9833_SENDER =false;
+      uint8_t buf[2];
+      for (int j = 0; j < 2; ++j)
+      {
+        buf[j] = vector[5 + j];
+      }
+      Spi::write(buf, 2);
+    }
+    if (AD8400_SENDER)
+    {
+      AD8400_SENDER = false;
+      uint8_t inBuf[1];
+      inBuf[0] = vector[5];
+      spi_write_blocking(spi_default, inBuf, 1);
+    }
+    if (AD7606_ENABLE_DISABLE)
+    {
+      AD7606_ENABLE_DISABLE = false;
+      if (vector[5] == 1)
+      {
+        AD7606_READ = false;
+      }
+      else if (vector[5] == 0)
+      {
+        AD7606_READ = true;
+      }
+    }
+    if (AD7606_RESET)
+    {
+      AD7606_RESET = false;
+      resetPort.enable();
+      sleep_us(10);
+      resetPort.disable();
+    }
+    if (AD7606_READ)
+    {
+      AD7606_READ = false;
+      conv.enable();
+      conv.disable();
+      sleep_us(10);
+      conv.enable();
+    }
+    if (AD5664_SENDER)
+    {
+      AD5664_SENDER = false;
+      uint8_t inBuf1[3];
+      inBuf1[0] = vector[5];
+      inBuf1[1] = vector[6];
+      inBuf1[2] = vector[7];
+      dec.disable();
+      spi_write_blocking(spi_default, inBuf1, 3);
+      dec.enable();
     }
   }
 }
