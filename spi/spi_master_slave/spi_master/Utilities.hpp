@@ -8,10 +8,11 @@
 static uint16_t inputBuf[8];
 bool isADC = true;
 GpioPort conv(7);
+
 Spi spi;
 Decoder decoder(4, 5, 6);
 GpioPort dec(10);
-GpioPort resetPort(9);
+GpioPort resetPort(8);
 GpioPort ledPort(PICO_DEFAULT_LED_PIN);
 static int vector[10];
 [[noreturn]] void activateError();
@@ -19,7 +20,7 @@ static int vector[10];
 void serialPrintBuffer(const uint16_t *const buf, int len)
 {
   uint32_t x = time_us_64();
-  std::cout << '[' << (int) (x / 1000000) << '.' << int(x % 1000000) / 10000 << "] ";
+  std::cout << '[' << (int) (x / 1000000) << '.' << int(x % 1000000) << "] ";
   for (int i = 0; i < len; ++i)
   {
     std::cout << buf[i] << ' ';
@@ -43,7 +44,7 @@ void parse(int *vector)
   }
 }
 
-[[noreturn]] void activateError()
+void activateError()
 {
   while (true)
   {

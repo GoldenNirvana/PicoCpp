@@ -3,15 +3,39 @@
 #include "Parser.h"
 #include "Spi.hpp"
 #include "Decoder.hpp"
-#include "pico/multicore.h"
 #include "Utilities.hpp"
+#include "hardware/irq.h"
+#include "hardware/gpio.h"
+
+void comReceiveISR(uint a, uint32_t b)
+{
+//  uint16_t buf[2];
+//  buf[0] = a;
+//  buf[1] = b;
+//  serialPrintBuffer(buf, 2);
+//  std::cout << "TRIGGER\n:";
+  spi_read16_blocking(spi_default, 0, inputBuf, 8);
+  serialPrintBuffer(inputBuf, 8);
+}
+
 
 int main()
 {
+  int port = 9;
+  gpio_init(port);
+  gpio_set_dir(port, GPIO_IN);
+  gpio_pull_down(resetPort.getPort());
+  gpio_set_irq_enabled_with_callback(port, GPIO_IRQ_EDGE_FALL, true, comReceiveISR);
+
+//  spi_set_slave(spi_default, true);
+//  irq_set_enabled(USBCTRL_IRQ, true);
+//  irq_set_exclusive_handler(USBCTRL_IRQ, comReceiveISR);
+
 /// BASIC SETTINGS
   dec.enable();
   conv.enable();
   resetPort.disable();
+  gpio_pull_down(resetPort.getPort());
   ledPort.enable();
   /// MAIN LOOP
   while (true)
@@ -24,8 +48,6 @@ int main()
     /// MAIN SWITCH
     switch (vector[0])
     {
-      case 0:
-        break;
       case 1: // AD9833
         uint8_t buf[2];
         for (int j = 0; j < 2; ++j)
@@ -51,7 +73,7 @@ int main()
         break;
       case 11:
         resetPort.enable();
-        sleep_us(1);
+        sleep_us(10);
         resetPort.disable();
         break;
       case 12:
@@ -59,10 +81,9 @@ int main()
         conv.disable();
         sleep_us(10);
         conv.enable();
-        sleep_us(500); // todo
-        spi_read16_blocking(spi_default, 0, inputBuf, 8);
-        serialPrintBuffer(inputBuf, 8);
-        sleep_ms(1);
+//        sleep_us(500);
+//        spi_read16_blocking(spi_default, 0, inputBuf, 8);
+//        serialPrintBuffer(inputBuf, 8);
         break;
       case 20:
         uint8_t inBuf1[3];

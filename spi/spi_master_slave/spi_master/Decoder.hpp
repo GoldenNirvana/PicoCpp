@@ -32,12 +32,12 @@ public:
 
   void enable() const
   {
-    gpio_put(port_, 1);
+    gpio_put(port_, true);
   }
 
   void disable() const
   {
-    gpio_put(port_, 0);
+    gpio_put(port_, false);
   }
 
   int getPort() const
