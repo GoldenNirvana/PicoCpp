@@ -15,6 +15,8 @@ bool AD7606_RESET = false;
 bool AD7606_READ = false;
 bool AD5664_SENDER = false;
 
+bool AD7606_READ_FOREVER = false;
+
 void comReceiveISR(uint a, uint32_t b)
 {
   spi_read16_blocking(spi_default, 0, inputBuf, 8);
@@ -27,8 +29,6 @@ void launchOnCore1()
   {
     /// PARSING
     parse(vector);
-    decoder.activePort(vector[1]);
-    Spi::setProperties(vector[2], vector[3], vector[4]);
     switch (vector[0])
     {
       case 1:
@@ -64,7 +64,6 @@ int main()
   gpio_set_irq_enabled_with_callback(port, GPIO_IRQ_EDGE_FALL, true, comReceiveISR);
 
   multicore_launch_core1(launchOnCore1);
-  multicore_fifo_clear_irq();
 
   /// BASIC SETTINGS
   dec.enable();
@@ -75,16 +74,18 @@ int main()
   /// MAIN LOOP
   while (true)
   {
+    decoder.activePort(vector[1]);
+    Spi::setProperties(vector[2], vector[3], vector[4]);
     /// MAIN IF
     if (AD9833_SENDER)
     {
-      AD9833_SENDER =false;
-      uint8_t buf[2];
-      for (int j = 0; j < 2; ++j)
+      AD9833_SENDER = false;
+      uint8_t buf[6];
+      for (int j = 0; j < 6; ++j)
       {
         buf[j] = vector[5 + j];
       }
-      Spi::write(buf, 2);
+      Spi::write(buf, 6);
     }
     if (AD8400_SENDER)
     {
@@ -98,11 +99,11 @@ int main()
       AD7606_ENABLE_DISABLE = false;
       if (vector[5] == 1)
       {
-        AD7606_READ = false;
+        AD7606_READ_FOREVER = false;
       }
       else if (vector[5] == 0)
       {
-        AD7606_READ = true;
+        AD7606_READ_FOREVER = true;
       }
     }
     if (AD7606_RESET)
@@ -112,7 +113,7 @@ int main()
       sleep_us(10);
       resetPort.disable();
     }
-    if (AD7606_READ)
+    if (AD7606_READ or AD7606_READ_FOREVER)
     {
       AD7606_READ = false;
       conv.enable();
