@@ -9,7 +9,8 @@ Spi spi;
 Decoder decoder(4, 5, 6);
 
 static uint16_t spiBuf[8];
-static uint16_t afc[100 * 2];
+//static uint16_t afc[100 * 2];
+static std::string afc;
 static int vector[10];
 
 bool AD9833_SENDER = false;
@@ -22,6 +23,10 @@ bool AD7606_READ_FOREVER = false;
 
 bool AD7606_IS_SCANNING = false;
 bool is_already_scanning = false;
+uint16_t scan_index = 0;
+uint16_t current_freq = 0;
+//int current_receive = 0;
+int current_channel = 0;
 
 GpioPort conv(7);
 GpioPort dec(10);
@@ -39,9 +44,9 @@ void comReceiveISR(uint a, uint32_t b)
 {
   spi_read16_blocking(spi_default, 0, spiBuf, 8);
   serialPrintBuffer(spiBuf, 8);
-  if (a == 25 && b == 25)
+  if (is_already_scanning)
   {
-    afc =
+    afc += std::to_string(current_freq) + ':' + std::to_string(spiBuf[current_channel]) + ',';
   }
 }
 
@@ -83,7 +88,23 @@ void launchOnCore1()
   }
 }
 
+
 void serialPrintBuffer(const uint16_t *const buf, int len)
+{
+  uint32_t x = time_us_64();
+//  std::cout << '[' << (int) (x / 1000000) << '.' << int(x % 1000000) << "] ";
+  std::cout << "[" << std::fixed << std::setfill('0') << std::setw(15) << std::right << x
+            << "]     ";
+  std::cout << std::resetiosflags(std::ios_base::right);
+  std::cout << std::resetiosflags(std::ios_base::fixed);
+  for (int i = 0; i < len; ++i)
+  {
+    std::cout << buf[i] << ' ';
+  }
+  std::cout << "\n";
+}
+
+void serialPrintBuffer(const uint8_t *const buf, int len)
 {
   uint32_t x = time_us_64();
 //  std::cout << '[' << (int) (x / 1000000) << '.' << int(x % 1000000) << "] ";
@@ -97,6 +118,7 @@ void serialPrintBuffer(const uint16_t *const buf, int len)
   }
   std::cout << "\n";
 }
+
 
 void parse(int *vector)
 {
