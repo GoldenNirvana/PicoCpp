@@ -7,6 +7,7 @@
 #include "Utilities.hpp"
 #include "hardware/irq.h"
 #include "hardware/gpio.h"
+#include "peripheral_functions.hpp"
 
 
 int main()
@@ -28,6 +29,33 @@ int main()
   /// MAIN LOOP
   while (true)
   {
+//    if (AD7606_IS_SCANNING)
+//    {
+//      static uint8_t inBuf[3]; // n, start_freq, step
+//      int index = 0;
+//      if (!is_already_scanning)
+//      {
+//        resetAll();
+//        for (int j = 0; j < 3; ++j)
+//        {
+//          inBuf[j] = vector[1 + j];
+//        }
+//        is_already_scanning = true;
+//      }
+//      else
+//      {
+//        if (index <= inBuf[0])
+//        {
+//          set_freq(inBuf[1]);
+//        }
+//        else
+//        {
+//          // end Scan
+//          AD7606_IS_SCANNING = false;
+//        }
+//      }
+//      continue;
+//    }
     decoder.activePort(vector[1]);
     Spi::setProperties(vector[2], vector[3], vector[4]);
     /// MAIN IF
@@ -39,7 +67,7 @@ int main()
       {
         buf[j] = vector[5 + j];
       }
-      Spi::write(buf, 6);
+      spi_write_blocking(spi_default, buf, 6);
     }
     if (AD8400_SENDER)
     {

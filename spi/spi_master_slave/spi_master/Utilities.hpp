@@ -1,7 +1,6 @@
 #ifndef PICO_EXAMPLES_UTILITIES_HPP
 #define PICO_EXAMPLES_UTILITIES_HPP
 
-
 #include <iostream>
 #include <iomanip>
 #include <pico/bootrom.h>
@@ -9,7 +8,8 @@
 Spi spi;
 Decoder decoder(4, 5, 6);
 
-static uint16_t inputBuf[8];
+static uint16_t spiBuf[8];
+static uint16_t afc[100 * 2];
 static int vector[10];
 
 bool AD9833_SENDER = false;
@@ -19,7 +19,9 @@ bool AD7606_RESET = false;
 bool AD7606_READ = false;
 bool AD5664_SENDER = false;
 bool AD7606_READ_FOREVER = false;
+
 bool AD7606_IS_SCANNING = false;
+bool is_already_scanning = false;
 
 GpioPort conv(7);
 GpioPort dec(10);
@@ -31,11 +33,16 @@ void serialPrintBuffer(const uint16_t *const buf, int len);
 void parse(int *vector);
 void comReceiveISR(uint a, uint32_t b);
 void launchOnCore1();
+void resetAll();
 
 void comReceiveISR(uint a, uint32_t b)
 {
-  spi_read16_blocking(spi_default, 0, inputBuf, 8);
-  serialPrintBuffer(inputBuf, 8);
+  spi_read16_blocking(spi_default, 0, spiBuf, 8);
+  serialPrintBuffer(spiBuf, 8);
+  if (a == 25 && b == 25)
+  {
+    afc =
+  }
 }
 
 void launchOnCore1()
@@ -67,6 +74,9 @@ void launchOnCore1()
       case 25:
         AD7606_IS_SCANNING = true;
         break;
+      case 26:
+        AD7606_IS_SCANNING = false;
+        break;
       default:
         activateError();
     }
@@ -77,7 +87,8 @@ void serialPrintBuffer(const uint16_t *const buf, int len)
 {
   uint32_t x = time_us_64();
 //  std::cout << '[' << (int) (x / 1000000) << '.' << int(x % 1000000) << "] ";
-  std::cout << '[' << std::fixed << std::setfill('0') << std::setw(10) << std::right << x << "]     ";
+  std::cout << "            FROM TRIGGER [" << std::fixed << std::setfill('0') << std::setw(15) << std::right << x
+            << "]     ";
   std::cout << std::resetiosflags(std::ios_base::right);
   std::cout << std::resetiosflags(std::ios_base::fixed);
   for (int i = 0; i < len; ++i)
@@ -97,10 +108,6 @@ void parse(int *vector)
     vector[c] = -1;
   }
   parser.parseInts(vector);
-  for (int i = 0; i < 8; ++i)
-  {
-    inputBuf[i] = 0;
-  }
 }
 
 void activateError()
@@ -112,6 +119,18 @@ void activateError()
     ledPort.disable();
     sleep_ms(100);
   }
+}
+
+void resetAll()
+{
+  AD9833_SENDER = false;
+  AD8400_SENDER = false;
+  AD7606_ENABLE_DISABLE = false;
+  AD7606_RESET = false;
+  AD7606_READ = false;
+  AD5664_SENDER = false;
+  AD7606_READ_FOREVER = false;
+  AD7606_IS_SCANNING = false;
 }
 
 #endif
