@@ -2,10 +2,7 @@
 #include <bitset>
 
 Decoder::Decoder(int a, int b, int c) : portA(GpioPort(a)), portB(GpioPort(b)), portC(GpioPort(c))
-{
-  // SET DECODER'S PORTS
-}
-
+{}
 
 void Decoder::activePort(int port)
 {

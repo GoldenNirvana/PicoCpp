@@ -8,56 +8,10 @@
 #include "hardware/irq.h"
 #include "hardware/gpio.h"
 
-bool AD9833_SENDER = false;
-bool AD8400_SENDER = false;
-bool AD7606_ENABLE_DISABLE = false;
-bool AD7606_RESET = false;
-bool AD7606_READ = false;
-bool AD5664_SENDER = false;
-
-bool AD7606_READ_FOREVER = false;
-
-void comReceiveISR(uint a, uint32_t b)
-{
-  spi_read16_blocking(spi_default, 0, inputBuf, 8);
-  serialPrintBuffer(inputBuf, 8);
-}
-
-void launchOnCore1()
-{
-  while (true)
-  {
-    /// PARSING
-    parse(vector);
-    switch (vector[0])
-    {
-      case 1:
-        AD9833_SENDER = true;
-        break;
-      case 5:
-        AD8400_SENDER = true;
-        break;
-      case 6:
-        AD7606_ENABLE_DISABLE = true;
-        break;
-      case 11:
-        AD7606_RESET = true;
-        break;
-      case 12:
-        AD7606_READ = true;
-        break;
-      case 20:
-        AD5664_SENDER = true;
-        break;
-      default:
-        error
-    }
-  }
-}
 
 int main()
 {
-  int port = 9;
+  int port = 9; // Busy port
   gpio_init(port);
   gpio_set_dir(port, GPIO_IN);
   gpio_pull_down(resetPort.getPort());
