@@ -8,7 +8,7 @@ class LinearDriver
 public:
   LinearDriver(int portA, int portB);
 
-  void activate();
+  void activate(int freq, int p, int n, bool dir);
 
 
 private:

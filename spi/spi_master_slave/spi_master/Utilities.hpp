@@ -4,6 +4,7 @@
 #include <iostream>
 #include <iomanip>
 #include <pico/bootrom.h>
+#include "LinearDriver.hpp"
 
 Spi spi;
 Decoder decoder(4, 5, 6);
@@ -21,6 +22,8 @@ bool AD7606_READ = false;
 bool AD5664_SENDER = false;
 bool AD7606_READ_FOREVER = false;
 
+bool X_LID = false;
+
 bool AD7606_IS_SCANNING = false;
 bool is_already_scanning = false;
 uint16_t scan_index = 0;
@@ -32,6 +35,8 @@ GpioPort conv(7);
 GpioPort dec(10);
 GpioPort resetPort(8);
 GpioPort ledPort(PICO_DEFAULT_LED_PIN);
+
+LinearDriver xLID(18, 19);
 
 [[noreturn]] void activateError();
 void serialPrintBuffer(const uint16_t *const buf, int len);
@@ -84,6 +89,9 @@ void launchOnCore1()
         break;
       case 26:
         AD7606_IS_SCANNING = false;
+        break;
+      case 100:
+        X_LID = true;
         break;
       default:
         activateError();

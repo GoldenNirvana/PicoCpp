@@ -29,6 +29,17 @@ int main()
   /// MAIN LOOP
   while (true)
   {
+    if (X_LID)
+    {
+      X_LID = false;
+      static uint16_t inBuf[4]; // f, p, n, d
+      for (int j = 0; j < 4; ++j)
+      {
+        inBuf[j] = vector[1 + j];
+      }
+      xLID.activate(inBuf[0], inBuf[1], inBuf[2], inBuf[3]);
+      continue;
+    }
     if (AD7606_IS_SCANNING)
     {
       static uint16_t inBuf[4]; // n, start_freq, step, channel
