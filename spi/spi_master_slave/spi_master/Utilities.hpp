@@ -43,10 +43,13 @@ void resetAll();
 void comReceiveISR(uint a, uint32_t b)
 {
   spi_read16_blocking(spi_default, 0, spiBuf, 8);
-  serialPrintBuffer(spiBuf, 8);
   if (is_already_scanning)
   {
-    afc += std::to_string(current_freq) + ':' + std::to_string(spiBuf[current_channel]) + ',';
+    afc += std::to_string(current_freq) + ',' + std::to_string(spiBuf[current_channel]) + ',';
+  }
+  else
+  {
+    serialPrintBuffer(spiBuf, 8);
   }
 }
 

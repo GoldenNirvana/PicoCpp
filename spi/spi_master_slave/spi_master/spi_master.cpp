@@ -38,7 +38,7 @@ int main()
         {
           inBuf[j] = vector[1 + j];
         }
-        serialPrintBuffer(inBuf, 4);
+//        serialPrintBuffer(inBuf, 4);
         current_channel = inBuf[3] - 1;
         is_already_scanning = true;
       }
