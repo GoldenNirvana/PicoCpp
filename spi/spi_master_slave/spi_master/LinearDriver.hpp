@@ -6,14 +6,17 @@
 class LinearDriver
 {
 public:
-  LinearDriver(int portA, int portB);
+  LinearDriver();
 
-  void activate(int freq, int p, int n, bool dir);
-
+  void activate(int command, int freq, int p, int n, bool dir);
 
 private:
-  GpioPort a_;
-  GpioPort b_;
+  GpioPort x_a;
+  GpioPort x_b;
+  GpioPort y_a;
+  GpioPort y_b;
+  GpioPort z_a;
+  GpioPort z_b;
 };
 
 
