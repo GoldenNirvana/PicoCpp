@@ -30,7 +30,7 @@ bool AD7606_GET_VALUE = false;
 bool LID = false;
 
 bool AD7606_IS_SCANNING = false;
-bool is_already_scanning = false;
+volatile bool is_already_scanning = false;
 uint16_t scan_index = 0;
 uint16_t current_freq = 0;
 int current_channel = 0;
@@ -103,6 +103,7 @@ void launchOnCore1()
                 break;
             case 30:
                 AD9833_SET_FREQ = true;
+                break;
             case 40:
                 AD8400_SET_GAIN = true;
                 break;
