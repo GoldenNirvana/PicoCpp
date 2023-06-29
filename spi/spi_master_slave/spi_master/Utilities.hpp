@@ -189,7 +189,7 @@ void setDefaultSettings()
 
     multicore_launch_core1(launchOnCore1);
 
-    dec.enable();
+    dec.disable();
     conv.enable();
     resetPort.disable();
     gpio_pull_down(resetPort.getPort());

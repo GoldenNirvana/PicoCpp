@@ -24,6 +24,8 @@ void set_freq(uint16_t freq)
   buf[4] = (0x2000) /  (0x100);
   buf[5] = (0x2000) %  (0x100);
 
+//  serialPrintBuffer(buf, 6);
+
   decoder.activePort(1);
   Spi::setProperties(8, 1, 1);
   spi_write16_blocking(spi_default, buf, 6);

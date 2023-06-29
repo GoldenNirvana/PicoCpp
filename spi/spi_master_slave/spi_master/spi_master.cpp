@@ -34,12 +34,12 @@ int main()
             static uint16_t inBuf[4]; // n, start_freq, step, channel
             if (!is_already_scanning)
             {
+                is_already_scanning = true;
                 for (int j = 0; j < 4; ++j)
                 {
                     inBuf[j] = vector[1 + j];
                 }
                 current_channel = inBuf[3] - 1;
-                is_already_scanning = true;
             }
             else
             {
