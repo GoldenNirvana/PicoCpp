@@ -43,7 +43,7 @@ int main()
             }
             else
             {
-                if (scan_index++ < inBuf[0])
+                if (scan_index++ < inBuf[0] && !AD7606_STOP_SCAN)
                 {
                     set_freq(inBuf[1]);
                     get_result_from_adc();
@@ -53,14 +53,28 @@ int main()
                 else
                 {
                     std::cout << afc << '\n';
-                    scan_index = 0;
-                    current_channel = 0;
-                    current_freq = 0;
-                    AD7606_IS_SCANNING = false;
-                    is_already_scanning = false;
+                    afc.clear();
+                    scan_index = current_channel = current_freq = 0;
+                    AD7606_IS_SCANNING = AD7606_STOP_SCAN = is_already_scanning = false;
                 }
             }
             continue;
+        }
+        if (AD9833_SET_FREQ)
+        {
+            AD9833_SET_FREQ = false;
+            set_freq(vector[1]);
+        }
+        if (AD8400_SET_GAIN)
+        {
+            AD8400_SET_GAIN = false;
+            set_gain(vector[1]);
+        }
+        if (AD7606_GET_VALUE)
+        {
+            AD7606_GET_VALUE = false;
+            current_channel = vector[1];
+            get_result_from_adc();
         }
         decoder.activePort(vector[1]);
         Spi::setProperties(vector[2], vector[3], vector[4]);

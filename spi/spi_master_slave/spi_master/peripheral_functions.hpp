@@ -5,7 +5,6 @@
 
 //  79,139,64,5,32,0    8000
 
-
 void set_freq(uint16_t freq)
 {
   current_freq = freq;
@@ -25,9 +24,6 @@ void set_freq(uint16_t freq)
   buf[4] = (0x2000) /  (0x100);
   buf[5] = (0x2000) %  (0x100);
 
-//  serialPrintBuffer(buf, 6);
-
-//  spi_write_blocking(spi_default, buf, 6);
   decoder.activePort(1);
   Spi::setProperties(8, 1, 1);
   spi_write16_blocking(spi_default, buf, 6);
@@ -41,6 +37,15 @@ void get_result_from_adc()
   conv.disable();
   sleep_us(10);
   conv.enable();
+}
+
+void set_gain(int gain, int p = 2)
+{
+    uint8_t intBuf[1];
+    decoder.activePort(p);
+    Spi::setProperties(8, 0, 0);
+    intBuf[0] = gain;
+    spi_write_blocking(spi_default, intBuf, 1);
 }
 
 #endif

@@ -7,7 +7,6 @@
 #include "LinearDriver.hpp"
 #include "pico/mutex.h"
 
-mutex mut;
 Spi spi;
 Decoder decoder(4, 5, 6);
 
@@ -24,6 +23,9 @@ bool AD7606_READ = false;
 bool AD5664_SENDER = false;
 bool AD7606_READ_FOREVER = false;
 bool AD7606_STOP_SCAN = false;
+bool AD9833_SET_FREQ = false;
+bool AD8400_SET_GAIN = false;
+bool AD7606_GET_VALUE = false;
 
 bool LID = false;
 
@@ -31,7 +33,6 @@ bool AD7606_IS_SCANNING = false;
 bool is_already_scanning = false;
 uint16_t scan_index = 0;
 uint16_t current_freq = 0;
-//int current_receive = 0;
 int current_channel = 0;
 
 GpioPort conv(7);
@@ -91,11 +92,19 @@ void launchOnCore1()
             case 20:
                 AD5664_SENDER = true;
                 break;
+            case 24:
+                AD7606_GET_VALUE = true;
+                break;
             case 25:
                 AD7606_IS_SCANNING = true;
                 break;
             case 26:
                 AD7606_STOP_SCAN = true;
+                break;
+            case 30:
+                AD9833_SET_FREQ = true;
+            case 40:
+                AD8400_SET_GAIN = true;
                 break;
             case 100 ... 110:
                 LID = true;
@@ -172,11 +181,6 @@ void resetAll()
 void setDefaultSettings()
 {
     /// BASIC SETTINGS
-    mutex_init(&mut);
-    if (!mutex_is_initialized(&mut))
-    {
-        activateError();
-    }
     int port = 9; // Busy port
     gpio_init(port);
     gpio_set_dir(port, GPIO_IN);
