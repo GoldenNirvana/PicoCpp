@@ -10,13 +10,19 @@
 #include "peripheral_functions.hpp"
 #include "LinearDriver.hpp"
 #include "ad5664.hpp"
+//#include "hardware/uart.h"
 
 int main()
 {
+//    mutex_init(&mut);
+//    if (!mutex_is_initialized(&mut))
+//        activateError();
     setDefaultSettings();
     /// MAIN LOOP
     while (true)
     {
+//        mutex_enter_timeout_ms(&mut, 10);
+//        std::cout << "Mutex captured by core0\n";
         if (LID)
         {
             LID = false;
@@ -49,7 +55,7 @@ int main()
                     set_freq(inBuf[1]);
                     sleep_ms(inBuf[4]);
                     get_result_from_adc();
-                    sleep_ms(10); // TODO
+                    sleep_ms(10);
                     inBuf[1] += inBuf[2];
                 }
                 else
@@ -131,5 +137,7 @@ int main()
             sleep_us(10);
             conv.enable();
         }
+//        mutex_exit(&mut);
+//        std::cout << "Mutex released by core0\n";
     }
 }

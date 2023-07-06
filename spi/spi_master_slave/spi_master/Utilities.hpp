@@ -35,6 +35,7 @@ uint16_t scan_index = 0;
 uint16_t current_freq = 0;
 int current_channel = 0;
 
+InputPort busy(9);
 GpioPort conv(7);
 GpioPort dec(10);
 GpioPort resetPort(8);
@@ -70,6 +71,8 @@ void launchOnCore1()
 {
     while (true)
     {
+//        mutex_enter_timeout_ms(&mut, 10);
+//        std::cout << "Mutex captured by core1 << '\n";
         /// PARSING
         parse(vector);
         switch (vector[0])
@@ -113,6 +116,8 @@ void launchOnCore1()
             default:
                 activateError();
         }
+//        mutex_exit(&mut);
+//        std::cout << "Mutex released by core1\n";
     }
 }
 
@@ -181,11 +186,8 @@ void resetAll()
 void setDefaultSettings()
 {
     /// BASIC SETTINGS
-    int port = 9; // Busy port
-    gpio_init(port);
-    gpio_set_dir(port, GPIO_IN);
     gpio_pull_down(resetPort.getPort());
-    gpio_set_irq_enabled_with_callback(port, GPIO_IRQ_EDGE_FALL, true, comReceiveISR);
+    gpio_set_irq_enabled_with_callback(busy.getPort(), GPIO_IRQ_EDGE_FALL, true, comReceiveISR);
 
     multicore_launch_core1(launchOnCore1);
 

@@ -12,9 +12,14 @@ public:
     gpio_set_dir(port, GPIO_IN);
   }
 
-  bool get() const
+  bool getLevel() const
   {
     return gpio_get(port_);
+  }
+
+  int getPort()
+  {
+      return port_;
   }
 
 private:
