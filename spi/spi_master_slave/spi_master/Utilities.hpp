@@ -20,12 +20,12 @@ bool AD8400_SENDER = false;
 bool AD7606_ENABLE_DISABLE = false;
 bool AD7606_RESET = false;
 bool AD7606_READ = false;
-bool AD5664_SENDER = false;
 bool AD7606_READ_FOREVER = false;
 bool AD7606_STOP_SCAN = false;
 bool AD9833_SET_FREQ = false;
 bool AD8400_SET_GAIN = false;
 bool AD7606_GET_VALUE = false;
+bool AD5664 = false;
 
 bool LID = false;
 
@@ -89,8 +89,8 @@ void launchOnCore1()
             case 12:
                 AD7606_READ = true;
                 break;
-            case 20:
-                AD5664_SENDER = true;
+            case 21:
+                AD5664 = true;
                 break;
             case 24:
                 AD7606_GET_VALUE = true;
@@ -174,7 +174,6 @@ void resetAll()
     AD7606_ENABLE_DISABLE = false;
     AD7606_RESET = false;
     AD7606_READ = false;
-    AD5664_SENDER = false;
     AD7606_READ_FOREVER = false;
     AD7606_IS_SCANNING = false;
 }
@@ -190,7 +189,7 @@ void setDefaultSettings()
 
     multicore_launch_core1(launchOnCore1);
 
-    dec.disable();
+    dec.enable();
     conv.enable();
     resetPort.disable();
     gpio_pull_down(resetPort.getPort());

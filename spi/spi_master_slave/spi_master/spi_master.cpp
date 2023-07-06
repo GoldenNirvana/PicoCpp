@@ -9,6 +9,7 @@
 #include "hardware/gpio.h"
 #include "peripheral_functions.hpp"
 #include "LinearDriver.hpp"
+#include "ad5664.hpp"
 
 int main()
 {
@@ -31,11 +32,11 @@ int main()
         }
         if (AD7606_IS_SCANNING)
         {
-            static uint16_t inBuf[4]; // n, start_freq, step, channel
+            static uint16_t inBuf[5]; // n, start_freq, step, channel, delay
             if (!is_already_scanning)
             {
                 is_already_scanning = true;
-                for (int j = 0; j < 4; ++j)
+                for (int j = 0; j < 5; ++j)
                 {
                     inBuf[j] = vector[1 + j];
                 }
@@ -46,6 +47,7 @@ int main()
                 if (scan_index++ < inBuf[0] && !AD7606_STOP_SCAN)
                 {
                     set_freq(inBuf[1]);
+                    sleep_ms(inBuf[4]);
                     get_result_from_adc();
                     sleep_ms(10); // TODO
                     inBuf[1] += inBuf[2];
@@ -79,6 +81,12 @@ int main()
         decoder.activePort(vector[1]);
         Spi::setProperties(vector[2], vector[3], vector[4]);
         /// MAIN IF
+        if (AD5664)
+        {
+            AD5664 = false;
+            AD56X4Class::setChannel(0, AD56X4_SETMODE_INPUT, vector[6], vector[5]);
+            AD56X4Class::updateChannel(0, vector[6]);
+        }
         if (AD9833_SENDER)
         {
             AD9833_SENDER = false;
@@ -122,17 +130,6 @@ int main()
             conv.disable();
             sleep_us(10);
             conv.enable();
-        }
-        if (AD5664_SENDER)
-        {
-            AD5664_SENDER = false;
-            uint8_t inBuf1[3];
-            inBuf1[0] = vector[5];
-            inBuf1[1] = vector[6];
-            inBuf1[2] = vector[7];
-            dec.disable();
-            spi_write_blocking(spi_default, inBuf1, 3);
-            dec.enable();
         }
     }
 }
