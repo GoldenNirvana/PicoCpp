@@ -10,10 +10,12 @@
 #include "peripheral_functions.hpp"
 #include "LinearDriver.hpp"
 #include "ad5664.hpp"
+#include <unistd.h>
 //#include "hardware/uart.h"
 
 int main()
 {
+
 //    mutex_init(&mut);
 //    if (!mutex_is_initialized(&mut))
 //        activateError();
@@ -62,7 +64,8 @@ int main()
                 {
                     std::cout << afc << '\n';
                     afc.clear();
-                    scan_index = current_channel = current_freq = 0;
+                    scan_index = current_freq = 0;
+                    current_channel = -1;
                     AD7606_IS_SCANNING = AD7606_STOP_SCAN = is_already_scanning = false;
                 }
             }
@@ -70,6 +73,7 @@ int main()
         }
         if (AD9833_SET_FREQ)
         {
+            set_clock_enable();
             AD9833_SET_FREQ = false;
             set_freq(vector[1]);
         }
@@ -80,9 +84,11 @@ int main()
         }
         if (AD7606_GET_VALUE)
         {
+            set_clock_enable();
             AD7606_GET_VALUE = false;
             current_channel = vector[1];
             get_result_from_adc();
+            sleep_ms(10);
         }
         decoder.activePort(vector[1]);
         Spi::setProperties(vector[2], vector[3], vector[4]);
@@ -132,10 +138,8 @@ int main()
         if (AD7606_READ or AD7606_READ_FOREVER)
         {
             AD7606_READ = false;
-            conv.enable();
-            conv.disable();
-            sleep_us(10);
-            conv.enable();
+            set_clock_enable();
+            get_result_from_adc();
         }
 //        mutex_exit(&mut);
 //        std::cout << "Mutex released by core0\n";

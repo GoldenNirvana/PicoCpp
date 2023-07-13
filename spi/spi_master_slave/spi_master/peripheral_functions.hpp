@@ -33,8 +33,9 @@ void set_freq(uint16_t freq)
 
 void get_result_from_adc()
 {
-  decoder.activePort(0);
   Spi::setProperties(16, 1, 0);
+    sleep_ms(10);
+  decoder.activePort(0);
   conv.enable();
   conv.disable();
   sleep_us(10);
@@ -47,6 +48,14 @@ void set_gain(int gain, int p = 2)
     decoder.activePort(p);
     Spi::setProperties(8, 0, 0);
     intBuf[0] = gain;
+    spi_write_blocking(spi_default, intBuf, 1);
+}
+
+void set_clock_enable()
+{
+    uint8_t intBuf[1];
+    Spi::setProperties(8, 1, 1);
+    decoder.activePort(7);
     spi_write_blocking(spi_default, intBuf, 1);
 }
 

@@ -1,7 +1,7 @@
 add_executable(spi_master spi_master.cpp Parser.h Spi.cpp Spi.hpp Decoder.cpp Decoder.hpp Utilities.hpp peripheral_functions.hpp LinearDriver.cpp LinearDriver.hpp ad5664.cpp ad5664.hpp)
 
 # Pull in basic dependencies
-target_link_libraries(spi_master pico_stdlib hardware_spi hardware_gpio pico_multicore)
+target_link_libraries(spi_master pico_stdlib hardware_spi hardware_gpio pico_multicore pico_mem_ops hardware_pio hardware_dma)
 #target_link_libraries(spi_master pico_stdlib hardware_spi)
 
 pico_enable_stdio_usb(spi_master 1)

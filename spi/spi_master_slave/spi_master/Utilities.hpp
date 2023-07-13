@@ -26,6 +26,7 @@ bool AD9833_SET_FREQ = false;
 bool AD8400_SET_GAIN = false;
 bool AD7606_GET_VALUE = false;
 bool AD5664 = false;
+bool AD7606_GET_ON_CHANNEL = false;
 
 bool LID = false;
 
@@ -61,7 +62,13 @@ void comReceiveISR(uint a, uint32_t b)
     if (is_already_scanning)
     {
         afc += std::to_string(current_freq) + ',' + std::to_string(spiBuf[current_channel]) + ',';
-    } else
+    }
+    else if (current_channel != -1)
+    {
+        std::cout << spiBuf[current_channel] << '\n';
+        current_channel = -1;
+    }
+    else
     {
         serialPrintBuffer(spiBuf, 8);
     }
