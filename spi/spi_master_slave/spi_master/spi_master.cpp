@@ -15,16 +15,10 @@
 
 int main()
 {
-
-//    mutex_init(&mut);
-//    if (!mutex_is_initialized(&mut))
-//        activateError();
     setDefaultSettings();
     /// MAIN LOOP
     while (true)
     {
-//        mutex_enter_timeout_ms(&mut, 10);
-//        std::cout << "Mutex captured by core0\n";
         if (LID)
         {
             LID = false;
@@ -90,9 +84,14 @@ int main()
             get_result_from_adc();
             sleep_ms(10);
         }
+        if (MICRO_SCAN)
+        {
+            MICRO_SCAN = false;
+        }
+
+        /// MAIN IF
         decoder.activePort(vector[1]);
         Spi::setProperties(vector[2], vector[3], vector[4]);
-        /// MAIN IF
         if (AD5664)
         {
             AD5664 = false;
@@ -140,8 +139,7 @@ int main()
             AD7606_READ = false;
             set_clock_enable();
             get_result_from_adc();
+            sleep_ms(10);
         }
-//        mutex_exit(&mut);
-//        std::cout << "Mutex released by core0\n";
     }
 }

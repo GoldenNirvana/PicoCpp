@@ -49,7 +49,7 @@ class Parser {
     bool equals(int num, const char* comp) {
       return !strcmp(str[num], comp);
     }
-    int parseInts(int* data) {
+    int parseInts(uint32_t* data) {
       int count = 0;
       char* offset = buf;
       while (true) {

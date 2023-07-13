@@ -12,7 +12,7 @@ Decoder decoder(4, 5, 6);
 
 static uint16_t spiBuf[8];
 static std::string afc;
-static int vector[15];
+static uint32_t vector[15];
 static int vectorSize;
 
 bool AD9833_SENDER = false;
@@ -26,7 +26,7 @@ bool AD9833_SET_FREQ = false;
 bool AD8400_SET_GAIN = false;
 bool AD7606_GET_VALUE = false;
 bool AD5664 = false;
-bool AD7606_GET_ON_CHANNEL = false;
+bool MICRO_SCAN = false;
 
 bool LID = false;
 
@@ -48,7 +48,7 @@ LinearDriver linearDriver;
 
 void serialPrintBuffer(const uint16_t *buf, int len);
 
-void parse(int *vector);
+void parse(uint32_t *vector);
 
 void comReceiveISR(uint a, uint32_t b);
 
@@ -117,6 +117,9 @@ void launchOnCore1()
             case 40:
                 AD8400_SET_GAIN = true;
                 break;
+            case 50:
+                MICRO_SCAN = true;
+                break;
             case 100 ... 110:
                 LID = true;
                 break;
@@ -156,7 +159,7 @@ void serialPrintBuffer(const uint8_t *const buf, int len)
 }
 
 
-void parse(int *vec)
+void parse(uint32_t *vec)
 {
     std::string s;
     getline(std::cin, s);
