@@ -67,7 +67,7 @@ int main()
         }
         if (AD9833_SET_FREQ)
         {
-            set_clock_enable();
+//            set_clock_enable();
             AD9833_SET_FREQ = false;
             set_freq(vector[1]);
         }
@@ -78,7 +78,7 @@ int main()
         }
         if (AD7606_GET_VALUE)
         {
-            set_clock_enable();
+//            set_clock_enable();
             AD7606_GET_VALUE = false;
             current_channel = vector[1];
             get_result_from_adc();
@@ -137,7 +137,7 @@ int main()
         if (AD7606_READ or AD7606_READ_FOREVER)
         {
             AD7606_READ = false;
-            set_clock_enable();
+//            set_clock_enable();
             get_result_from_adc();
             sleep_ms(10);
         }
