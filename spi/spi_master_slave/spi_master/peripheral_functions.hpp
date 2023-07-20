@@ -36,8 +36,8 @@ void set_freq(uint16_t freq)
 
 void get_result_from_adc()
 {
-  Spi::setProperties(16, 1, 0);
   decoder.activePort(0);
+  Spi::setProperties(16, 1, 0);
   conv.enable();
   conv.disable();
   sleep_us(10);

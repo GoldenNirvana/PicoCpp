@@ -34,7 +34,7 @@ bool AD7606_IS_SCANNING = false;
 volatile bool is_already_scanning = false;
 uint16_t scan_index = 0;
 uint16_t current_freq = 0;
-int32_t current_channel = 0;
+static volatile int32_t current_channel = 0;
 
 InputPort busy(9);
 GpioPort conv(7);

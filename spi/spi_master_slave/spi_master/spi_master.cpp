@@ -82,7 +82,6 @@ int main()
             AD7606_GET_VALUE = false;
             current_channel = vector[1];
             get_result_from_adc();
-            sleep_ms(10);
             continue;
         }
         if (MICRO_SCAN)
@@ -140,7 +139,6 @@ int main()
             AD7606_READ = false;
 //            set_clock_enable();
             get_result_from_adc();
-            sleep_ms(10);
         }
     }
 }
