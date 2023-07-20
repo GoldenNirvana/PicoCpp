@@ -12,7 +12,7 @@ Decoder decoder(4, 5, 6);
 
 static uint16_t spiBuf[8];
 static std::string afc;
-static uint32_t vector[15];
+static int32_t vector[15];
 static int vectorSize;
 
 bool AD9833_SENDER = false;
@@ -34,7 +34,7 @@ bool AD7606_IS_SCANNING = false;
 volatile bool is_already_scanning = false;
 uint16_t scan_index = 0;
 uint16_t current_freq = 0;
-int current_channel = 0;
+int32_t current_channel = 0;
 
 InputPort busy(9);
 GpioPort conv(7);
@@ -48,7 +48,7 @@ LinearDriver linearDriver;
 
 void serialPrintBuffer(const uint16_t *buf, int len);
 
-void parse(uint32_t *vector);
+void parse(int32_t *vector);
 
 void comReceiveISR(uint a, uint32_t b);
 
@@ -159,7 +159,7 @@ void serialPrintBuffer(const uint8_t *const buf, int len)
 }
 
 
-void parse(uint32_t *vec)
+void parse(int32_t *vec)
 {
     std::string s;
     getline(std::cin, s);

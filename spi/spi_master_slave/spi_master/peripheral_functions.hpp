@@ -15,7 +15,7 @@ void set_freq(uint16_t freq)
   int64_t n_low = n_reg & 0x3fff;
   int64_t n_hi = (n_reg >> 14) & 0x3fff;
 
-  static uint16_t buf[6];
+  static uint8_t buf[6];
 
   buf[0] = (flag_freq | n_low) /  (0x100);
   buf[1] = (flag_freq | n_low) %  (0x100);
@@ -28,13 +28,15 @@ void set_freq(uint16_t freq)
 
   decoder.activePort(1);
   Spi::setProperties(8, 1, 1);
-  spi_write16_blocking(spi_default, buf, 6);
+  spi_write_blocking(spi_default, buf, 2);
+  spi_write_blocking(spi_default, buf + 2, 2);
+  spi_write_blocking(spi_default, buf + 4, 2);
+
 }
 
 void get_result_from_adc()
 {
   Spi::setProperties(16, 1, 0);
-  sleep_ms(10);
   decoder.activePort(0);
   conv.enable();
   conv.disable();
@@ -48,7 +50,7 @@ void set_gain(int gain, int p = 2)
     decoder.activePort(p);
     Spi::setProperties(8, 0, 0);
     intBuf[0] = gain;
-    spi_write_blocking(spi_default, intBuf, 1);
+    spi_write_blocking(spi_default, intBuf, 3);
 }
 
 void set_clock_enable()

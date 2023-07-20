@@ -83,6 +83,7 @@ int main()
             current_channel = vector[1];
             get_result_from_adc();
             sleep_ms(10);
+            continue;
         }
         if (MICRO_SCAN)
         {
