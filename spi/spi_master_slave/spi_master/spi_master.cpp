@@ -6,7 +6,6 @@
 #include "peripheral_functions.hpp"
 
 
-
 int main()
 {
 
@@ -28,7 +27,8 @@ int main()
                 scanner.update({static_cast<uint32_t>(vector[1]), static_cast<uint32_t>(vector[2]),
                                 static_cast<uint8_t>(vector[3]), static_cast<uint8_t>(vector[4]),
                                 static_cast<uint16_t>(vector[5]), static_cast<uint16_t>(vector[6]),
-                                static_cast<uint16_t>(vector[7]), static_cast<uint16_t>(vector[8])});
+                                static_cast<uint16_t>(vector[7]), static_cast<uint16_t>(vector[8]),
+                                static_cast<uint8_t>(vector[9])});
                 continue;
             }
             if (MICRO_SCAN)
@@ -110,7 +110,8 @@ int main()
         if (AD5664)
         {
             AD5664 = false;
-            set_on_cap(vector[6], vector[5]);
+            AD56X4Class::setChannel(AD56X4_SETMODE_INPUT, vector[6], vector[5]);
+            AD56X4Class::updateChannel(vector[6]);
         }
         if (AD9833_SENDER)
         {

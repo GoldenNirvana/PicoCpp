@@ -128,6 +128,9 @@ void launchOnCore1()
             case 52:
                 STOP_MICRO_SCAN = true;
                 break;
+            case 55:
+                CONFIG_UPDATE = true;
+                break;
             case 100 ... 110:
                 LID = true;
                 break;

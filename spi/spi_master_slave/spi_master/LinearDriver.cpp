@@ -34,9 +34,9 @@ void LinearDriver::activate(int command, int freq, int p, int n, bool dir)
         ptrA = &z_a;
         ptrB = &z_b;
     }
-    double t_abs = 1000 / freq;
-    double t_low = p * t_abs / 1000;
-    double t_high = t_abs - t_low;
+    double t_abs = 1000000 / freq;        // 2000
+    double t_low = p * t_abs / 1000;  //  750 * 2000 / 1000000 = 1.5
+    double t_high = t_abs - t_low;    // 2 - 1.5 = 0.5
 
     if (dir)
     {
@@ -47,9 +47,9 @@ void LinearDriver::activate(int command, int freq, int p, int n, bool dir)
     for (int i = 0; i < n; ++i)
     {
         ptrB->disable();
-        sleep_ms(t_low);
+        sleep_us(t_low);
         ptrB->enable();
-        sleep_ms(t_high);
+        sleep_us(t_high);
     }
     ptrA->enable();
     ptrB->enable();
