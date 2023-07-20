@@ -39,13 +39,13 @@ class AD56X4Class
 
 public:
 
-    static void setChannel (int SS_pin, byte setMode, byte channel,
+    static void setChannel (byte setMode, byte channel,
                             word value);
     static void setChannel (int SS_pin, byte setMode, word values[]);
     static void setChannel (int SS_pin, byte setMode, word value_D,
                             word value_C, word value_B, word value_A);
 
-    static void updateChannel (int SS_pin, byte channel);
+    static void updateChannel (byte channel);
 
     static void powerUpDown (int SS_pin, byte powerMode,
                              boolean channels[]);

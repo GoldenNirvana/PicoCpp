@@ -3,7 +3,6 @@
 
 #include "hardware/spi.h"
 
-#define BUF_LEN  20
 
 class Spi
 {

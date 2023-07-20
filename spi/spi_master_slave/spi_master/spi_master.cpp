@@ -1,24 +1,42 @@
 #include <cstdio>
 #include <pico/multicore.h>
-#include "pico/stdlib.h"
-#include "Parser.h"
 #include "Spi.hpp"
-#include "Decoder.hpp"
 #include "Utilities.hpp"
 #include "hardware/irq.h"
-#include "hardware/gpio.h"
 #include "peripheral_functions.hpp"
-#include "LinearDriver.hpp"
-#include "ad5664.hpp"
-#include <unistd.h>
-//#include "hardware/uart.h"
+
+
 
 int main()
 {
+
     setDefaultSettings();
     /// MAIN LOOP
     while (true)
     {
+        if (MOVE_TO)
+        {
+            MOVE_TO = false;
+            scanner.move_to({static_cast<uint16_t>(vector[1]), static_cast<uint16_t>(vector[2])}, vector[3]);
+            continue;
+        }
+        if (MICRO_SCAN || CONFIG_UPDATE)
+        {
+            if (CONFIG_UPDATE)
+            {
+                CONFIG_UPDATE = false;
+                scanner.update({static_cast<uint32_t>(vector[1]), static_cast<uint32_t>(vector[2]),
+                                static_cast<uint8_t>(vector[3]), static_cast<uint8_t>(vector[4]),
+                                static_cast<uint16_t>(vector[5]), static_cast<uint16_t>(vector[6]),
+                                static_cast<uint16_t>(vector[7]), static_cast<uint16_t>(vector[8])});
+                continue;
+            }
+            if (MICRO_SCAN)
+            {
+                MICRO_SCAN = false;
+                scanner.start_scan({static_cast<uint16_t>(vector[1]), static_cast<uint16_t>(vector[2])});
+            }
+        }
         if (LID)
         {
             LID = false;
@@ -84,10 +102,7 @@ int main()
             get_result_from_adc();
             continue;
         }
-        if (MICRO_SCAN)
-        {
-            MICRO_SCAN = false;
-        }
+
 
         /// MAIN IF
         decoder.activePort(vector[1]);
@@ -95,8 +110,7 @@ int main()
         if (AD5664)
         {
             AD5664 = false;
-            AD56X4Class::setChannel(0, AD56X4_SETMODE_INPUT, vector[6], vector[5]);
-            AD56X4Class::updateChannel(0, vector[6]);
+            set_on_cap(vector[6], vector[5]);
         }
         if (AD9833_SENDER)
         {

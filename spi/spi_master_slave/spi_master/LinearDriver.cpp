@@ -4,7 +4,14 @@
 
 LinearDriver::LinearDriver() : x_a(GpioPort(18)), x_b(GpioPort(19)), y_a(GpioPort(20)),
                                y_b(GpioPort(21)), z_a(GpioPort(22)), z_b(GpioPort(28))
-{}
+{
+    x_a.enable();
+    x_b.enable();
+    y_a.enable();
+    y_b.enable();
+    z_a.enable();
+    z_b.enable();
+}
 
 
 void LinearDriver::activate(int command, int freq, int p, int n, bool dir)
@@ -44,8 +51,8 @@ void LinearDriver::activate(int command, int freq, int p, int n, bool dir)
         ptrB->enable();
         sleep_ms(t_high);
     }
-    ptrA->disable();
-    ptrB->disable();
+    ptrA->enable();
+    ptrB->enable();
 
     if (dir)
     {

@@ -5,13 +5,13 @@
 AD56X4Class AD56X4;
 
 
-void AD56X4Class::setChannel(int SS_pin, byte setMode, byte channel,
+void AD56X4Class::setChannel(byte setMode, byte channel,
                              word value)
 {
     if (setMode == AD56X4_SETMODE_INPUT
         || setMode == AD56X4_SETMODE_INPUT_DAC
         || setMode == AD56X4_SETMODE_INPUT_DAC_ALL)
-        AD56X4.writeMessage(SS_pin, setMode, channel, value);
+        AD56X4.writeMessage(0, setMode, channel, value);
 }
 
 void AD56X4Class::setChannel(int SS_pin, byte setMode, word values[])
@@ -32,9 +32,9 @@ void AD56X4Class::setChannel(int SS_pin, byte setMode, word value_D,
     AD56X4.setChannel(SS_pin, setMode, values);
 }
 
-void AD56X4Class::updateChannel(int SS_pin, byte channel)
+void AD56X4Class::updateChannel(byte channel)
 {
-    AD56X4.writeMessage(SS_pin, AD56X4_COMMAND_UPDATE_DAC_REGISTER, channel, 0);
+    AD56X4.writeMessage(0, AD56X4_COMMAND_UPDATE_DAC_REGISTER, channel, 0);
 }
 
 void AD56X4Class::powerUpDown(int SS_pin, byte powerMode,

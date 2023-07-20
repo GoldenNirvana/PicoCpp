@@ -6,9 +6,9 @@
 #include <pico/bootrom.h>
 #include "LinearDriver.hpp"
 #include "pico/mutex.h"
+#include "Parser.h"
 
-Spi spi;
-Decoder decoder(4, 5, 6);
+
 
 static uint16_t spiBuf[8];
 static std::string afc;
@@ -27,7 +27,9 @@ bool AD8400_SET_GAIN = false;
 bool AD7606_GET_VALUE = false;
 bool AD5664 = false;
 bool MICRO_SCAN = false;
-
+bool CONFIG_UPDATE = false;
+bool MOVE_TO = false;
+bool STOP_MICRO_SCAN = false;
 bool LID = false;
 
 bool AD7606_IS_SCANNING = false;
@@ -119,6 +121,12 @@ void launchOnCore1()
                 break;
             case 50:
                 MICRO_SCAN = true;
+                break;
+            case 51:
+                MOVE_TO = true;
+                break;
+            case 52:
+                STOP_MICRO_SCAN = true;
                 break;
             case 100 ... 110:
                 LID = true;

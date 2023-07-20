@@ -1,9 +1,14 @@
 #ifndef PICO_EXAMPLES_peripheral_FUNCTIONS_HPP
 #define PICO_EXAMPLES_peripheral_FUNCTIONS_HPP
 
+#include <vector>
 #include "Spi.hpp"
+#include "ad5664.hpp"
+#include "Utilities.hpp"
 
-//  79,139,64,5,32,0    8000
+
+Spi spi;
+Decoder decoder(4, 5, 6);
 
 void set_freq(uint16_t freq)
 {
@@ -60,5 +65,149 @@ void set_clock_enable()
     decoder.activePort(7);
     spi_write_blocking(spi_default, intBuf, 1);
 }
+
+void set_on_cap(uint8_t channel, uint16_t value)
+{
+    AD56X4Class::setChannel(AD56X4_SETMODE_INPUT, channel, value);
+    AD56X4Class::updateChannel(channel);
+}
+
+
+struct Point
+{
+    uint16_t x;
+    uint16_t y;
+
+    bool operator==(const Point& other) const
+    {
+        return (x == other.x && y == other.y);
+    }
+
+    bool operator!=(const Point& other) const
+    {
+        return !(*(this) == other);
+    }
+};
+
+struct Config
+{
+    uint32_t nPoints_x;  // Точек по линии X
+    uint32_t nPoints_y;  // Точек по линии Y
+    uint8_t path;  // 0 - по X, 1 - по Y
+    uint8_t method;  //
+    uint16_t delayF;  // Задержка вперёд
+    uint16_t delayB;  // Задержка назад
+    uint16_t betweenPoints_x;  // Расстояние между точками по X
+    uint16_t betweenPoints_y;  // Расстояние между точками по Y
+    uint8_t flag;  // Что измерять
+};
+
+
+
+class Scanner
+{
+public:
+
+    Scanner() : pos_({0, 0}), conf_({}) {}
+    ~Scanner()
+    {
+        move_to({0, 0}, 10);
+    }
+
+    void start_scan(const Point& point)
+    {
+        prev_point = pos_;
+        move_to(point, 10);
+        for (int i = 0; i < conf_.nPoints_y; ++i)
+        {
+            for (int j = 0; j < conf_.nPoints_x; ++j)
+            {
+                for (int k = 0; k < conf_.betweenPoints_x; ++k)
+                {
+                    set_on_cap(1, ++pos_.x);
+                    sleep_ms(conf_.delayF);
+                }
+                sleep_ms(50); // CONST 50ms
+                get_result_from_adc();
+                while (spiBuf[1] == 0);            // TODO ADD others
+                vector_z.emplace_back(spiBuf[1]);  // get Z from adc
+                if (conf_.flag != 0)
+                    other_info.emplace_back(spiBuf[conf_.flag]);
+                for (auto &item: spiBuf)
+                {
+                    item = 0;
+                }
+            }
+            for (int j = 0; j < conf_.betweenPoints_x; ++j) // GET back
+            {
+                set_on_cap(1, --pos_.x);
+                sleep_ms(conf_.delayB);
+            }
+            for (int j = 0; j < vector_z.size(); j++)     // send info
+            {
+                std::cout << vector_z[j] << ' ';
+                if (conf_.flag != 0)
+                {
+                    std::cout << other_info[j] << ';';
+                }
+            }
+            if (STOP_MICRO_SCAN)                     // is need to stop
+            {
+                STOP_MICRO_SCAN = false;
+                stop_scan();
+            }
+            for (int j = 0; j < conf_.betweenPoints_x; ++j) // go next line
+            {
+                set_on_cap(2, ++pos_.y);
+                sleep_ms(conf_.delayF);
+            }
+        }
+    }
+
+    void stop_scan()
+    {
+        move_to(prev_point, 10);
+    }
+
+    void update(const Config& config)
+    {
+        conf_ = config;
+    }
+
+    void move_to(const Point& point, uint32_t delay)
+    {
+        while (pos_ != point)
+        {
+            while (pos_.x < point.x)
+            {
+                set_on_cap(1, ++pos_.x);
+                sleep_ms(delay);
+            }
+            while (pos_.x > point.x)
+            {
+                set_on_cap(1, --pos_.x);
+                sleep_ms(delay);
+            }
+            while (pos_.y < point.y)
+            {
+                set_on_cap(2, ++pos_.y);
+                sleep_ms(delay);
+            }
+            while (pos_.y > point.y)
+            {
+                set_on_cap(2, --pos_.y);
+                sleep_ms(delay);
+            }
+        }
+    }
+
+private:
+
+    std::vector<uint16_t> vector_z, other_info;
+    Point pos_, prev_point;
+    Config conf_;
+};
+
+Scanner scanner;
 
 #endif
