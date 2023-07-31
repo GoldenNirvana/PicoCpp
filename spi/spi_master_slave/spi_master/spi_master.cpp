@@ -1,5 +1,6 @@
 #include <cstdio>
 #include <pico/multicore.h>
+#include <bitset>
 #include "Spi.hpp"
 #include "Utilities.hpp"
 #include "hardware/irq.h"
@@ -36,6 +37,42 @@ int main()
                 MICRO_SCAN = false;
                 scanner.start_scan({static_cast<uint16_t>(vector[1]), static_cast<uint16_t>(vector[2])});
             }
+        }
+        if (SET_IO_VALUE)
+        {
+            SET_IO_VALUE = false;
+            if (vector[1] == 1)
+            {
+                std::string binary = std::bitset<2>(vector[2]).to_string();
+                binary[1] == '1' ? io1_0.enable() : io1_0.disable();
+                binary[0] == '1' ? io1_1.enable() : io1_1.disable();
+            }
+            else if (vector[1] == 2)
+            {
+                std::string binary = std::bitset<3>(vector[2]).to_string();
+                binary[2] == '1' ? io2_0.enable() : io2_0.disable();
+                binary[1] == '1' ? io2_1.enable() : io2_1.disable();
+                binary[0] == '1' ? io2_2.enable() : io2_2.disable();
+            }
+            else if (vector[1] == 3)
+            {
+                std::string binary = std::bitset<2>(vector[2]).to_string();
+                binary[1] == '1' ? io3_0.enable() : io3_0.disable();
+                binary[0] == '1' ? io3_1.enable() : io3_1.disable();
+            }
+        }
+        if (SET_ONE_IO_VALUE)
+        {
+            SET_ONE_IO_VALUE = false;
+            static std::vector<GpioPort> io_ports;
+            io_ports.push_back(io1_0);
+            io_ports.push_back(io1_1);
+            io_ports.push_back(io2_0);
+            io_ports.push_back(io2_1);
+            io_ports.push_back(io2_2);
+            io_ports.push_back(io3_0);
+            io_ports.push_back(io3_1);
+            vector[2] == 1 ? io_ports[vector[1] - 1].enable() : io_ports[vector[1] - 1].disable();
         }
         if (LID)
         {

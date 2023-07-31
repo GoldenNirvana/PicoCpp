@@ -8,7 +8,34 @@
 #include "pico/mutex.h"
 #include "Parser.h"
 
-
+//if (vector[1] == 1)
+//{
+//vector[2] == 1 ?  io1_0.enable() : io1_0.disable();
+//}
+//if (vector[1] == 2)
+//{
+//vector[2] == 1 ?  io1_1.enable() : io1_1.disable();
+//}
+//if (vector[1] == 3)
+//{
+//vector[2] == 1 ?  io2_0.enable() : io2_0.disable();
+//}
+//if (vector[1] == 4)
+//{
+//vector[2] == 1 ?  io2_1.enable() : io2_1.disable();
+//}
+//if (vector[1] == 5)
+//{
+//vector[2] == 1 ?  io2_2.enable() : io2_2.disable();
+//}
+//if (vector[1] == 6)
+//{
+//vector[2] == 1 ? io3_0.enable() : io3_0.disable();
+//}
+//if (vector[1] == 7)
+//{
+//vector[2] == 1 ?  io3_1.enable() : io3_1.disable();
+//}
 
 static uint16_t spiBuf[8];
 static std::string afc;
@@ -30,6 +57,8 @@ bool MICRO_SCAN = false;
 bool CONFIG_UPDATE = false;
 bool MOVE_TO = false;
 bool STOP_MICRO_SCAN = false;
+bool SET_IO_VALUE = false;
+bool SET_ONE_IO_VALUE = false;
 bool LID = false;
 
 bool AD7606_IS_SCANNING = false;
@@ -43,6 +72,16 @@ GpioPort conv(7);
 GpioPort dec(10);
 GpioPort resetPort(8);
 GpioPort ledPort(PICO_DEFAULT_LED_PIN);
+
+GpioPort io1_0(11);
+GpioPort io1_1(12);
+
+GpioPort io2_0(13);
+GpioPort io2_1(14);
+GpioPort io2_2(15);
+
+GpioPort io3_0(26);
+GpioPort io3_1(27);
 
 LinearDriver linearDriver;
 
@@ -130,6 +169,12 @@ void launchOnCore1()
                 break;
             case 55:
                 CONFIG_UPDATE = true;
+                break;
+            case 60:
+                SET_IO_VALUE = true;
+                break;
+            case 61:
+                SET_ONE_IO_VALUE = true;
                 break;
             case 100 ... 110:
                 LID = true;
