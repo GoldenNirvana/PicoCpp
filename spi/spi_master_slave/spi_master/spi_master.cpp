@@ -5,11 +5,19 @@
 #include "Utilities.hpp"
 #include "hardware/irq.h"
 #include "peripheral_functions.hpp"
-
+#include "pico/critical_section.h"
+#include <pico/mutex.h>
+#include <mutex>
 
 int main()
 {
+    critical_section_init(&criticalSection);
 
+    if (!critical_section_is_initialized(&criticalSection))
+    {
+        activateError();
+        return 1;
+    }
     setDefaultSettings();
     /// MAIN LOOP
     while (true)
@@ -135,7 +143,9 @@ int main()
         {
 //            set_clock_enable();
             AD7606_GET_VALUE = false;
-            current_channel = vector[1];
+            critical_section_enter_blocking(&criticalSection);
+            current_channel = vector[1];  // выводить значение CUURENT CHANNEL
+            critical_section_exit(&criticalSection);
             get_result_from_adc();
             continue;
         }

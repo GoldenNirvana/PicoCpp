@@ -67,6 +67,8 @@ uint16_t scan_index = 0;
 uint16_t current_freq = 0;
 static volatile int32_t current_channel = 0;
 
+critical_section_t criticalSection;
+
 InputPort busy(9);
 GpioPort conv(7);
 GpioPort dec(10);
@@ -99,15 +101,19 @@ void resetAll();
 
 void comReceiveISR(uint a, uint32_t b)
 {
+    // set settings here mb
     spi_read16_blocking(spi_default, 0, spiBuf, 8);
     if (is_already_scanning)
     {
         afc += std::to_string(current_freq) + ',' + std::to_string(spiBuf[current_channel]) + ',';
     }
-    else if (current_channel != -1)
+    else if (current_channel != -1) // cond other way
     {
+
         std::cout << spiBuf[current_channel] << '\n';
+        critical_section_enter_blocking(&criticalSection);
         current_channel = -1;
+        critical_section_exit(&criticalSection);
     }
     else
     {
