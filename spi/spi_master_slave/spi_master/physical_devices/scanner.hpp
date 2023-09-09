@@ -1,14 +1,11 @@
 #ifndef PICO_EXAMPLES_SCANNER_HPP
 #define PICO_EXAMPLES_SCANNER_HPP
 
-
-#include <cstdint>
 #include <vector>
 #include "../utilities/Point.hpp"
 
 
-struct Config
-{
+struct Config {
     uint32_t nPoints_x;  // Точек по линии X
     uint32_t nPoints_y;  // Точек по линии Y
     uint8_t path;  // 0 - по X, 1 - по Y
@@ -21,8 +18,7 @@ struct Config
 };
 
 
-class Scanner
-{
+class Scanner {
 public:
 
     Scanner();
@@ -45,8 +41,6 @@ private:
     Point pos_, prev_point;
     Config conf_;
 };
-
-Scanner scanner;
 
 
 #endif

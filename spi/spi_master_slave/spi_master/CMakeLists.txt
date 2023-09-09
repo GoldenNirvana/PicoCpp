@@ -1,10 +1,14 @@
 add_executable(spi_master spi_master.cpp Parser.h Spi.cpp
         Spi.hpp utilities/Decoder.cpp utilities/Decoder.hpp
-        Utilities.hpp
+        transceiver/rx_core.hpp transceiver/rx_core.cpp
         utilities/peripheral_functions.hpp utilities/peripheral_functions.cpp
         physical_devices/LinearDriver.cpp physical_devices/LinearDriver.hpp
         devices/ad5664.cpp devices/ad5664.hpp
-        utilities/io_ports.cpp utilities/io_ports.h utilities/peripheral_functions.cpp utilities/Point.cpp utilities/Point.hpp physical_devices/scanner.cpp physical_devices/scanner.hpp)
+        utilities/io_ports.cpp utilities/io_ports.h utilities/peripheral_functions.cpp
+        utilities/Point.cpp utilities/Point.hpp physical_devices/scanner.cpp physical_devices/scanner.hpp
+        transceiver/rx_core.cpp transceiver/rx_core.hpp
+        common_variables.hpp
+        common_variables.cpp)
 # Pull in basic dependencies
 target_link_libraries(spi_master pico_stdlib hardware_spi hardware_gpio pico_multicore pico_mem_ops hardware_pio hardware_dma)
 #target_link_libraries(spi_master pico_stdlib hardware_spi)

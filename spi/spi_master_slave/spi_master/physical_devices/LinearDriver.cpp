@@ -3,8 +3,7 @@
 #include "LinearDriver.hpp"
 
 LinearDriver::LinearDriver() : x_a(OutputPort(18)), x_b(OutputPort(19)), y_a(OutputPort(20)),
-                               y_b(OutputPort(21)), z_a(OutputPort(22)), z_b(OutputPort(28))
-{
+                               y_b(OutputPort(21)), z_a(OutputPort(22)), z_b(OutputPort(28)) {
     x_a.enable();
     x_b.enable();
     y_a.enable();
@@ -14,23 +13,18 @@ LinearDriver::LinearDriver() : x_a(OutputPort(18)), x_b(OutputPort(19)), y_a(Out
 }
 
 
-void LinearDriver::activate(int command, int freq, int p, int n, bool dir)
-{
-    std::cout << "From activate command = " <<  command << '\n';
+void LinearDriver::activate(int command, int freq, int p, int n, bool dir) {
+    std::cout << "From activate command = " << command << '\n';
     OutputPort *ptrA = &x_a;
     OutputPort *ptrB = &x_b;
-    if (command == 100)
-    {
+    if (command == 100) {
         ptrA = &x_a;
         ptrB = &x_b;
     }
-    if (command == 105)
-    {
+    if (command == 105) {
         ptrA = &y_a;
         ptrB = &y_b;
-    }
-    else if (command == 110)
-    {
+    } else if (command == 110) {
         ptrA = &z_a;
         ptrB = &z_b;
     }
@@ -38,14 +32,12 @@ void LinearDriver::activate(int command, int freq, int p, int n, bool dir)
     double t_low = p * t_abs / 1000;  //  750 * 2000 / 1000000 = 1.5
     double t_high = t_abs - t_low;    // 2 - 1.5 = 0.5
 
-    if (dir)
-    {
+    if (dir) {
         std::swap(ptrA, ptrB);
     }
 
     ptrA->enable();
-    for (int i = 0; i < n; ++i)
-    {
+    for (int i = 0; i < n; ++i) {
         ptrB->disable();
         sleep_us(t_low);
         ptrB->enable();
@@ -54,8 +46,7 @@ void LinearDriver::activate(int command, int freq, int p, int n, bool dir)
     ptrA->enable();
     ptrB->enable();
 
-    if (dir)
-    {
+    if (dir) {
         std::swap(ptrA, ptrB);
     }
 }

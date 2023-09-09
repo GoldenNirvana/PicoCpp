@@ -1,13 +1,8 @@
-#include <vector>
-#include "../Spi.hpp"
-#include "../devices/ad5664.hpp"
-#include "../Utilities.hpp"
+#include "peripheral_functions.hpp"
+#include "../common_variables.hpp"
 
-Spi spi;
-Decoder decoder(4, 5, 6);
 
-void set_freq(uint16_t freq)
-{
+void set_freq(uint16_t freq) {
     current_freq = freq;
 
     int64_t flag_freq = 1 << 14;
@@ -35,8 +30,7 @@ void set_freq(uint16_t freq)
 
 }
 
-void get_result_from_adc()
-{
+void get_result_from_adc() {
     decoder.activePort(0);
     Spi::setProperties(16, 1, 0);
     conv.enable();
@@ -45,8 +39,7 @@ void get_result_from_adc()
     conv.enable();
 }
 
-void set_gain(int gain, int p = 2)
-{
+void set_gain(int gain, int p) {
     uint8_t intBuf[1];
     decoder.activePort(p);
     Spi::setProperties(8, 0, 0);
@@ -54,16 +47,14 @@ void set_gain(int gain, int p = 2)
     spi_write_blocking(spi_default, intBuf, 3);
 }
 
-void set_clock_enable()
-{
+void set_clock_enable() {
     uint8_t intBuf[1];
     Spi::setProperties(8, 1, 1);
     decoder.activePort(7);
     spi_write_blocking(spi_default, intBuf, 1);
 }
 
-void set_on_cap(uint8_t channel, uint16_t value)
-{
+void set_on_cap(uint8_t channel, uint16_t value) {
     decoder.activePort(3);
     Spi::setProperties(8, 0, 1);
     AD56X4Class::setChannel(AD56X4_SETMODE_INPUT, channel, value);

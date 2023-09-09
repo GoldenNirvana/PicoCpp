@@ -1,6 +1,7 @@
 #ifndef PICO_EXAMPLES_POINT_HPP
 #define PICO_EXAMPLES_POINT_HPP
 
+
 #include <cstdint>
 
 struct Point {
