@@ -1,6 +1,6 @@
 #include "common_variables.hpp"
 
-
+std::string afc;
 Spi spi;
 LinearDriver linearDriver;
 Decoder decoder(4, 5, 6);

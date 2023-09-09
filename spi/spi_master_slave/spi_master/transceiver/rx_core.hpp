@@ -3,7 +3,6 @@
 
 #include <ctime>
 
-[[noreturn]] void activateError();
 
 void serialPrintBuffer(const uint16_t *buf, int len);
 
@@ -13,8 +12,5 @@ void comReceiveISR(uint a, uint32_t b);
 
 void launchOnCore1();
 
-void resetAll();
-
-void setDefaultSettings();
 
 #endif

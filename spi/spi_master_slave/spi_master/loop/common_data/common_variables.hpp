@@ -2,16 +2,17 @@
 #define PICO_EXAMPLES_COMMON_VARIABLES_HPP
 
 #include <pico/critical_section.h>
-#include "Spi.hpp"
-#include "physical_devices/LinearDriver.hpp"
-#include "physical_devices/scanner.hpp"
+#include <string>
+#include "../../utilities/base_types/Spi.hpp"
+#include "../../physical_devices/LinearDriver.hpp"
+#include "../../physical_devices/scanner.hpp"
 
 extern Spi spi;
 extern LinearDriver linearDriver;
 extern Decoder decoder;
 extern Scanner scanner;
 
-
+extern std::string afc;
 extern uint16_t spiBuf[8];
 extern int32_t vector[15];
 extern int vectorSize;

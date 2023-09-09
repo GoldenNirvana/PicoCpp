@@ -28,56 +28,70 @@
 #include <cstdint>
 
 #define word uint16_t
-#define byte uint8_t
+#define t_byte uint8_t
 #define boolean bool
 
 
-class AD56X4Class {
+class AD56X4Class
+{
 
 public:
 
-    static void setChannel(byte setMode, byte channel,
-                           word value);
+  static void setChannel(t_byte
+                         setMode, t_byte
+                         channel,
+                         word value);
 
-    static void setChannel(int SS_pin, byte setMode, word values[]);
+  static void setChannel(int SS_pin, t_byte
+  setMode, word values[]);
 
-    static void setChannel(int SS_pin, byte setMode, word value_D,
-                           word value_C, word value_B, word value_A);
+  static void setChannel(int SS_pin, t_byte
+  setMode, word value_D,
+                         word value_C, word value_B, word value_A);
 
-    static void updateChannel(byte channel);
+  static void updateChannel(t_byte
+                            channel);
 
-    static void powerUpDown(int SS_pin, byte powerMode,
-                            boolean channels[]);
+  static void powerUpDown(int SS_pin, t_byte
+  powerMode,
+                          boolean channels[]);
 
-    static void powerUpDown(int SS_pin, byte powerMode,
-                            boolean channel_D, boolean channel_C,
-                            boolean channel_B, boolean channel_A);
+  static void powerUpDown(int SS_pin, t_byte
+  powerMode,
+                          boolean channel_D, boolean channel_C,
+                          boolean channel_B, boolean channel_A);
 
-    static void powerUpDown(int SS_pin, byte powerModes[]);
+  static void powerUpDown(int SS_pin, t_byte
+  powerModes[]);
 
-    static void reset(int SS_pin, boolean fullReset);
+  static void reset(int SS_pin, boolean fullReset);
 
-    static void setInputMode(int SS_pin, boolean channels[]);
+  static void setInputMode(int SS_pin, boolean channels[]);
 
-    static void setInputMode(int SS_pin, boolean channel_D,
-                             boolean channel_C, boolean channel_B,
-                             boolean channel_A);
+  static void setInputMode(int SS_pin, boolean channel_D,
+                           boolean channel_C, boolean channel_B,
+                           boolean channel_A);
 
-    static void useInternalReference(int SS_pin, boolean yesno);
+  static void useInternalReference(int SS_pin, boolean yesno);
 
 private:
-    inline static void powerUpDown(int SS_pin, byte powerMode,
-                                   byte channelMask);
+  inline static void powerUpDown(int SS_pin, t_byte
+  powerMode,
+                                 t_byte
+                                 channelMask);
 
-    inline static void setInputMode(int SS_pin, byte channelMask);
+  inline static void setInputMode(int SS_pin, t_byte
+  channelMask);
 
-    static word makeChannelMask(boolean channels[]);
+  static word makeChannelMask(boolean channels[]);
 
-    static word makeChannelMask(boolean channel_D, boolean channel_C,
-                                boolean channel_B, boolean channel_A);
+  static word makeChannelMask(boolean channel_D, boolean channel_C,
+                              boolean channel_B, boolean channel_A);
 
-    static void writeMessage(int SS_pin, byte command, byte address,
-                             word data);
+  static void writeMessage(int SS_pin, t_byte
+  command, t_byte
+                           address,
+                           word data);
 
 };
 
