@@ -4,38 +4,12 @@
 #include <iostream>
 #include <iomanip>
 #include <pico/bootrom.h>
-#include "LinearDriver.hpp"
+#include "physical_devices/LinearDriver.hpp"
 #include "pico/mutex.h"
 #include "Parser.h"
+#include <pico/multicore.h>
 
-//if (vector[1] == 1)
-//{
-//vector[2] == 1 ?  io1_0.enable() : io1_0.disable();
-//}
-//if (vector[1] == 2)
-//{
-//vector[2] == 1 ?  io1_1.enable() : io1_1.disable();
-//}
-//if (vector[1] == 3)
-//{
-//vector[2] == 1 ?  io2_0.enable() : io2_0.disable();
-//}
-//if (vector[1] == 4)
-//{
-//vector[2] == 1 ?  io2_1.enable() : io2_1.disable();
-//}
-//if (vector[1] == 5)
-//{
-//vector[2] == 1 ?  io2_2.enable() : io2_2.disable();
-//}
-//if (vector[1] == 6)
-//{
-//vector[2] == 1 ? io3_0.enable() : io3_0.disable();
-//}
-//if (vector[1] == 7)
-//{
-//vector[2] == 1 ?  io3_1.enable() : io3_1.disable();
-//}
+
 
 static uint16_t spiBuf[8];
 static std::string afc;
@@ -72,20 +46,20 @@ static volatile int32_t current_channel = 0;
 critical_section_t criticalSection;
 
 InputPort busy(9);
-GpioPort conv(7);
-GpioPort dec(10);
-GpioPort resetPort(8);
-GpioPort ledPort(PICO_DEFAULT_LED_PIN);
+OutputPort conv(7);
+OutputPort dec(10);
+OutputPort resetPort(8);
+OutputPort ledPort(PICO_DEFAULT_LED_PIN);
 
-GpioPort io1_0(11);
-GpioPort io1_1(12);
+OutputPort io1_0(11);
+OutputPort io1_1(12);
 
-GpioPort io2_0(13);
-GpioPort io2_1(14);
-GpioPort io2_2(15);
+OutputPort io2_0(13);
+OutputPort io2_1(14);
+OutputPort io2_2(15);
 
-GpioPort io3_0(26);
-GpioPort io3_1(27);
+OutputPort io3_0(26);
+OutputPort io3_1(27);
 
 LinearDriver linearDriver;
 

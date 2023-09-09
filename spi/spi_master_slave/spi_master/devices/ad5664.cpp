@@ -1,6 +1,6 @@
 #include "ad5664.hpp"
-#include "Spi.hpp"
-#include "Decoder.hpp"
+#include "../Spi.hpp"
+#include "../utilities/io_ports.h"
 
 AD56X4Class AD56X4;
 
@@ -119,7 +119,7 @@ word AD56X4Class::makeChannelMask(boolean channel_D,
                    | (byte(channel_B) << 1) | byte(channel_A));
 }
 
-extern GpioPort dec;
+extern OutputPort dec;
 
 void AD56X4Class::writeMessage(int SS_pin, byte command,
                                byte address, word data)

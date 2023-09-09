@@ -1,10 +1,8 @@
-#include <cstdio>
-#include <pico/multicore.h>
-#include <bitset>
-#include "Spi.hpp"
 #include "Utilities.hpp"
+#include <cstdio>
+#include <bitset>
 #include "hardware/irq.h"
-#include "peripheral_functions.hpp"
+#include "utilities/peripheral_functions.hpp"
 #include "pico/critical_section.h"
 #include <pico/mutex.h>
 #include <mutex>
@@ -12,11 +10,12 @@
 #include <hardware/regs/clocks.h>
 #include <hardware/regs/m0plus.h>
 #include <ctime>
+#include "physical_devices/scanner.hpp"
+
 
 int main()
 {
     critical_section_init(&criticalSection);
-
 
 
     if (!critical_section_is_initialized(&criticalSection))
@@ -78,7 +77,7 @@ int main()
         if (SET_ONE_IO_VALUE)
         {
             SET_ONE_IO_VALUE = false;
-            static std::vector<GpioPort> io_ports;
+            static std::vector<OutputPort> io_ports;
             io_ports.push_back(io1_0);
             io_ports.push_back(io1_1);
             io_ports.push_back(io2_0);

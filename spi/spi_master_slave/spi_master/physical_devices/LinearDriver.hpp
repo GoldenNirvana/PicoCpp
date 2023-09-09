@@ -1,7 +1,7 @@
 #ifndef PICO_EXAMPLES_LINEARDRIVER_HPP
 #define PICO_EXAMPLES_LINEARDRIVER_HPP
 
-#include "Decoder.hpp"
+#include "../utilities/Decoder.hpp"
 
 class LinearDriver
 {
@@ -11,12 +11,12 @@ public:
   void activate(int command, int freq, int p, int n, bool dir);
 
 private:
-  GpioPort x_a;
-  GpioPort x_b;
-  GpioPort y_a;
-  GpioPort y_b;
-  GpioPort z_a;
-  GpioPort z_b;
+  OutputPort x_a;
+  OutputPort x_b;
+  OutputPort y_a;
+  OutputPort y_b;
+  OutputPort z_a;
+  OutputPort z_b;
 };
 
 

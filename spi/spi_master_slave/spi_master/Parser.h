@@ -60,17 +60,6 @@ class Parser {
       }
       return count;
     }
-    int parseBytes(std::byte* data) {
-      int count = 0;
-      char* offset = buf;
-      while (true) {
-        data[count++] = static_cast<std::byte>(std::atoi(offset));
-        offset = strchr(offset, div);
-        if (offset) offset++;
-        else break;
-      }
-      return count;
-    }
 
     char* buf = NULL;
     char** str = NULL;

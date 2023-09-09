@@ -2,8 +2,8 @@
 #include <iostream>
 #include "LinearDriver.hpp"
 
-LinearDriver::LinearDriver() : x_a(GpioPort(18)), x_b(GpioPort(19)), y_a(GpioPort(20)),
-                               y_b(GpioPort(21)), z_a(GpioPort(22)), z_b(GpioPort(28))
+LinearDriver::LinearDriver() : x_a(OutputPort(18)), x_b(OutputPort(19)), y_a(OutputPort(20)),
+                               y_b(OutputPort(21)), z_a(OutputPort(22)), z_b(OutputPort(28))
 {
     x_a.enable();
     x_b.enable();
@@ -17,8 +17,8 @@ LinearDriver::LinearDriver() : x_a(GpioPort(18)), x_b(GpioPort(19)), y_a(GpioPor
 void LinearDriver::activate(int command, int freq, int p, int n, bool dir)
 {
     std::cout << "From activate command = " <<  command << '\n';
-    GpioPort *ptrA = &x_a;
-    GpioPort *ptrB = &x_b;
+    OutputPort *ptrA = &x_a;
+    OutputPort *ptrB = &x_b;
     if (command == 100)
     {
         ptrA = &x_a;
