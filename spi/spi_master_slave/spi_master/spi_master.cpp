@@ -8,10 +8,16 @@
 #include "pico/critical_section.h"
 #include <pico/mutex.h>
 #include <mutex>
+#include <hardware/regs/timer.h>
+#include <hardware/regs/clocks.h>
+#include <hardware/regs/m0plus.h>
+#include <ctime>
 
 int main()
 {
     critical_section_init(&criticalSection);
+
+
 
     if (!critical_section_is_initialized(&criticalSection))
     {
@@ -143,6 +149,7 @@ int main()
         {
 //            set_clock_enable();
             AD7606_GET_VALUE = false;
+            AD7606_TRIG_GET_VALUE = true;
             critical_section_enter_blocking(&criticalSection);
             current_channel = vector[1];  // выводить значение CUURENT CHANNEL
             critical_section_exit(&criticalSection);
@@ -151,7 +158,7 @@ int main()
         }
 
 
-        /// MAIN IF
+        /// MAIN SPI IF
         decoder.activePort(vector[1]);
         Spi::setProperties(vector[2], vector[3], vector[4]);
         if (AD5664)
@@ -199,6 +206,7 @@ int main()
         if (AD7606_READ or AD7606_READ_FOREVER)
         {
             AD7606_READ = false;
+            AD7606_GET_ALL_VALUES = true;
 //            set_clock_enable();
             get_result_from_adc();
         }

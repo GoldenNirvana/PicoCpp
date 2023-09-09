@@ -60,6 +60,8 @@ bool STOP_MICRO_SCAN = false;
 bool SET_IO_VALUE = false;
 bool SET_ONE_IO_VALUE = false;
 bool LID = false;
+bool AD7606_TRIG_GET_VALUE = false;
+bool AD7606_GET_ALL_VALUES = false;
 
 bool AD7606_IS_SCANNING = false;
 volatile bool is_already_scanning = false;
@@ -107,16 +109,21 @@ void comReceiveISR(uint a, uint32_t b)
     {
         afc += std::to_string(current_freq) + ',' + std::to_string(spiBuf[current_channel]) + ',';
     }
-    else if (current_channel != -1) // cond other way
+    else if (AD7606_TRIG_GET_VALUE) // cond other way
     {
-
-        std::cout << spiBuf[current_channel] << '\n';
+        AD7606_TRIG_GET_VALUE = false;
         critical_section_enter_blocking(&criticalSection);
+        if (current_channel == -1)
+        {
+            std::cout << "ERROR\n";
+        }
+        std::cout << spiBuf[current_channel] << '\n';
         current_channel = -1;
         critical_section_exit(&criticalSection);
     }
-    else
+    else if (AD7606_GET_ALL_VALUES)
     {
+        AD7606_GET_ALL_VALUES = false;
         serialPrintBuffer(spiBuf, 8);
     }
 }
@@ -197,7 +204,8 @@ void launchOnCore1()
 void serialPrintBuffer(const uint16_t *const buf, int len)
 {
     uint32_t x = time_us_64();
-    std::cout << "[" << std::fixed << std::setfill('0') << std::setw(15) << std::right << x << "]     ";
+    uint64_t a = time_us_64();
+    std::cout << "[" << std::fixed << std::setfill('0') << std::setw(15) << std::right << x << "_u32 " << a << "_u64]     ";
     std::cout << std::resetiosflags(std::ios_base::right);
     std::cout << std::resetiosflags(std::ios_base::fixed);
     for (int i = 0; i < len; ++i)

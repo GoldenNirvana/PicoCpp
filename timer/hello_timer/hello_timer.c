@@ -29,6 +29,7 @@ int main() {
     // Call alarm_callback in 2 seconds
     add_alarm_in_ms(2000, alarm_callback, NULL, false);
 
+
     // Wait for alarm callback to set timer_fired
     while (!timer_fired) {
         tight_loop_contents();
