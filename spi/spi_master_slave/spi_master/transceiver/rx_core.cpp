@@ -10,7 +10,7 @@
 #include "../utilities/peripheral_functions.hpp"
 
 
-void comReceiveISR(uint a, uint32_t b)
+void RX_core::comReceiveISR(uint a, uint32_t b)
 {
   // set settings here mb
   spi_read16_blocking(spi_default, 0, spiBuf, 8);
@@ -37,7 +37,7 @@ void comReceiveISR(uint a, uint32_t b)
   }
 }
 
-void launchOnCore1()
+void RX_core::launchOnCore1()
 {
   while (true)
   {
@@ -109,7 +109,7 @@ void launchOnCore1()
   }
 }
 
-void serialPrintBuffer(const uint16_t *const buf, int len)
+void RX_core::serialPrintBuffer(const uint16_t *const buf, int len)
 {
   uint32_t x = time_us_64();
   uint64_t a = time_us_64();
@@ -124,7 +124,7 @@ void serialPrintBuffer(const uint16_t *const buf, int len)
   std::cout << "\n";
 }
 
-void serialPrintBuffer(const uint8_t *const buf, int len)
+void RX_core::serialPrintBuffer(const uint8_t *const buf, int len)
 {
   uint32_t x = time_us_64();
   std::cout << "[" << std::fixed << std::setfill('0') << std::setw(15) << std::right << x << "]     ";
@@ -137,7 +137,7 @@ void serialPrintBuffer(const uint8_t *const buf, int len)
   std::cout << "\n";
 }
 
-void parse(int32_t *vec)
+void RX_core::parse(int32_t *vec)
 {
   std::string s;
   getline(std::cin, s);

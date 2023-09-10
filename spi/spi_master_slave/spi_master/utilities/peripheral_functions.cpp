@@ -18,10 +18,13 @@ void setDefaultSettings()
 {
   /// BASIC SETTINGS
   gpio_pull_down(resetPort.getPort());
-  // fixme mb should add & before isr
-  gpio_set_irq_enabled_with_callback(busy.getPort(), GPIO_IRQ_EDGE_FALL, true, comReceiveISR);
 
-  multicore_launch_core1(launchOnCore1);
+  RX_core rxCore;
+
+  // fixme mb should add & before isr
+  gpio_set_irq_enabled_with_callback(busy.getPort(), GPIO_IRQ_EDGE_FALL, true, RX_core::comReceiveISR);
+
+  multicore_launch_core1(RX_core::launchOnCore1);
 
   dec.enable();
   conv.enable();
@@ -39,4 +42,10 @@ void activateError()
     ledPort.disable();
     sleep_ms(100);
   }
+}
+
+void _delay_us(double __us)
+{
+  uint32_t __count=(uint32_t)(__us/0.008)-3; // 8ns per cycle for 125MHz, from experimentation remove 3cycles for overhead
+  busy_wait_at_least_cycles(__count);
 }

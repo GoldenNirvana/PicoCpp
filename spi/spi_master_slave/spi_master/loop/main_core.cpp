@@ -10,6 +10,10 @@ void MainCore::loop()
 
   while (true)
   {
+
+    // FIXME check is it try or not
+    _delay_us(100);
+
     if (MOVE_TO)
     {
       MOVE_TO = false;
