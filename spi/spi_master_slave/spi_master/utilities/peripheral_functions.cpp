@@ -19,7 +19,8 @@ void setDefaultSettings()
   /// BASIC SETTINGS
   gpio_pull_down(resetPort.getPort());
 
-  RX_core rxCore;
+#warning should be undeleted
+//  RX_core rxCore;
 
   // fixme mb should add & before isr
   gpio_set_irq_enabled_with_callback(busy.getPort(), GPIO_IRQ_EDGE_FALL, true, RX_core::comReceiveISR);

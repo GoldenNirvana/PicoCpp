@@ -12,7 +12,7 @@ add_executable(spi_master spi_master.cpp transceiver/rx_utils/parser.hpp utiliti
         loop/main_core.cpp loop/main_core.hpp utilities/hardcoded_functions.hpp
         utilities/hardcoded_functions.cpp utilities/base_types/core_config.hpp
         utilities/base_types/core_config.hpp
-        )
+        devices/DAC8563.cpp devices/DAC8563.hpp)
 # Pull in basic dependencies
 target_link_libraries(spi_master pico_stdlib hardware_spi hardware_gpio pico_multicore pico_mem_ops hardware_pio hardware_dma)
 #target_link_libraries(spi_master pico_stdlib hardware_spi)
