@@ -3,7 +3,7 @@
 #include "../transceiver/rx_core.hpp"
 #include <pico/multicore.h>
 
-void set_freq(uint16_t freq)
+void set_freq(uint32_t freq)
 {
   current_freq = freq;
 

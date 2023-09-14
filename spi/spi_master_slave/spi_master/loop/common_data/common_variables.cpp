@@ -41,10 +41,10 @@ uint16_t current_freq = 0;
 volatile int32_t current_channel = 0;
 
 critical_section_t criticalSection;
-InputPort busy(9);
+InputPort busy(16); // FIXME TEMP!!!
 OutputPort conv(7);
 OutputPort dec(10);
-OutputPort resetPort(8);
+OutputPort resetPort(17); // FIXME TEMP
 OutputPort ledPort(PICO_DEFAULT_LED_PIN);
 OutputPort io1_0(11);
 OutputPort io1_1(12);

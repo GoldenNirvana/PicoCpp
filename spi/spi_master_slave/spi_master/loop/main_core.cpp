@@ -4,7 +4,6 @@
 #include "../utilities/peripheral_functions.hpp"
 #include "../utilities/hardcoded_functions.hpp"
 #include "common_data/common_variables.hpp"
-#include "../devices/DAC8563.hpp"
 
 void MainCore::loop()
 {
@@ -122,7 +121,7 @@ void MainCore::loop()
     {
 //            set_clock_enable();
       AD9833_SET_FREQ = false;
-      set_freq(vector[1]);
+      set_freq((uint32_t)vector[1]);
     }
     if (AD8400_SET_GAIN)
     {

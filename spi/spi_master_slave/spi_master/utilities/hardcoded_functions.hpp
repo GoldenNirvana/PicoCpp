@@ -5,7 +5,7 @@
 
 // WARNING HARDCODED FUNCTIONS
 
-void set_freq(uint16_t freq);
+void set_freq(uint32_t freq);
 
 void get_result_from_adc();
 
