@@ -1,56 +1,62 @@
+#include <cstring>
 #include "DAC8563.hpp"
 
 #include "DAC8563.hpp"
 #include "../utilities/base_types/Spi.hpp"
+#include "../loop/common_data/common_variables.hpp"
 
 DAC8563::DAC8563()
 {
-  _vref = 3.3383;
+  _vref = 5.0;
+  begin();
 }
 
 void DAC8563::begin()
 {
-  Spi::setProperties(8, 0, 1, SPI_MSB_FIRST);
+  Spi::setProperties(8, 0, 1);
   initialize();
 }
 
 
 void DAC8563::DAC_WR_REG(uint8_t cmd_byte, uint16_t data_byte)
 {
-  // check is it differtent ways to send
-  static uint8_t array[] = {cmd_byte, (uint8_t) (data_byte >> 8), (uint8_t) ((data_byte << 8) >> 8)};
-  Spi::write(array, 3);
+  uint8_t array[] = {cmd_byte, (uint8_t)(data_byte >> 8),(uint8_t)((data_byte << 8) >> 8)};
+  decoder.activePort(4);
+  spi_write_blocking(spi_default, array, 3);
+  decoder.activePort(7);
 }
 
 
 void DAC8563::outPutValue(uint8_t cmd_byte, uint16_t input)
 {
-  uint8_t inputMid = (input >> 8) & 0xFF;
-  uint8_t inputLast = input & 0xFF;
+  uint8_t inputMid = ((input << 8) >> 8);
+  uint8_t inputLast = (input >> 8);
   unsigned int t = (input >> 8) & 0xFF;
   writeValue(cmd_byte, (inputLast), (inputMid));
 }
 
-void DAC8563::writeVoltage(float input)
+void DAC8563::writeVoltage(int input)
 {
   writeA(input);
   writeB(input);
 }
 
-void DAC8563::writeA(float input)
+void DAC8563::writeA(int input)
 {
-  outPutValue(CMD_SETA_UPDATEA, Voltage_Convert(input / _vref * 5));
+  outPutValue(CMD_SETA_UPDATEA, input);
 }
 
-void DAC8563::writeB(float input)
+void DAC8563::writeB(int input)
 {
-  outPutValue(CMD_SETB_UPDATEB, Voltage_Convert(input / _vref * 5));
+  outPutValue(CMD_SETB_UPDATEB, input);
 }
 
 void DAC8563::writeValue(uint8_t cmd_byte, uint8_t mid, uint8_t last)
 {
-  static uint8_t array[] = {cmd_byte, mid, last};
-  Spi::write(array, 3);
+  uint8_t array[] = {cmd_byte, mid, last};
+  decoder.activePort(4); // ???
+  spi_write_blocking(spi_default, array, 3);
+  decoder.activePort(7); // ???
 }
 
 void DAC8563::initialize()

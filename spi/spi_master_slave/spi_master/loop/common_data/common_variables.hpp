@@ -6,11 +6,13 @@
 #include "../../utilities/base_types/Spi.hpp"
 #include "../../physical_devices/LinearDriver.hpp"
 #include "../../physical_devices/scanner.hpp"
+#include "../../devices/DAC8563.hpp"
 
 extern Spi spi;
 extern LinearDriver linearDriver;
 extern Decoder decoder;
 extern Scanner scanner;
+extern DAC8563 dac8563;
 
 extern std::string afc;
 extern uint16_t spiBuf[8];
@@ -37,6 +39,7 @@ extern bool SET_ONE_IO_VALUE;
 extern bool LID;
 extern bool AD7606_TRIG_GET_VALUE;
 extern bool AD7606_GET_ALL_VALUES;
+extern bool DAC8563_SET_VOLTAGE;
 
 extern bool AD7606_IS_SCANNING;
 extern volatile bool is_already_scanning;

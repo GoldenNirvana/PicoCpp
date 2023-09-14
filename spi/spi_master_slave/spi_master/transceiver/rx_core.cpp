@@ -65,6 +65,9 @@ void RX_core::launchOnCore1()
       case 21:
         AD5664 = true;
         break;
+      case 22:
+        DAC8563_SET_VOLTAGE = true;
+        break;
       case 24:
         AD7606_GET_VALUE = true;
         break;

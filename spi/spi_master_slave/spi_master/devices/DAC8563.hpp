@@ -3,8 +3,9 @@
 
 #include <cstdint>
 
-#define CMD_SETA_UPDATEA          0x18  //
-#define CMD_SETB_UPDATEB          0x19  //
+#define CMD_SETA_UPDATEA          0x18  // 00 | 011 | 000
+#define CMD_SETB_UPDATEB          0x19  // 00 010 011
+#define CMD_SET_ALL_UPDATE_ALL          0x17  // 0001 | 0111
 #define CMD_UPDATE_ALL_DACS       0x0F  //
 #define CMD_GAIN                  0x02  //
 #define DATA_GAIN_B2_A2           0x0000  //
@@ -30,10 +31,6 @@
 class DAC8563
 {
 private:
-  uint8_t _sck_pin;
-  uint8_t _mosi_pin;
-  uint8_t _miso_pin;
-  uint8_t _cs_pin;
   float   _vref;
 
 public:
@@ -44,9 +41,9 @@ public:
   void DAC_WR_REG(uint8_t cmd_byte, uint16_t data_byte );
   void outPutValue(uint8_t cmd_byte,uint16_t input);
   void writeValue( uint8_t cmd_byte, uint8_t mid, uint8_t last);
-  void writeVoltage(float input);
-  void writeA(float input);
-  void writeB(float input);
+  void writeVoltage(int input);
+  void writeA(int input);
+  void writeB(int input);
   uint16_t Voltage_Convert(float voltage);
 };
 

@@ -4,15 +4,13 @@
 #include "../utilities/peripheral_functions.hpp"
 #include "../utilities/hardcoded_functions.hpp"
 #include "common_data/common_variables.hpp"
+#include "../devices/DAC8563.hpp"
 
 void MainCore::loop()
 {
 
   while (true)
   {
-
-    // FIXME check is it try or not
-    _delay_us(100);
 
     if (MOVE_TO)
     {
@@ -147,6 +145,20 @@ void MainCore::loop()
     /// MAIN SPI IF
     decoder.activePort(vector[1]);
     Spi::setProperties(vector[2], vector[3], vector[4]);
+
+    if (DAC8563_SET_VOLTAGE)
+    {
+      DAC8563_SET_VOLTAGE = false;
+      if (vector[5] == 0)
+      {
+        dac8563.writeA(vector[6]);
+      }
+      else if (vector[5] == 1)
+      {
+        dac8563.writeB(vector[6]);
+      }
+    }
+
     if (AD5664)
     {
       AD5664 = false;
