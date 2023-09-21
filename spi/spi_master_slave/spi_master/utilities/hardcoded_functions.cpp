@@ -88,7 +88,7 @@ void stopAll()
   MICRO_SCAN = false;
   CONFIG_UPDATE = false;
   MOVE_TO = false;
-  STOP_MICRO_SCAN = false;
+  STOP_MICRO_SCAN = true;
   SET_IO_VALUE = false;
   SET_ONE_IO_VALUE = false;
   LID = false;
