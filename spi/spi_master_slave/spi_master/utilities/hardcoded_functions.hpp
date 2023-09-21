@@ -15,4 +15,6 @@ void set_clock_enable();
 
 void set_on_cap(uint8_t channel, uint16_t value);
 
+void stopAll();
+
 #endif

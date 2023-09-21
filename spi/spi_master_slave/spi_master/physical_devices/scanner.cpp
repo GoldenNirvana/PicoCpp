@@ -54,13 +54,12 @@ void Scanner::start_scan(const Point &point)
         std::cout << other_info[j] << ';';
       }
     }
-    if (STOP_MICRO_SCAN)                     // is need to stop
+    if (STOP_MICRO_SCAN || !MICRO_SCAN)                     // is need to stop
     {
       STOP_MICRO_SCAN = false;
       stop_scan();
       MICRO_SCAN = false;
-        activateGreen();
-      continue;
+      return;
     }
     for (int j = 0; j < conf_.betweenPoints_y; ++j) // go next line
     {
@@ -68,7 +67,6 @@ void Scanner::start_scan(const Point &point)
       sleep_us(conf_.delayF);
     }
   }
-  activateGreen();
 }
 
 void Scanner::start_scan()

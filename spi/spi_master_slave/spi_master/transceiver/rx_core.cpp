@@ -8,6 +8,7 @@
 #include "../utilities/base_types/Spi.hpp"
 #include "../loop/common_data/common_variables.hpp"
 #include "../utilities/peripheral_functions.hpp"
+#include "../utilities/hardcoded_functions.hpp"
 
 
 void RX_core::comReceiveISR(uint a, uint32_t b)
@@ -45,6 +46,7 @@ void RX_core::launchOnCore1()
 //        std::cout << "Mutex captured by core1 << '\n";
     /// PARSING
     parse(vector);
+//    uart_puts(uart1, "String for uart");
     switch (vector[0])
     {
       case 1:
@@ -101,6 +103,9 @@ void RX_core::launchOnCore1()
       case 61:
         SET_ONE_IO_VALUE = true;
         break;
+        case 70:
+            stopAll();
+            break;
       case 100 ... 110:
         LID = true;
         break;
