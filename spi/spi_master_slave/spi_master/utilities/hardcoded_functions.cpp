@@ -62,39 +62,44 @@ void set_clock_enable()
 void set_on_cap(uint8_t channel, uint16_t value)
 {
   decoder.activePort(3);
-  Spi::setProperties(8, 0, 1);
-  AD56X4Class::setChannel(AD56X4_SETMODE_INPUT, channel, value);
-  AD56X4Class::updateChannel(channel);
+  dac8563.setSpiProps();
+//  AD56X4Class::setChannel(AD56X4_SETMODE_INPUT, channel, value);
+//  AD56X4Class::updateChannel(channel);
+  channel--;
+  if (channel == 0)
+    dac8563.writeA(value);
+  if (channel == 1)
+    dac8563.writeB(value);
 }
 
 void stopAll()
 {
-    AD9833_SENDER = false;
-    AD8400_SENDER = false;
-    AD7606_ENABLE_DISABLE = false;
-    AD7606_RESET = false;
-    AD7606_READ = false;
-    AD7606_READ_FOREVER = false;
-    AD7606_STOP_SCAN = false;
-    AD9833_SET_FREQ = false;
-    AD8400_SET_GAIN = false;
-    AD7606_GET_VALUE = false;
-    AD5664 = false;
-    MICRO_SCAN = false;
-    CONFIG_UPDATE = false;
-    MOVE_TO = false;
-    STOP_MICRO_SCAN = false;
-    SET_IO_VALUE = false;
-    SET_ONE_IO_VALUE = false;
-    LID = false;
-    AD7606_TRIG_GET_VALUE = false;
-    AD7606_GET_ALL_VALUES = false;
-    DAC8563_SET_VOLTAGE = false;
+  AD9833_SENDER = false;
+  AD8400_SENDER = false;
+  AD7606_ENABLE_DISABLE = false;
+  AD7606_RESET = false;
+  AD7606_READ = false;
+  AD7606_READ_FOREVER = false;
+  AD7606_STOP_SCAN = false;
+  AD9833_SET_FREQ = false;
+  AD8400_SET_GAIN = false;
+  AD7606_GET_VALUE = false;
+  AD5664 = false;
+  MICRO_SCAN = false;
+  CONFIG_UPDATE = false;
+  MOVE_TO = false;
+  STOP_MICRO_SCAN = false;
+  SET_IO_VALUE = false;
+  SET_ONE_IO_VALUE = false;
+  LID = false;
+  AD7606_TRIG_GET_VALUE = false;
+  AD7606_GET_ALL_VALUES = false;
+  DAC8563_SET_VOLTAGE = false;
 
-    AD7606_IS_SCANNING = false;
-    is_already_scanning = false;
-    scan_index = 0;
-    current_freq = 0;
-    current_channel = 0;
-    afc.clear();
+  AD7606_IS_SCANNING = false;
+  is_already_scanning = false;
+  scan_index = 0;
+  current_freq = 0;
+  current_channel = 0;
+  afc.clear();
 }

@@ -54,9 +54,7 @@ void DAC8563::writeB(int input)
 void DAC8563::writeValue(uint8_t cmd_byte, uint8_t mid, uint8_t last)
 {
   uint8_t array[] = {cmd_byte, mid, last};
-  decoder.activePort(4); // ???
   spi_write_blocking(spi_default, array, 3);
-  decoder.activePort(7); // ???
 }
 
 void DAC8563::initialize()
@@ -82,4 +80,9 @@ uint16_t DAC8563::Voltage_Convert(float voltage)
   }
 
   return _D_;
+}
+
+void DAC8563::setSpiProps()
+{
+  Spi::setProperties(8, 0, 1);
 }

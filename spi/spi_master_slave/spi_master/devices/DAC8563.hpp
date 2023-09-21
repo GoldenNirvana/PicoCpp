@@ -44,6 +44,7 @@ public:
   void writeVoltage(int input);
   void writeA(int input);
   void writeB(int input);
+  void setSpiProps();
   uint16_t Voltage_Convert(float voltage);
 };
 
