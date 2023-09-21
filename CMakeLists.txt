@@ -29,6 +29,8 @@ add_compile_options(-Wall
         -Wno-maybe-uninitialized
         )
 
+set(CMAKE_CXX_FLAGS_RELEASE "-O3")
+
 # Hardware-specific examples in subdirectories:
 add_subdirectory(adc)
 add_subdirectory(clocks)

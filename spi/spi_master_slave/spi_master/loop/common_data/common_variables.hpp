@@ -53,6 +53,7 @@ extern OutputPort conv;
 extern OutputPort dec;
 extern OutputPort resetPort;
 extern OutputPort ledPort;
+extern OutputPort rdbLed;
 extern OutputPort io1_0;
 extern OutputPort io1_1;
 extern OutputPort io2_0;

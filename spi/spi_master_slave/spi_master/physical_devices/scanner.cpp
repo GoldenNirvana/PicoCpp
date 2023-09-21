@@ -2,6 +2,7 @@
 #include <iostream>
 #include "../loop/common_data/common_variables.hpp"
 #include "../utilities/hardcoded_functions.hpp"
+#include "../utilities/peripheral_functions.hpp"
 
 
 Scanner::Scanner() : pos_({0, 0}), conf_({})
@@ -58,6 +59,7 @@ void Scanner::start_scan(const Point &point)
       STOP_MICRO_SCAN = false;
       stop_scan();
       MICRO_SCAN = false;
+        activateGreen();
       continue;
     }
     for (int j = 0; j < conf_.betweenPoints_y; ++j) // go next line
@@ -66,6 +68,7 @@ void Scanner::start_scan(const Point &point)
       sleep_us(conf_.delayF);
     }
   }
+  activateGreen();
 }
 
 void Scanner::start_scan()

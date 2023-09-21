@@ -50,3 +50,69 @@ void _delay_us(double __us)
   uint32_t __count=(uint32_t)(__us/0.008)-3; // 8ns per cycle for 125MHz, from experimentation remove 3cycles for overhead
   busy_wait_at_least_cycles(__count);
 }
+
+void activateGreen() {
+
+    for (int i = 0; i < 8; ++i) {
+        rdbLed.enable();
+        busy_wait_at_least_cycles(85);
+        rdbLed.disable();
+        busy_wait_at_least_cycles(35);
+    }
+
+    for (int i = 0; i < 16; ++i) {
+        rdbLed.enable();
+        busy_wait_at_least_cycles(35);
+        rdbLed.disable();
+        busy_wait_at_least_cycles(85);
+    }
+}
+
+void activateRed() {
+    for (int i = 0; i < 8; ++i) {
+        rdbLed.enable();
+        busy_wait_at_least_cycles(35);
+        rdbLed.disable();
+        busy_wait_at_least_cycles(85);
+    }
+
+    for (int i = 0; i < 8; ++i) {
+        rdbLed.enable();
+        busy_wait_at_least_cycles(85);
+        rdbLed.disable();
+        busy_wait_at_least_cycles(35);
+    }
+
+    for (int i = 0; i < 8; ++i) {
+        rdbLed.enable();
+        busy_wait_at_least_cycles(35);
+        rdbLed.disable();
+        busy_wait_at_least_cycles(85);
+    }
+}
+
+void activateBlue() {
+
+    for (int i = 0; i < 16; ++i) {
+        rdbLed.enable();
+        busy_wait_at_least_cycles(35);
+        rdbLed.disable();
+        busy_wait_at_least_cycles(85);
+    }
+    for (int i = 0; i < 8; ++i) {
+        rdbLed.enable();
+        busy_wait_at_least_cycles(85);
+        rdbLed.disable();
+        busy_wait_at_least_cycles(35);
+    }
+}
+
+void activateDark()
+{
+    for (int i = 0; i < 24; ++i) {
+        rdbLed.enable();
+        busy_wait_at_least_cycles(35);
+        rdbLed.disable();
+        busy_wait_at_least_cycles(85);
+    }
+}

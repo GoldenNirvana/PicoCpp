@@ -13,5 +13,10 @@ void setDefaultSettings();
 
 void _delay_us(double __us);
 
+void activateGreen();
+void activateRed();
+void activateBlue();
+void activateDark();
+
 
 #endif
