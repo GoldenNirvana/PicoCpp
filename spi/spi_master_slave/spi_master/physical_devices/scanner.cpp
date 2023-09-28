@@ -15,6 +15,7 @@ Scanner::~Scanner()
 
 void Scanner::start_scan(const Point &point)
 {
+  red();
   prev_point = pos_;
   std::cout << conf_.delayB << ' ' << conf_.delayF << '\n';
   move_to(point, 10);
@@ -28,14 +29,14 @@ void Scanner::start_scan(const Point &point)
         sleep_us(conf_.delayF);
       }
       sleep_ms(50); // CONST 50ms
-      get_result_from_adc();
-      while (spiBuf[1] == 0)
+//      get_result_from_adc();
+//      while (spiBuf[1] == 0)
       {}            // TODO ADD others
-      vector_z.emplace_back(spiBuf[1]);  // get Z from adc
-      if (conf_.flag != 0)
-      {
-        other_info.emplace_back(spiBuf[conf_.flag]);
-      }
+//      vector_z.emplace_back(spiBuf[1]);  // get Z from adc
+//      if (conf_.flag != 0)
+//      {
+//        other_info.emplace_back(spiBuf[conf_.flag]);
+//      }
       for (auto &item: spiBuf)
       {
         item = 0;
@@ -56,9 +57,11 @@ void Scanner::start_scan(const Point &point)
     }
     if (STOP_MICRO_SCAN)                     // is need to stop
     {
+      blue();
       STOP_MICRO_SCAN = false;
       stop_scan();
       MICRO_SCAN = false;
+      green();
       return;
     }
     for (int j = 0; j < conf_.betweenPoints_y; ++j) // go next line
@@ -67,6 +70,11 @@ void Scanner::start_scan(const Point &point)
       sleep_us(conf_.delayF);
     }
   }
+  blue();
+  STOP_MICRO_SCAN = false;
+  stop_scan();
+  MICRO_SCAN = false;
+  green();
 }
 
 void Scanner::start_scan()
@@ -107,5 +115,5 @@ void Scanner::move_to(const Point &point, uint32_t delay)
     set_on_cap(2, --pos_.y);
     sleep_us(delay);
   }
-  std::cout << "END\n";
+  std::cout << "end\n";
 }

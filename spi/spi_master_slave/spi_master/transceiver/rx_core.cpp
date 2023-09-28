@@ -18,8 +18,7 @@ void RX_core::comReceiveISR(uint a, uint32_t b)
   if (is_already_scanning)
   {
     afc += std::to_string(current_freq) + ',' + std::to_string(spiBuf[current_channel]) + ',';
-  }
-  else if (AD7606_TRIG_GET_VALUE) // cond other way
+  } else if (AD7606_TRIG_GET_VALUE) // cond other way
   {
     AD7606_TRIG_GET_VALUE = false;
     critical_section_enter_blocking(&criticalSection);
@@ -30,8 +29,7 @@ void RX_core::comReceiveISR(uint a, uint32_t b)
     std::cout << spiBuf[current_channel] << '\n';
     current_channel = -1;
     critical_section_exit(&criticalSection);
-  }
-  else if (AD7606_GET_ALL_VALUES)
+  } else if (AD7606_GET_ALL_VALUES)
   {
     AD7606_GET_ALL_VALUES = false;
     serialPrintBuffer(spiBuf, 8);
@@ -70,6 +68,9 @@ void RX_core::launchOnCore1()
       case 22:
         DAC8563_SET_VOLTAGE = true;
         break;
+      case 23:
+        DAC8563_INIT = true;
+        break;
       case 24:
         AD7606_GET_VALUE = true;
         break;
@@ -103,10 +104,10 @@ void RX_core::launchOnCore1()
       case 61:
         SET_ONE_IO_VALUE = true;
         break;
-        case 70:
-            stopAll();
-            break;
-      case 100 ... 110:
+      case 70:
+        stopAll();
+        break;
+      case 90 ... 99:
         LID = true;
         break;
       default:

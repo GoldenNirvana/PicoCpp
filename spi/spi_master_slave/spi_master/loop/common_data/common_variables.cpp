@@ -33,6 +33,7 @@ bool LID = false;
 bool AD7606_TRIG_GET_VALUE = false;
 bool AD7606_GET_ALL_VALUES = false;
 bool DAC8563_SET_VOLTAGE = false;
+bool DAC8563_INIT = false;
 
 bool AD7606_IS_SCANNING = false;
 volatile bool is_already_scanning = false;

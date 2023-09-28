@@ -14,14 +14,13 @@ DAC8563::DAC8563()
 void DAC8563::begin()
 {
   Spi::setProperties(8, 0, 1);
-  initialize();
 }
 
 
 void DAC8563::DAC_WR_REG(uint8_t cmd_byte, uint16_t data_byte)
 {
   uint8_t array[] = {cmd_byte, (uint8_t)(data_byte >> 8),(uint8_t)((data_byte << 8) >> 8)};
-  decoder.activePort(4);
+  decoder.activePort(port_);
   spi_write_blocking(spi_default, array, 3);
   decoder.activePort(7);
 }
@@ -57,8 +56,9 @@ void DAC8563::writeValue(uint8_t cmd_byte, uint8_t mid, uint8_t last)
   spi_write_blocking(spi_default, array, 3);
 }
 
-void DAC8563::initialize()
+void DAC8563::initialize(int port)
 {
+  port_ = port;
   DAC_WR_REG(CMD_RESET_ALL_REG, DATA_RESET_ALL_REG);      // reset
   DAC_WR_REG(CMD_PWR_UP_A_B, DATA_PWR_UP_A_B);        // power up
   DAC_WR_REG(CMD_INTERNAL_REF_EN, DATA_INTERNAL_REF_EN);      // enable internal reference

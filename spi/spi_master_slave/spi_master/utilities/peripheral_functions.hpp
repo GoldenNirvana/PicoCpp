@@ -18,5 +18,10 @@ void activateRed();
 void activateBlue();
 void activateDark();
 
+void green();
+void blue();
+void red();
+void dark();
+
 
 #endif

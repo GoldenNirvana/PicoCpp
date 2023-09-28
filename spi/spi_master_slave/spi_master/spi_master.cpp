@@ -1,9 +1,6 @@
-#include <iostream>
 #include "loop/common_data/common_variables.hpp"
 #include "loop/main_core.hpp"
 #include "utilities/peripheral_functions.hpp"
-#include "hardware/uart.h"
-#include "hardware/dma.h"
 
 int start_app()
 {
@@ -12,45 +9,14 @@ int start_app()
   {
     activateError();
   }
-  int i = 0;
-  while (i++ < 3)
-  {
-    activateGreen();
-    sleep_ms(100);
-    activateBlue();
-    sleep_ms(100);
-    activateRed();
-    sleep_ms(100);
-    activateDark();
-    sleep_ms(100);
-  }
+  dark();
   setDefaultSettings();
   MainCore mainCore;
   mainCore.loop();
   return 0;
 }
 
-#define UART_TX_PIN 8
-#define UART_RX_PIN 9
-
-void testUart()
-{
-  // TODO ADD TO PROTOCOL AND SPI TOO
-
-  while (1)
-  {
-
-
-    std::cout << "str for all\n";
-    sleep_ms(1000);
-  }
-}
-
-
 int main()
 {
-  uart_init(uart1, 115200);
-  gpio_set_function(UART_TX_PIN, GPIO_FUNC_UART);
-  gpio_set_function(UART_RX_PIN, GPIO_FUNC_UART);
   return start_app();
 }

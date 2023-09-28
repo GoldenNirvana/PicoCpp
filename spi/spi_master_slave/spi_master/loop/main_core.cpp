@@ -7,7 +7,7 @@
 
 void MainCore::loop()
 {
-
+//  green();
   while (true)
   {
     if (MOVE_TO)
@@ -133,7 +133,11 @@ void MainCore::loop()
       get_result_from_adc();
       continue;
     }
-
+    if (DAC8563_INIT)
+    {
+      DAC8563_INIT = false;
+      dac8563.initialize(vector[1]);
+    }
 
     /// MAIN SPI IF
     decoder.activePort(vector[1]);

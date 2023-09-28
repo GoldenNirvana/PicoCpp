@@ -40,6 +40,7 @@ extern bool LID;
 extern bool AD7606_TRIG_GET_VALUE;
 extern bool AD7606_GET_ALL_VALUES;
 extern bool DAC8563_SET_VOLTAGE;
+extern bool DAC8563_INIT;
 
 extern bool AD7606_IS_SCANNING;
 extern volatile bool is_already_scanning;
