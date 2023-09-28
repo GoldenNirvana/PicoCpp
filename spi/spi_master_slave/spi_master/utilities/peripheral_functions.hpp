@@ -9,6 +9,9 @@ void resetAll();
 
 void setDefaultSettings();
 
+void moveLinearDriverUntilStop(int,int,int,int,int );
+
+
 [[noreturn]] void activateError();
 
 void _delay_us(double __us);

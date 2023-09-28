@@ -33,15 +33,21 @@ extern bool AD5664;
 extern bool MICRO_SCAN;
 extern bool CONFIG_UPDATE;
 extern bool MOVE_TO;
-extern bool STOP_MICRO_SCAN;
+extern bool STOP_ALL;
 extern bool SET_IO_VALUE;
 extern bool SET_ONE_IO_VALUE;
 extern bool LID;
+extern bool LID_UNTIL_STOP;
 extern bool AD7606_TRIG_GET_VALUE;
 extern bool AD7606_GET_ALL_VALUES;
 extern bool DAC8563_SET_VOLTAGE;
 extern bool DAC8563_INIT;
 
+extern bool Z_STATE;
+extern uint16_t ad7606Value;
+
+
+extern bool AD_7606_IS_READY_TO_READ;
 extern bool AD7606_IS_SCANNING;
 extern volatile bool is_already_scanning;
 extern uint16_t scan_index;

@@ -55,10 +55,10 @@ void Scanner::start_scan(const Point &point)
         std::cout << other_info[j] << ';';
       }
     }
-    if (STOP_MICRO_SCAN)                     // is need to stop
+    if (STOP_ALL)                     // is need to stop
     {
       blue();
-      STOP_MICRO_SCAN = false;
+      STOP_ALL = false;
       stop_scan();
       MICRO_SCAN = false;
       green();
@@ -71,7 +71,7 @@ void Scanner::start_scan(const Point &point)
     }
   }
   blue();
-  STOP_MICRO_SCAN = false;
+  STOP_ALL = false;
   stop_scan();
   MICRO_SCAN = false;
   green();

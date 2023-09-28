@@ -26,15 +26,21 @@ bool AD5664 = false;
 bool MICRO_SCAN = false;
 bool CONFIG_UPDATE = false;
 bool MOVE_TO = false;
-bool STOP_MICRO_SCAN = false;
+bool STOP_ALL = false;
 bool SET_IO_VALUE = false;
 bool SET_ONE_IO_VALUE = false;
 bool LID = false;
+bool LID_UNTIL_STOP = false;
 bool AD7606_TRIG_GET_VALUE = false;
 bool AD7606_GET_ALL_VALUES = false;
 bool DAC8563_SET_VOLTAGE = false;
 bool DAC8563_INIT = false;
 
+
+bool Z_STATE = false;
+uint16_t ad7606Value = 0;
+
+bool AD_7606_IS_READY_TO_READ = true;
 bool AD7606_IS_SCANNING = false;
 volatile bool is_already_scanning = false;
 uint16_t scan_index = 0;

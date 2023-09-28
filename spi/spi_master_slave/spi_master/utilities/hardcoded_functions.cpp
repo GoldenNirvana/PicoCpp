@@ -34,9 +34,7 @@ void set_freq(uint32_t freq)
 
 void get_result_from_adc()
 {
-  decoder.activePort(0);
-  Spi::setProperties(16, 1, 0);
-  conv.enable();
+  AD_7606_IS_READY_TO_READ = false;
   conv.disable();
   sleep_us(10);
   conv.enable();
@@ -88,14 +86,17 @@ void stopAll()
   MICRO_SCAN = false;
   CONFIG_UPDATE = false;
   MOVE_TO = false;
-  STOP_MICRO_SCAN = true;
+  STOP_ALL = true;
   SET_IO_VALUE = false;
   SET_ONE_IO_VALUE = false;
   LID = false;
   AD7606_TRIG_GET_VALUE = false;
   AD7606_GET_ALL_VALUES = false;
   DAC8563_SET_VOLTAGE = false;
+  DAC8563_INIT = false;
+  LID_UNTIL_STOP = false;
 
+  AD_7606_IS_READY_TO_READ = true;
   AD7606_IS_SCANNING = false;
   is_already_scanning = false;
   scan_index = 0;

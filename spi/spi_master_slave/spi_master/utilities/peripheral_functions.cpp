@@ -1,7 +1,9 @@
 #include "peripheral_functions.hpp"
 #include "../loop/common_data/common_variables.hpp"
 #include "../transceiver/rx_core.hpp"
+#include "hardcoded_functions.hpp"
 #include <pico/multicore.h>
+#include <iostream>
 
 #define UART_TX_PIN 8
 #define UART_RX_PIN 9
@@ -57,7 +59,8 @@ void activateError()
 
 void _delay_us(double __us)
 {
-  uint32_t __count=(uint32_t)(__us/0.008)-3; // 8ns per cycle for 125MHz, from experimentation remove 3cycles for overhead
+  uint32_t __count =
+    (uint32_t) (__us / 0.008) - 3; // 8ns per cycle for 125MHz, from experimentation remove 3cycles for overhead
   busy_wait_at_least_cycles(__count);
 }
 
@@ -127,23 +130,26 @@ void dark()
 }
 
 
-void activateGreen() {
+void activateGreen()
+{
 
+  rdbLed.disable();
+  sleep_us(60);
+  for (int i = 0; i < 8; ++i)
+  {
+    rdbLed.enable();
+    busy_wait_at_least_cycles(85);
     rdbLed.disable();
-   sleep_us(60);
-    for (int i = 0; i < 8; ++i) {
-        rdbLed.enable();
-        busy_wait_at_least_cycles(85);
-        rdbLed.disable();
-        busy_wait_at_least_cycles(35);
-    }
+    busy_wait_at_least_cycles(35);
+  }
 
-    for (int i = 0; i < 16; ++i) {
-        rdbLed.enable();
-        busy_wait_at_least_cycles(35);
-        rdbLed.disable();
-        busy_wait_at_least_cycles(85);
-    }
+  for (int i = 0; i < 16; ++i)
+  {
+    rdbLed.enable();
+    busy_wait_at_least_cycles(35);
+    rdbLed.disable();
+    busy_wait_at_least_cycles(85);
+  }
 }
 
 void activateRed()
@@ -175,31 +181,61 @@ void activateRed()
   }
 }
 
-void activateBlue() {
+void activateBlue()
+{
   rdbLed.disable();
   sleep_us(60);
-    for (int i = 0; i < 16; ++i) {
-        rdbLed.enable();
-        busy_wait_at_least_cycles(35);
-        rdbLed.disable();
-        busy_wait_at_least_cycles(85);
-    }
-    for (int i = 0; i < 8; ++i) {
-        rdbLed.enable();
-        busy_wait_at_least_cycles(85);
-        rdbLed.disable();
-        busy_wait_at_least_cycles(35);
-    }
+  for (int i = 0; i < 16; ++i)
+  {
+    rdbLed.enable();
+    busy_wait_at_least_cycles(35);
+    rdbLed.disable();
+    busy_wait_at_least_cycles(85);
+  }
+  for (int i = 0; i < 8; ++i)
+  {
+    rdbLed.enable();
+    busy_wait_at_least_cycles(85);
+    rdbLed.disable();
+    busy_wait_at_least_cycles(35);
+  }
 }
 
 void activateDark()
 {
   rdbLed.disable();
   sleep_us(60);
-    for (int i = 0; i < 24; ++i) {
-        rdbLed.enable();
-        busy_wait_at_least_cycles(35);
-        rdbLed.disable();
-        busy_wait_at_least_cycles(85);
+  for (int i = 0; i < 24; ++i)
+  {
+    rdbLed.enable();
+    busy_wait_at_least_cycles(35);
+    rdbLed.disable();
+    busy_wait_at_least_cycles(85);
+  }
+}
+
+void moveLinearDriverUntilStop(int lid_name, int f, int p, int n, int dir)
+{
+  if (lid_name == 90 || lid_name == 95)
+  {
+    while (LID_UNTIL_STOP)
+    {
+      linearDriver.activate(lid_name, f, p, n, dir);
     }
+  }
+  if (lid_name == 99)
+  {
+    while (LID_UNTIL_STOP)
+    {
+      Z_STATE = true;
+      get_result_from_adc();
+      while (Z_STATE)
+      {
+        sleep_us(1000);
+      }
+      std::cout << "Z = " << ad7606Value << '\n';
+      // check if z > <
+      linearDriver.activate(lid_name, f, p, n, dir);
+    }
+  }
 }

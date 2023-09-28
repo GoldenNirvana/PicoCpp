@@ -5,12 +5,12 @@
 LinearDriver::LinearDriver() : x_a(OutputPort(18)), x_b(OutputPort(19)), y_a(OutputPort(20)),
                                y_b(OutputPort(21)), z_a(OutputPort(22)), z_b(OutputPort(28))
 {
-  x_a.enable();
-  x_b.enable();
-  y_a.enable();
-  y_b.enable();
-  z_a.enable();
-  z_b.enable();
+  x_a.disable();
+  x_b.disable();
+  y_a.disable();
+  y_b.disable();
+  z_a.disable();
+  z_b.disable();
 }
 
 
@@ -50,8 +50,8 @@ void LinearDriver::activate(int command, int freq, int p, int n, bool dir)
     ptrB->enable();
     sleep_us(t_high);
   }
-  ptrA->enable();
-  ptrB->enable();
+  ptrA->disable();
+  ptrB->disable();
 
   if (dir)
   {

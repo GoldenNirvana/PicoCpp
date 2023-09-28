@@ -10,6 +10,10 @@ void MainCore::loop()
 //  green();
   while (true)
   {
+    if (LID_UNTIL_STOP)
+    {
+      moveLinearDriverUntilStop(vector[1], vector[2], vector[3], vector[4], vector[5]);
+    }
     if (MOVE_TO)
     {
       MOVE_TO = false;
@@ -129,7 +133,6 @@ void MainCore::loop()
       AD7606_TRIG_GET_VALUE = true;
       critical_section_enter_blocking(&criticalSection);
       current_channel = vector[1];  // выводить значение CUURENT CHANNEL
-      critical_section_exit(&criticalSection);
       get_result_from_adc();
       continue;
     }
@@ -201,7 +204,10 @@ void MainCore::loop()
       AD7606_READ = false;
       AD7606_GET_ALL_VALUES = true;
 //            set_clock_enable();
-      get_result_from_adc();
+      if (AD_7606_IS_READY_TO_READ)
+      {
+        get_result_from_adc();
+      }
     }
   }
 

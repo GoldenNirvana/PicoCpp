@@ -13,27 +13,39 @@
 
 void RX_core::comReceiveISR(uint a, uint32_t b)
 {
-  // set settings here mb
+  if (AD_7606_IS_READY_TO_READ)
+  {
+    return;
+  }
+  decoder.activePort(0);
+  Spi::setProperties(16, 1, 0);
   spi_read16_blocking(spi_default, 0, spiBuf, 8);
+  if (Z_STATE)
+  {
+    ad7606Value = spiBuf[0];
+    Z_STATE = false;
+    serialPrintBuffer(spiBuf, 8);
+    return;
+  }
   if (is_already_scanning)
   {
     afc += std::to_string(current_freq) + ',' + std::to_string(spiBuf[current_channel]) + ',';
-  } else if (AD7606_TRIG_GET_VALUE) // cond other way
+  } else if (AD7606_TRIG_GET_VALUE)
   {
     AD7606_TRIG_GET_VALUE = false;
-    critical_section_enter_blocking(&criticalSection);
     if (current_channel == -1)
     {
       std::cout << "ERROR\n";
+      return;
     }
     std::cout << spiBuf[current_channel] << '\n';
     current_channel = -1;
-    critical_section_exit(&criticalSection);
   } else if (AD7606_GET_ALL_VALUES)
   {
     AD7606_GET_ALL_VALUES = false;
     serialPrintBuffer(spiBuf, 8);
   }
+  AD_7606_IS_READY_TO_READ = true;
 }
 
 void RX_core::launchOnCore1()
@@ -93,7 +105,7 @@ void RX_core::launchOnCore1()
         MOVE_TO = true;
         break;
       case 52:
-        STOP_MICRO_SCAN = true;
+        STOP_ALL = true;
         break;
       case 55:
         CONFIG_UPDATE = true;
@@ -106,6 +118,9 @@ void RX_core::launchOnCore1()
         break;
       case 70:
         stopAll();
+        break;
+      case 80:
+        LID_UNTIL_STOP = true;
         break;
       case 90 ... 99:
         LID = true;
@@ -120,10 +135,8 @@ void RX_core::launchOnCore1()
 
 void RX_core::serialPrintBuffer(const uint16_t *const buf, int len)
 {
-  uint32_t x = time_us_64();
   uint64_t a = time_us_64();
-  std::cout << "[" << std::fixed << std::setfill('0') << std::setw(15) << std::right << x << "_u32 " << a
-            << "_u64]     ";
+  std::cout << "[" << std::fixed << std::setfill('0') << std::setw(15) << std::right << a << "_u64]     ";
   std::cout << std::resetiosflags(std::ios_base::right);
   std::cout << std::resetiosflags(std::ios_base::fixed);
   for (int i = 0; i < len; ++i)
