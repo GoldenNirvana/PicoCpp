@@ -100,6 +100,7 @@ void RX_core::launchOnCore1()
         break;
       case 50:
         MICRO_SCAN = true;
+        CONFIG_UPDATE = true;
         break;
       case 51:
         MOVE_TO = true;
@@ -108,7 +109,7 @@ void RX_core::launchOnCore1()
         STOP_ALL = true;
         break;
       case 53:
-        STOP_ALL = true;
+        MICRO_SCAN = true;
         break;
       case 55:
         CONFIG_UPDATE = true;

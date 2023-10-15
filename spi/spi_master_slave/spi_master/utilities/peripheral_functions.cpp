@@ -42,6 +42,15 @@ void setDefaultSettings()
   resetPort.disable();
   gpio_pull_down(resetPort.getPort());
   ledPort.enable();
+
+  // init io_ports, mb  delete
+  io_ports.push_back(io1_0);
+  io_ports.push_back(io1_1);
+  io_ports.push_back(io2_0);
+  io_ports.push_back(io2_1);
+  io_ports.push_back(io2_2);
+  io_ports.push_back(io3_0);
+  io_ports.push_back(io3_1);
 }
 
 void activateError()

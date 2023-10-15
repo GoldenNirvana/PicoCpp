@@ -68,5 +68,6 @@ extern OutputPort io2_1;
 extern OutputPort io2_2;
 extern OutputPort io3_0;
 extern OutputPort io3_1;
+extern std::vector<OutputPort> io_ports;
 
 #endif //PICO_EXAMPLES_COMMON_VARIABLES_HPP

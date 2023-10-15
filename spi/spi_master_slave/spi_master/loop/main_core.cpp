@@ -20,6 +20,7 @@ void MainCore::loop()
       scanner.move_to({static_cast<uint16_t>(vector[1]), static_cast<uint16_t>(vector[2])}, vector[3]);
       continue;
     }
+    // NEED TO MOVE IN POINT FIRST
     if (MICRO_SCAN || CONFIG_UPDATE)
     {
       if (CONFIG_UPDATE)
@@ -34,7 +35,7 @@ void MainCore::loop()
       }
       if (MICRO_SCAN)
       {
-        scanner.start_scan({static_cast<uint16_t>(vector[1]), static_cast<uint16_t>(vector[2])});
+        scanner.start_scan();
       }
     }
     if (SET_IO_VALUE)
@@ -60,15 +61,8 @@ void MainCore::loop()
     }
     if (SET_ONE_IO_VALUE)
     {
+      // #warning Logic replaced
       SET_ONE_IO_VALUE = false;
-      static std::vector<OutputPort> io_ports;
-      io_ports.push_back(io1_0);
-      io_ports.push_back(io1_1);
-      io_ports.push_back(io2_0);
-      io_ports.push_back(io2_1);
-      io_ports.push_back(io2_2);
-      io_ports.push_back(io3_0);
-      io_ports.push_back(io3_1);
       vector[2] == 1 ? io_ports[vector[1] - 1].enable() : io_ports[vector[1] - 1].disable();
     }
     if (LID)
@@ -110,7 +104,8 @@ void MainCore::loop()
           afc.clear();
           scan_index = current_freq = 0;
           current_channel = -1;
-          AD7606_IS_SCANNING = AD7606_STOP_SCAN = is_already_scanning = false;
+          is_already_scanning = false;
+          AD7606_IS_SCANNING = AD7606_STOP_SCAN = false;
         }
       }
       continue;

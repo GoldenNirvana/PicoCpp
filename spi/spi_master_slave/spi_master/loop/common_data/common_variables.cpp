@@ -61,3 +61,5 @@ OutputPort io2_1(14);
 OutputPort io2_2(15);
 OutputPort io3_0(26);
 OutputPort io3_1(27);
+
+std::vector<OutputPort> io_ports;

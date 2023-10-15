@@ -78,7 +78,7 @@ void stopAll()
   AD7606_RESET = false;
   AD7606_READ = false;
   AD7606_READ_FOREVER = false;
-  AD7606_STOP_SCAN = false;
+  AD7606_STOP_SCAN = true;
   AD9833_SET_FREQ = false;
   AD8400_SET_GAIN = false;
   AD7606_GET_VALUE = false;
