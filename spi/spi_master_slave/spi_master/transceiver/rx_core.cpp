@@ -107,6 +107,9 @@ void RX_core::launchOnCore1()
       case 52:
         STOP_ALL = true;
         break;
+      case 53:
+        STOP_ALL = true;
+        break;
       case 55:
         CONFIG_UPDATE = true;
         break;

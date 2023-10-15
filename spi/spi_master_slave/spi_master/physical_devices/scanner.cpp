@@ -29,17 +29,12 @@ void Scanner::start_scan(const Point &point)
         sleep_us(conf_.delayF);
       }
       sleep_ms(50); // CONST 50ms
-//      get_result_from_adc();
-//      while (spiBuf[1] == 0)
-      {}            // TODO ADD others
-//      vector_z.emplace_back(spiBuf[1]);  // get Z from adc
-//      if (conf_.flag != 0)
-//      {
-//        other_info.emplace_back(spiBuf[conf_.flag]);
-//      }
-      for (auto &item: spiBuf)
+      getValuesFromAdc();
+      getValuesFromAdc();
+      vector_z.emplace_back(spiBuf[0]);  // get Z from adc
+      if (conf_.flag != 0)
       {
-        item = 0;
+        other_info.emplace_back(spiBuf[conf_.flag]);
       }
     }
     for (int j = 0; j < conf_.betweenPoints_x * conf_.nPoints_x; ++j) // GET back
@@ -55,6 +50,9 @@ void Scanner::start_scan(const Point &point)
         std::cout << other_info[j] << ';';
       }
     }
+    vector_z.clear();
+    other_info.clear();
+    std::cout << "END_LINE\n";
     if (STOP_ALL)                     // is need to stop
     {
       blue();

@@ -104,3 +104,13 @@ void stopAll()
   current_channel = 0;
   afc.clear();
 }
+
+uint16_t *getValuesFromAdc()
+{
+  get_result_from_adc();
+  while (!AD_7606_IS_READY_TO_READ)
+  {
+    sleep_us(1000);
+  }
+  return spiBuf;
+}
