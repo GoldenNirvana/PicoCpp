@@ -4,6 +4,7 @@
 
 int start_app()
 {
+// mb need to delete crit_section
   critical_section_init(&criticalSection);
   if (!critical_section_is_initialized(&criticalSection))
   {

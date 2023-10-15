@@ -8,19 +8,22 @@
 void MainCore::loop()
 {
 //  green();
+  // remove true and add var
   while (true)
   {
+    // Enable LID while stop command is come to PICO
     if (LID_UNTIL_STOP)
     {
       moveLinearDriverUntilStop(vector[1], vector[2], vector[3], vector[4], vector[5]);
     }
+    // Move scanner to point (x, y)
     if (MOVE_TO)
     {
       MOVE_TO = false;
       scanner.move_to({static_cast<uint16_t>(vector[1]), static_cast<uint16_t>(vector[2])}, vector[3]);
       continue;
     }
-    // NEED TO MOVE IN POINT FIRST
+    // Enable scanner and update config on command 50
     if (MICRO_SCAN || CONFIG_UPDATE)
     {
       if (CONFIG_UPDATE)
@@ -38,6 +41,7 @@ void MainCore::loop()
         scanner.start_scan();
       }
     }
+#warning need to describe thiss block
     if (SET_IO_VALUE)
     {
       SET_IO_VALUE = false;
@@ -65,6 +69,7 @@ void MainCore::loop()
       SET_ONE_IO_VALUE = false;
       vector[2] == 1 ? io_ports[vector[1] - 1].enable() : io_ports[vector[1] - 1].disable();
     }
+    // Enable LID
     if (LID)
     {
       LID = false;
@@ -78,6 +83,7 @@ void MainCore::loop()
       std::cout << "LID_IS_READY\n";
       continue;
     }
+    // Start scan on ADC
     if (AD7606_IS_SCANNING)
     {
       static uint16_t inBuf[5]; // n, start_freq, step, channel, delay
@@ -110,6 +116,7 @@ void MainCore::loop()
       }
       continue;
     }
+    // SET FREQ ON
     if (AD9833_SET_FREQ)
     {
 //            set_clock_enable();

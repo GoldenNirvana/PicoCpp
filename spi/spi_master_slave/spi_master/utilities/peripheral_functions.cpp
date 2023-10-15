@@ -8,16 +8,6 @@
 #define UART_TX_PIN 8
 #define UART_RX_PIN 9
 
-void resetAll()
-{
-  AD9833_SENDER = false;
-  AD8400_SENDER = false;
-  AD7606_ENABLE_DISABLE = false;
-  AD7606_RESET = false;
-  AD7606_READ = false;
-  AD7606_READ_FOREVER = false;
-  AD7606_IS_SCANNING = false;
-}
 
 void setDefaultSettings()
 {
