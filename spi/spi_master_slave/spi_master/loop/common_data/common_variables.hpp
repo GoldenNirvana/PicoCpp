@@ -43,6 +43,8 @@ extern bool AD7606_TRIG_GET_VALUE;
 extern bool AD7606_GET_ALL_VALUES;
 extern bool DAC8563_SET_VOLTAGE;
 extern bool DAC8563_INIT;
+extern bool CONVERGENCE;
+extern bool CONVERGENCE_CONFIG_UPDATE;
 
 extern bool Z_STATE;
 extern uint16_t ad7606Value;

@@ -7,7 +7,7 @@
 
 void set_freq(uint32_t freq);
 
-uint16_t* getValuesFromAdc();
+uint16_t *getValuesFromAdc();
 
 void get_result_from_adc();
 
@@ -18,5 +18,7 @@ void set_clock_enable();
 void set_on_cap(uint8_t channel, uint16_t value);
 
 void stopAll();
+
+void approacphm(const uint32_t *data);
 
 #endif

@@ -123,6 +123,12 @@ void RX_core::launchOnCore1()
       case 70:
         stopAll();
         break;
+      case 75:
+        CONVERGENCE = true;
+        break;
+      case 76:
+        CONVERGENCE_CONFIG_UPDATE = true;
+        break;
       case 80:
         LID_UNTIL_STOP = true;
         break;

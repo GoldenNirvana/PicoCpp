@@ -1,6 +1,7 @@
 #include "main_core.hpp"
 #include <bitset>
 #include <iostream>
+#include <fstream>
 #include "../utilities/peripheral_functions.hpp"
 #include "../utilities/hardcoded_functions.hpp"
 #include "common_data/common_variables.hpp"
@@ -19,6 +20,21 @@ void MainCore::loop()
 //      uart_write_blocking(uart1, vector, 10);
 //    }
     // Enable LID while stop command is come to PICO
+    if (CONVERGENCE)
+    {
+      CONVERGENCE = false;
+      blue();
+      static uint32_t convergence_data[7];
+      convergence_data[0] = vector[1];
+      convergence_data[1] = vector[2];
+      convergence_data[2] = vector[3];
+      convergence_data[3] = vector[4];
+      convergence_data[4] = vector[5];
+      convergence_data[5] = vector[6];
+      convergence_data[6] = vector[7];
+      approacphm(convergence_data);
+      green();
+    }
     if (LID_UNTIL_STOP)
     {
       moveLinearDriverUntilStop(vector[1], vector[2], vector[3], vector[4], vector[5]);

@@ -2,6 +2,7 @@
 #include "../loop/common_data/common_variables.hpp"
 #include "../transceiver/rx_core.hpp"
 #include <pico/multicore.h>
+#include <iostream>
 
 void set_freq(uint32_t freq)
 {
@@ -13,7 +14,7 @@ void set_freq(uint32_t freq)
   int64_t n_low = n_reg & 0x3fff;
   int64_t n_hi = (n_reg >> 14) & 0x3fff;
 
-  static uint8_t buf[6];
+  uint8_t buf[6];
 
   buf[0] = (flag_freq | n_low) / (0x100);
   buf[1] = (flag_freq | n_low) % (0x100);
@@ -113,4 +114,125 @@ uint16_t *getValuesFromAdc()
     sleep_us(1000);
   }
   return spiBuf;
+}
+
+void approacphm(const uint32_t *const data)
+{
+  int M_A;
+  int M_BASE;
+  int M_smZ_ctrl;
+  int M_smZ_status;
+  int M_PID_out;
+  int M_I;
+  int M_sm_speed;
+  int M_GAIN;
+  const int steps = 50;
+  const int done = 60;
+  const int waitsteps = 40;
+  const int none = 30;
+  const int stop = 100;
+  const int MakeSTOP = 1;
+  const int stopdone = 5;
+
+  uint32_t SMZ_STEP, SIGNAL, Z;
+  uint32_t SET_POINT, GATE_Z_MAX, GATE_Z_MIN;
+  int32_t GAIN, NSTEPS, STMFLG, SPEED;
+  uint32_t INTDELAY, SCANNERDECAY;
+
+  uint32_t lstatus;
+  // SET VALUE FROM RX_CORE
+  SET_POINT = data[0];
+  GATE_Z_MAX = data[1];
+  GATE_Z_MIN = data[2];
+  NSTEPS = data[3];
+  INTDELAY = data[4];
+  GAIN = data[5];
+  SPEED = data[6];
+  SCANNERDECAY = data[7];
+  STMFLG = data[8];
+  dac8563.writeA(SET_POINT);
+  uint32_t buf_step = waitsteps;
+  std::vector<uint32_t> buf_params;
+  buf_params.reserve(7);
+  for (int i = 0; i < 7; ++i)
+    buf_params.push_back(data[i]);
+
+  auto ptr = getValuesFromAdc();
+  SIGNAL = ptr[0];
+  Z = ptr[1];
+
+  std::vector<uint32_t> buf_status;
+  buf_status.push_back(none);
+  buf_status.push_back(Z);
+  buf_status.push_back(SIGNAL);
+
+  uint32_t buf_stop = waitsteps;
+
+  while (true)
+  {
+    if (STOP_ALL)
+    {
+      buf_status[0] = stopdone;
+      buf_status[1] = Z;
+      buf_status[2] = SIGNAL;
+      io3_1.disable();
+      break;
+    }
+    if (CONVERGENCE_CONFIG_UPDATE)
+    {
+      SET_POINT = vector[1];
+      GATE_Z_MAX = vector[2];
+      GATE_Z_MIN = vector[3];
+      NSTEPS = vector[4];
+      INTDELAY = vector[5];
+      GAIN = vector[6];
+      SPEED = vector[7];
+    }
+
+    dac8563.writeA(SET_POINT);
+    set_gain(GAIN);
+
+    sleep_ms(INTDELAY);
+
+    // TODO ??? find bugs
+    if (NSTEPS >= 0)
+    {
+      Z = getValuesFromAdc()[0];
+      if (Z <= GATE_Z_MIN)
+      {
+        buf_status[0] = 2;
+        buf_status[1] = Z;
+        buf_status[2] = SIGNAL;
+        break;
+      }
+      if (Z <= GATE_Z_MAX)
+      {
+        int k = 0;
+        for (int i = 0; i < 10; ++i)
+        {
+          Z = getValuesFromAdc()[0];
+          if (Z <= GATE_Z_MAX)
+            k++;
+          sleep_ms(10);
+        }
+        if (k >= 3)
+        {
+          buf_status[0] = 3;
+          buf_status[1] = Z;
+          buf_status[2] = SIGNAL;
+        }
+        break;
+      }
+    }
+    if (NSTEPS < 0)
+    {
+      io3_1.disable();
+      sleep_ms(SCANNERDECAY);
+    }
+    linearDriver.activate(99, 500, 500, std::abs(NSTEPS), NSTEPS > 0);
+  }
+
+  std::cout << "code75," << buf_status[0] << ',' << buf_status[1] << ',' << buf_status[2] << ',';
+  sleep_ms(100);
+  std::cout << "end\n";
 }
