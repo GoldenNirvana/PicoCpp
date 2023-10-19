@@ -2,6 +2,8 @@
 #include "loop/main_core.hpp"
 #include "utilities/peripheral_functions.hpp"
 
+int DEBUG_LEVEL = 2;
+
 int start_app()
 {
 // mb need to delete crit_section

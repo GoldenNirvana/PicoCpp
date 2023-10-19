@@ -5,12 +5,19 @@
 #include "../utilities/hardcoded_functions.hpp"
 #include "common_data/common_variables.hpp"
 
+// TODO LOGGER FOR DEBUG_LEVEL
+
 void MainCore::loop()
 {
 //  green();
   // remove true and add var
-  while (true)
+  uint64_t time = 0;
+  while (time++ < UINT64_MAX - 1000)
   {
+//    if (DEBUG_LEVEL == 2)
+//    {
+//      uart_write_blocking(uart1, vector, 10);
+//    }
     // Enable LID while stop command is come to PICO
     if (LID_UNTIL_STOP)
     {

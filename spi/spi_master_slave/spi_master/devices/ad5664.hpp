@@ -37,10 +37,7 @@ class AD56X4Class
 
 public:
 
-  static void setChannel(t_byte
-                         setMode, t_byte
-                         channel,
-                         word value);
+  static void setChannel(t_byte setMode, t_byte channel, word value);
 
   static void setChannel(int SS_pin, t_byte
   setMode, word values[]);
