@@ -170,6 +170,7 @@ void approacphm(const uint32_t *const data)
 
   while (true)
   {
+    buf_status[0] = none;
     if (STOP_ALL)
     {
       buf_status[0] = stopdone;
@@ -197,10 +198,12 @@ void approacphm(const uint32_t *const data)
     // TODO ??? find bugs
     if (NSTEPS >= 0)
     {
-      Z = getValuesFromAdc()[0];
+      ptr = getValuesFromAdc();
+      Z = ptr[0];
+      SIGNAL = ptr[1];
       if (Z <= GATE_Z_MIN)
       {
-        buf_status[0] = 2;
+        buf_status[0] = 2; // touch
         buf_status[1] = Z;
         buf_status[2] = SIGNAL;
         break;
@@ -217,7 +220,7 @@ void approacphm(const uint32_t *const data)
         }
         if (k >= 3)
         {
-          buf_status[0] = 3;
+          buf_status[0] = 3; // ok
           buf_status[1] = Z;
           buf_status[2] = SIGNAL;
         }
@@ -229,10 +232,14 @@ void approacphm(const uint32_t *const data)
       io3_1.disable();
       sleep_ms(SCANNERDECAY);
     }
+
+    std::cout << "code75," << buf_status[0] << ',' << buf_status[1] << ',' << buf_status[2] << '\n';
+
+
     linearDriver.activate(99, 500, 500, std::abs(NSTEPS), NSTEPS > 0);
   }
 
-  std::cout << "code75," << buf_status[0] << ',' << buf_status[1] << ',' << buf_status[2] << ',';
+  std::cout << "code75," << buf_status[0] << ',' << buf_status[1] << ',' << buf_status[2] << '\n';
   sleep_ms(100);
   std::cout << "end\n";
 }
