@@ -1,12 +1,10 @@
 #include "main_core.hpp"
 #include <bitset>
 #include <iostream>
-#include <fstream>
 #include "../utilities/peripheral_functions.hpp"
 #include "../utilities/hardcoded_functions.hpp"
 #include "common_data/common_variables.hpp"
-
-// TODO LOGGER FOR DEBUG_LEVEL
+#include "../utilities/debug_logger.hpp"
 
 void MainCore::loop()
 {
@@ -15,10 +13,7 @@ void MainCore::loop()
   uint64_t time = 0;
   while (time++ < UINT64_MAX - 1000)
   {
-//    if (DEBUG_LEVEL == 2)
-//    {
-//      uart_write_blocking(uart1, vector, 10);
-//    }
+    log(vector, vectorSize);
     // Enable LID while stop command is come to PICO
     if (CONVERGENCE)
     {

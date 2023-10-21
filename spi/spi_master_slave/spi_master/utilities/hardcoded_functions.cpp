@@ -3,6 +3,7 @@
 #include "../transceiver/rx_core.hpp"
 #include <pico/multicore.h>
 #include <iostream>
+#include_next "../utilities/debug_logger.hpp"
 
 void set_freq(uint32_t freq)
 {
@@ -157,6 +158,7 @@ void approacphm(const uint32_t *const data)
   for (int i = 0; i < 7; ++i)
     buf_params.push_back(data[i]);
 
+  getValuesFromAdc();
   auto ptr = getValuesFromAdc();
   SIGNAL = ptr[0];
   Z = ptr[1];
@@ -191,13 +193,17 @@ void approacphm(const uint32_t *const data)
     }
 
     dac8563.writeA(SET_POINT);
-    set_gain(GAIN);
+//    set_gain(GAIN);
+    io2_0.disable();
+    io2_1.enable();
+    io2_2.enable();
 
     sleep_ms(INTDELAY);
 
     // TODO ??? find bugs
     if (NSTEPS >= 0)
     {
+      getValuesFromAdc();
       ptr = getValuesFromAdc();
       Z = ptr[0];
       SIGNAL = ptr[1];
@@ -206,6 +212,7 @@ void approacphm(const uint32_t *const data)
         buf_status[0] = 2; // touch
         buf_status[1] = Z;
         buf_status[2] = SIGNAL;
+        log("break_touch\n");
         break;
       }
       if (Z <= GATE_Z_MAX)
@@ -224,7 +231,6 @@ void approacphm(const uint32_t *const data)
           buf_status[1] = Z;
           buf_status[2] = SIGNAL;
         }
-        break;
       }
     }
     if (NSTEPS < 0)
@@ -235,8 +241,9 @@ void approacphm(const uint32_t *const data)
 
     std::cout << "code75," << buf_status[0] << ',' << buf_status[1] << ',' << buf_status[2] << '\n';
 
-
-    linearDriver.activate(99, 500, 500, std::abs(NSTEPS), NSTEPS > 0);
+    io3_1.enable();
+    linearDriver.activate(99, 5000, 750, std::abs(NSTEPS), NSTEPS > 0);
+    io3_1.disable();
   }
 
   std::cout << "code75," << buf_status[0] << ',' << buf_status[1] << ',' << buf_status[2] << '\n';
