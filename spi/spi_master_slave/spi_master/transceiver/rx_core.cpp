@@ -29,7 +29,7 @@ void RX_core::comReceiveISR(uint a, uint32_t b)
   }
   if (is_already_scanning)
   { //231025
-    if (flgNotVirtual) {afc += std::to_string(current_freq) + ',' + std::to_string(spiBuf[current_channel]) + ',';}
+    if (!flgVirtual) {afc += std::to_string(current_freq) + ',' + std::to_string(spiBuf[current_channel]) + ',';}
     else { 
           current_freq=1000;
           afc += std::to_string(current_freq) + ',' + std::to_string(current_freq) + ',';
@@ -51,7 +51,7 @@ void RX_core::comReceiveISR(uint a, uint32_t b)
   if (AD7606_GET_ALL_VALUES)
   {
     AD7606_GET_ALL_VALUES = false;
-    if (flgNotVirtual) {serialPrintBuffer(spiBuf, 8);}//edited 231025
+    if (!flgVirtual) {serialPrintBuffer(spiBuf, 8);}//edited 231025
     else { serialPrint2Buffer(spiBuf);} 
     AD_7606_IS_READY_TO_READ = true;
   }

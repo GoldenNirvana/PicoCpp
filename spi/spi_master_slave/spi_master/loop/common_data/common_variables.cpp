@@ -37,7 +37,7 @@ bool DAC8563_SET_VOLTAGE = false;
 bool DAC8563_INIT = false;
 bool CONVERGENCE = false;
 bool CONVERGENCE_CONFIG_UPDATE = false;
-bool flgNotVirtual=false;
+bool flgVirtual=false;
 
 
 bool Z_STATE = false;

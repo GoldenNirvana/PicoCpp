@@ -123,7 +123,7 @@ void MainCore::loop()
         {
           set_freq(inBuf[1]);
           sleep_ms(inBuf[4]);
-          if (flgNotVirtual==true) {get_result_from_adc();} //231025
+          if (!flgVirtual) {get_result_from_adc();} //231025
           else {
                current_freq=6000+10*scan_index;
                afc +=std::to_string(current_freq) + ',' + std::to_string(current_freq)+',';
@@ -236,7 +236,7 @@ void MainCore::loop()
 //            set_clock_enable();
       if (AD_7606_IS_READY_TO_READ)
       {
-       if (flgNotVirtual) { get_result_from_adc();} //231025 
+       if (!flgVirtual) { get_result_from_adc();} //231025 
        else
        {
         afc.clear();

@@ -45,7 +45,7 @@ extern bool DAC8563_SET_VOLTAGE;
 extern bool DAC8563_INIT;
 extern bool CONVERGENCE;
 extern bool CONVERGENCE_CONFIG_UPDATE;
-extern bool flgNotVirtual; // Virtual device for debuging
+extern bool flgVirtual; // Virtual device for debuging
 
 extern bool Z_STATE;
 extern uint16_t ad7606Value;

@@ -143,7 +143,7 @@ void approacphm(const uint32_t *const data)
   for (int i = 0; i < 7; ++i)
     buf_params.push_back(data[i]);
 
- if (flgNotVirtual) //231025
+ if (!flgVirtual) //231025
   {
     getValuesFromAdc();  
     auto ptr = getValuesFromAdc();
@@ -195,7 +195,7 @@ void approacphm(const uint32_t *const data)
     io2_2.enable();
 
     sleep_ms(INTDELAY);
-   if (flgNotVirtual) //231025
+   if (!flgVirtual) //231025
    {
      getValuesFromAdc(); 
      auto ptr = getValuesFromAdc();  // перенос 231025
@@ -223,7 +223,7 @@ void approacphm(const uint32_t *const data)
         int k = 0;
         for (int i = 0; i < 10; ++i)
         {
-          if (flgNotVirtual) {getValuesFromAdc()[0];}
+          if (!flgVirtual) {getValuesFromAdc()[0];}
           else               { Z = 32000;}    //231025}
           if (Z <= GATE_Z_MAX)    k++;
           if (k == 3)
@@ -251,7 +251,7 @@ void approacphm(const uint32_t *const data)
       io3_1.disable();
       sleep_ms(SCANNERDECAY);
     }
-    if (flgNotVirtual) 
+    if (!flgVirtual) 
     {
      io3_1.enable(); //231025
      linearDriver.activate(99, 5000, 750, std::abs(NSTEPS), NSTEPS > 0);

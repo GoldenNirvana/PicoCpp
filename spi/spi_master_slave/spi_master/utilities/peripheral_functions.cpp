@@ -232,7 +232,7 @@ void moveLinearDriverUntilStop(int lid_name, int f, int p, int n, int dir)
     while (LID_UNTIL_STOP)
     {
       Z_STATE = true;
-      if flgNotVirtual) //231025
+      if (!flgVirtual) //231025
       {
         get_result_from_adc();
        while (Z_STATE)
@@ -247,7 +247,7 @@ void moveLinearDriverUntilStop(int lid_name, int f, int p, int n, int dir)
         ad7606Value=20000;
       }
       afc.clear();//231025
-      afc="code"+std::to_string(lid_name)+','+to_string(ad7606Value)+"\n";
+      afc="code"+std::to_string(lid_name)+','+std::to_string(ad7606Value)+"\n";
       std::cout <<afc;
       afc.clear();
     }
