@@ -9,15 +9,12 @@
 #include "../loop/common_data/common_variables.hpp"
 #include "../utilities/peripheral_functions.hpp"
 #include "../utilities/hardcoded_functions.hpp"
-#include "../utilities/debug_logger.hpp"
 
 
-#warning DO NOT SLEEP IN THIS FUNC !!!
 void RX_core::comReceiveISR(uint a, uint32_t b)
 {
   if (AD_7606_IS_READY_TO_READ)
   {
-    log("ADC read recursion\n");
     return;
   }
   decoder.activePort(0);
@@ -30,7 +27,34 @@ void RX_core::comReceiveISR(uint a, uint32_t b)
     serialPrintBuffer(spiBuf, 8);
     return;
   }
-  AD_7606_IS_READY_TO_READ = true;
+  if (is_already_scanning)
+  { //231025
+    if (flgNotVirtual) {afc += std::to_string(current_freq) + ',' + std::to_string(spiBuf[current_channel]) + ',';}
+    else { 
+          current_freq=1000;
+          afc += std::to_string(current_freq) + ',' + std::to_string(current_freq) + ',';
+         }
+  }
+  else 
+  if (AD7606_TRIG_GET_VALUE)
+  {
+    AD7606_TRIG_GET_VALUE = false;
+    if (current_channel == -1)
+    {
+      std::cout << "error\n";
+      return;
+    }
+    std::cout << "code24,"<<spiBuf[current_channel] << '\n'; // add "code,"  codevalue, value //add 231025
+    current_channel = -1;
+  } 
+  else 
+  if (AD7606_GET_ALL_VALUES)
+  {
+    AD7606_GET_ALL_VALUES = false;
+    if (flgNotVirtual) {serialPrintBuffer(spiBuf, 8);}//edited 231025
+    else { serialPrint2Buffer(spiBuf);} 
+    AD_7606_IS_READY_TO_READ = true;
+  }
 }
 
 void RX_core::launchOnCore1()
@@ -41,7 +65,6 @@ void RX_core::launchOnCore1()
 //        std::cout << "Mutex captured by core1 << '\n";
     /// PARSING
     parse(vector);
-    log("command" + std::to_string(vector[0]) + '\n');
 //    uart_puts(uart1, "String for uart");
     switch (vector[0])
     {
@@ -69,7 +92,7 @@ void RX_core::launchOnCore1()
       case 23:
         DAC8563_INIT = true;
         break;
-      case 24:
+      case 24:// get signal value currentsignal or all signal
         AD7606_GET_VALUE = true;
         break;
       case 25:
@@ -140,6 +163,11 @@ void RX_core::serialPrintBuffer(const uint16_t *const buf, int len)
     std::cout << buf[i] << ' ';
   }
   std::cout << "\n";
+}
+void RX_core::serialPrint2Buffer(const uint16_t *const buf)
+{
+  uint64_t a = time_us_64();
+  std::cout << "code12,"<< std::to_string(buf[0]) << ','<<std::to_string( buf[1]) <<"\n";
 }
 
 void RX_core::serialPrintBuffer(const uint8_t *const buf, int len)

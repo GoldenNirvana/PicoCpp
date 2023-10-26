@@ -4,7 +4,6 @@
 #include "hardcoded_functions.hpp"
 #include <pico/multicore.h>
 #include <iostream>
-#include <bitset>
 
 #define UART_TX_PIN 8
 #define UART_RX_PIN 9
@@ -229,9 +228,7 @@ void moveLinearDriverUntilStop(int lid_name, int f, int p, int n, int dir)
     while (LID_UNTIL_STOP)
     {
       Z_STATE = true;
-      // TODO REMOVE RESULT TO new getter
       get_result_from_adc();
-
       while (Z_STATE)
       {
         sleep_us(1000);
@@ -240,27 +237,5 @@ void moveLinearDriverUntilStop(int lid_name, int f, int p, int n, int dir)
       // check if z > <
       linearDriver.activate(lid_name, f, p, n, dir);
     }
-  }
-}
-
-void set_io_value(int port, int value)
-{
-  SET_IO_VALUE = false;
-  if (port == 1)
-  {
-    std::string binary = std::bitset<2>(value).to_string();
-    binary[1] == '1' ? io1_0.enable() : io1_0.disable();
-    binary[0] == '1' ? io1_1.enable() : io1_1.disable();
-  } else if (port == 2)
-  {
-    std::string binary = std::bitset<3>(value).to_string();
-    binary[2] == '1' ? io2_0.enable() : io2_0.disable();
-    binary[1] == '1' ? io2_1.enable() : io2_1.disable();
-    binary[0] == '1' ? io2_2.enable() : io2_2.disable();
-  } else if (port == 3)
-  {
-    std::string binary = std::bitset<2>(value).to_string();
-    binary[1] == '1' ? io3_0.enable() : io3_0.disable();
-    binary[0] == '1' ? io3_1.enable() : io3_1.disable();
   }
 }

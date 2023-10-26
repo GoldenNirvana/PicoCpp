@@ -8,7 +8,6 @@
 void setDefaultSettings();
 
 void moveLinearDriverUntilStop(int,int,int,int,int );
-void set_io_value(int, int);
 
 
 [[noreturn]] void activateError();

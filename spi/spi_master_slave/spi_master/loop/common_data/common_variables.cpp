@@ -31,10 +31,13 @@ bool SET_IO_VALUE = false;
 bool SET_ONE_IO_VALUE = false;
 bool LID = false;
 bool LID_UNTIL_STOP = false;
+bool AD7606_TRIG_GET_VALUE = false;
+bool AD7606_GET_ALL_VALUES = false;
 bool DAC8563_SET_VOLTAGE = false;
 bool DAC8563_INIT = false;
 bool CONVERGENCE = false;
 bool CONVERGENCE_CONFIG_UPDATE = false;
+bool flgNotVirtual=false;
 
 
 bool Z_STATE = false;

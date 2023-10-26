@@ -8,15 +8,16 @@
 
 void MainCore::loop()
 {
-  green();
+//  green();
   // remove true and add var
   uint64_t time = 0;
   while (time++ < UINT64_MAX - 1000)
   {
-//    log(vector, vectorSize);
+    log(vector, vectorSize);
     // Enable LID while stop command is come to PICO
-    if (CONVERGENCE)
+    if (CONVERGENCE)   //approach
     {
+      CONVERGENCE = false;
       blue();
       static uint32_t convergence_data[7];
       convergence_data[0] = vector[1];
@@ -28,6 +29,8 @@ void MainCore::loop()
       convergence_data[6] = vector[7];
       approacphm(convergence_data);
       green();
+      sleep_ms(1000);
+      dark(); 
     }
     if (LID_UNTIL_STOP)
     {
@@ -44,7 +47,7 @@ void MainCore::loop()
     if (MICRO_SCAN || CONFIG_UPDATE)
     {
       if (CONFIG_UPDATE)
-      {
+      { 
         CONFIG_UPDATE = false;
         scanner.update({static_cast<uint32_t>(vector[1]), static_cast<uint32_t>(vector[2]),
                         static_cast<uint8_t>(vector[3]), static_cast<uint8_t>(vector[4]),
@@ -62,7 +65,23 @@ void MainCore::loop()
     if (SET_IO_VALUE)
     {
       SET_IO_VALUE = false;
-      set_io_value(vector[1], vector[2]);
+      if (vector[1] == 1)
+      {
+        std::string binary = std::bitset<2>(vector[2]).to_string();
+        binary[1] == '1' ? io1_0.enable() : io1_0.disable();
+        binary[0] == '1' ? io1_1.enable() : io1_1.disable();
+      } else if (vector[1] == 2)
+      {
+        std::string binary = std::bitset<3>(vector[2]).to_string();
+        binary[2] == '1' ? io2_0.enable() : io2_0.disable();
+        binary[1] == '1' ? io2_1.enable() : io2_1.disable();
+        binary[0] == '1' ? io2_2.enable() : io2_2.disable();
+      } else if (vector[1] == 3)
+      {
+        std::string binary = std::bitset<2>(vector[2]).to_string();
+        binary[1] == '1' ? io3_0.enable() : io3_0.disable();
+        binary[0] == '1' ? io3_1.enable() : io3_1.disable();
+      }
     }
     if (SET_ONE_IO_VALUE)
     {
@@ -71,26 +90,28 @@ void MainCore::loop()
       vector[2] == 1 ? io_ports[vector[1] - 1].enable() : io_ports[vector[1] - 1].disable();
     }
     // Enable LID
-    if (LID)
+    if (LID)       // piezo mover
     {
       LID = false;
       static uint16_t inBuf[5]; // f, p, n, d
       for (int j = 0; j < 5; ++j)
       {
         inBuf[j] = vector[j];
-        std::cout << inBuf[j] << ' ';
+        std::cout <<inBuf[j] << ' ';
       }
       linearDriver.activate(inBuf[0], inBuf[1], inBuf[2], inBuf[3], inBuf[4]);
-      std::cout << "LID_IS_READY\n";
+      std::cout << "debugLID_IS_READY\n";
       continue;
     }
     // Start scan on ADC
-    if (AD7606_IS_SCANNING)
+    if (AD7606_IS_SCANNING)       // АЧХ
     {
       static uint16_t inBuf[5]; // n, start_freq, step, channel, delay
       if (!is_already_scanning)
       {
         is_already_scanning = true;
+        //afc="code25"; 
+        afc="code25,"; //231025
         for (int j = 0; j < 5; ++j)
         {
           inBuf[j] = vector[1 + j];
@@ -102,10 +123,16 @@ void MainCore::loop()
         {
           set_freq(inBuf[1]);
           sleep_ms(inBuf[4]);
-          afc += std::to_string(inBuf[1]) + ',' + std::to_string(getValuesFromAdc()[current_channel]) + ',';
+          if (flgNotVirtual==true) {get_result_from_adc();} //231025
+          else {
+               current_freq=6000+10*scan_index;
+               afc +=std::to_string(current_freq) + ',' + std::to_string(current_freq)+',';
+               //afc +=','+std::to_string(current_freq) + ',' + std::to_string(current_freq);
+              }
           sleep_ms(10);
           inBuf[1] += inBuf[2];
-        } else
+        }
+        else
         {
           std::cout << afc << '\n';
           afc.clear();
@@ -120,6 +147,7 @@ void MainCore::loop()
     // SET FREQ ON
     if (AD9833_SET_FREQ)
     {
+//            set_clock_enable();
       AD9833_SET_FREQ = false;
       set_freq((uint32_t) vector[1]);
     }
@@ -130,8 +158,12 @@ void MainCore::loop()
     }
     if (AD7606_GET_VALUE)
     {
+//    set_clock_enable();
       AD7606_GET_VALUE = false;
-      std::cout << getValuesFromAdc()[vector[1]] << '\n';
+      AD7606_TRIG_GET_VALUE = true;
+      critical_section_enter_blocking(&criticalSection);
+      current_channel = vector[1];  // выводить значение CURRENT CHANNEL
+      get_result_from_adc();
       continue;
     }
     if (DAC8563_INIT)
@@ -199,19 +231,23 @@ void MainCore::loop()
     }
     if (AD7606_READ or AD7606_READ_FOREVER)
     {
-      log("ReadADC\n");
       AD7606_READ = false;
+      AD7606_GET_ALL_VALUES = true;
+//            set_clock_enable();
       if (AD_7606_IS_READY_TO_READ)
       {
-        auto ptr = getValuesFromAdc();
-        for (int i = 0; i < 8; ++i)
-        {
-          std::cout << ptr[i] << ' ';
-        }
-        std::cout << '\n';
+       if (flgNotVirtual) { get_result_from_adc();} //231025 
+       else
+       {
+        afc.clear();
+        afc="code12,"+ std::to_string(32000)+','+std::to_string(32000)+"\n";   
+        std::cout << afc;
+        afc.clear();
+       }
       }
     }
   }
+
 }
 
 MainCore::MainCore()
