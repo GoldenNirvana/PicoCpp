@@ -136,7 +136,6 @@ int main() {
 
     flash_sector_erase(spi_default, PICO_DEFAULT_SPI_CSN_PIN, target_addr);
     flash_read(spi_default, PICO_DEFAULT_SPI_CSN_PIN, target_addr, page_buf, FLASH_PAGE_SIZE);
-
     printf("After erase:\n");
     printbuf(page_buf);
 

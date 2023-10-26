@@ -9,12 +9,15 @@
 #include "../loop/common_data/common_variables.hpp"
 #include "../utilities/peripheral_functions.hpp"
 #include "../utilities/hardcoded_functions.hpp"
+#include "../utilities/debug_logger.hpp"
 
 
+#warning DO NOT SLEEP IN THIS FUNC !!!
 void RX_core::comReceiveISR(uint a, uint32_t b)
 {
   if (AD_7606_IS_READY_TO_READ)
   {
+    log("ADC read recursion\n");
     return;
   }
   decoder.activePort(0);
@@ -27,24 +30,6 @@ void RX_core::comReceiveISR(uint a, uint32_t b)
     serialPrintBuffer(spiBuf, 8);
     return;
   }
-  if (is_already_scanning)
-  {
-    afc += std::to_string(current_freq) + ',' + std::to_string(spiBuf[current_channel]) + ',';
-  } else if (AD7606_TRIG_GET_VALUE)
-  {
-    AD7606_TRIG_GET_VALUE = false;
-    if (current_channel == -1)
-    {
-      std::cout << "ERROR\n";
-      return;
-    }
-    std::cout << spiBuf[current_channel] << '\n';
-    current_channel = -1;
-  } else if (AD7606_GET_ALL_VALUES)
-  {
-    AD7606_GET_ALL_VALUES = false;
-    serialPrintBuffer(spiBuf, 8);
-  }
   AD_7606_IS_READY_TO_READ = true;
 }
 
@@ -56,6 +41,7 @@ void RX_core::launchOnCore1()
 //        std::cout << "Mutex captured by core1 << '\n";
     /// PARSING
     parse(vector);
+    log("command" + std::to_string(vector[0]) + '\n');
 //    uart_puts(uart1, "String for uart");
     switch (vector[0])
     {

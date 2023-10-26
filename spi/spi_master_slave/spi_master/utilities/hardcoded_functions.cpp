@@ -3,7 +3,8 @@
 #include "../transceiver/rx_core.hpp"
 #include <pico/multicore.h>
 #include <iostream>
-#include_next "../utilities/debug_logger.hpp"
+#include "../utilities/debug_logger.hpp"
+#include "peripheral_functions.hpp"
 
 void set_freq(uint32_t freq)
 {
@@ -86,24 +87,21 @@ void stopAll()
   AD7606_GET_VALUE = false;
   AD5664 = false;
   MICRO_SCAN = false;
+  CONVERGENCE = false;
   CONFIG_UPDATE = false;
   MOVE_TO = false;
   STOP_ALL = true;
   SET_IO_VALUE = false;
   SET_ONE_IO_VALUE = false;
   LID = false;
-  AD7606_TRIG_GET_VALUE = false;
-  AD7606_GET_ALL_VALUES = false;
   DAC8563_SET_VOLTAGE = false;
   DAC8563_INIT = false;
   LID_UNTIL_STOP = false;
-
   AD_7606_IS_READY_TO_READ = true;
   AD7606_IS_SCANNING = false;
   is_already_scanning = false;
   scan_index = 0;
   current_freq = 0;
-  current_channel = 0;
   afc.clear();
 }
 
@@ -112,7 +110,7 @@ uint16_t *getValuesFromAdc()
   get_result_from_adc();
   while (!AD_7606_IS_READY_TO_READ)
   {
-    sleep_us(1000);
+    sleep_us(100);
   }
   return spiBuf;
 }
@@ -173,7 +171,7 @@ void approacphm(const uint32_t *const data)
   while (true)
   {
     buf_status[0] = none;
-    if (STOP_ALL)
+    if (!CONVERGENCE)
     {
       buf_status[0] = stopdone;
       buf_status[1] = Z;
@@ -193,13 +191,9 @@ void approacphm(const uint32_t *const data)
     }
 
     dac8563.writeA(SET_POINT);
-//    set_gain(GAIN);
-    io2_0.disable();
-    io2_1.enable();
-    io2_2.enable();
+    set_io_value(2, GAIN);
 
     sleep_ms(INTDELAY);
-
     // TODO ??? find bugs
     if (NSTEPS >= 0)
     {

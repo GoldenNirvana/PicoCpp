@@ -8,16 +8,15 @@
 
 void MainCore::loop()
 {
-//  green();
+  green();
   // remove true and add var
   uint64_t time = 0;
   while (time++ < UINT64_MAX - 1000)
   {
-    log(vector, vectorSize);
+//    log(vector, vectorSize);
     // Enable LID while stop command is come to PICO
     if (CONVERGENCE)
     {
-      CONVERGENCE = false;
       blue();
       static uint32_t convergence_data[7];
       convergence_data[0] = vector[1];
@@ -63,23 +62,7 @@ void MainCore::loop()
     if (SET_IO_VALUE)
     {
       SET_IO_VALUE = false;
-      if (vector[1] == 1)
-      {
-        std::string binary = std::bitset<2>(vector[2]).to_string();
-        binary[1] == '1' ? io1_0.enable() : io1_0.disable();
-        binary[0] == '1' ? io1_1.enable() : io1_1.disable();
-      } else if (vector[1] == 2)
-      {
-        std::string binary = std::bitset<3>(vector[2]).to_string();
-        binary[2] == '1' ? io2_0.enable() : io2_0.disable();
-        binary[1] == '1' ? io2_1.enable() : io2_1.disable();
-        binary[0] == '1' ? io2_2.enable() : io2_2.disable();
-      } else if (vector[1] == 3)
-      {
-        std::string binary = std::bitset<2>(vector[2]).to_string();
-        binary[1] == '1' ? io3_0.enable() : io3_0.disable();
-        binary[0] == '1' ? io3_1.enable() : io3_1.disable();
-      }
+      set_io_value(vector[1], vector[2]);
     }
     if (SET_ONE_IO_VALUE)
     {
@@ -119,7 +102,7 @@ void MainCore::loop()
         {
           set_freq(inBuf[1]);
           sleep_ms(inBuf[4]);
-          get_result_from_adc();
+          afc += std::to_string(inBuf[1]) + ',' + std::to_string(getValuesFromAdc()[current_channel]) + ',';
           sleep_ms(10);
           inBuf[1] += inBuf[2];
         } else
@@ -137,7 +120,6 @@ void MainCore::loop()
     // SET FREQ ON
     if (AD9833_SET_FREQ)
     {
-//            set_clock_enable();
       AD9833_SET_FREQ = false;
       set_freq((uint32_t) vector[1]);
     }
@@ -148,12 +130,8 @@ void MainCore::loop()
     }
     if (AD7606_GET_VALUE)
     {
-//            set_clock_enable();
       AD7606_GET_VALUE = false;
-      AD7606_TRIG_GET_VALUE = true;
-      critical_section_enter_blocking(&criticalSection);
-      current_channel = vector[1];  // выводить значение CUURENT CHANNEL
-      get_result_from_adc();
+      std::cout << getValuesFromAdc()[vector[1]] << '\n';
       continue;
     }
     if (DAC8563_INIT)
@@ -221,16 +199,19 @@ void MainCore::loop()
     }
     if (AD7606_READ or AD7606_READ_FOREVER)
     {
+      log("ReadADC\n");
       AD7606_READ = false;
-      AD7606_GET_ALL_VALUES = true;
-//            set_clock_enable();
       if (AD_7606_IS_READY_TO_READ)
       {
-        get_result_from_adc();
+        auto ptr = getValuesFromAdc();
+        for (int i = 0; i < 8; ++i)
+        {
+          std::cout << ptr[i] << ' ';
+        }
+        std::cout << '\n';
       }
     }
   }
-
 }
 
 MainCore::MainCore()
