@@ -221,6 +221,10 @@ void moveLinearDriverUntilStop(int lid_name, int f, int p, int n, int dir)
     while (LID_UNTIL_STOP)
     {
       linearDriver.activate(lid_name, f, p, n, dir);
+      afc.clear(); //231025
+      afc="code"+std::to_string(lid_name)+"\n";
+      std::cout <<afc;
+      afc.clear();
     }
   }
   if (lid_name == 99)
@@ -233,9 +237,12 @@ void moveLinearDriverUntilStop(int lid_name, int f, int p, int n, int dir)
       {
         sleep_us(1000);
       }
-      std::cout << "Z = " << ad7606Value << '\n';
-      // check if z > <
+           // check if z > <
       linearDriver.activate(lid_name, f, p, n, dir);
+      afc.clear();//231025
+      afc="code"+std::to_string(lid_name)+"\n";
+      std::cout <<afc;
+      afc.clear();
     }
   }
 }
