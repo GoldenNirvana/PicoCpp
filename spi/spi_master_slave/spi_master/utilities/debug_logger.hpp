@@ -21,10 +21,12 @@ void log(T msg, int size, uint level_debug = 2)
 
 inline void log(std::string msg, uint level_debug = 2)
 {
+  critical_section_enter_blocking(&criticalSection);
   if (level_debug <= DEBUG_LEVEL)
   {
     uart_puts(uart1, msg.data());
   }
+  critical_section_exit(&criticalSection);
 }
 
 

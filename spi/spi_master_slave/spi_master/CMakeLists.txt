@@ -23,6 +23,7 @@ pico_enable_stdio_uart(spi_master 0)
 
 # create map/bin/hex file etc.
 pico_add_extra_outputs(spi_master)
+pico_add_uf2_output(spi_master)
 
 # add url via pico_set_program_url
 example_auto_set_url(spi_master)

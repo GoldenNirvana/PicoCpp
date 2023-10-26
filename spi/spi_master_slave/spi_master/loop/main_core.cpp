@@ -13,6 +13,10 @@ void MainCore::loop()
   uint64_t time = 0;
   while (time++ < UINT64_MAX - 1000)
   {
+    if (time % 1000000 == 0)
+    {
+      log("Main_cycle\n");
+    }
 //    log(vector, vectorSize);
     // Enable LID while stop command is come to PICO
     if (CONVERGENCE)
