@@ -133,10 +133,10 @@ void approacphm(const uint32_t *const data)
   const int MakeSTOP = 1;
   const int stopdone = 5;
 
-  uint32_t SMZ_STEP, SIGNAL, Z;
-  uint32_t SET_POINT, GATE_Z_MAX, GATE_Z_MIN;
+  int16_t SMZ_STEP, SIGNAL, Z;
+  int32_t SET_POINT, GATE_Z_MAX, GATE_Z_MIN;
   int32_t GAIN, NSTEPS, STMFLG, SPEED;
-  uint32_t INTDELAY, SCANNERDECAY;
+  int32_t INTDELAY, SCANNERDECAY;
 
   uint32_t lstatus;
   // SET VALUE FROM RX_CORE
@@ -157,11 +157,11 @@ void approacphm(const uint32_t *const data)
     buf_params.push_back(data[i]);
 
   getValuesFromAdc();
-  auto ptr = getValuesFromAdc();
-  SIGNAL = ptr[0];
-  Z = ptr[1];
+  uint16_t *ptr = getValuesFromAdc();
+  SIGNAL = (int16_t) ptr[0];
+  Z = (int16_t) ptr[1];
 
-  std::vector<uint32_t> buf_status;
+  std::vector<int32_t> buf_status;
   buf_status.push_back(none);
   buf_status.push_back(Z);
   buf_status.push_back(SIGNAL);
@@ -199,22 +199,33 @@ void approacphm(const uint32_t *const data)
     {
       getValuesFromAdc();
       ptr = getValuesFromAdc();
-      Z = ptr[0];
-      SIGNAL = ptr[1];
+//      log(ptr, 2);
+      Z = (int16_t) ptr[0];
+      SIGNAL = (int16_t) ptr[1];
+      log("Z = " + std::to_string(Z) + '\n');
+//      Z = ptr[0];
+//      SIGNAL = ptr[1];
+      buf_status[1] = Z;
+      buf_status[2] = SIGNAL;
       if (Z <= GATE_Z_MIN)
       {
         buf_status[0] = 2; // touch
         buf_status[1] = Z;
         buf_status[2] = SIGNAL;
         log("break_touch\n");
+        CONVERGENCE = false;
         break;
       }
       if (Z <= GATE_Z_MAX)
       {
+        log("stop\n");
         int k = 0;
         for (int i = 0; i < 10; ++i)
         {
-          Z = getValuesFromAdc()[0];
+          log("cycle\n");
+          getValuesFromAdc();
+          auto pt = getValuesFromAdc();
+          Z = (int16_t) pt[0];
           if (Z <= GATE_Z_MAX)
             k++;
           sleep_ms(10);
@@ -224,6 +235,9 @@ void approacphm(const uint32_t *const data)
           buf_status[0] = 3; // ok
           buf_status[1] = Z;
           buf_status[2] = SIGNAL;
+          log("success\n");
+          CONVERGENCE = false;
+          break;
         }
       }
     }
@@ -234,7 +248,6 @@ void approacphm(const uint32_t *const data)
     }
 
     std::cout << "code75," << buf_status[0] << ',' << buf_status[1] << ',' << buf_status[2] << '\n';
-
     io3_1.enable();
     linearDriver.activate(99, 5000, 750, std::abs(NSTEPS), NSTEPS > 0);
     io3_1.disable();

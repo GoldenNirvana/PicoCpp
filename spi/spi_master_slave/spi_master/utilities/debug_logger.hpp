@@ -13,7 +13,7 @@ void log(T msg, int size, uint level_debug = 2)
     std::string out;
     for (int i = 0; i < size; ++i)
     {
-      out += std::to_string(msg[i]);
+      out += std::to_string(msg[i]) + " ";
     }
     uart_puts(uart1, out.data());
   }
