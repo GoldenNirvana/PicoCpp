@@ -9,15 +9,12 @@
 #include "../loop/common_data/common_variables.hpp"
 #include "../utilities/peripheral_functions.hpp"
 #include "../utilities/hardcoded_functions.hpp"
-#include "../utilities/debug_logger.hpp"
 
 
-#warning DO NOT SLEEP IN THIS FUNC !!!
 void RX_core::comReceiveISR(uint a, uint32_t b)
 {
   if (AD_7606_IS_READY_TO_READ)
   {
-    log("ADC read recursion\n");
     return;
   }
   decoder.activePort(0);
@@ -25,14 +22,11 @@ void RX_core::comReceiveISR(uint a, uint32_t b)
   spi_read16_blocking(spi_default, 0, spiBuf, 8);
   if (Z_STATE)
   {
-    ad7606Value = spiBuf[0]; //0 or 1
-    ad7606SignalValue=spiBuf[1];
+    ad7606Value = spiBuf[0];
     Z_STATE = false;
-    if (!flgVirtual) serialPrintBuffer(spiBuf, 8);
+    serialPrintBuffer(spiBuf, 8);
     return;
-  } 
-  AD_7606_IS_READY_TO_READ = true;
-  /*
+  }
   if (is_already_scanning)
   { //231025
     if (!flgVirtual) {afc += std::to_string(current_freq) + ',' + std::to_string(spiBuf[current_channel]) + ',';}
@@ -61,7 +55,6 @@ void RX_core::comReceiveISR(uint a, uint32_t b)
     else { serialPrint2Buffer(spiBuf);} 
     AD_7606_IS_READY_TO_READ = true;
   }
-  */
 }
 
 void RX_core::launchOnCore1()
@@ -99,7 +92,7 @@ void RX_core::launchOnCore1()
       case 23:
         DAC8563_INIT = true;
         break;
-      case 24:// get signal value currentsignal or all signal ?
+      case 24:// get signal value currentsignal or all signal
         AD7606_GET_VALUE = true;
         break;
       case 25:
@@ -139,10 +132,10 @@ void RX_core::launchOnCore1()
       case 70:
         stopAll();
         break;
-      case 75: //approach
+      case 75:
         CONVERGENCE = true;
         break;
-      case 76:// change parameters  approach
+      case 76:
         CONVERGENCE_CONFIG_UPDATE = true;
         break;
       case 80:

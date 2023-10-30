@@ -3,7 +3,8 @@
 #include "../transceiver/rx_core.hpp"
 #include <pico/multicore.h>
 #include <iostream>
-#include_next "../utilities/debug_logger.hpp"
+#include "../utilities/debug_logger.hpp"
+#include "peripheral_functions.hpp"
 
 void set_freq(uint32_t freq)
 {
@@ -84,24 +85,21 @@ void stopAll()
   AD7606_GET_VALUE = false;
   AD5664 = false;
   MICRO_SCAN = false;
+  CONVERGENCE = false;
   CONFIG_UPDATE = false;
   MOVE_TO = false;
-  STOP_ALL= true;
+  STOP_ALL = true;
   SET_IO_VALUE = false;
   SET_ONE_IO_VALUE = false;
   LID = false;
-  AD7606_TRIG_GET_VALUE = false;
-  AD7606_GET_ALL_VALUES = false;
   DAC8563_SET_VOLTAGE = false;
   DAC8563_INIT = false;
   LID_UNTIL_STOP = false;
-
   AD_7606_IS_READY_TO_READ = true;
   AD7606_IS_SCANNING = false;
   is_already_scanning = false;
   scan_index = 0;
   current_freq = 0;
-  current_channel = 0;
   afc.clear();
 }
 
@@ -110,24 +108,26 @@ uint16_t *getValuesFromAdc()
   get_result_from_adc();
   while (!AD_7606_IS_READY_TO_READ)
   {
-    sleep_us(1000);
+    sleep_us(1000); ///?????
   }
   return spiBuf;
 }
 
+
+
 void approacphm(const uint32_t *const data)
 {
  // const int waitsteps = 40;
+  const int stopdone=5;
   const int none = 30;
-  const int stopdone = 5;
-
-  uint32_t SIGNAL, Z;
+  uint16_t count=0;
+  uint32_t SIGNAL,Z0, Z;
   uint32_t SET_POINT, GATE_Z_MAX, GATE_Z_MIN;
   int32_t  GAIN, NSTEPS;
   uint32_t INTDELAY, SCANNERDECAY;
 
   // SET VALUE FROM RX_CORE
-  SET_POINT = data[0];
+  SET_POINT  = data[0];
   GATE_Z_MAX = data[1];
   GATE_Z_MIN = data[2];
   NSTEPS = data[3];
@@ -146,14 +146,15 @@ void approacphm(const uint32_t *const data)
  if (!flgVirtual) //231025
   {
     getValuesFromAdc();  
-    auto ptr = getValuesFromAdc();
-    SIGNAL = ptr[0];
-         Z = ptr[1];
+    uint16_t *ptr = getValuesFromAdc();
+    SIGNAL = (int16_t) ptr[0];
+    Z = (int16_t) ptr[1];
   }
   else
   { //231025
-    SIGNAL = 32000;//ptr[0];
-    Z = 32000;//ptr[1];
+     SIGNAL = 32000;//ptr[0];
+         Z0 = 32000;//ptr[1];
+         Z  = Z0;
   }  
 
   std::vector<uint32_t> buf_status;
@@ -166,6 +167,18 @@ void approacphm(const uint32_t *const data)
   while (true)
   {
     buf_status[0] = none;
+    if (!CONVERGENCE)
+    {
+      red();
+      sleep_ms(500);
+      dark();
+      buf_status[0] = stopdone;
+      buf_status[1] = Z;
+      buf_status[2] = SIGNAL;
+   //   io3_1.disable();//231028
+      break;
+    }
+ /* 
     if (STOP_ALL)
     {
       STOP_ALL = false;  //add231025
@@ -175,9 +188,13 @@ void approacphm(const uint32_t *const data)
       io3_1.disable();
       break;
     }
+*/
     if (CONVERGENCE_CONFIG_UPDATE)
     {
-      CONVERGENCE_CONFIG_UPDATE = false; //add 231025
+      green();
+      sleep_ms(500);
+      dark();
+      CONVERGENCE_CONFIG_UPDATE = false; //add 231025 ???? Ilia
       SET_POINT  = vector[1];
       GATE_Z_MAX = vector[2];
       GATE_Z_MIN = vector[3];
@@ -188,24 +205,32 @@ void approacphm(const uint32_t *const data)
     }
 
     dac8563.writeA(SET_POINT);
-    // Set PID Gain!!!!!!!!!!!!!!!!!!!!!!!
-
-    io2_0.disable();
-    io2_1.enable();
-    io2_2.enable();
-
+    set_io_value(2, GAIN);
     sleep_ms(INTDELAY);
    if (!flgVirtual) //231025
    {
-     getValuesFromAdc(); 
-     auto ptr = getValuesFromAdc();  // перенос 231025
-     Z =  ptr[0]; 
-     SIGNAL = ptr[1];
+   //  getValuesFromAdc(); 
+     uint16_t *ptr = getValuesFromAdc();  
+     Z = (int16_t) ptr[0];
+     SIGNAL = (int16_t) ptr[1];
+     log("Z = " + std::to_string(Z) + '\n');
    }
    else
    { //231025
      SIGNAL = 32000;
-     Z = 32000; 
+     if (NSTEPS >= 0)
+     {
+      Z = 32000-count*1000;
+      count++;
+     } 
+     else
+     {       
+       if ((Z0-Z)>0){Z+=1000; count++;}
+       else {Z=Z0; count=0;}
+     }  
+     buf_status[1] = Z;
+     buf_status[2] = SIGNAL;
+     count++;
    }  
       // TODO ??? find bugs
     if (NSTEPS >= 0)
@@ -216,6 +241,7 @@ void approacphm(const uint32_t *const data)
         buf_status[1] = Z;
         buf_status[2] = SIGNAL;
       //  log("break_touch\n"); //edited 231025
+       // CONVERGENCE = false;//231028
         break;
       }
       if (Z <= GATE_Z_MAX)
@@ -223,19 +249,25 @@ void approacphm(const uint32_t *const data)
         int k = 0;
         for (int i = 0; i < 10; ++i)
         {
-          if (!flgVirtual) {getValuesFromAdc()[0];}
-          else               { Z = 32000;}    //231025}
+          if (!flgVirtual) 
+           {
+              getValuesFromAdc();
+              auto pt = getValuesFromAdc();
+              Z = (int16_t) pt[0];
+           }
           if (Z <= GATE_Z_MAX)    k++;
           if (k == 3)
           {
            buf_status[0] = 3; // ok
            buf_status[1] = Z;
            buf_status[2] = SIGNAL;
+           log("success\n");
+      //     CONVERGENCE = false;//231028
            break;
           }
-          if (buf_status[0] == 3) {break;}
           sleep_ms(10);
         }
+        if (buf_status[0] == 3) {break;}
       }
       afc.clear(); //231025
       afc= "code75," + std::to_string(buf_status[0])+',' +std::to_string(buf_status[1]) +',' +std::to_string(buf_status[2])+"\n";  
@@ -263,5 +295,7 @@ void approacphm(const uint32_t *const data)
       std::cout << afc;
       afc.clear();   
       sleep_ms(100);
+      CONVERGENCE = false; //231028
+    //  io3_1.disable();//231028
       std::cout << "end\n";
 }

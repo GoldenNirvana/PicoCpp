@@ -31,17 +31,15 @@ bool SET_IO_VALUE = false;
 bool SET_ONE_IO_VALUE = false;
 bool LID = false;
 bool LID_UNTIL_STOP = false;
-bool AD7606_TRIG_GET_VALUE = false;
-bool AD7606_GET_ALL_VALUES = false;
 bool DAC8563_SET_VOLTAGE = false;
 bool DAC8563_INIT = false;
 bool CONVERGENCE = false;
 bool CONVERGENCE_CONFIG_UPDATE = false;
-bool flgVirtual=false;
-
+bool flgVirtual =true; // Virtual device for debuging
 
 bool Z_STATE = false;
 uint16_t ad7606Value = 0;
+uint16_t ad7606SignalValue = 0;
 
 bool AD_7606_IS_READY_TO_READ = true;
 bool AD7606_IS_SCANNING = false;

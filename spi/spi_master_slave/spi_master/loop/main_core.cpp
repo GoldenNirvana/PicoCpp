@@ -5,7 +5,8 @@
 #include "../utilities/hardcoded_functions.hpp"
 #include "common_data/common_variables.hpp"
 #include "../utilities/debug_logger.hpp"
-
+#define _USE_MATH_DEFINES // for C++
+#include <cmath>
 void MainCore::loop()
 {
 //  green();
@@ -13,11 +14,10 @@ void MainCore::loop()
   uint64_t time = 0;
   while (time++ < UINT64_MAX - 1000)
   {
-    log(vector, vectorSize);
+  //  log(vector, vectorSize);
     // Enable LID while stop command is come to PICO
     if (CONVERGENCE)   //approach
     {
-      CONVERGENCE = false;
       blue();
       static uint32_t convergence_data[7];
       convergence_data[0] = vector[1];
@@ -32,7 +32,7 @@ void MainCore::loop()
       sleep_ms(1000);
       dark(); 
     }
-    if (LID_UNTIL_STOP)
+    if (LID_UNTIL_STOP)  // пьезо мувер позиционирование
     {
       moveLinearDriverUntilStop(vector[1], vector[2], vector[3], vector[4], vector[5]);
     }
@@ -44,11 +44,12 @@ void MainCore::loop()
       continue;
     }
     // Enable scanner and update config on command 50
-    if (MICRO_SCAN || CONFIG_UPDATE)
+    if (MICRO_SCAN || CONFIG_UPDATE) //scanning
     {
       if (CONFIG_UPDATE)
-      { 
+      {
         CONFIG_UPDATE = false;
+        green();
         scanner.update({static_cast<uint32_t>(vector[1]), static_cast<uint32_t>(vector[2]),
                         static_cast<uint8_t>(vector[3]), static_cast<uint8_t>(vector[4]),
                         static_cast<uint16_t>(vector[5]), static_cast<uint16_t>(vector[6]),
@@ -65,27 +66,11 @@ void MainCore::loop()
     if (SET_IO_VALUE)
     {
       SET_IO_VALUE = false;
-      if (vector[1] == 1)
-      {
-        std::string binary = std::bitset<2>(vector[2]).to_string();
-        binary[1] == '1' ? io1_0.enable() : io1_0.disable();
-        binary[0] == '1' ? io1_1.enable() : io1_1.disable();
-      } else if (vector[1] == 2)
-      {
-        std::string binary = std::bitset<3>(vector[2]).to_string();
-        binary[2] == '1' ? io2_0.enable() : io2_0.disable();
-        binary[1] == '1' ? io2_1.enable() : io2_1.disable();
-        binary[0] == '1' ? io2_2.enable() : io2_2.disable();
-      } else if (vector[1] == 3)
-      {
-        std::string binary = std::bitset<2>(vector[2]).to_string();
-        binary[1] == '1' ? io3_0.enable() : io3_0.disable();
-        binary[0] == '1' ? io3_1.enable() : io3_1.disable();
-      }
+      set_io_value(vector[1], vector[2]);
     }
     if (SET_ONE_IO_VALUE)
     {
-      // #warning Logic replaced
+  // #warning Logic replaced
       SET_ONE_IO_VALUE = false;
       vector[2] == 1 ? io_ports[vector[1] - 1].enable() : io_ports[vector[1] - 1].disable();
     }
@@ -100,18 +85,20 @@ void MainCore::loop()
         std::cout <<inBuf[j] << ' ';
       }
       linearDriver.activate(inBuf[0], inBuf[1], inBuf[2], inBuf[3], inBuf[4]);
-      std::cout << "debugLID_IS_READY\n";
+      std::cout << "debug LID_IS_READY\n";
       continue;
     }
     // Start scan on ADC
     if (AD7606_IS_SCANNING)       // АЧХ
     {
       static uint16_t inBuf[5]; // n, start_freq, step, channel, delay
+      int16_t signalvalue; 
+      int16_t res_freq=10000;
+      int16_t a=10000;
       if (!is_already_scanning)
       {
         is_already_scanning = true;
-        //afc="code25"; 
-        afc="code25,"; //231025
+        afc="code25";//,"; //231025
         for (int j = 0; j < 5; ++j)
         {
           inBuf[j] = vector[1 + j];
@@ -121,19 +108,27 @@ void MainCore::loop()
       {
         if (scan_index++ < inBuf[0] && !AD7606_STOP_SCAN)
         {
-          set_freq(inBuf[1]);
-          sleep_ms(inBuf[4]);
-          if (!flgVirtual) {get_result_from_adc();} //231025
-          else {
-               current_freq=6000+10*scan_index;
-               afc +=std::to_string(current_freq) + ',' + std::to_string(current_freq)+',';
-               //afc +=','+std::to_string(current_freq) + ',' + std::to_string(current_freq);
-              }
+      //    blue();
+          if (!flgVirtual) 
+          {  
+            set_freq(inBuf[1]);
+            sleep_ms(inBuf[4]);
+            afc +=','+ std::to_string(inBuf[1]) + ',' + std::to_string(getValuesFromAdc()[current_channel]);//+ ',';
+          } //231025
+          else
+          {
+            current_freq=6000+inBuf[2]*scan_index;
+            signalvalue=std::round(a*(pow(M_E,-pow((current_freq-res_freq),2)/1000000)));
+            afc +=','+std::to_string(current_freq) + ',' + std::to_string(signalvalue);//+',';
+          }
           sleep_ms(10);
           inBuf[1] += inBuf[2];
         }
         else
         {
+          green();
+          sleep_ms(500);
+          dark();
           std::cout << afc << '\n';
           afc.clear();
           scan_index = current_freq = 0;
@@ -145,27 +140,41 @@ void MainCore::loop()
       continue;
     }
     // SET FREQ ON
-    if (AD9833_SET_FREQ)
+    if (AD9833_SET_FREQ) // установка частоты
     {
 //            set_clock_enable();
       AD9833_SET_FREQ = false;
       set_freq((uint32_t) vector[1]);
     }
-    if (AD8400_SET_GAIN)
+    if (AD8400_SET_GAIN) // усиление раскачка зонда
     {
       AD8400_SET_GAIN = false;
       set_gain(vector[1]);
     }
-    if (AD7606_GET_VALUE)
+  //
+  if (AD7606_GET_VALUE) // get value channel vector[1] 
     {
-//    set_clock_enable();
       AD7606_GET_VALUE = false;
-      AD7606_TRIG_GET_VALUE = true;
-      critical_section_enter_blocking(&criticalSection);
-      current_channel = vector[1];  // выводить значение CURRENT CHANNEL
-      get_result_from_adc();
+      afc="code24,";
+     if (!flgVirtual) 
+     {   
+ // 
+     //   uint16_t *ptr = getValuesFromAdc();  //231029
+     //   Z = (int16_t) ptr[0];
+     //   SIGNAL = (int16_t) ptr[1];
+        afc+=std::to_string(getValuesFromAdc()[0])+','+std::to_string(getValuesFromAdc()[1])+'\n';
+    //   afc+=std::to_string(getValuesFromAdc()[vector[1]]) + '\n';
+       std::cout<<afc;    
+  //     std::cout << getValuesFromAdc()[vector[1]] << '\n';
+     }
+     else
+     {
+       afc+=std::to_string(32000)+','+std::to_string(32000)+ '\n';
+       std::cout<<afc;    
+     }
       continue;
-    }
+    } 
+ //
     if (DAC8563_INIT)
     {
       DAC8563_INIT = false;
@@ -187,7 +196,6 @@ void MainCore::loop()
         dac8563.writeB(vector[6]);
       }
     }
-
     if (AD5664)
     {
       AD5664 = false;
@@ -231,16 +239,27 @@ void MainCore::loop()
     }
     if (AD7606_READ or AD7606_READ_FOREVER)
     {
+      log("ReadADC\n");
       AD7606_READ = false;
-      AD7606_GET_ALL_VALUES = true;
-//            set_clock_enable();
       if (AD_7606_IS_READY_TO_READ)
       {
-       if (!flgVirtual) { get_result_from_adc();} //231025 
+         afc.clear();
+        afc="code12,";
+       if (!flgVirtual) 
+       {
+         auto ptr = getValuesFromAdc();
+        for (int i = 0; i < 8; ++i)
+         {
+          afc+=afc+std::to_string(ptr[i])+',';
+       //   std::cout << ptr[i] << ' ';
+         }
+        afc+afc="\n";        
+        //std::cout << '\n';
+        std::cout<<afc;
+       }
        else
        {
-        afc.clear();
-        afc="code12,"+ std::to_string(32000)+','+std::to_string(32000)+"\n";   
+        afc+=std::to_string(32000)+','+std::to_string(32000)+"\n";   
         std::cout << afc;
         afc.clear();
        }

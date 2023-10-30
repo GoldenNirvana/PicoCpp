@@ -39,17 +39,14 @@ extern bool SET_IO_VALUE;
 extern bool SET_ONE_IO_VALUE;
 extern bool LID;
 extern bool LID_UNTIL_STOP;
-extern bool AD7606_TRIG_GET_VALUE;
-extern bool AD7606_GET_ALL_VALUES;
 extern bool DAC8563_SET_VOLTAGE;
 extern bool DAC8563_INIT;
 extern bool CONVERGENCE;
 extern bool CONVERGENCE_CONFIG_UPDATE;
 extern bool flgVirtual; // Virtual device for debuging
-
 extern bool Z_STATE;
 extern uint16_t ad7606Value;
-
+extern uint16_t ad7606SignalValue;
 
 extern bool AD_7606_IS_READY_TO_READ;
 extern bool AD7606_IS_SCANNING;
