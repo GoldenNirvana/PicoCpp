@@ -244,16 +244,16 @@ void MainCore::loop()
       if (AD_7606_IS_READY_TO_READ)
       {
          afc.clear();
-        afc="code12,";
+        afc="code12";
        if (!flgVirtual) 
        {
          auto ptr = getValuesFromAdc();
         for (int i = 0; i < 8; ++i)
          {
-          afc+=afc+std::to_string(ptr[i])+',';
+          afc+=','+std::to_string(ptr[i]);
        //   std::cout << ptr[i] << ' ';
          }
-        afc+afc="\n";        
+        afc+="\n";        
         //std::cout << '\n';
         std::cout<<afc;
        }
