@@ -38,7 +38,7 @@ void Scanner::start_scan(const Point &point)
       {
         getValuesFromAdc(); ///????? 231025
         getValuesFromAdc();
-        vector_z.emplace_back(spiBuf[0]);  // get Z from adc ?? 0 or 1!!!!!
+        vector_z.emplace_back(spiBuf[0]);  // get Z from adc ?? 
       }
       else
       {

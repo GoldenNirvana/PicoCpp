@@ -8,7 +8,7 @@ Scanner scanner;
 DAC8563 dac8563;
 
 #warning REMOVE STATIC !!! side effects???
-uint16_t spiBuf[8];
+uint16_t spiBuf[8]; // z, ampl 
 int32_t vector[15];
 int vectorSize;
 
