@@ -108,8 +108,10 @@ void stopAll()
 uint16_t *getValuesFromAdc()
 {
   get_result_from_adc();
-  while (!AD_7606_IS_READY_TO_READ)
+  int i = 0;
+  while (!AD_7606_IS_READY_TO_READ && i++ < 3)
   {
+//    std::cout << "EndlessLoop\n";
     sleep_us(100);
   }
   return spiBuf;
@@ -135,8 +137,9 @@ void approacphm(const uint32_t *const data)
 
   int16_t SMZ_STEP, SIGNAL, Z;
   int32_t SET_POINT, GATE_Z_MAX, GATE_Z_MIN;
-  int32_t GAIN, NSTEPS, STMFLG, SPEED;
+  int32_t GAIN, NSTEPS, STMFLG;
   int32_t INTDELAY, SCANNERDECAY;
+  int32_t freq, scv;
 
   uint32_t lstatus;
   // SET VALUE FROM RX_CORE
@@ -146,9 +149,9 @@ void approacphm(const uint32_t *const data)
   NSTEPS = data[3];
   INTDELAY = data[4];
   GAIN = data[5];
-  SPEED = data[6];
-  SCANNERDECAY = data[7];
-  STMFLG = data[8];
+  SCANNERDECAY = data[6];
+  freq = data[7];
+  scv = data[8];
   dac8563.writeA(SET_POINT);
   uint32_t buf_step = waitsteps;
   std::vector<uint32_t> buf_params;
@@ -181,13 +184,15 @@ void approacphm(const uint32_t *const data)
     }
     if (CONVERGENCE_CONFIG_UPDATE)
     {
+      log("config updated\n");
+      CONVERGENCE_CONFIG_UPDATE = false;
       SET_POINT = vector[1];
       GATE_Z_MAX = vector[2];
       GATE_Z_MIN = vector[3];
       NSTEPS = vector[4];
       INTDELAY = vector[5];
       GAIN = vector[6];
-      SPEED = vector[7];
+      SCANNERDECAY = vector[7];
     }
 
     dac8563.writeA(SET_POINT);
@@ -249,7 +254,7 @@ void approacphm(const uint32_t *const data)
 
     std::cout << "code75," << buf_status[0] << ',' << buf_status[1] << ',' << buf_status[2] << '\n';
     io3_1.enable();
-    linearDriver.activate(99, 5000, 750, std::abs(NSTEPS), NSTEPS > 0);
+    linearDriver.activate(99, freq, scv, std::abs(NSTEPS), NSTEPS > 0);
     io3_1.disable();
   }
 

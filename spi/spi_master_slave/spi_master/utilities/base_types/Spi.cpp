@@ -44,4 +44,5 @@ int Spi::read(const uint8_t *inB, uint8_t *buf, size_t length)
 //    spi_read_blocking(spi_default, 0, buf, length);
 //    spi_write16_read16_blocking(spi_default, nullptr, buf, length);
   }
+    return length;
 }

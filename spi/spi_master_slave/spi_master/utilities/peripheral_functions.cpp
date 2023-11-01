@@ -20,15 +20,21 @@ void setDefaultSettings()
 
   gpio_pull_down(resetPort.getPort());
 
-#warning should be undeleted
+//#warning should be undeleted
 //  RX_core rxCore;
 
   // fixme mb should add & before isr
   gpio_set_irq_enabled_with_callback(busy.getPort(), GPIO_IRQ_EDGE_FALL, true, RX_core::comReceiveISR);
 
-  multicore_reset_core1();
-  multicore_launch_core1(RX_core::launchOnCore1);
-
+//  multicore_reset_core1();
+//  std::cout << "DefaultSetting\n";
+  multicore_launch_core1(&RX_core::launchOnCore1);
+//  std::cout << "AfterDefaultSetting\n";
+//  std::cout << "AfterDefaultSetting\n";
+//  std::cout << "AfterDefaultSetting\n";
+//  std::cout << "AfterDefaultSetting\n";
+//  std::cout << "AfterDefaultSetting\n";
+//  std::cout << "AfterDefaultSetting\n";
   dec.enable();
   conv.enable();
   resetPort.disable();

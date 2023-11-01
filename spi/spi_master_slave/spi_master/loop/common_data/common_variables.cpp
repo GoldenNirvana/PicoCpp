@@ -7,7 +7,7 @@ Decoder decoder(4, 5, 6);
 Scanner scanner;
 DAC8563 dac8563;
 
-#warning REMOVE STATIC !!! side effects???
+//#warning REMOVE STATIC !!! side effects???
 uint16_t spiBuf[8];
 int32_t vector[15];
 int vectorSize;

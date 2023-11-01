@@ -37,8 +37,10 @@ void RX_core::launchOnCore1()
 {
   while (true)
   {
-//        mutex_enter_timeout_ms(&mut, 10);
-//        std::cout << "Mutex captured by core1 << '\n";
+//      vector[0] = 12;
+//      std::cout << "Receive core\n";
+////        mutex_enter_timeout_ms(&mut, 10);
+////        std::cout << "Mutex captured by core1 << '\n";
     /// PARSING
     parse(vector);
     log("command" + std::to_string(vector[0]) + '\n');
@@ -58,6 +60,7 @@ void RX_core::launchOnCore1()
         AD7606_RESET = true;
         break;
       case 12:
+//          std::cout << "SetTrue\n";
         AD7606_READ = true;
         break;
       case 21:

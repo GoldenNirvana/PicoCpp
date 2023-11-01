@@ -13,23 +13,26 @@ void MainCore::loop()
   uint64_t time = 0;
   while (time++ < UINT64_MAX - 1000)
   {
-//    if (time % 1000000 == 0)
+//      std::cout << "Transieve core\n";
+//    if (time % 100000 == 0)
 //    {
-////      log("Main_cycle\n");
+//      log("Main_cycle\n");
 //    }
 //    log(vector, vectorSize);
     // Enable LID while stop command is come to PICO
     if (CONVERGENCE)
     {
       blue();
-      static uint32_t convergence_data[7];
-      convergence_data[0] = vector[1];
-      convergence_data[1] = vector[2];
-      convergence_data[2] = vector[3];
-      convergence_data[3] = vector[4];
-      convergence_data[4] = vector[5];
-      convergence_data[5] = vector[6];
-      convergence_data[6] = vector[7];
+      static uint32_t convergence_data[9];
+      convergence_data[0] = vector[1];   // point
+      convergence_data[1] = vector[2]; // max
+      convergence_data[2] = vector[3]; // min
+      convergence_data[3] = vector[4]; // steps
+      convergence_data[4] = vector[5]; // initdelay
+      convergence_data[5] = vector[6]; // gain
+      convergence_data[6] = vector[7]; // scannerDelay
+      convergence_data[7] = vector[8];  // freq
+      convergence_data[8] = vector[9];   // scv
       approacphm(convergence_data);
       green();
     }
@@ -62,7 +65,7 @@ void MainCore::loop()
         scanner.start_scan();
       }
     }
-#warning need to describe thiss block
+//#warning need to describe thiss block
     if (SET_IO_VALUE)
     {
       SET_IO_VALUE = false;
@@ -204,6 +207,7 @@ void MainCore::loop()
     if (AD7606_READ or AD7606_READ_FOREVER)
     {
       log("ReadADC\n");
+//      std::cout << "StartReadADC\n";
       AD7606_READ = false;
       if (AD_7606_IS_READY_TO_READ)
       {
