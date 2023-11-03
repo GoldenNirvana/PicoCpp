@@ -9,13 +9,21 @@ struct Config
 {
   uint32_t nPoints_x;  // Точек по линии X
   uint32_t nPoints_y;  // Точек по линии Y
-  uint8_t path;  // 0 - по X, 1 - по Y
-  uint8_t method;  //
+   uint8_t path;  // 0 - по X, 1 - по Y
+   uint8_t method;  //
   uint16_t delayF;  // Задержка вперёд
   uint16_t delayB;  // Задержка назад
   uint16_t betweenPoints_x;  // Расстояние между точками по X
   uint16_t betweenPoints_y;  // Расстояние между точками по Y
-  uint8_t flag;  // Что измерять
+   uint8_t flag;  // Что измерять Z =1 ; Z,Ampl =2 
+   uint8_t Ti;   //PID Gain
+};
+  
+struct ConfigCurrent
+{
+  uint16_t delayF;  // Задержка вперёд
+  uint16_t delayB;  // Задержка назад
+  uint8_t   Ti;     //PID Gain
 };
 
 

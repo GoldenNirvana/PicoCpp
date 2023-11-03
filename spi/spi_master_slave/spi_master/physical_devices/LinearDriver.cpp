@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <iostream>
 #include "LinearDriver.hpp"
+#include "../loop/common_data/common_variables.hpp"//add mf 231101
 
 LinearDriver::LinearDriver() : x_a(OutputPort(18)), x_b(OutputPort(19)), y_a(OutputPort(20)),
                                y_b(OutputPort(21)), z_a(OutputPort(22)), z_b(OutputPort(28))
@@ -16,7 +17,7 @@ LinearDriver::LinearDriver() : x_a(OutputPort(18)), x_b(OutputPort(19)), y_a(Out
 
 void LinearDriver::activate(int command, int freq, int p, int n, bool dir)
 {
-  std::cout << "From activate command = " << command << '\n';
+   if (flgDebugLevel<=DEBUG_LEVEL) std::cout << "From activate command = " << command << '\n';
   OutputPort *ptrA = &x_a;
   OutputPort *ptrB = &x_b;
   if (command == 90)

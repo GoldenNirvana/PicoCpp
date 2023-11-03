@@ -17,7 +17,7 @@ void RX_core::comReceiveISR(uint a, uint32_t b)
 {
   if (AD_7606_IS_READY_TO_READ)
   {
-    log("ADC read recursion\n");
+    log("ADC read recursion\n",flgDebugLevel);
     return;
   }
   decoder.activePort(0);
@@ -72,6 +72,7 @@ void RX_core::launchOnCore1()
 //        std::cout << "Mutex captured by core1 << '\n";
     /// PARSING
     parse(vector);
+    log("command" + std::to_string(vector[0]) + '\n',flgDebugLevel);
 //    uart_puts(uart1, "String for uart");
     switch (vector[0])
     {
@@ -90,6 +91,21 @@ void RX_core::launchOnCore1()
       case 12:
         AD7606_READ = true;
         break;
+ ///*************************************  
+      case 14: //add MF set virtual device 
+        red();      
+        flgVirtual = !flgVirtual;
+        dark();
+        break;
+      case 15: //add mf set debug level =2; if =3 cancel debug info!!
+        red();      
+        flgDebugLevel =vector[1];
+        dark();
+        break;
+      case 17: //add mf set PID GAIN!    
+        SET_PID_GAIN=true; 
+        break;
+ //*************************************** 
       case 21:
         AD5664 = true;
         break;
@@ -161,6 +177,8 @@ void RX_core::launchOnCore1()
 
 void RX_core::serialPrintBuffer(const uint16_t *const buf, int len)
 {
+ if (flgDebugLevel<=DEBUG_LEVEL)
+ { 
   uint64_t a = time_us_64();
   std::cout << "[" << std::fixed << std::setfill('0') << std::setw(15) << std::right << a << "_u64]     ";
   std::cout << std::resetiosflags(std::ios_base::right);
@@ -170,7 +188,8 @@ void RX_core::serialPrintBuffer(const uint16_t *const buf, int len)
     std::cout << buf[i] << ' ';
   }
   std::cout << "\n";
-}
+ }
+} 
 void RX_core::serialPrint2Buffer(const uint16_t *const buf)
 {
   uint64_t a = time_us_64();
@@ -179,6 +198,8 @@ void RX_core::serialPrint2Buffer(const uint16_t *const buf)
 
 void RX_core::serialPrintBuffer(const uint8_t *const buf, int len)
 {
+ if (flgDebugLevel<=DEBUG_LEVEL)
+ {
   uint32_t x = time_us_64();
   std::cout << "[" << std::fixed << std::setfill('0') << std::setw(15) << std::right << x << "]     ";
   std::cout << std::resetiosflags(std::ios_base::right);
@@ -188,6 +209,7 @@ void RX_core::serialPrintBuffer(const uint8_t *const buf, int len)
     std::cout << buf[i] << ' ';
   }
   std::cout << "\n";
+ }
 }
 
 void RX_core::parse(int32_t *vec)

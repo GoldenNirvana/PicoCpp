@@ -7,8 +7,8 @@ Decoder decoder(4, 5, 6);
 Scanner scanner;
 DAC8563 dac8563;
 
-#warning REMOVE STATIC !!! side effects???
-uint16_t spiBuf[8]; // z, ampl 
+//#warning REMOVE STATIC !!! side effects???
+uint16_t spiBuf[8]; // z, ampl ?
 int32_t vector[15];
 int vectorSize;
 
@@ -35,8 +35,13 @@ bool DAC8563_SET_VOLTAGE = false;
 bool DAC8563_INIT = false;
 bool CONVERGENCE = false;
 bool CONVERGENCE_CONFIG_UPDATE = false;
-bool flgVirtual =true; // Virtual device for debuging
-
+//add Mf
+bool flgVirtual =false; // Virtual device for debuging
+uint flgDebugLevel =2; //  leveldebug
+bool SET_PID_GAIN=false;
+bool PID_TURN_ON=false;
+bool Scanner_Re_Protract=false;
+//
 bool Z_STATE = false;
 uint16_t ad7606Value = 0;
 uint16_t ad7606SignalValue = 0;
@@ -60,7 +65,7 @@ OutputPort io1_1(12);
 OutputPort io2_0(13);
 OutputPort io2_1(14);
 OutputPort io2_2(15);
-OutputPort io3_0(26);
-OutputPort io3_1(27);
+OutputPort io3_0(26); //вытянуть сканнер
+OutputPort io3_1(27); //втянуть сканнер
 
 std::vector<OutputPort> io_ports;

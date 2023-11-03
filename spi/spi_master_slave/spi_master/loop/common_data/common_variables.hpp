@@ -8,7 +8,7 @@
 #include "../../physical_devices/scanner.hpp"
 #include "../../devices/DAC8563.hpp"
 
-extern int DEBUG_LEVEL;
+extern uint32_t DEBUG_LEVEL;
 extern Spi spi;
 extern LinearDriver linearDriver;
 extern Decoder decoder;
@@ -43,11 +43,17 @@ extern bool DAC8563_SET_VOLTAGE;
 extern bool DAC8563_INIT;
 extern bool CONVERGENCE;
 extern bool CONVERGENCE_CONFIG_UPDATE;
-extern bool flgVirtual; // Virtual device for debuging
 extern bool Z_STATE;
 extern uint16_t ad7606Value;
+// add MF
 extern uint16_t ad7606SignalValue;
+extern bool flgVirtual; // Virtual device for debuging
+extern uint flgDebugLevel; //  leveldebug
+extern bool SET_PID_GAIN;
+extern bool PID_TURN_ON;
+extern bool Scanner_Re_Protract;
 
+//
 extern bool AD_7606_IS_READY_TO_READ;
 extern bool AD7606_IS_SCANNING;
 extern volatile bool is_already_scanning;

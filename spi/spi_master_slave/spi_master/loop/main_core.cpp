@@ -7,9 +7,10 @@
 #include "../utilities/debug_logger.hpp"
 #define _USE_MATH_DEFINES // for C++
 #include <cmath>
+
 void MainCore::loop()
 {
-//  green();
+  green();
   // remove true and add var
   uint64_t time = 0;
   while (time++ < UINT64_MAX - 1000)
@@ -27,9 +28,12 @@ void MainCore::loop()
       convergence_data[4] = vector[5];
       convergence_data[5] = vector[6];
       convergence_data[6] = vector[7];
+      
+      convergence_data[7] = vector[8];  // freq  //231102
+      convergence_data[8] = vector[9];   // scv
       approacphm(convergence_data);
       green();
-      sleep_ms(1000);
+      sleep_ms(100);
       dark(); 
     }
     if (LID_UNTIL_STOP)  // пьезо мувер позиционирование
@@ -49,17 +53,18 @@ void MainCore::loop()
       if (CONFIG_UPDATE)
       {
         CONFIG_UPDATE = false;
-        green();
+        red();
         scanner.update({static_cast<uint32_t>(vector[1]), static_cast<uint32_t>(vector[2]),
                         static_cast<uint8_t>(vector[3]), static_cast<uint8_t>(vector[4]),
                         static_cast<uint16_t>(vector[5]), static_cast<uint16_t>(vector[6]),
                         static_cast<uint16_t>(vector[7]), static_cast<uint16_t>(vector[8]),
                         static_cast<uint8_t>(vector[9])});
+        dark();
         continue;
       }
       if (MICRO_SCAN)
-      {
-        scanner.start_scan();
+      {  
+       scanner.start_scan();
       }
     }
 #warning need to describe thiss block
@@ -82,10 +87,10 @@ void MainCore::loop()
       for (int j = 0; j < 5; ++j)
       {
         inBuf[j] = vector[j];
-        std::cout <<inBuf[j] << ' ';
+        if (flgDebugLevel<=DEBUG_LEVEL) std::cout <<inBuf[j] << ' ';
       }
       linearDriver.activate(inBuf[0], inBuf[1], inBuf[2], inBuf[3], inBuf[4]);
-      std::cout << "debug LID_IS_READY\n";
+       if (flgDebugLevel<=DEBUG_LEVEL) std::cout << "debug LID_IS_READY\n";
       continue;
     }
     // Start scan on ADC
@@ -103,8 +108,9 @@ void MainCore::loop()
         {
           inBuf[j] = vector[1 + j];
         }
-        current_channel = inBuf[3] - 1;
-      } else
+        current_channel = inBuf[3] - 1;  //ampl=0;
+      }
+      else
       {
         if (scan_index++ < inBuf[0] && !AD7606_STOP_SCAN)
         {
@@ -114,10 +120,10 @@ void MainCore::loop()
             set_freq(inBuf[1]);
             sleep_ms(inBuf[4]);
             afc +=','+ std::to_string(inBuf[1]) + ',' + std::to_string(getValuesFromAdc()[current_channel]);//+ ',';
-          } //231025
+          } 
           else
           {
-            current_freq=6000+inBuf[2]*scan_index;
+            current_freq=vector[2]+inBuf[2]*scan_index;
             signalvalue=std::round(a*(pow(M_E,-pow((current_freq-res_freq),2)/1000000)));
             afc +=','+std::to_string(current_freq) + ',' + std::to_string(signalvalue);//+',';
           }
@@ -151,21 +157,14 @@ void MainCore::loop()
       AD8400_SET_GAIN = false;
       set_gain(vector[1]);
     }
-  //
   if (AD7606_GET_VALUE) // get value channel vector[1] 
     {
       AD7606_GET_VALUE = false;
       afc="code24,";
      if (!flgVirtual) 
-     {   
- // 
-     //   uint16_t *ptr = getValuesFromAdc();  //231029
-     //   Z = (int16_t) ptr[0];
-     //   SIGNAL = (int16_t) ptr[1];
-        afc+=std::to_string(getValuesFromAdc()[0])+','+std::to_string(getValuesFromAdc()[1])+'\n';
-    //   afc+=std::to_string(getValuesFromAdc()[vector[1]]) + '\n';
+     {    
+       afc+=std::to_string(getValuesFromAdc()[0])+','+std::to_string(getValuesFromAdc()[1])+'\n'; //ampl,Z
        std::cout<<afc;    
-  //     std::cout << getValuesFromAdc()[vector[1]] << '\n';
      }
      else
      {
@@ -174,7 +173,6 @@ void MainCore::loop()
      }
       continue;
     } 
- //
     if (DAC8563_INIT)
     {
       DAC8563_INIT = false;
@@ -239,7 +237,7 @@ void MainCore::loop()
     }
     if (AD7606_READ or AD7606_READ_FOREVER)
     {
-      log("ReadADC\n");
+      if (flgDebugLevel<=DEBUG_LEVEL) log("ReadADC\n",flgDebugLevel);
       AD7606_READ = false;
       if (AD_7606_IS_READY_TO_READ)
       {
@@ -259,11 +257,21 @@ void MainCore::loop()
        }
        else
        {
-        afc+=std::to_string(32000)+','+std::to_string(32000)+"\n";   
+        afc+=','+std::to_string(32000)+','+std::to_string(32000)+"\n";   
         std::cout << afc;
         afc.clear();
        }
       }
+    }
+    if (SET_PID_GAIN)
+    {
+      SET_PID_GAIN=false;
+      set_io_value(2,vector[1]);
+    }
+    if (Scanner_Re_Protract)
+    {
+      Scanner_Re_Protract=false;
+     // set_io_value(5,vector[1],vector[2]);
     }
   }
 

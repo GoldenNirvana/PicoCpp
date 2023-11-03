@@ -6,7 +6,6 @@
 #include <iostream>
 #include <bitset>
 
-
 #define UART_TX_PIN 8
 #define UART_RX_PIN 9
 
@@ -28,7 +27,7 @@ void setDefaultSettings()
   gpio_set_irq_enabled_with_callback(busy.getPort(), GPIO_IRQ_EDGE_FALL, true, RX_core::comReceiveISR);
 
   
-  multicore_reset_core1();
+//  multicore_reset_core1();  //231102
   multicore_launch_core1(RX_core::launchOnCore1);
 
   dec.enable();
