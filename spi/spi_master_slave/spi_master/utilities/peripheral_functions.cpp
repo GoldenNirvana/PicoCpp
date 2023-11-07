@@ -112,7 +112,6 @@ void red()
     sleep_ms(100);
     activateRed();
     sleep_ms(100);
-
   }
 }
 
@@ -135,7 +134,6 @@ void dark()
 
 void activateGreen()
 {
-
   rdbLed.disable();
   sleep_us(60);
   for (int i = 0; i < 8; ++i)
@@ -217,77 +215,6 @@ void activateDark()
   }
 }
 
-void moveLinearDriverUntilStop(int lid_name, int f, int p, int n, int dir)
-{
-  uint32_t SET_POINT, GATE_Z_MAX, GATE_Z_MIN;
-   int8_t status;
-    //  GATE_Z_MAX = vector[2];
-    //   GATE_Z_MIN = vector[3];
-  const int  none = 30;
-  const int    ok = 3;
-  const int touch = 2;
-  if (lid_name == 90 || lid_name == 95)
-  {
-    while (LID_UNTIL_STOP)
-    {
-      status=none;
-      ad7606Value=32000;
-      ad7606SignalValue=32000;
-      linearDriver.activate(lid_name, f, p, n, dir);
-      afc.clear(); //231025
-      afc="code"+std::to_string(lid_name)+','+std::to_string(status)+','+std::to_string(ad7606Value)+','+std::to_string(ad7606SignalValue)+"\n";
-    //  afc="code"+std::to_string(lid_name)+"\n";
-      std::cout <<afc;
-      afc.clear();
-    }
-      afc.clear();
-      sleep_ms(200);
-      std::cout <<"end\n";      
-  }
-  if (lid_name == 99)
-  {
-     status=none;
-    while (LID_UNTIL_STOP)
-    {
-      Z_STATE = true;
-      if (!flgVirtual) //231025
-      {
-        get_result_from_adc();
-       while (Z_STATE)
-       {
-        sleep_us(1000);
-       }
-       if(ad7606Value<GATE_Z_MIN)
-       {
-         status=touch;
-         break;
-       }
-       if(ad7606Value<GATE_Z_MAX)
-       {
-         status=ok;
-         break;
-       } 
-           // check if z > <
-       linearDriver.activate(lid_name, f, p, n, dir);
-      }
-      else
-      {
-        ad7606Value=20000;
-        ad7606SignalValue=20000;
-      }
-      afc.clear();//231025
-      afc="code"+std::to_string(lid_name)+','+std::to_string(status)+','+std::to_string(ad7606Value)+','+std::to_string(ad7606SignalValue)+"\n";
-      std::cout <<afc;
-      afc.clear();
-    }
-      afc.clear();//231025
-      afc="code"+std::to_string(lid_name)+','+std::to_string(status)+','+std::to_string(ad7606Value)+','+std::to_string(ad7606SignalValue)+"\n";
-      std::cout <<afc;
-      afc.clear();
-      sleep_ms(200);
-      std::cout <<"end\n";      
-  }
-}
 void set_io_value(int port, int value)
 {
   SET_IO_VALUE = false;
@@ -296,7 +223,7 @@ void set_io_value(int port, int value)
     std::string binary = std::bitset<2>(value).to_string();
     binary[1] == '1' ? io1_0.enable() : io1_0.disable();
     binary[0] == '1' ? io1_1.enable() : io1_1.disable();
-  } else if (port == 2)
+  } else if (port == 2) //gain
   {
     std::string binary = std::bitset<3>(value).to_string();
     binary[2] == '1' ? io2_0.enable() : io2_0.disable();

@@ -25,8 +25,8 @@ void RX_core::comReceiveISR(uint a, uint32_t b)
   spi_read16_blocking(spi_default, 0, spiBuf, 8);
   if (Z_STATE)
   {
-    ad7606Value = spiBuf[0]; //0 or 1
-    ad7606SignalValue=spiBuf[1];
+    ZValue = spiBuf[0]; //0 or 1
+    SignalValue=spiBuf[1];
     Z_STATE = false;
     if (!flgVirtual) serialPrintBuffer(spiBuf, 8);
     return;
@@ -119,19 +119,22 @@ void RX_core::launchOnCore1()
         AD7606_GET_VALUE = true;
         break;
       case 25:
-        AD7606_IS_SCANNING = true;
+        RESONANCE = true;
         break;
       case 26:
-        AD7606_STOP_SCAN = true;
+        RESONANCE_STOP = true;
         break;
+      case 28: // mf  
+        TheadDone = true;
+        break;  
       case 30:
-        AD9833_SET_FREQ = true;
+        FREQ_SET = true;
         break;
       case 40:
         AD8400_SET_GAIN = true;
         break;
       case 50:
-        MICRO_SCAN = true;
+        SCANNING = true;
         CONFIG_UPDATE = true;
         break;
       case 51:
@@ -141,7 +144,7 @@ void RX_core::launchOnCore1()
         STOP_ALL = true;
         break;
       case 53:
-        MICRO_SCAN = true;
+        SCANNING = true;
         break;
       case 55:
         CONFIG_UPDATE = true;
@@ -156,13 +159,16 @@ void RX_core::launchOnCore1()
         stopAll();
         break;
       case 75: //approach
-        CONVERGENCE = true;
+        APPROACH = true;
         break;
       case 76:// change parameters  approach
-        CONVERGENCE_CONFIG_UPDATE = true;
+        APPROACH_CONFIG_UPDATE = true;
         break;
       case 80:
-        LID_UNTIL_STOP = true;
+        LID_UNTIL_STOP = true; 
+        break;
+     case 82:// change parameters  positionXYZ
+        POSXYZ_CONFIG_UPDATE = true;
         break;
       case 90 ... 99:
         LID = true;
