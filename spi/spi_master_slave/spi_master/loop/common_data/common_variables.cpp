@@ -9,7 +9,7 @@ DAC8563 dac8563;
 
 //#warning REMOVE STATIC !!! side effects???
 uint16_t spiBuf[8]; // z, ampl ?
-int32_t vector[15]; //int32_t  ?? int16_t
+int16_t vector[15]; //int32_t  ?? int16_t
 int vectorSize;
 
 bool AD9833_SENDER = false;

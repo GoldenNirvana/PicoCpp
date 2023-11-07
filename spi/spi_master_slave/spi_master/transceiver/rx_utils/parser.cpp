@@ -64,7 +64,7 @@ bool Parser::equals(int num, const char *comp)
   return !strcmp(str[num], comp);
 }
 
-int Parser::parseInts(int32_t *data)
+int Parser::parseInts(int16_t *data)
 {
   int count = 0;
   char *offset = buf;

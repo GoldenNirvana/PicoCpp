@@ -218,7 +218,7 @@ void RX_core::serialPrintBuffer(const uint8_t *const buf, int len)
  }
 }
 
-void RX_core::parse(int32_t *vec)
+void RX_core::parse(int16_t *vec)
 {
   std::string s;
   getline(std::cin, s);

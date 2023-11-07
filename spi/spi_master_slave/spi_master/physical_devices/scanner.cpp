@@ -333,7 +333,7 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
   sleep_ms(200);
 
   dac8563.writeA(SET_POINT);
-  std::vector<uint32_t> buf_params;
+  std::vector<int16_t> buf_params;
   buf_params.reserve(7);
   for (int i = 0; i < 7; ++i)
     buf_params.push_back(data[i]);
@@ -352,7 +352,7 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
          Z  = Z0;
   }  
 
-  std::vector<uint16_t> buf_status;
+  std::vector<int16_t> buf_status;
   buf_status.push_back(none);
   buf_status.push_back(Z);
   buf_status.push_back(SIGNAL);

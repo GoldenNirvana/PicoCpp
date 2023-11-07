@@ -24,7 +24,7 @@ public:
 
   bool equals(int num, const char *comp);
 
-  int parseInts(int32_t *data);
+  int parseInts(int16_t *data);
 
   char *buf = NULL;
   char **str = NULL;

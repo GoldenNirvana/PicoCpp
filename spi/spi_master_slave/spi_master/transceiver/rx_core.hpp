@@ -9,7 +9,7 @@ public:
   static void serialPrintBuffer(const uint16_t *buf, int len);
   static void serialPrintBuffer(const uint8_t *buf, int len);
   static void serialPrint2Buffer(const uint16_t *const buf);
-  static void parse(int32_t *vector);
+  static void parse(int16_t *vector);
 
   static void comReceiveISR(uint a, uint32_t b);
 
