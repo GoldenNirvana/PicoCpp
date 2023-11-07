@@ -25,8 +25,8 @@ void RX_core::comReceiveISR(uint a, uint32_t b)
   spi_read16_blocking(spi_default, 0, spiBuf, 8);
   if (Z_STATE)
   {
-    ZValue = spiBuf[0]; //0 or 1
-    SignalValue=spiBuf[1];
+    ZValue =(int16_t) spiBuf[0]; //0 or 1
+    SignalValue=(int16_t)spiBuf[1];
     Z_STATE = false;
     if (!flgVirtual) serialPrintBuffer(spiBuf, 8);
     return;

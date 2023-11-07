@@ -170,7 +170,7 @@ void MainCore::loop()
       afc="code24,";
      if (!flgVirtual) 
      {    
-       afc+=std::to_string(getValuesFromAdc()[0])+','+std::to_string(getValuesFromAdc()[1])+'\n'; //ampl,Z
+       afc+=std::to_string((int16_t)getValuesFromAdc()[0])+','+std::to_string((int16_t)getValuesFromAdc()[1])+'\n'; //ampl,Z
        std::cout<<afc;    
      }
      else
@@ -255,7 +255,7 @@ void MainCore::loop()
          auto ptr = getValuesFromAdc(); ///???
         for (int i = 0; i < 8; ++i)
          {
-          afc+=','+std::to_string(ptr[i]);
+          afc+=','+std::to_string((int16_t)ptr[i]);
          }
         afc+="\n";        
         std::cout<<afc;

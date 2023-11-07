@@ -45,18 +45,18 @@ void Scanner::start_scan(const Point &point)
       {
         getValuesFromAdc(); ///????? 231025
         getValuesFromAdc();
-        vector_z.emplace_back(spiBuf[0]);  // get Z from adc ?? 
+        vector_z.emplace_back((int16_t)spiBuf[0]);  // get Z from adc ?? 
         if (conf_.flag == 2) //231102
         {
-         other_info.emplace_back(spiBuf[conf_.flag]); //????
+         other_info.emplace_back((int16_t)spiBuf[conf_.flag]); //????
         }
       }
       else
       {
-        vector_z.emplace_back(uint16_t(10000.0*(sin(M_PI*j*0.1)+sin(M_PI*i*0.1))));  // get Z from adc
+        vector_z.emplace_back(int16_t(10000.0*(sin(M_PI*j*0.1)+sin(M_PI*i*0.1))));  // get Z from adc
         if (conf_.flag == 2) //231102
         {
-         other_info.emplace_back(uint16_t(10000.0*(sin(M_PI*j*0.1)+sin(M_PI*i*0.1)))); //????
+         other_info.emplace_back(int16_t(10000.0*(sin(M_PI*j*0.1)+sin(M_PI*i*0.1)))); //????
         }
       }   
     }
@@ -244,8 +244,8 @@ void Scanner::moveLinearDriverUntilStop(int lid_name, int f, int p, int n, int d
       if (!flgVirtual) //add mf
       {
          getValuesFromAdc();   //test
-         ZValue=getValuesFromAdc()[1];
-         SignalValue=getValuesFromAdc()[0];
+         ZValue=(int16_t)getValuesFromAdc()[1];
+         SignalValue=(int16_t)getValuesFromAdc()[0];
         // check if z > <
        if(ZValue<GATE_Z_MIN)
        {
@@ -320,6 +320,17 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
   SCANNERDECAY = data[6];
 //  freq = data[7];
  // scv = data[8];
+  afc.clear(); 
+  afc= "debug," ;
+  
+    for (size_t j = 0; j < 7; j++)     // send info
+    {
+     afc+=','+ std::to_string(data[j]);
+    }
+    afc+=afc+"\n";  
+  std::cout << afc;
+  afc.clear();
+  sleep_ms(200);
 
   dac8563.writeA(SET_POINT);
   std::vector<uint32_t> buf_params;
@@ -391,8 +402,8 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
      Z = (int16_t) ptr[1]; 
      SIGNAL = (int16_t) ptr[0];
      */
-     Z=getValuesFromAdc()[1];
-     SIGNAL=getValuesFromAdc()[0];
+     Z=(int16_t)getValuesFromAdc()[1];
+     SIGNAL=(int16_t)getValuesFromAdc()[0];
      if (flgDebugLevel<=DEBUG_LEVEL) ;//log("Z = " + std::to_string(Z) + '\n',flgDebugLevel);
    }
    else
@@ -428,7 +439,7 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
            {
             //  getValuesFromAdc();
             //  auto pt = getValuesFromAdc();
-             Z=getValuesFromAdc()[1];
+             Z=(int16_t)getValuesFromAdc()[1];
            }
           if (Z <= GATE_Z_MAX)    k++;
           if (k == 3)
@@ -477,7 +488,7 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
 }
 void Scanner::start_frqscan()
 {
-      uint16_t inBuf[5]; // n, start_freq, step, channel, delay
+      static uint16_t inBuf[5]; // n, start_freq, step, channel, delay
       int16_t signalvalue; 
       int16_t res_freq=10000;
       int16_t a=10000;
@@ -505,7 +516,7 @@ void Scanner::start_frqscan()
         {  
          set_freq(inBuf[1]);
          sleep_ms(inBuf[4]);
-         afc +=','+ std::to_string(inBuf[1]) + ',' + std::to_string(getValuesFromAdc()[0]);//+ ',';
+         afc +=','+ std::to_string(inBuf[1]) + ',' + std::to_string((int16_t)getValuesFromAdc()[current_channel]);//+ ',';
         } 
         else
         {
@@ -514,7 +525,7 @@ void Scanner::start_frqscan()
          signalvalue=std::round(a*(pow(M_E,-pow((current_freq-res_freq),2)/1000000)));
          afc +=','+std::to_string(current_freq) + ',' + std::to_string(signalvalue);//+',';
         }
-      // sleep_ms(10);
+       sleep_ms(10);
         inBuf[1] += inBuf[2];  
     //   scan_index++;     
      //   if (scan_index>=inBuf[0]) RESONANCE_ACTIVE=false;
@@ -524,7 +535,7 @@ void Scanner::start_frqscan()
         sleep_ms(200);
         afc.clear();
       //  scan_index = current_freq = 0;
-     //   current_channel = -1;
+        current_channel = -1;
    //   RESONANCE_ACTIVE = false;
         RESONANCE = RESONANCE_STOP = false;        
 }

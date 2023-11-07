@@ -48,8 +48,8 @@ extern bool APPROACH;
 extern bool APPROACH_CONFIG_UPDATE;
 extern bool Z_STATE;
 // add MF
-extern uint16_t ZValue; //??
-extern uint16_t SignalValue; //??
+extern int16_t ZValue; //??
+extern int16_t SignalValue; //??
 extern bool flgVirtual; // Virtual device for debuging
 extern uint flgDebugLevel; //  leveldebug
 extern bool SET_PID_GAIN;

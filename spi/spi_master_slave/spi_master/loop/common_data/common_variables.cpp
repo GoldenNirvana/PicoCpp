@@ -42,8 +42,8 @@ bool PID_TURN_ON=false;
 bool Scanner_Retract=false;
 bool Scanner_Protract=false;
 bool POSXYZ_CONFIG_UPDATE=false;
-uint16_t ZValue = 0;
-uint16_t SignalValue = 0;
+int16_t ZValue = 0;
+int16_t SignalValue = 0;
 bool TheadDone=false;
 //
 
