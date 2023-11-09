@@ -240,7 +240,7 @@ void Scanner::positioningXYZ(int lid_name, int f, int p, int n, int dir, int16_t
       status=none;
       if (!flgVirtual) //add mf
       {
-        linearDriver.activate(lid_name, f, p, ln, ldir);
+        linearDriver.activate(lid_name, f, p,  std::abs(ln), ldir);
       }
       else
       {
