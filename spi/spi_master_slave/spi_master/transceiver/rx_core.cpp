@@ -93,14 +93,14 @@ void RX_core::launchOnCore1()
         break;
  ///*************************************  
       case 14: //add MF set virtual device 
-        red();      
+     //   red();      
         flgVirtual = !flgVirtual;
-        dark();
+    //    dark();
         break;
       case 15: //add mf set debug level =2; if =3 cancel debug info!!
-        red();      
+    //    red();      
         flgDebugLevel =vector[1];
-        dark();
+    //    dark();
         break;
       case 17: //add mf set PID GAIN!    
         SET_PID_GAIN=true; 

@@ -10,7 +10,8 @@
 
 void MainCore::loop()
 {
-  green();
+ // green(); 
+ dark();
   // remove true and add var
   uint64_t time = 0;
   while (time++ < UINT64_MAX - 1000)
@@ -34,13 +35,13 @@ void MainCore::loop()
 
       scanner.approacphm(convergence_data);
       
-      green();
+    //  green();
       sleep_ms(100);
-      dark(); 
+   //   dark(); 
     }
     if (LID_UNTIL_STOP)  // пьезо мувер позиционирование
     {
-      green();     
+   //   green();     
       scanner.positioningXYZ(vector[1], vector[2], vector[3], vector[4], vector[5],vector[6], vector[7]); //int lid_name, int f, int p, int n, int dir
       //blue();
      // LID_UNTIL_STOP=false; //add
@@ -58,13 +59,13 @@ void MainCore::loop()
       if (CONFIG_UPDATE)
       {
         CONFIG_UPDATE = false;
-        red();
+      //  red();
         scanner.update({static_cast<uint32_t>(vector[1]), static_cast<uint32_t>(vector[2]),
                         static_cast<uint8_t>(vector[3]), static_cast<uint8_t>(vector[4]),
                         static_cast<uint16_t>(vector[5]), static_cast<uint16_t>(vector[6]),
                         static_cast<uint16_t>(vector[7]), static_cast<uint16_t>(vector[8]),
                         static_cast<uint8_t>(vector[9])});
-        dark();
+     //   dark();
         continue;
       }
       if (SCANNING)

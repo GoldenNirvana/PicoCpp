@@ -45,8 +45,8 @@ bool POSXYZ_CONFIG_UPDATE=false;
 int16_t ZValue =32767;
 int16_t SignalValue = 32767;
 bool TheadDone=false;
-uint8_t ZPin=1;
-uint8_t SignalPin=0;
+uint8_t ZPin=0;
+uint8_t SignalPin=1;
 int16_t ZMaxValue=32767;
 //
 

@@ -15,7 +15,7 @@ LinearDriver::LinearDriver() : x_a(OutputPort(18)), x_b(OutputPort(19)), y_a(Out
 }
 
 
-void LinearDriver::activate(int command, int freq, int p, int n, bool dir)
+void LinearDriver::activate(int command, int freq, int p, int n, bool dir)  ///
 {
    if (flgDebugLevel<=DEBUG_LEVEL) std::cout << "From activate command = " << command << '\n';
   OutputPort *ptrA = &x_a;
