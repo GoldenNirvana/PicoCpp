@@ -8,7 +8,7 @@
 
 void MainCore::loop()
 {
-  green();
+  dark();
   // remove true and add var
   uint64_t time = 0;
   while (time++ < UINT64_MAX - 1000)
