@@ -49,7 +49,7 @@ public:
   
   void approacphm(const int16_t *const data); 
 
-  void moveLinearDriverUntilStop(int lid_name, int f, int p, int n, int dir, int gtmax,int gtmin); 
+  void positioningXYZ(int lid_name, int f, int p, int n, int dir, int16_t gtmax,int16_t gtmin); 
 
   void start_frqscan(); //find resonance
 

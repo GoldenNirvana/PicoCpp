@@ -99,7 +99,7 @@ void stopAll()
   RESONANCE = false;
   RESONANCE_STOP = true;
   RESONANCE_ACTIVE = false;
-// scan_index = 0;
+//  scan_index = 0;
 //  current_freq = 0;
   afc.clear();
 }

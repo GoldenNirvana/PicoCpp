@@ -34,8 +34,8 @@ void LinearDriver::activate(int command, int freq, int p, int n, bool dir)
     ptrA = &z_a;
     ptrB = &z_b;
   }
-  double t_abs = 1000000 / freq;        // 2000
-  double t_low = p * t_abs / 1000;  //  750 * 2000 / 1000000 = 1.5
+  double t_abs =(double)(1000000 / freq);        // 2000                     // mf 23108
+  double t_low =(double)(p * t_abs / 1000);  //  750 * 2000 / 1000000 = 1.5 // mf 23108
   double t_high = t_abs - t_low;    // 2 - 1.5 = 0.5
 
   if (dir)

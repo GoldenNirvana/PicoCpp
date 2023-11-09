@@ -115,7 +115,7 @@ void RX_core::launchOnCore1()
       case 23:
         DAC8563_INIT = true;
         break;
-      case 24:// get signal value currentsignal or all signal ?
+      case 24:// get signal value current signal or all signal ?
         AD7606_GET_VALUE = true;
         break;
       case 25:
@@ -198,7 +198,7 @@ void RX_core::serialPrintBuffer(const uint16_t *const buf, int len)
 } 
 void RX_core::serialPrint2Buffer(const uint16_t *const buf)
 {
-  uint64_t a = time_us_64();
+ // uint64_t a = time_us_64();
   std::cout << "code12,"<< std::to_string(buf[0]) << ','<<std::to_string( buf[1]) <<"\n";
 }
 

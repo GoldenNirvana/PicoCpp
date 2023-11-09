@@ -41,7 +41,7 @@ void MainCore::loop()
     if (LID_UNTIL_STOP)  // пьезо мувер позиционирование
     {
       green();     
-      scanner.moveLinearDriverUntilStop(vector[1], vector[2], vector[3], vector[4], vector[5],vector[6], vector[7]); //int lid_name, int f, int p, int n, int dir
+      scanner.positioningXYZ(vector[1], vector[2], vector[3], vector[4], vector[5],vector[6], vector[7]); //int lid_name, int f, int p, int n, int dir
       //blue();
      // LID_UNTIL_STOP=false; //add
     }
@@ -167,15 +167,15 @@ void MainCore::loop()
   if (AD7606_GET_VALUE) // get value channel vector[1] 
     {
       AD7606_GET_VALUE = false;
-      afc="code24,";
+      afc="code24,"; //???
      if (!flgVirtual) 
      {    
-       afc+=std::to_string((int16_t)getValuesFromAdc()[0])+','+std::to_string((int16_t)getValuesFromAdc()[1])+'\n'; //ampl,Z
+       afc+=std::to_string((int16_t)getValuesFromAdc()[SignalPin])+','+std::to_string((int16_t)getValuesFromAdc()[ZPin])+'\n'; //ampl,Z
        std::cout<<afc;    
      }
      else
      {
-       afc+=std::to_string(32000)+','+std::to_string(32000)+ '\n';
+       afc+=std::to_string(32000)+','+std::to_string(32000)+ '\n'; //ampl,Z
        std::cout<<afc;    
      }
       continue;
@@ -242,29 +242,28 @@ void MainCore::loop()
       sleep_us(10);
       resetPort.disable();
     }
-    if (AD7606_READ or AD7606_READ_FOREVER)
+    if (AD7606_READ or AD7606_READ_FOREVER)   // read ADC
     {
       if (flgDebugLevel<=DEBUG_LEVEL) log("ReadADC\n",flgDebugLevel);
       AD7606_READ = false;
       if (AD_7606_IS_READY_TO_READ)
       {
-         afc.clear();
+        afc.clear();
         afc="code12";
        if (!flgVirtual) 
        {
          auto ptr = getValuesFromAdc(); ///???
-        for (int i = 0; i < 8; ++i)
-         {
-          afc+=','+std::to_string((int16_t)ptr[i]);
-         }
-        afc+="\n";        
-        std::cout<<afc;
+              ZValue=(int16_t)ptr[ZPin];
+         SignalValue=(int16_t)ptr[SignalPin];
+         afc+=','+std::to_string(ZValue)+','+std::to_string(SignalValue)+"\n";
+         std::cout<<afc;
+         afc.clear();
        }
        else
        {
-        afc+=','+std::to_string(32000)+','+std::to_string(32000)+"\n";   
-        std::cout << afc;
-        afc.clear();
+         afc+=','+std::to_string(ZValue)+','+std::to_string(SignalValue)+"\n";   //Z,Signal
+         std::cout << afc;
+         afc.clear();
        }
       }
     }
@@ -286,7 +285,6 @@ void MainCore::loop()
      // set_io_value(5,vector[1],vector[2]);
     }
   }
-
 }
 
 MainCore::MainCore()

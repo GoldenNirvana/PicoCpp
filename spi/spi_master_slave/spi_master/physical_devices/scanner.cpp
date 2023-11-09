@@ -29,7 +29,17 @@ void Scanner::start_scan(const Point &point)
   prev_point = pos_;
   vector_z.clear(); //231030;
   other_info.clear();
- 
+ // 
+  afc.clear();
+  afc="debug";
+  for (int j = 1; j < 10; ++j)
+  {
+   afc+=','+std::to_string(vector[j]);
+  }
+  afc+=+"\n";
+  std::cout<<afc;
+  sleep_ms(100);
+//
   if (!flgVirtual) move_to(point, 10);
   for (uint32_t i = 0; i < conf_.nPoints_y; ++i) //231030
   {
@@ -84,11 +94,20 @@ void Scanner::start_scan(const Point &point)
     if (CONFIG_UPDATE) //add mf 231101
     {
         CONFIG_UPDATE = false;
-        red();
+    //    red();
         conf_.delayF=vector[1];
         conf_.delayB=vector[2];
         set_io_value(2,vector[3]); //gain PID
-        dark();
+        afc.clear();
+        afc="debug parameters update";
+        for (int j = 1; j <= 3; ++j)
+        {
+         afc+=','+std::to_string(vector[j]);
+        }
+        afc+=+"\n";
+        std::cout<<afc;
+        sleep_ms(100);
+    //    dark();
     }
     if (STOP_ALL)                     // is need to stop
     {
@@ -98,7 +117,11 @@ void Scanner::start_scan(const Point &point)
       MICRO_SCAN = false;
       green(); 
    */
-      break;
+        afc.clear();
+        afc="stopped\n";
+        std::cout<<afc;
+        sleep_ms(100);
+       break;
     //  return; ///??? 231102
     }
     for (uint16_t j = 0; j < conf_.betweenPoints_y; ++j) // go next line
@@ -113,7 +136,7 @@ void Scanner::start_scan(const Point &point)
 //  blue();
   STOP_ALL = false;
   SCANNING = false;
-  if (!flgVirtual)  stop_scan();
+  if (!flgVirtual)  stop_scan();  //move to???
   sleep_ms(200); //231030!!!
   while(not TheadDone) {sleep_ms(50); }
   TheadDone = false;    
@@ -160,14 +183,14 @@ void Scanner::move_to(const Point &point, uint32_t delay)
     set_on_cap(2, --pos_.y);
     sleep_us(delay);
   }
-  std::cout << "end\n";
+ // std::cout << "end\n"; //??? // mf 231108
 }
-void Scanner::moveLinearDriverUntilStop(int lid_name, int f, int p, int n, int dir, int gtmax,int gtmin) // n-nsteps
+void Scanner::positioningXYZ(int lid_name, int f, int p, int n, int dir, int16_t gtmax,int16_t gtmin) // n-nsteps
 {
    //uint32_t SET_POINT;
   uint16_t GATE_Z_MAX, GATE_Z_MIN;
   int8_t   status;
-  int16_t  Z0=32000;
+ // int16_t  Z0=32000;
   const int  none = 30;
   const int    ok = 3;
   const int touch = 2;
@@ -183,8 +206,8 @@ void Scanner::moveLinearDriverUntilStop(int lid_name, int f, int p, int n, int d
   red();
   if (flgVirtual) //add mf 
   {
-    ZValue=Z0;
-    SignalValue=Z0;
+ //   ZValue=Z0;
+ //   SignalValue=Z0;
   }
 
   if (lid_name == 90 || lid_name == 95) //X,Y
@@ -203,6 +226,16 @@ void Scanner::moveLinearDriverUntilStop(int lid_name, int f, int p, int n, int d
        if (ln>0) ldir=1;
        ln=abs(ln);
        POSXYZ_CONFIG_UPDATE = false;
+       afc.clear();
+        afc="debug parameters update";
+        for (int j = 1; j <=3; ++j)
+        {
+         afc+=','+std::to_string(vector[j]);
+        }
+        afc+=+"\n";
+        std::cout<<afc;
+        sleep_ms(100);
+
      }
       status=none;
       if (!flgVirtual) //add mf
@@ -239,13 +272,22 @@ void Scanner::moveLinearDriverUntilStop(int lid_name, int f, int p, int n, int d
        ldir=0;
        if (ln>0) ldir=1;
        POSXYZ_CONFIG_UPDATE = false;
+        afc.clear();
+        afc="debug parameters update";
+        for (int j = 1; j <= 3; ++j)
+        {
+         afc+=','+std::to_string(vector[j]);
+        }
+        afc+=+"\n";
+        std::cout<<afc;
+        sleep_ms(100);     
       }
       status=none;
       if (!flgVirtual) //add mf
       {
          getValuesFromAdc();   //test
-         ZValue=(int16_t)getValuesFromAdc()[1];
-         SignalValue=(int16_t)getValuesFromAdc()[0];
+         ZValue=(int16_t)getValuesFromAdc()[ZPin];
+         SignalValue=(int16_t)getValuesFromAdc()[SignalPin];
         // check if z > <
        if(ZValue<GATE_Z_MIN)
        {
@@ -264,8 +306,8 @@ void Scanner::moveLinearDriverUntilStop(int lid_name, int f, int p, int n, int d
        if (ldir==1) {ZValue-=ln;}
        else 
        {
-        if ( ZValue<(Z0-ln)){ ZValue+=ln;}
-                       else { ZValue=Z0; }
+        if ( ZValue<(ZMaxValue-ln)){ ZValue+=ln;}
+                              else { ZValue=ZMaxValue; }
        }                 
        // check if z > <
        if(ZValue<GATE_Z_MIN)
@@ -285,7 +327,8 @@ void Scanner::moveLinearDriverUntilStop(int lid_name, int f, int p, int n, int d
       sleep_ms(200); //need to adjust
       afc.clear();
     }
-  }
+   }
+        
       afc.clear();
       afc="code"+std::to_string(lid_name)+','+std::to_string(status)+','+std::to_string(ZValue)+','+std::to_string(SignalValue)
      // +','+std::to_string(GATE_Z_MIN)+','+std::to_string(GATE_Z_MAX)
@@ -293,6 +336,10 @@ void Scanner::moveLinearDriverUntilStop(int lid_name, int f, int p, int n, int d
       std::cout <<afc;
       afc.clear();
       sleep_ms(200); //need to adjust
+      afc.clear();
+      afc="stopped\n";
+      std::cout<<afc;
+      sleep_ms(100);
       while(not TheadDone) {sleep_ms(50); }
       TheadDone = false;    
       LID_UNTIL_STOP=false; 
@@ -302,13 +349,15 @@ void Scanner::moveLinearDriverUntilStop(int lid_name, int f, int p, int n, int d
 
 void Scanner::approacphm(const int16_t *const data) //uint16_t
 {
- // const int waitsteps = 40;
-  const int stopdone=5;
-  const int none = 30;
-  uint32_t SIGNAL,Z0, Z;
-  uint32_t SET_POINT, GATE_Z_MAX, GATE_Z_MIN;
-  int32_t  GAIN, NSTEPS;
-  uint32_t INTDELAY, SCANNERDECAY;
+  const int  none = 30;
+  const int    ok = 3;
+  const int touch = 2;
+  const int stopdone = 1;
+
+   uint16_t Z0,ZMaxValue=32767;
+  uint16_t SET_POINT, GATE_Z_MAX, GATE_Z_MIN;
+   int16_t GAIN, NSTEPS;
+  uint16_t INTDELAY, SCANNERDECAY;
 
   // SET VALUE FROM RX_CORE
     SET_POINT  = data[0];
@@ -321,8 +370,7 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
 //  freq = data[7];
  // scv = data[8];
   afc.clear(); 
-  afc= "debug," ;
-  
+  afc= "debug," ; 
     for (size_t j = 0; j < 7; j++)     // send info
     {
      afc+=','+ std::to_string(data[j]);
@@ -338,24 +386,22 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
   for (int i = 0; i < 7; ++i)
     buf_params.push_back(data[i]);
 
- if (!flgVirtual) //add mf
+  if (!flgVirtual) //add mf
   {
     getValuesFromAdc();  
     uint16_t *ptr = getValuesFromAdc();
-    SIGNAL = (int16_t) ptr[0];
-    Z = (int16_t) ptr[1];
+    SignalValue = (int16_t) ptr[SignalPin];
+    ZValue = (int16_t) ptr[ZPin];
   }
   else
   { 
-     SIGNAL = 32000;
-         Z0 = 32000;
-         Z  = Z0;
+    Z0 = ZValue;
   }  
 
   std::vector<int16_t> buf_status;
   buf_status.push_back(none);
-  buf_status.push_back(Z);
-  buf_status.push_back(SIGNAL);
+  buf_status.push_back(ZValue);
+  buf_status.push_back(SignalValue);
   afc.clear(); 
   afc= "code75," + std::to_string(APPROACH)+',' +std::to_string(buf_status[1]) +',' +std::to_string(buf_status[2])+"\n";  
   std::cout << afc;
@@ -371,8 +417,12 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
       sleep_ms(500);
       dark();
       buf_status[0] = stopdone;
-      buf_status[1] = Z;
-      buf_status[2] = SIGNAL;
+      buf_status[1] = ZValue;
+      buf_status[2] = SignalValue;
+      afc.clear();
+      afc="stopped\n";
+      std::cout<<afc;
+      sleep_ms(100);
       break;
     }
      if (APPROACH_CONFIG_UPDATE)
@@ -389,6 +439,15 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
       INTDELAY   = vector[5];
       GAIN       = vector[6];
     SCANNERDECAY = vector[7]; 
+        afc.clear();
+        afc="debug parameters update";
+        for (int j = 1; j <= 7; ++j)
+        {
+         afc+=','+std::to_string(vector[j]);
+        }
+        afc+=+"\n";
+        std::cout<<afc;
+        sleep_ms(100);
     }
 
     dac8563.writeA(SET_POINT);
@@ -402,35 +461,35 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
      Z = (int16_t) ptr[1]; 
      SIGNAL = (int16_t) ptr[0];
      */
-     Z=(int16_t)getValuesFromAdc()[1];
-     SIGNAL=(int16_t)getValuesFromAdc()[0];
+     //  getValuesFromAdc();
+          ZValue=(int16_t)getValuesFromAdc()[ZPin];
+     SignalValue=(int16_t)getValuesFromAdc()[SignalPin];
      if (flgDebugLevel<=DEBUG_LEVEL) ;//log("Z = " + std::to_string(Z) + '\n',flgDebugLevel);
    }
    else
    { 
-     SIGNAL = 32000;
      if (NSTEPS >= 0)
      {
-      Z = Z-500;
+      ZValue = ZValue-500;
      } 
      else
      {       
-       if ((Z0-Z)>0){Z+=500;}
-       else {Z=Z0;}
+       if ((ZMaxValue-ZValue)>0){ZValue+=500;}
+       else {ZValue=ZMaxValue;}
      }  
-     buf_status[1] = Z;
-     buf_status[2] = SIGNAL;
+     buf_status[1] = ZValue;
+     buf_status[2] = SignalValue;
    }  
     if (NSTEPS >= 0)
     {
-      if (Z <= GATE_Z_MIN)
+      if (ZValue <= GATE_Z_MIN)
       {
-        buf_status[0] = 2; // touch
-        buf_status[1] = Z;
-        buf_status[2] = SIGNAL;
+        buf_status[0] = touch;
+        buf_status[1] = ZValue;
+        buf_status[2] = SignalValue;
         break;
       }
-      if (Z <= GATE_Z_MAX)
+      if (ZValue <= GATE_Z_MAX)
       {
         int k = 0;
         for (int i = 0; i < 10; ++i)
@@ -439,14 +498,14 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
            {
             //  getValuesFromAdc();
             //  auto pt = getValuesFromAdc();
-             Z=(int16_t)getValuesFromAdc()[1];
+             ZValue=(int16_t)getValuesFromAdc()[ZPin];
            }
-          if (Z <= GATE_Z_MAX)    k++;
+          if (ZValue <= GATE_Z_MAX)    k++;
           if (k == 3)
           {
-           buf_status[0] = 3; // ok
-           buf_status[1] = Z;
-           buf_status[2] = SIGNAL;
+           buf_status[0] = ok;
+           buf_status[1] = ZValue;
+           buf_status[2] = SignalValue;
            if (flgDebugLevel<=DEBUG_LEVEL);// log("success\n",flgDebugLevel);
            break;
           }
@@ -457,6 +516,7 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
     } //NSTEPS>0
     if (NSTEPS < 0)
     {
+
     }
       afc.clear(); 
       afc= "code75," + std::to_string(buf_status[0])+',' +std::to_string(buf_status[1]) +',' +std::to_string(buf_status[2])+"\n";  
@@ -475,8 +535,11 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
       std::cout << afc;
       afc.clear();   
       APPROACH = false; 
-      protract();// io3_1.disable();//вытянуть
-      sleep_ms(INTDELAY); 
+      if (!flgVirtual) 
+      {
+        protract();// io3_1.disable();//вытянуть
+        sleep_ms(INTDELAY); 
+      }  
 /*
       afc="done\n";
       std::cout<<afc;
@@ -516,20 +579,18 @@ void Scanner::start_frqscan()
         {  
          set_freq(inBuf[1]);
          sleep_ms(inBuf[4]);
+//         afc +=','+ std::to_string(inBuf[1]) + ',' + std::to_string((int16_t)getValuesFromAdc()[current_channel]);//+ ',';
          afc +=','+ std::to_string(inBuf[1]) + ',' + std::to_string((int16_t)getValuesFromAdc()[current_channel]);//+ ',';
         } 
         else
         {
-         current_freq=inBuf[1];//+inBuf[2]*scan_index;
+         current_freq=inBuf[1];
          sleep_ms(inBuf[4]);
-         signalvalue=std::round(a*(pow(M_E,-pow((current_freq-res_freq),2)/1000000)));
+         signalvalue=(int16_t)std::round(a*(pow(M_E,-pow((current_freq-res_freq),2)/1000000)));
          afc +=','+std::to_string(current_freq) + ',' + std::to_string(signalvalue);//+',';
         }
-       sleep_ms(10);
-        inBuf[1] += inBuf[2];  
-    //   scan_index++;     
-     //   if (scan_index>=inBuf[0]) RESONANCE_ACTIVE=false;
-        //std::cout << afc << '\n';   
+        sleep_ms(10);
+        inBuf[1] += inBuf[2];    
       }
         std::cout << afc << '\n';
         sleep_ms(200);

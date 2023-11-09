@@ -58,6 +58,9 @@ extern bool Scanner_Retract;
 extern bool Scanner_Protract;
 extern bool POSXYZ_CONFIG_UPDATE;
 extern bool TheadDone;
+extern uint8_t ZPin;
+extern uint8_t SignalPin;
+extern int16_t ZMaxValue;
 //
 extern bool AD_7606_IS_READY_TO_READ;
 extern bool RESONANCE;  //AD9833 
