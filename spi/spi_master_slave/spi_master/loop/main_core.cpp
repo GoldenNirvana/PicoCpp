@@ -212,7 +212,8 @@ void MainCore::loop()
          auto ptr = getValuesFromAdc(); 
               ZValue=(int16_t)ptr[ZPin];
          SignalValue=(int16_t)ptr[SignalPin];
-         afc+=','+std::to_string(ZValue)+','+std::to_string(SignalValue)+"\n";
+         set_io_value(2,vector[1]);   //add 231114 gain pid
+         afc+=','+std::to_string(ZValue)+','+std::to_string(SignalValue)+','+std::to_string(vector[1])+"\n";
          std::cout<<afc;
          afc.clear();
        }
@@ -227,6 +228,7 @@ void MainCore::loop()
     if (SET_PID_GAIN)
     {
       SET_PID_GAIN=false;
+      sleep_ms(200);
       afc.clear();
       afc="debug PID gain parameters";
       afc+=','+std::to_string(vector[1]);

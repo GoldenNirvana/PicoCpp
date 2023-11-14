@@ -157,6 +157,7 @@ void Scanner::update(const Config &config)
 }
 Point  Scanner::getX0Y0()
 {
+  sleep_ms(200);
   afc.clear();
   afc="code18";
   afc+=','+std::to_string(pos_.x)+','+std::to_string(pos_.y)+"\n";
@@ -172,7 +173,7 @@ void Scanner::move_toX0Y0()  //переместиться в начальную 
   pointX0Y0.x=(uint16_t)(vector[1]); 
   pointX0Y0.y=(uint16_t)(vector[2]);
         delay=(uint16_t)(vector[3]);
- 
+  sleep_ms(100);
   afc.clear();
   afc="debug moveto parameters";
   afc+=','+std::to_string(pointX0Y0.x)+','+std::to_string(pointX0Y0.y)+','+std::to_string(delay);
@@ -183,12 +184,12 @@ void Scanner::move_toX0Y0()  //переместиться в начальную 
   sleep_ms(200);
 
   move_to(pointX0Y0,delay);
- 
+   sleep_ms(200); 
    afc.clear();
    afc="stopped\n"; 
    std::cout<<afc;
    afc.clear();
-   sleep_ms(100);
+   sleep_ms(200);
    while(not TheadDone) {sleep_ms(50); }
    TheadDone = false;    
    std::cout << "end\n"; 
