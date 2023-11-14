@@ -24,41 +24,44 @@ void Scanner::protract() //вытянуть
 {
  io3_1.disable();
 }
-void Scanner::start_scan(const Point &point)
+
+void Scanner::start_scan()
 {
-  prev_point = pos_;
-  vector_z.clear(); //231030;
+  prev_point = pos_; //запоминание начальной точки скана
+  vector_z.clear(); 
   other_info.clear();
  // 
   afc.clear();
-  afc="debug";
-  for (int j = 1; j < 10; ++j)
+  afc="debug scan parameters";
+  for (int j = 1; j < 8; ++j)
   {
    afc+=','+std::to_string(vector[j]);
   }
+  afc+=','+std::to_string(pos_.x)+','+std::to_string(pos_.y);
   afc+=+"\n";
   std::cout<<afc;
+  afc.clear();
   sleep_ms(100);
-//
-  if (!flgVirtual) move_to(point, 10);
-  for (uint32_t i = 0; i < conf_.nPoints_y; ++i) //231030
+
+  for (uint32_t i = 0; i < conf_.nPoints_y; ++i) 
   {
     for (uint32_t j = 0; j < conf_.nPoints_x; ++j)
     {
       for (uint16_t k = 0; k < conf_.betweenPoints_x; ++k)
       {
-       if (!flgVirtual)  set_on_cap(1, ++pos_.x);
-        sleep_us(conf_.delayF);
+       if (!flgVirtual) { set_on_cap(1, ++pos_.x); }
+       else { ++pos_.x; }
+       sleep_us(conf_.delayF);
       }
       sleep_ms(50); // CONST 50ms
       if (!flgVirtual) 
       {
-        getValuesFromAdc(); ///????? 231025
+        getValuesFromAdc(); 
         getValuesFromAdc();
         vector_z.emplace_back((int16_t)spiBuf[0]);  // get Z from adc ?? 
         if (conf_.flag == 2) //231102
         {
-         other_info.emplace_back((int16_t)spiBuf[conf_.flag]); //????
+         other_info.emplace_back((int16_t)spiBuf[conf_.flag]); 
         }
       }
       else
@@ -66,38 +69,39 @@ void Scanner::start_scan(const Point &point)
         vector_z.emplace_back(int16_t(10000.0*(sin(M_PI*j*0.1)+sin(M_PI*i*0.1))));  // get Z from adc
         if (conf_.flag == 2) //231102
         {
-         other_info.emplace_back(int16_t(10000.0*(sin(M_PI*j*0.1)+sin(M_PI*i*0.1)))); //????
+         other_info.emplace_back(int16_t(10000.0*(sin(M_PI*j*0.1)+sin(M_PI*i*0.1)))); 
         }
       }   
     }
     for (uint16_t j = 0; j < conf_.betweenPoints_x * conf_.nPoints_x; ++j) // GET back
     {
-      set_on_cap(1, --pos_.x);
-      sleep_us(conf_.delayB);
+     if (!flgVirtual) { set_on_cap(1, --pos_.x); }
+     else { --pos_.x; }
+     sleep_us(conf_.delayB);
     }
     afc.clear();
     afc="code50";
-    for (size_t j = 0; j < vector_z.size(); j++)     // send info
+    for (size_t j = 0; j < vector_z.size(); j++)     // send data scanline
     {
-      afc+=','+std::to_string(vector_z[j] ); //231025
-      if (conf_.flag == 2)  //231030
+      afc+=','+std::to_string(vector_z[j] ); 
+      if (conf_.flag == 2)  
       {
-        afc+=','+std::to_string(vector_z[j] )+','+std::to_string(other_info[j]); //231025
+        afc+=','+std::to_string(vector_z[j] )+','+std::to_string(other_info[j]); 
       };    
     }
       afc+="\n";
       std::cout<<afc;
-      sleep_ms(100); //add 231107
+      sleep_ms(100); 
       afc.clear();
       vector_z.clear();
       other_info.clear();
-    if (CONFIG_UPDATE) //add mf 231101
-    {
+    if (CONFIG_UPDATE) 
+    {       
         CONFIG_UPDATE = false;
-    //    red();
         conf_.delayF=vector[1];
         conf_.delayB=vector[2];
         set_io_value(2,vector[3]); //gain PID
+        sleep_ms(100);    //
         afc.clear();
         afc="debug parameters update";
         for (int j = 1; j <= 3; ++j)
@@ -106,48 +110,40 @@ void Scanner::start_scan(const Point &point)
         }
         afc+=+"\n";
         std::cout<<afc;
+         afc.clear();
         sleep_ms(100);
     //    dark();
     }
-    if (STOP_ALL)                     // is need to stop
+    if (STOP_ALL)           // is need to stop
     {
-   /*   blue();
-      STOP_ALL = false;
-  //    stop_scan(); //????  231102
-      MICRO_SCAN = false;
-      green(); 
-   */
+        sleep_ms(100);  
         afc.clear();
         afc="stopped\n";
         std::cout<<afc;
         sleep_ms(100);
-       break;
-    //  return; ///??? 231102
+        break;
     }
     for (uint16_t j = 0; j < conf_.betweenPoints_y; ++j) // go next line
     {
-      set_on_cap(2, ++pos_.y);
+      //set_on_cap(2, ++pos_.y);
+      if (!flgVirtual) { set_on_cap(2, ++pos_.y); }
+      else { ++pos_.y; }
+
       sleep_us(conf_.delayF);
     }
-    activateBlue();
-    sleep_ms(100);
-    activateDark();
-  }//i
-//  blue();
+  //  activateBlue();
+  //  sleep_ms(100);
+  //  activateDark();
+  }//i next scan line
+
   STOP_ALL = false;
   SCANNING = false;
-  if (!flgVirtual)  stop_scan();  //move to???
-  sleep_ms(200); //231030!!!
-  while(not TheadDone) {sleep_ms(50); }
+  stop_scan();  //возврат в начальную точку скана
+  sleep_ms(200); 
+  while(not TheadDone) {sleep_ms(50); } //ожидание ответа ПК для синхронизации
   TheadDone = false;    
-  std::cout<<"end\n"; //add end scan 231025
+  std::cout<<"end\n"; 
   activateDark();
-// green();
-}
-
-void Scanner::start_scan()
-{
-  start_scan(pos_);
 }
 
 void Scanner::stop_scan()
@@ -159,10 +155,49 @@ void Scanner::update(const Config &config)
 {
   conf_ = config;
 }
-
-void Scanner::move_to(const Point &point, uint32_t delay)
+Point  Scanner::getX0Y0()
 {
+  afc.clear();
+  afc="code18";
+  afc+=','+std::to_string(pos_.x)+','+std::to_string(pos_.y)+"\n";
+  std::cout<<afc;
+  afc.clear();
+  sleep_ms(100);
+  return pos_; 
+}  
+void Scanner::move_toX0Y0()  //переместиться в начальную точку  скана из начальной точке предыдущего скана
+{
+  Point pointX0Y0;
+  uint16_t delay;
+  pointX0Y0.x=(uint16_t)(vector[1]); 
+  pointX0Y0.y=(uint16_t)(vector[2]);
+        delay=(uint16_t)(vector[3]);
+ 
+  afc.clear();
+  afc="debug moveto parameters";
+  afc+=','+std::to_string(pointX0Y0.x)+','+std::to_string(pointX0Y0.y)+','+std::to_string(delay);
+  afc+=','+std::to_string(pos_.x)+','+std::to_string(pos_.y); 
+  afc+=+"\n";
+  std::cout<<afc;
+  afc.clear();
+  sleep_ms(200);
 
+  move_to(pointX0Y0,delay);
+ 
+   afc.clear();
+   afc="stopped\n"; 
+   std::cout<<afc;
+   afc.clear();
+   sleep_ms(100);
+   while(not TheadDone) {sleep_ms(50); }
+   TheadDone = false;    
+   std::cout << "end\n"; 
+}
+
+void Scanner::move_to(const Point &point, uint16_t delay)
+{
+ if (!flgVirtual)
+ {
   while (pos_.x < point.x)
   {
     set_on_cap(1, ++pos_.x);
@@ -173,24 +208,44 @@ void Scanner::move_to(const Point &point, uint32_t delay)
     set_on_cap(1, --pos_.x);
     sleep_us(delay);
   }
-  while (pos_.y < point.y)
+  while (pos_.y <  point.y)
   {
     set_on_cap(2, ++pos_.y);
     sleep_us(delay);
   }
-  while (pos_.y > point.y)
+  while (pos_.y >  point.y)
   {
     set_on_cap(2, --pos_.y);
     sleep_us(delay);
   }
- // std::cout << "end\n"; //??? // mf 231108
+ }
+ else  
+ { 
+  pos_.x=point.x;
+  pos_.y=point.y;
+  sleep_us(delay*(std::abs(pos_.x-point.x)+std::abs(pos_.y-point.y)));
+ } 
 }
+void Scanner::move_toZ0(int lid_name, int f, int p, int n, int dir)  //отвестись в безопастную начальную точку по Z
+{
+  scanner.retract();  //втянуть сканер   
+  sleep_ms(50);
+  if (!flgVirtual) linearDriver.activate(lid_name, f, p, std::abs(n), dir);
+  scanner.protract();  //вытянуть сканер 
+  sleep_ms(1000);
+  afc.clear();
+  afc="debug autorising done "+std::to_string(n)+','+std::to_string(dir);
+  afc+=+"\n";
+  std::cout<<afc;
+  afc.clear();
+  sleep_ms(100);    
+}
+
 void Scanner::positioningXYZ(int lid_name, int f, int p, int n, int dir, int16_t gtmax,int16_t gtmin) // n-nsteps
 {
-   //uint32_t SET_POINT;
+  //uint32_t SET_POINT;
   uint16_t GATE_Z_MAX, GATE_Z_MIN;
   int8_t   status;
- // int16_t  Z0=32000;
   const int  none = 30;
   const int    ok = 3;
   const int touch = 2;
@@ -204,11 +259,6 @@ void Scanner::positioningXYZ(int lid_name, int f, int p, int n, int dir, int16_t
   GATE_Z_MIN = gtmin;
  
   red();
-  if (flgVirtual) //add mf 
-  {
- //   ZValue=Z0;
- //   SignalValue=Z0;
-  }
 
   if (lid_name == 90 || lid_name == 95) //X,Y
   {
@@ -216,9 +266,6 @@ void Scanner::positioningXYZ(int lid_name, int f, int p, int n, int dir, int16_t
     {  
      if (POSXYZ_CONFIG_UPDATE)
      { 
-     //  green();
-       sleep_ms(100);
-    //   dark();
        ln         = vector[1]; // with sign 
        GATE_Z_MAX = vector[2];
        GATE_Z_MIN = vector[3];      
@@ -226,16 +273,18 @@ void Scanner::positioningXYZ(int lid_name, int f, int p, int n, int dir, int16_t
        if (ln>0) ldir=1;
        ln=abs(ln);
        POSXYZ_CONFIG_UPDATE = false;
+       sleep_ms(100);  
        afc.clear();
-        afc="debug parameters update";
+       afc="debug parameters update";
         for (int j = 1; j <=3; ++j)
         {
          afc+=','+std::to_string(vector[j]);
         }
         afc+=+"\n";
         std::cout<<afc;
+        afc.clear();     
         sleep_ms(100);
-
+      
      }
       status=none;
       if (!flgVirtual) //add mf
@@ -263,15 +312,13 @@ void Scanner::positioningXYZ(int lid_name, int f, int p, int n, int dir, int16_t
       Z_STATE = true; 
       if (POSXYZ_CONFIG_UPDATE)
       {
-     //  green();
-       sleep_ms(100);
-   //    dark();
        ln         = vector[1];
        GATE_Z_MAX = vector[2];
        GATE_Z_MIN = vector[3];
        ldir=0;
        if (ln>0) ldir=1;
        POSXYZ_CONFIG_UPDATE = false;
+        sleep_ms(100);  
         afc.clear();
         afc="debug parameters update";
         for (int j = 1; j <= 3; ++j)
@@ -280,6 +327,7 @@ void Scanner::positioningXYZ(int lid_name, int f, int p, int n, int dir, int16_t
         }
         afc+=+"\n";
         std::cout<<afc;
+        afc.clear();
         sleep_ms(100);     
       }
       status=none;
@@ -328,18 +376,17 @@ void Scanner::positioningXYZ(int lid_name, int f, int p, int n, int dir, int16_t
       sleep_ms(200); //need to adjust
       afc.clear();
     }
-   }
-        
+   }     
       afc.clear();
       afc="code"+std::to_string(lid_name)+','+std::to_string(status)+','+std::to_string(ZValue)+','+std::to_string(SignalValue)
      // +','+std::to_string(GATE_Z_MIN)+','+std::to_string(GATE_Z_MAX)
       +"\n";
       std::cout <<afc;
-      afc.clear();
       sleep_ms(200); //need to adjust
       afc.clear();
       afc="stopped\n";
       std::cout<<afc;
+      afc.clear();
       sleep_ms(100);
       while(not TheadDone) {sleep_ms(50); }
       TheadDone = false;    
@@ -356,7 +403,7 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
   const int touch = 2;
   const int stopdone = 1;
 
-   uint16_t Z0,ZMaxValue=32767;
+   uint16_t ZMaxValue=32767;
   uint16_t SET_POINT, GATE_Z_MAX, GATE_Z_MIN;
    int16_t  freq,scv;//
    int16_t GAIN, NSTEPS;
@@ -374,12 +421,12 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
           scv  = data[8];
 
   afc.clear(); 
-  afc= "debug," ; 
+  afc= "debug approach parameters " ; 
     for (size_t j = 0; j < 7; j++)     // send info
     {
      afc+=','+ std::to_string(data[j]);
     }
-    afc+=afc+"\n";  
+    afc+="\n";  
   std::cout << afc;
   afc.clear();
   sleep_ms(200);
@@ -397,11 +444,6 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
     SignalValue = (int16_t) ptr[SignalPin];
     ZValue = (int16_t) ptr[ZPin];
   }
-  else
-  { 
-    Z0 = ZValue;
-  }  
-
   std::vector<int16_t> buf_status;
   buf_status.push_back(none);
   buf_status.push_back(ZValue);
@@ -417,25 +459,21 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
     buf_status[0] = none;
     if (!APPROACH)
     {
-      red();
-      sleep_ms(500);
-    //  dark();
       buf_status[0] = stopdone;
       buf_status[1] = ZValue;
       buf_status[2] = SignalValue;
+      sleep_ms(100);  /// need for virtual для разделение afc
       afc.clear();
       afc="stopped\n";
       std::cout<<afc;
+      afc.clear();
       sleep_ms(100);
       break;
     }
      if (APPROACH_CONFIG_UPDATE)
-    {
-    //  green();
-      sleep_ms(100);
-    //  dark();
-     // log("config updated\n",flgDebugLevel);
-      APPROACH_CONFIG_UPDATE = false; //add 231025 ???? Ilia
+    { 
+      // log("config updated\n",flgDebugLevel);
+      APPROACH_CONFIG_UPDATE = false; 
       SET_POINT  = vector[1];
       GATE_Z_MAX = vector[2];
       GATE_Z_MIN = vector[3];
@@ -443,6 +481,7 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
       INTDELAY   = vector[5];
       GAIN       = vector[6];
     SCANNERDECAY = vector[7]; 
+        sleep_ms(100);  // need for virtual для разделение afc
         afc.clear();
         afc="debug parameters update";
         for (int j = 1; j <= 7; ++j)
@@ -451,6 +490,7 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
         }
         afc+=+"\n";
         std::cout<<afc;
+        afc.clear();
         sleep_ms(100);
     }
 
@@ -460,18 +500,11 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
 
    if (!flgVirtual) 
    {
-   //  getValuesFromAdc(); 
-     /*uint16_t *ptr = getValuesFromAdc();  
-     Z = (int16_t) ptr[1]; 
-     SIGNAL = (int16_t) ptr[0];
-     */
+       getValuesFromAdc(); 
        auto ptr=getValuesFromAdc();
-         ZValue=(int16_t)ptr[ZPin];
-         SignalValue=(int16_t)ptr[SignalPin];
-      
-      //    ZValue=(int16_t)getValuesFromAdc()[ZPin];
-     //SignalValue=(int16_t)getValuesFromAdc()[SignalPin];
-     if (flgDebugLevel<=DEBUG_LEVEL) ;//log("Z = " + std::to_string(Z) + '\n',flgDebugLevel);
+       ZValue=(int16_t)ptr[ZPin];
+       SignalValue=(int16_t)ptr[SignalPin];
+       if (flgDebugLevel<=DEBUG_LEVEL) ;//log("Z = " + std::to_string(Z) + '\n',flgDebugLevel);
    }
    else
    { 
@@ -547,14 +580,9 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
         protract();// io3_1.disable();//вытянуть
         sleep_ms(INTDELAY); 
       }  
-/*
-      afc="done\n";
-      std::cout<<afc;
-      afc.clear();
-*/
       while(not TheadDone) {sleep_ms(50); }
       TheadDone = false;
-       std::cout << "end\n";
+      std::cout << "end\n";
 }
 void Scanner::start_frqscan()
 {
@@ -562,32 +590,29 @@ void Scanner::start_frqscan()
       int16_t signalvalue; 
       int16_t res_freq=10000;
       int16_t a=10000;
- //   RESONANCE_ACTIVE = true;
       int16_t scan_index =0;
       int16_t current_freq=0;
       afc.clear();
-      afc="debug";
+      afc="debug frq scan parameters ";
       for (int j = 0; j < 5; ++j)
       {
         inBuf[j] = vector[1 + j];
         afc+=','+std::to_string(inBuf[j]);
       }
-   /*  afc+=','+std::to_string(flgVirtual)+"\n";
-      std::cout<<afc;
-      sleep_ms(100);
-    */  
+      afc+=','+std::to_string(flgVirtual)+"\n";
+      std::cout<<afc;  
       afc.clear();
-  //     RESONANCE_ACTIVE=true;
+      sleep_ms(100);
+
       current_channel = inBuf[3] - 1;  //ampl=0;
       afc="code25";
-      while ((scan_index++<inBuf[0]))// && !RESONANCE_STOP)
+      while ((scan_index++<inBuf[0]))
       {
         if (!flgVirtual) 
         {  
          set_freq(inBuf[1]);
          sleep_ms(inBuf[4]);
          getValuesFromAdc();
-//         afc +=','+ std::to_string(inBuf[1]) + ',' + std::to_string((int16_t)getValuesFromAdc()[current_channel]);//+ ',';
          afc +=','+ std::to_string(inBuf[1]) + ',' + std::to_string((int16_t)getValuesFromAdc()[current_channel]);//+ ',';
         } 
         else
@@ -601,11 +626,10 @@ void Scanner::start_frqscan()
         inBuf[1] += inBuf[2];    
       }
         std::cout << afc << '\n';
-        sleep_ms(200);
+        sleep_ms(100);
         afc.clear();
-      //  scan_index = current_freq = 0;
         current_channel = -1;
-   //   RESONANCE_ACTIVE = false;
-        RESONANCE = RESONANCE_STOP = false;        
+        RESONANCE = false;
+        RESONANCE_STOP = false;        
 }
 

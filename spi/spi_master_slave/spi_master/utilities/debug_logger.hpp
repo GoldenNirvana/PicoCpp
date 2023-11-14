@@ -6,6 +6,7 @@
 #include <iostream>
 
 template<class T>
+
 void log(T msg, int size, uint level_debug = 2)
 {
   if (level_debug <= DEBUG_LEVEL)

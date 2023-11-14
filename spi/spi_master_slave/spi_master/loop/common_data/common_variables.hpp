@@ -37,7 +37,8 @@ extern bool AD8400_SET_GAIN; // AD8400
 extern bool AD5664;
 extern bool SCANNING;
 extern bool CONFIG_UPDATE;
-extern bool MOVE_TO;
+extern bool MOVE_TOX0Y0; // переместиться в начальную точку  скана из начальной точке предыдущего скана
+extern bool MOVE_TOZ0;   // отвестись в безопастную начальную точку по Z
 extern bool STOP_ALL;
 extern bool SET_IO_VALUE;
 extern bool SET_ONE_IO_VALUE;
@@ -54,6 +55,7 @@ extern bool flgVirtual; // Virtual device for debuging
 extern uint flgDebugLevel; //  leveldebug
 extern bool SET_PID_GAIN;
 extern bool PID_TURN_ON;
+extern bool GET_CURRENTX0Y0;
 extern bool Scanner_Retract;
 extern bool Scanner_Protract;
 extern bool POSXYZ_CONFIG_UPDATE;
@@ -61,13 +63,12 @@ extern bool TheadDone;
 extern uint8_t ZPin;
 extern uint8_t SignalPin;
 extern int16_t ZMaxValue;
+extern int16_t shiftScannerZeroPoint;
 //
 extern bool AD_7606_IS_READY_TO_READ;
 extern bool RESONANCE;  //AD9833 
 extern bool RESONANCE_STOP;
 extern volatile bool RESONANCE_ACTIVE;
-//extern uint16_t scan_index;
-//extern uint16_t current_freq;
 extern volatile int32_t current_channel;
 
 extern critical_section_t criticalSection;

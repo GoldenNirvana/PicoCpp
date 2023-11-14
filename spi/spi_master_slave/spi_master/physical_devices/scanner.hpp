@@ -33,23 +33,27 @@ public:
 
   ~Scanner();
 
-  void start_scan(const Point &point);
-
   void start_scan();
 
   void stop_scan();
 
   void update(const Config &config);
 
-  void move_to(const Point &point, uint32_t delay);  
- //add mf 
+  void move_to(const Point &point, uint16_t delay);  // переместиться в нач.точку скана текущего скана
+
+  void move_toX0Y0();  // //переместиться в начальную точку  скана из начальной точке предыдущего скана
+  //add mf 
+  Point  getX0Y0();
+ 
+  void move_toZ0(int lid_name, int f, int p, int n, int dir);  // отвестись в безопастную начальную точку по Z
+
   void retract(); //втянуть сканер
  
   void protract(); //втянуть сканер
   
   void approacphm(const int16_t *const data); 
 
-  void positioningXYZ(int lid_name, int f, int p, int n, int dir, int16_t gtmax,int16_t gtmin); 
+  void positioningXYZ(int lid_name, int f, int p, int n, int dir, int16_t gtmax,int16_t gtmin); // abs(n) 
 
   void start_frqscan(); //find resonance
 
@@ -58,8 +62,8 @@ public:
 private:
 
   std::vector<uint16_t> vector_z, other_info;
-  Point pos_, prev_point;
-  Config conf_;
+  Point pos_,prev_point;
+  Config  conf_;
 };
 
 #endif

@@ -16,12 +16,12 @@ void MainCore::loop()
   uint64_t time = 0;
   while (time++ < UINT64_MAX - 1000)
   {
-  //  log(vector, vectorSize);
+    // log(vector, vectorSize);
     // Enable LID while stop command is come to PICO
     if (APPROACH)   //approach
     {
       blue();
-      static int16_t convergence_data[7]; //32???
+      static int16_t convergence_data[9]; //32???
       convergence_data[0] = vector[1];
       convergence_data[1] = vector[2];
       convergence_data[2] = vector[3];
@@ -31,41 +31,40 @@ void MainCore::loop()
       convergence_data[6] = vector[7];
       
       convergence_data[7] = vector[8];  // freq  //231102 ????
-      convergence_data[8] = vector[9];   // scv ????
+      convergence_data[8] = vector[9];  // scv ????
 
       scanner.approacphm(convergence_data);
-      
-    //  green();
       sleep_ms(100);
-   //   dark(); 
     }
     if (LID_UNTIL_STOP)  // пьезо мувер позиционирование
-    {
-   //   green();     
+    {   
       scanner.positioningXYZ(vector[1], vector[2], vector[3], vector[4], vector[5],vector[6], vector[7]); //int lid_name, int f, int p, int n, int dir
-      //blue();
-     // LID_UNTIL_STOP=false; //add
     }
     // Move scanner to point (x, y)
-    if (MOVE_TO)
+    if (MOVE_TOX0Y0) //переместиться в начальную точку  скана из начальной точке предыдущего скана
     {
-      MOVE_TO = false;
-      scanner.move_to({static_cast<uint16_t>(vector[1]), static_cast<uint16_t>(vector[2])}, vector[3]);
+      MOVE_TOX0Y0 = false;
+      scanner.move_toX0Y0();
       continue;
     }
+
+    if(MOVE_TOZ0) //отвестись в безопастную начальную точку по Z
+    {
+      MOVE_TOZ0=false;
+      scanner.move_toZ0(vector[1], vector[2], vector[3], vector[4], vector[5]);
+    }
+    
     // Enable scanner and update config on command 50
     if (SCANNING || CONFIG_UPDATE) //scanning
     {
       if (CONFIG_UPDATE)
       {
         CONFIG_UPDATE = false;
-      //  red();
         scanner.update({static_cast<uint32_t>(vector[1]), static_cast<uint32_t>(vector[2]),
                         static_cast<uint8_t>(vector[3]), static_cast<uint8_t>(vector[4]),
                         static_cast<uint16_t>(vector[5]), static_cast<uint16_t>(vector[6]),
                         static_cast<uint16_t>(vector[7]), static_cast<uint16_t>(vector[8]),
                         static_cast<uint8_t>(vector[9])});
-     //   dark();
         continue;
       }
       if (SCANNING)
@@ -95,7 +94,7 @@ void MainCore::loop()
         inBuf[j] = vector[j];
         if (flgDebugLevel<=DEBUG_LEVEL) std::cout <<inBuf[j] << ' ';
       }
-      linearDriver.activate(inBuf[0], inBuf[1], inBuf[2], inBuf[3], inBuf[4]);
+      linearDriver.activate(inBuf[0], inBuf[1], inBuf[2], abs(inBuf[3]), inBuf[4]);
        if (flgDebugLevel<=DEBUG_LEVEL) std::cout << "debug LID_IS_READY\n";
       continue;
     }
@@ -103,56 +102,7 @@ void MainCore::loop()
     if (RESONANCE)       // АЧХ
     {
       scanner.start_frqscan();
-   /*   static uint16_t inBuf[5]; // n, start_freq, step, channel, delay
-      int16_t signalvalue; 
-      int16_t res_freq=10000;
-      int16_t a=10000;
-      if (!RESONANCE_ACTIVE)
-      {
-        RESONANCE_ACTIVE = true;
-        afc="code25";//,"; //231025
-        for (int j = 0; j < 5; ++j)
-        {
-          inBuf[j] = vector[1 + j];
-        }
-        current_channel = inBuf[3] - 1;  //ampl=0;
-      }
-      else
-      {
-        if (scan_index++ < inBuf[0] && !RESONANCE_STOP)
-        {
-      //    blue();
-          if (!flgVirtual) 
-          {  
-            set_freq(inBuf[1]);
-            sleep_ms(inBuf[4]);
-            afc +=','+ std::to_string(inBuf[1]) + ',' + std::to_string(getValuesFromAdc()[current_channel]);//+ ',';
-          } 
-          else
-          {
-            current_freq=vector[2]+inBuf[2]*scan_index;
-            signalvalue=std::round(a*(pow(M_E,-pow((current_freq-res_freq),2)/1000000)));
-            afc +=','+std::to_string(current_freq) + ',' + std::to_string(signalvalue);//+',';
-          }
-          sleep_ms(10);
-          inBuf[1] += inBuf[2];
-        }
-        else
-        {
-          green();
-          sleep_ms(500);
-          dark();
-          std::cout << afc << '\n';
-          afc.clear();
-          scan_index = current_freq = 0;
-          current_channel = -1;
-          RESONANCE_ACTIVE = false;
-          RESONANCE = RESONANCE_STOP = false;
-        }
-      }
-      continue;
-      */
-   }
+    }
     // SET FREQ ON
     if (FREQ_SET) // установка частоты
     {
@@ -168,12 +118,17 @@ void MainCore::loop()
   if (AD7606_GET_VALUE) // get value channel vector[1] 
     {
       AD7606_GET_VALUE = false;
-      afc="code24,"; //???
+      afc="code24,"; 
      if (!flgVirtual) 
      {    
-       afc+=std::to_string((int16_t)getValuesFromAdc()[SignalPin])+','+std::to_string((int16_t)getValuesFromAdc()[ZPin])+'\n'; //ampl,Z
-       std::cout<<afc;    
-     }
+       getValuesFromAdc();
+      auto ptr = getValuesFromAdc(); 
+              ZValue=(int16_t)ptr[ZPin];
+         SignalValue=(int16_t)ptr[SignalPin];
+         afc+=','+std::to_string(ZValue)+','+std::to_string(SignalValue)+"\n";
+         std::cout<<afc;
+         afc.clear();
+      }
      else
      {
        afc+=std::to_string(32000)+','+std::to_string(32000)+ '\n'; //ampl,Z
@@ -253,7 +208,8 @@ void MainCore::loop()
         afc="code12";
        if (!flgVirtual) 
        {
-         auto ptr = getValuesFromAdc(); ///???
+         getValuesFromAdc();
+         auto ptr = getValuesFromAdc(); 
               ZValue=(int16_t)ptr[ZPin];
          SignalValue=(int16_t)ptr[SignalPin];
          afc+=','+std::to_string(ZValue)+','+std::to_string(SignalValue)+"\n";
@@ -271,7 +227,13 @@ void MainCore::loop()
     if (SET_PID_GAIN)
     {
       SET_PID_GAIN=false;
-      set_io_value(2,vector[1]);
+      afc.clear();
+      afc="debug PID gain parameters";
+      afc+=','+std::to_string(vector[1]);
+      afc+=+"\n";
+      std::cout<<afc;
+      sleep_ms(100); 
+     if (!flgVirtual)  set_io_value(2,vector[1]);
     }
     if (Scanner_Retract)
     {
@@ -284,6 +246,11 @@ void MainCore::loop()
       scanner.protract();
       Scanner_Protract=false;
      // set_io_value(5,vector[1],vector[2]);
+    }
+    if (GET_CURRENTX0Y0)
+    {
+      scanner.getX0Y0();
+      GET_CURRENTX0Y0=false;
     }
   }
 }

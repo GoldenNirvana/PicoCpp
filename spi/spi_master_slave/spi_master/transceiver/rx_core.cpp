@@ -105,6 +105,9 @@ void RX_core::launchOnCore1()
       case 17: //add mf set PID GAIN!    
         SET_PID_GAIN=true; 
         break;
+      case 18: //get current pointX0Y0 - pos_ 
+        GET_CURRENTX0Y0=true; 
+        break; 
  //*************************************** 
       case 21:
         AD5664 = true;
@@ -138,7 +141,7 @@ void RX_core::launchOnCore1()
         CONFIG_UPDATE = true;
         break;
       case 51:
-        MOVE_TO = true;
+        MOVE_TOX0Y0 = true;
         break;
       case 52:
         STOP_ALL = true;
@@ -167,9 +170,12 @@ void RX_core::launchOnCore1()
       case 80:
         LID_UNTIL_STOP = true; 
         break;
-     case 82:// change parameters  positionXYZ
+      case 82:// change parameters  positionXYZ
         POSXYZ_CONFIG_UPDATE = true;
         break;
+      case 84:
+        MOVE_TOZ0 = true; 
+        break;  
       case 90 ... 99:
         LID = true;
         break;

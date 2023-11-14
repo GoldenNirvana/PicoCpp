@@ -90,7 +90,7 @@ void stopAll()
   SCANNING = false;
   APPROACH = false;
   CONFIG_UPDATE = false;
-  MOVE_TO = false;
+  MOVE_TOX0Y0 = false;
   STOP_ALL = true;
   SET_IO_VALUE = false;
   SET_ONE_IO_VALUE = false;
@@ -99,8 +99,6 @@ void stopAll()
   RESONANCE = false;
   RESONANCE_STOP = true;
   RESONANCE_ACTIVE = false;
-//  scan_index = 0;
-//  current_freq = 0;
   afc.clear();
 }
 
