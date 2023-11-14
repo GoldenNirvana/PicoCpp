@@ -20,7 +20,7 @@ void MainCore::loop()
     // Enable LID while stop command is come to PICO
     if (APPROACH)   //approach
     {
-      blue();
+     // blue();
       static int16_t convergence_data[9]; //32???
       convergence_data[0] = vector[1];
       convergence_data[1] = vector[2];
