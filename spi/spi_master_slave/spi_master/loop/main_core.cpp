@@ -5,6 +5,7 @@
 #include "../utilities/hardcoded_functions.hpp"
 #include "common_data/common_variables.hpp"
 #include "../utilities/debug_logger.hpp"
+#include <cmath>
 
 void MainCore::loop()
 {
@@ -13,17 +14,12 @@ void MainCore::loop()
   uint64_t time = 0;
   while (time++ < UINT64_MAX - 1000)
   {
-//      std::cout << "Transieve core\n";
-//    if (time % 100000 == 0)
-//    {
-//      log("Main_cycle\n");
-//    }
 //    log(vector, vectorSize);
     // Enable LID while stop command is come to PICO
-    if (CONVERGENCE)
+    if (APPROACH)   //approach
     {
       blue();
-      static uint32_t convergence_data[9];
+      static int16_t convergence_data[9];
       convergence_data[0] = vector[1];   // point
       convergence_data[1] = vector[2]; // max
       convergence_data[2] = vector[3]; // min
@@ -33,22 +29,30 @@ void MainCore::loop()
       convergence_data[6] = vector[7]; // scannerDelay
       convergence_data[7] = vector[8];  // freq
       convergence_data[8] = vector[9];   // scv
-      approacphm(convergence_data);
+      scanner.approacphm(convergence_data);
+      //  sleep_ms(100);
       green();
     }
-    if (LID_UNTIL_STOP)
+    if (LID_UNTIL_STOP)  // пьезо мувер позиционирование
     {
-      moveLinearDriverUntilStop(vector[1], vector[2], vector[3], vector[4], vector[5]);
+      scanner.positioningXYZ(vector[1], vector[2], vector[3], vector[4], vector[5],vector[6], vector[7]); //int lid_name, int f, int p, int n, int dir
     }
     // Move scanner to point (x, y)
-    if (MOVE_TO)
+    if (MOVE_TOX0Y0) //переместиться в начальную точку  скана из начальной точке предыдущего скана
     {
-      MOVE_TO = false;
+      MOVE_TOX0Y0 = false;
       scanner.move_to({static_cast<uint16_t>(vector[1]), static_cast<uint16_t>(vector[2])}, vector[3]);
       continue;
     }
+
+    if(MOVE_TOZ0) //отвестись в безопастную начальную точку по Z
+    {
+      MOVE_TOZ0=false;
+      scanner.move_toZ0(vector[1], vector[2], vector[3], vector[4], vector[5]);
+    }
+
     // Enable scanner and update config on command 50
-    if (MICRO_SCAN || CONFIG_UPDATE)
+    if (SCANNING || CONFIG_UPDATE) //scanning
     {
       if (CONFIG_UPDATE)
       {
@@ -60,12 +64,12 @@ void MainCore::loop()
                         static_cast<uint8_t>(vector[9])});
         continue;
       }
-      if (MICRO_SCAN)
+      if (SCANNING)
       {
-        scanner.start_scan();
+       scanner.start_scan();
       }
     }
-//#warning need to describe thiss block
+
     if (SET_IO_VALUE)
     {
       SET_IO_VALUE = false;
@@ -73,74 +77,41 @@ void MainCore::loop()
     }
     if (SET_ONE_IO_VALUE)
     {
-      // #warning Logic replaced
       SET_ONE_IO_VALUE = false;
       vector[2] == 1 ? io_ports[vector[1] - 1].enable() : io_ports[vector[1] - 1].disable();
     }
     // Enable LID
-    if (LID)
+    if (LID)       // piezo mover
     {
       LID = false;
       static uint16_t inBuf[5]; // f, p, n, d
       for (int j = 0; j < 5; ++j)
       {
         inBuf[j] = vector[j];
-        std::cout << inBuf[j] << ' ';
+        if (flgDebugLevel<=DEBUG_LEVEL) std::cout <<inBuf[j] << ' ';
       }
-      linearDriver.activate(inBuf[0], inBuf[1], inBuf[2], inBuf[3], inBuf[4]);
-      std::cout << "LID_IS_READY\n";
+      linearDriver.activate(inBuf[0], inBuf[1], inBuf[2], abs(inBuf[3]), inBuf[4]);
+       if (flgDebugLevel<=DEBUG_LEVEL) std::cout << "debug LID_IS_READY\n";
       continue;
     }
     // Start scan on ADC
-    if (AD7606_IS_SCANNING)
+    if (RESONANCE)       // АЧХ
     {
-      static uint16_t inBuf[5]; // n, start_freq, step, channel, delay
-      if (!is_already_scanning)
-      {
-        is_already_scanning = true;
-        for (int j = 0; j < 5; ++j)
-        {
-          inBuf[j] = vector[1 + j];
-        }
-        current_channel = inBuf[3] - 1;
-      } else
-      {
-        if (scan_index++ < inBuf[0] && !AD7606_STOP_SCAN)
-        {
-          set_freq(inBuf[1]);
-          sleep_ms(inBuf[4]);
-          afc += std::to_string(inBuf[1]) + ',' + std::to_string(getValuesFromAdc()[current_channel]) + ',';
-          sleep_ms(10);
-          inBuf[1] += inBuf[2];
-        } else
-        {
-          std::cout << afc << '\n';
-          afc.clear();
-          scan_index = current_freq = 0;
-          current_channel = -1;
-          is_already_scanning = false;
-          AD7606_IS_SCANNING = AD7606_STOP_SCAN = false;
-        }
-      }
-      continue;
+      scanner.start_frqscan();
     }
     // SET FREQ ON
-    if (AD9833_SET_FREQ)
+    if (FREQ_SET) // установка частоты
     {
-      AD9833_SET_FREQ = false;
+//            set_clock_enable();
+      FREQ_SET = false;
       set_freq((uint32_t) vector[1]);
     }
-    if (AD8400_SET_GAIN)
+    if (AD8400_SET_GAIN) // усиление раскачка зонда
     {
       AD8400_SET_GAIN = false;
       set_gain(vector[1]);
     }
-    if (AD7606_GET_VALUE)
-    {
-      AD7606_GET_VALUE = false;
-      std::cout << getValuesFromAdc()[vector[1]] << '\n';
-      continue;
-    }
+
     if (DAC8563_INIT)
     {
       DAC8563_INIT = false;
@@ -162,7 +133,6 @@ void MainCore::loop()
         dac8563.writeB(vector[6]);
       }
     }
-
     if (AD5664)
     {
       AD5664 = false;
@@ -204,20 +174,61 @@ void MainCore::loop()
       sleep_us(10);
       resetPort.disable();
     }
-    if (AD7606_READ or AD7606_READ_FOREVER)
+    if (AD7606_READ or AD7606_READ_FOREVER)   // read ADC
     {
-      log("ReadADC\n");
-//      std::cout << "StartReadADC\n";
+      if (flgDebugLevel<=DEBUG_LEVEL) logger("ReadADC\n");
       AD7606_READ = false;
       if (AD_7606_IS_READY_TO_READ)
       {
-        auto ptr = getValuesFromAdc();
-        for (int i = 0; i < 8; ++i)
-        {
-          std::cout << ptr[i] << ' ';
-        }
-        std::cout << '\n';
+        afc.clear();
+        afc="code12";
+       if (!flgVirtual)
+       {
+         getValuesFromAdc();
+         auto ptr = getValuesFromAdc();
+              ZValue=(int16_t)ptr[ZPin];
+         SignalValue=(int16_t)ptr[SignalPin];
+         set_io_value(2,vector[1]);   //add 231114 gain pid
+         afc+=','+std::to_string(ZValue)+','+std::to_string(SignalValue)+','+std::to_string(vector[1])+"\n";
+         std::cout<<afc;
+         afc.clear();
+       }
+       else
+       {
+         afc+=','+std::to_string(ZValue)+','+std::to_string(SignalValue)+"\n";   //Z,Signal
+         std::cout << afc;
+         afc.clear();
+       }
       }
+    }
+    if (SET_PID_GAIN)
+    {
+      SET_PID_GAIN=false;
+      sleep_ms(200);
+      afc.clear();
+      afc="debug PID gain parameters";
+      afc+=','+std::to_string(vector[1]);
+      afc+=+"\n";
+      std::cout<<afc;
+      sleep_ms(100);
+     if (!flgVirtual)  set_io_value(2,vector[1]);
+    }
+    if (Scanner_Retract)
+    {
+      scanner.retract();
+      Scanner_Retract=false;
+     // set_io_value(5,vector[1],vector[2]);
+    }
+    if (Scanner_Protract)
+    {
+      scanner.protract();
+      Scanner_Protract=false;
+     // set_io_value(5,vector[1],vector[2]);
+    }
+    if (GET_CURRENTX0Y0)
+    {
+      scanner.getX0Y0();
+      GET_CURRENTX0Y0=false;
     }
   }
 }

@@ -7,9 +7,7 @@
 // todo add command for reset all
 void setDefaultSettings();
 
-void moveLinearDriverUntilStop(int,int,int,int,int );
 void set_io_value(int, int);
-
 
 [[noreturn]] void activateError();
 
@@ -22,6 +20,5 @@ void green();
 void blue();
 void red();
 void dark();
-
 
 #endif

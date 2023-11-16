@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <iostream>
 #include "LinearDriver.hpp"
+#include "../loop/common_data/common_variables.hpp"//add mf 231101
 
 LinearDriver::LinearDriver() : x_a(OutputPort(18)), x_b(OutputPort(19)), y_a(OutputPort(20)),
                                y_b(OutputPort(21)), z_a(OutputPort(22)), z_b(OutputPort(28))
@@ -14,9 +15,9 @@ LinearDriver::LinearDriver() : x_a(OutputPort(18)), x_b(OutputPort(19)), y_a(Out
 }
 
 
-void LinearDriver::activate(int command, int freq, int p, int n, bool dir)
+void LinearDriver::activate(int command, int freq, int p, int n, bool dir)  ///
 {
-  std::cout << "From activate command = " << command << '\n';
+   if (flgDebugLevel<=DEBUG_LEVEL) std::cout << "From activate command = " << command << '\n';
   OutputPort *ptrA = &x_a;
   OutputPort *ptrB = &x_b;
   if (command == 90)
@@ -33,8 +34,8 @@ void LinearDriver::activate(int command, int freq, int p, int n, bool dir)
     ptrA = &z_a;
     ptrB = &z_b;
   }
-  double t_abs = 1000000 / freq;        // 2000
-  double t_low = p * t_abs / 1000;  //  750 * 2000 / 1000000 = 1.5
+  double t_abs =(double)(1000000 / freq);        // 2000                     // mf 23108
+  double t_low =(double)(p * t_abs / 1000);  //  750 * 2000 / 1000000 = 1.5 // mf 23108
   double t_high = t_abs - t_low;    // 2 - 1.5 = 0.5
 
   if (dir)

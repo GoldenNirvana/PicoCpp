@@ -18,14 +18,13 @@ bool AD7606_ENABLE_DISABLE = false;
 bool AD7606_RESET = false;
 bool AD7606_READ = false;
 bool AD7606_READ_FOREVER = false;
-bool AD7606_STOP_SCAN = false;
-bool AD9833_SET_FREQ = false;
+bool FREQ_SET = false; //AD9833
 bool AD8400_SET_GAIN = false;
 bool AD7606_GET_VALUE = false;
 bool AD5664 = false;
-bool MICRO_SCAN = false;
+bool SCANNING = false;
 bool CONFIG_UPDATE = false;
-bool MOVE_TO = false;
+bool MOVE_TOX0Y0 = false; //переместиться в начальную точку  скана из начальной точке предыдущего скана
 bool STOP_ALL = false;
 bool SET_IO_VALUE = false;
 bool SET_ONE_IO_VALUE = false;
@@ -33,18 +32,32 @@ bool LID = false;
 bool LID_UNTIL_STOP = false;
 bool DAC8563_SET_VOLTAGE = false;
 bool DAC8563_INIT = false;
-bool CONVERGENCE = false;
-bool CONVERGENCE_CONFIG_UPDATE = false;
+bool APPROACH = false;
+bool APPROACH_CONFIG_UPDATE = false;
+//add Mf
+bool flgVirtual =false; // Virtual device for debuging
+uint flgDebugLevel =2; //  leveldebug
+bool SET_PID_GAIN=false;
+bool PID_TURN_ON=false;
+bool GET_CURRENTX0Y0=false;
+bool MOVE_TOZ0=false;   // отвестись в безопастную начальную точку по Z
+bool Scanner_Retract=false;
+bool Scanner_Protract=false;
+bool POSXYZ_CONFIG_UPDATE=false;
+int16_t ZValue =32767;
+int16_t SignalValue = 32767;
+bool TheadDone=false;
+uint8_t ZPin=0;
+uint8_t SignalPin=1;
+int16_t ZMaxValue=32767;
+int16_t shiftScannerZeroPoint=-32768;
 
-
+//uint32_t DEBUG_LEVEL = 2;
 bool Z_STATE = false;
-uint16_t ad7606Value = 0;
-
 bool AD_7606_IS_READY_TO_READ = true;
-bool AD7606_IS_SCANNING = false;
-volatile bool is_already_scanning = false;
-uint16_t scan_index = 0;
-uint16_t current_freq = 0;
+bool RESONANCE = false;
+bool RESONANCE_STOP = false;
+volatile bool RESONANCE_ACTIVE = false;
 volatile int32_t current_channel = 0;
 
 critical_section_t criticalSection;
@@ -59,7 +72,7 @@ OutputPort io1_1(12);
 OutputPort io2_0(13);
 OutputPort io2_1(14);
 OutputPort io2_2(15);
-OutputPort io3_0(26);
-OutputPort io3_1(27);
+OutputPort io3_0(26); //вытянуть сканнер
+OutputPort io3_1(27); //втянуть сканнер
 
 std::vector<OutputPort> io_ports;

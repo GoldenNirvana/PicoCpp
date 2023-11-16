@@ -26,15 +26,8 @@ void setDefaultSettings()
   // fixme mb should add & before isr
   gpio_set_irq_enabled_with_callback(busy.getPort(), GPIO_IRQ_EDGE_FALL, true, RX_core::comReceiveISR);
 
-//  multicore_reset_core1();
-//  std::cout << "DefaultSetting\n";
-  multicore_launch_core1(&RX_core::launchOnCore1);
-//  std::cout << "AfterDefaultSetting\n";
-//  std::cout << "AfterDefaultSetting\n";
-//  std::cout << "AfterDefaultSetting\n";
-//  std::cout << "AfterDefaultSetting\n";
-//  std::cout << "AfterDefaultSetting\n";
-//  std::cout << "AfterDefaultSetting\n";
+  multicore_launch_core1(RX_core::launchOnCore1);
+
   dec.enable();
   conv.enable();
   resetPort.disable();
@@ -117,7 +110,6 @@ void red()
     sleep_ms(100);
     activateRed();
     sleep_ms(100);
-
   }
 }
 
@@ -140,7 +132,6 @@ void dark()
 
 void activateGreen()
 {
-
   rdbLed.disable();
   sleep_us(60);
   for (int i = 0; i < 8; ++i)
@@ -222,34 +213,6 @@ void activateDark()
   }
 }
 
-void moveLinearDriverUntilStop(int lid_name, int f, int p, int n, int dir)
-{
-  if (lid_name == 90 || lid_name == 95)
-  {
-    while (LID_UNTIL_STOP)
-    {
-      linearDriver.activate(lid_name, f, p, n, dir);
-    }
-  }
-  if (lid_name == 99)
-  {
-    while (LID_UNTIL_STOP)
-    {
-      Z_STATE = true;
-      // TODO REMOVE RESULT TO new getter
-      get_result_from_adc();
-
-      while (Z_STATE)
-      {
-        sleep_us(1000);
-      }
-      std::cout << "Z = " << ad7606Value << '\n';
-      // check if z > <
-      linearDriver.activate(lid_name, f, p, n, dir);
-    }
-  }
-}
-
 void set_io_value(int port, int value)
 {
   SET_IO_VALUE = false;
@@ -258,7 +221,7 @@ void set_io_value(int port, int value)
     std::string binary = std::bitset<2>(value).to_string();
     binary[1] == '1' ? io1_0.enable() : io1_0.disable();
     binary[0] == '1' ? io1_1.enable() : io1_1.disable();
-  } else if (port == 2)
+  } else if (port == 2) //gain
   {
     std::string binary = std::bitset<3>(value).to_string();
     binary[2] == '1' ? io2_0.enable() : io2_0.disable();

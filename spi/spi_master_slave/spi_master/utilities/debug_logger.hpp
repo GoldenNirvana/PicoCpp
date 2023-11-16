@@ -6,7 +6,8 @@
 #include <iostream>
 
 template<class T>
-void log(T msg, int size, uint level_debug = 2)
+
+void logger(T msg, int size, uint level_debug = 2)
 {
   critical_section_enter_blocking(&criticalSection);
   if (level_debug <= DEBUG_LEVEL)
@@ -22,7 +23,7 @@ void log(T msg, int size, uint level_debug = 2)
   critical_section_exit(&criticalSection);
 }
 
-inline void log(std::string msg, uint level_debug = 2)
+inline void logger(std::string msg, uint level_debug = 2)
 {
   critical_section_enter_blocking(&criticalSection);
   if (level_debug <= DEBUG_LEVEL)
