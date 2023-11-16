@@ -31,11 +31,11 @@
 class DAC8563
 {
 private:
-  float   _vref;
+  int mode;
   int port_;
 
 public:
-  DAC8563();
+  DAC8563(int mode);
   void begin();
   void initialize(int port);
   void writeA(int input);

@@ -61,13 +61,13 @@ void set_clock_enable()
 
 void set_on_dac(uint8_t channel, uint16_t value)
 {
-  decoder.activePort(3);
-  dac8563.setSpiProps();
+  decoder.activePort(2);
+  dac8563_1.setSpiProps();
 //  AD56X4Class::setChannel(AD56X4_SETMODE_INPUT, channel, value);
 //  AD56X4Class::updateChannel(channel);
   channel--;
-  if (channel == 0)  dac8563.writeA(value);
-  if (channel == 1)  dac8563.writeB(value);
+  if (channel == 0)  dac8563_1.writeA(value);
+  if (channel == 1)  dac8563_1.writeB(value);
 }
 
 void stopAll()
@@ -84,8 +84,9 @@ void stopAll()
   AD8400_SET_GAIN = false;
   AD8400_SENDER = false;
   AD5664 = false;
-  DAC8563_SET_VOLTAGE = false;
-  DAC8563_INIT = false;
+  DAC8563_SET_VOLTAGE_1 = false;
+  DAC8563_INIT_1 = false;
+  DAC8563_INIT_2 = false;
   SCANNING = false;
   APPROACH = false;
   CONFIG_UPDATE = false;
@@ -94,8 +95,7 @@ void stopAll()
   SET_IO_VALUE = false;
   SET_ONE_IO_VALUE = false;
   LID = false;
-  DAC8563_SET_VOLTAGE = false;
-  DAC8563_INIT = false;
+  DAC8563_SET_VOLTAGE_1 = false;
   LID_UNTIL_STOP = false;
   RESONANCE = false;
   RESONANCE_STOP = true;

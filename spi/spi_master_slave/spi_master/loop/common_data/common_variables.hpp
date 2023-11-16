@@ -13,15 +13,19 @@ extern Spi spi;
 extern LinearDriver linearDriver;
 extern Decoder decoder;
 extern Scanner scanner;
-extern DAC8563 dac8563;
+extern DAC8563 dac8563_1;
+extern DAC8563 dac8563_2;
 
 extern std::string afc;
 extern uint16_t spiBuf[8];
 extern int32_t vector[15];
 extern int vectorSize;
 
-extern bool DAC8563_SET_VOLTAGE;
-extern bool DAC8563_INIT;
+extern bool DAC8563_SET_VOLTAGE_1;
+extern bool DAC8563_SET_VOLTAGE_2;
+extern bool DAC8563_INIT_1;
+extern bool DAC8563_INIT_2;
+
 
 extern bool AD9833_SENDER;
 extern bool AD8400_SENDER;

@@ -113,27 +113,45 @@ void MainCore::loop()
       set_gain(vector[1]);
     }
 
-    if (DAC8563_INIT)
+    if (DAC8563_INIT_1)
     {
-      DAC8563_INIT = false;
-      dac8563.initialize(vector[1]);
+      DAC8563_INIT_1 = false;
+      dac8563_1.initialize(vector[1]);
+    }
+    if (DAC8563_INIT_2)
+    {
+      DAC8563_INIT_2 = false;
+      dac8563_2.initialize(vector[1]);
     }
 
     /// MAIN SPI IF
     decoder.activePort(vector[1]);
     Spi::setProperties(vector[2], vector[3], vector[4]);
 
-    if (DAC8563_SET_VOLTAGE)
+    if (DAC8563_SET_VOLTAGE_1)
     {
-      DAC8563_SET_VOLTAGE = false;
+      DAC8563_SET_VOLTAGE_1 = false;
       if (vector[5] == 0)
       {
-        dac8563.writeA(vector[6]);
+        dac8563_1.writeA(vector[6]);
       } else if (vector[5] == 1)
       {
-        dac8563.writeB(vector[6]);
+        dac8563_1.writeB(vector[6]);
       }
     }
+
+    if (DAC8563_SET_VOLTAGE_2)
+    {
+      DAC8563_SET_VOLTAGE_2 = false;
+      if (vector[5] == 0)
+      {
+        dac8563_2.writeA(vector[6]);
+      } else if (vector[5] == 1)
+      {
+        dac8563_2.writeB(vector[6]);
+      }
+    }
+
     if (AD5664)
     {
       AD5664 = false;

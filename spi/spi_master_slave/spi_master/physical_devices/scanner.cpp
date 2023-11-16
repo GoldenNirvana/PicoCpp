@@ -442,7 +442,7 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
   afc.clear();
   sleep_ms(200);
 
-  dac8563.writeA(SET_POINT);
+  dac8563_1.writeA(SET_POINT);
   std::vector<int16_t> buf_params;
   buf_params.reserve(7);
   for (int i = 0; i < 7; ++i)
@@ -507,7 +507,7 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
       sleep_ms(100);
     }
 
-    dac8563.writeA(SET_POINT);
+    dac8563_1.writeA(SET_POINT);
     set_io_value(2, GAIN);
     sleep_ms(INTDELAY);
 

@@ -5,7 +5,8 @@ Spi spi;
 LinearDriver linearDriver;
 Decoder decoder(4, 5, 6);
 Scanner scanner;
-DAC8563 dac8563;
+DAC8563 dac8563_1(1);
+DAC8563 dac8563_2(2);
 
 //#warning REMOVE STATIC !!! side effects???
 uint16_t spiBuf[8];
@@ -30,8 +31,10 @@ bool SET_IO_VALUE = false;
 bool SET_ONE_IO_VALUE = false;
 bool LID = false;
 bool LID_UNTIL_STOP = false;
-bool DAC8563_SET_VOLTAGE = false;
-bool DAC8563_INIT = false;
+bool DAC8563_SET_VOLTAGE_1 = false;
+bool DAC8563_SET_VOLTAGE_2 = false;
+bool DAC8563_INIT_1 = false;
+bool DAC8563_INIT_2 = false;
 bool APPROACH = false;
 bool APPROACH_CONFIG_UPDATE = false;
 //add Mf

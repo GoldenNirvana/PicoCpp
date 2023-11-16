@@ -116,10 +116,10 @@ void RX_core::launchOnCore1()
         AD5664 = true;
         break;
       case 22:
-        DAC8563_SET_VOLTAGE = true;
+        DAC8563_SET_VOLTAGE_1 = true;
         break;
       case 23:
-        DAC8563_INIT = true;
+        DAC8563_INIT_1 = true;
         break;
       case 24:// get signal value current signal or all signal ?
         AD7606_GET_VALUE = true;
@@ -130,9 +130,15 @@ void RX_core::launchOnCore1()
       case 26:
         RESONANCE_STOP = true;
         break;
+      case 27:
+        DAC8563_INIT_2 = true;
+        break;
       case 28: // mf  
         TheadDone = true;
-        break;  
+        break;
+      case 29:
+        DAC8563_SET_VOLTAGE_2 = true;
+        break;
       case 30:
         FREQ_SET = true;
         break;
