@@ -34,8 +34,7 @@ void Scanner::start_scan()
   afc = "debug scan parameters";
   for (int j = 1; j < 8; ++j)
   {
-    for (uint32_t j = 0; j < conf_.nPoints_x; ++j)
-      afc += ',' + std::to_string(vector[j]);
+    afc += ',' + std::to_string(vector[j]);
   }
   afc += ',' + std::to_string(pos_.x) + ',' + std::to_string(pos_.y);
   afc += +"\n";
@@ -82,8 +81,7 @@ void Scanner::start_scan()
       { --pos_.x; }
       sleep_us(conf_.delayB);
     }
-    for (uint32_t j = 0; j < vector_z.size(); j++)     // send info
-      afc.clear();
+    afc.clear();
     afc = "code50";
     for (size_t j = 0; j < vector_z.size(); j++)     // send data scanline
     {
@@ -173,13 +171,12 @@ Point Scanner::getX0Y0()
   return pos_;
 }
 
-void Scanner::move_toX0Y0()  //переместиться в начальную точку  скана из начальной точке предыдущего скана
+void Scanner::move_toX0Y0(int x, int y, int delay)  //переместиться в начальную точку  скана из начальной точке предыдущего скана
 {
   Point pointX0Y0;
-  uint16_t delay;
-  pointX0Y0.x = (uint16_t) (vector[1]);
-  pointX0Y0.y = (uint16_t) (vector[2]);
-  delay = (uint16_t) (vector[3]);
+  pointX0Y0.x = (uint16_t) (x);
+  pointX0Y0.y = (uint16_t) (y);
+  delay = (uint16_t) (delay);
   sleep_ms(100);
   afc.clear();
   afc = "debug moveto parameters";
@@ -604,52 +601,53 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
   TheadDone = false;
   std::cout << "end\n";
 }
+
 void Scanner::start_frqscan()
 {
-      static uint16_t inBuf[5]; // n, start_freq, step, channel, delay
-      int16_t signalvalue;
-      int16_t res_freq=10000;
-      int16_t a=10000;
-      int16_t scan_index =0;
-      int16_t current_freq=0;
-      afc.clear();
-      afc="debug frq scan parameters ";
-      for (int j = 0; j < 5; ++j)
-      {
-        inBuf[j] = vector[1 + j];
-        afc+=','+std::to_string(inBuf[j]);
-      }
-      afc+=','+std::to_string(flgVirtual)+"\n";
-      std::cout<<afc;
-      afc.clear();
-      sleep_ms(100);
+  static uint16_t inBuf[5]; // n, start_freq, step, channel, delay
+  int16_t signalvalue;
+  int16_t res_freq = 10000;
+  int16_t a = 10000;
+  int16_t scan_index = 0;
+  int16_t current_freq = 0;
+  afc.clear();
+  afc = "debug frq scan parameters ";
+  for (int j = 0; j < 5; ++j)
+  {
+    inBuf[j] = vector[1 + j];
+    afc += ',' + std::to_string(inBuf[j]);
+  }
+  afc += ',' + std::to_string(flgVirtual) + "\n";
+  std::cout << afc;
+  afc.clear();
+  sleep_ms(100);
 
-      current_channel = inBuf[3] - 1;  //ampl=0;
-      afc="code25";
-      while ((scan_index++<inBuf[0]))
-      {
-        if (!flgVirtual)
-        {
-         set_freq(inBuf[1]);
-         sleep_ms(inBuf[4]);
-         getValuesFromAdc();
-         afc +=','+ std::to_string(inBuf[1]) + ',' + std::to_string((int16_t)getValuesFromAdc()[current_channel]);//+ ',';
-        }
-        else
-        {
-         current_freq=inBuf[1];
-         sleep_ms(inBuf[4]);
-         signalvalue=(int16_t)std::round(a*(pow(M_E,-pow((current_freq-res_freq),2)/1000000)));
-         afc +=','+std::to_string(current_freq) + ',' + std::to_string(signalvalue);//+',';
-        }
-        sleep_ms(10);
-        inBuf[1] += inBuf[2];
-      }
-        std::cout << afc << '\n';
-        sleep_ms(100);
-        afc.clear();
-        current_channel = -1;
-        RESONANCE = false;
-        RESONANCE_STOP = false;
+  current_channel = inBuf[3] - 1;  //ampl=0;
+  afc = "code25";
+  while ((scan_index++ < inBuf[0]))
+  {
+    if (!flgVirtual)
+    {
+      set_freq(inBuf[1]);
+      sleep_ms(inBuf[4]);
+      getValuesFromAdc();
+      afc +=
+          ',' + std::to_string(inBuf[1]) + ',' + std::to_string((int16_t) getValuesFromAdc()[current_channel]);//+ ',';
+    } else
+    {
+      current_freq = inBuf[1];
+      sleep_ms(inBuf[4]);
+      signalvalue = (int16_t) std::round(a * (pow(M_E, -pow((current_freq - res_freq), 2) / 1000000)));
+      afc += ',' + std::to_string(current_freq) + ',' + std::to_string(signalvalue);//+',';
+    }
+    sleep_ms(10);
+    inBuf[1] += inBuf[2];
+  }
+  std::cout << afc << '\n';
+  sleep_ms(100);
+  afc.clear();
+  current_channel = -1;
+  RESONANCE = false;
+  RESONANCE_STOP = false;
 }
 

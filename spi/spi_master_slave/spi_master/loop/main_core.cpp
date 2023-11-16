@@ -42,7 +42,7 @@ void MainCore::loop()
     if (MOVE_TOX0Y0) //переместиться в начальную точку  скана из начальной точке предыдущего скана
     {
       MOVE_TOX0Y0 = false;
-      scanner.move_to({static_cast<uint16_t>(vector[1]), static_cast<uint16_t>(vector[2])}, vector[3]);
+      scanner.move_toX0Y0(static_cast<uint16_t>(vector[1]), static_cast<uint16_t>(vector[2]), vector[3]);
       continue;
     }
 
