@@ -35,7 +35,8 @@ void MainCore::loop()
     }
     if (LID_UNTIL_STOP)  // пьезо мувер позиционирование
     {
-      scanner.positioningXYZ(vector[1], vector[2], vector[3], vector[4], vector[5],vector[6], vector[7]); //int lid_name, int f, int p, int n, int dir
+      scanner.positioningXYZ(vector[1], vector[2], vector[3], vector[4], vector[5], vector[6],
+                             vector[7]); //int lid_name, int f, int p, int n, int dir
     }
     // Move scanner to point (x, y)
     if (MOVE_TOX0Y0) //переместиться в начальную точку  скана из начальной точке предыдущего скана
@@ -45,9 +46,9 @@ void MainCore::loop()
       continue;
     }
 
-    if(MOVE_TOZ0) //отвестись в безопастную начальную точку по Z
+    if (MOVE_TOZ0) //отвестись в безопастную начальную точку по Z
     {
-      MOVE_TOZ0=false;
+      MOVE_TOZ0 = false;
       scanner.move_toZ0(vector[1], vector[2], vector[3], vector[4], vector[5]);
     }
 
@@ -66,7 +67,7 @@ void MainCore::loop()
       }
       if (SCANNING)
       {
-       scanner.start_scan();
+        scanner.start_scan();
       }
     }
 
@@ -88,10 +89,10 @@ void MainCore::loop()
       for (int j = 0; j < 5; ++j)
       {
         inBuf[j] = vector[j];
-        if (flgDebugLevel<=DEBUG_LEVEL) std::cout <<inBuf[j] << ' ';
+        if (flgDebugLevel <= DEBUG_LEVEL) std::cout << inBuf[j] << ' ';
       }
       linearDriver.activate(inBuf[0], inBuf[1], inBuf[2], abs(inBuf[3]), inBuf[4]);
-       if (flgDebugLevel<=DEBUG_LEVEL) std::cout << "debug LID_IS_READY\n";
+      if (flgDebugLevel <= DEBUG_LEVEL) std::cout << "debug LID_IS_READY\n";
       continue;
     }
     // Start scan on ADC
@@ -176,59 +177,61 @@ void MainCore::loop()
     }
     if (AD7606_READ or AD7606_READ_FOREVER)   // read ADC
     {
-      if (flgDebugLevel<=DEBUG_LEVEL) logger("ReadADC\n");
+      if (flgDebugLevel <= DEBUG_LEVEL)
+        logger("ReadADC\n");
       AD7606_READ = false;
       if (AD_7606_IS_READY_TO_READ)
       {
         afc.clear();
-        afc="code12";
-       if (!flgVirtual)
-       {
-         getValuesFromAdc();
-         auto ptr = getValuesFromAdc();
-              ZValue=(int16_t)ptr[ZPin];
-         SignalValue=(int16_t)ptr[SignalPin];
-         set_io_value(2,vector[1]);   //add 231114 gain pid
-         afc+=','+std::to_string(ZValue)+','+std::to_string(SignalValue)+','+std::to_string(vector[1])+"\n";
-         std::cout<<afc;
-         afc.clear();
-       }
-       else
-       {
-         afc+=','+std::to_string(ZValue)+','+std::to_string(SignalValue)+"\n";   //Z,Signal
-         std::cout << afc;
-         afc.clear();
-       }
+        afc = "code12";
+        if (!flgVirtual)
+        {
+          getValuesFromAdc();
+          auto ptr = getValuesFromAdc();
+          logger(ptr, 8);
+          ZValue = (int16_t) ptr[ZPin];
+          SignalValue = (int16_t) ptr[SignalPin];
+          set_io_value(2, vector[1]);   //add 231114 gain pid
+          afc +=
+              ',' + std::to_string(ZValue) + ',' + std::to_string(SignalValue) + ',' + std::to_string(vector[1]) + "\n";
+          std::cout << afc;
+          afc.clear();
+        } else
+        {
+          afc += ',' + std::to_string(ZValue) + ',' + std::to_string(SignalValue) + "\n";   //Z,Signal
+          std::cout << afc;
+          afc.clear();
+        }
       }
     }
     if (SET_PID_GAIN)
     {
-      SET_PID_GAIN=false;
+      SET_PID_GAIN = false;
       sleep_ms(200);
       afc.clear();
-      afc="debug PID gain parameters";
-      afc+=','+std::to_string(vector[1]);
-      afc+=+"\n";
-      std::cout<<afc;
+      afc = "debug PID gain parameters";
+      afc += ',' + std::to_string(vector[1]);
+      afc += +"\n";
+      std::cout << afc;
       sleep_ms(100);
-     if (!flgVirtual)  set_io_value(2,vector[1]);
+      if (!flgVirtual) set_io_value(2, vector[1]);
     }
     if (Scanner_Retract)
     {
       scanner.retract();
-      Scanner_Retract=false;
-     // set_io_value(5,vector[1],vector[2]);
+      Scanner_Retract = false;
+      // set_io_value(5,vector[1],vector[2]);
     }
     if (Scanner_Protract)
     {
       scanner.protract();
-      Scanner_Protract=false;
-     // set_io_value(5,vector[1],vector[2]);
+      Scanner_Protract = false;
+      // set_io_value(5,vector[1],vector[2]);
     }
     if (GET_CURRENTX0Y0)
     {
       scanner.getX0Y0();
-      GET_CURRENTX0Y0=false;
+      GET_CURRENTX0Y0 = false;
     }
   }
 }

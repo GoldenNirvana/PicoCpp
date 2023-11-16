@@ -21,5 +21,6 @@ int start_app()
 
 int main()
 {
+
   return start_app();
 }
