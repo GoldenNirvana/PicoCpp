@@ -38,14 +38,15 @@ public:
   DAC8563();
   void begin();
   void initialize(int port);
+  void writeA(int input);
+  void writeB(int input);
+  void setSpiProps();
+
+private:
   void DAC_WR_REG(uint8_t cmd_byte, uint16_t data_byte );
   void outPutValue(uint8_t cmd_byte,uint16_t input);
   void writeValue( uint8_t cmd_byte, uint8_t mid, uint8_t last);
   void writeVoltage(int input);
-  void writeA(int input);
-  void writeB(int input);
-  void setSpiProps();
-  uint16_t Voltage_Convert(float voltage);
 };
 
 

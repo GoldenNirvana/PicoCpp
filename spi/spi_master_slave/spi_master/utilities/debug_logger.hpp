@@ -16,6 +16,7 @@ void log(T msg, int size, uint level_debug = 2)
     {
       out += std::to_string(msg[i]) + " ";
     }
+    out += '\n';
     uart_puts(uart1, out.data());
   }
   critical_section_exit(&criticalSection);

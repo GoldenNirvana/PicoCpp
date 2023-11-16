@@ -9,6 +9,7 @@ DAC8563::DAC8563()
 {
   _vref = 5.0;
   begin();
+  initialize(3);
 }
 
 void DAC8563::begin()
@@ -63,24 +64,8 @@ void DAC8563::initialize(int port)
   DAC_WR_REG(CMD_RESET_ALL_REG, DATA_RESET_ALL_REG);      // reset
   DAC_WR_REG(CMD_PWR_UP_A_B, DATA_PWR_UP_A_B);        // power up
   DAC_WR_REG(CMD_INTERNAL_REF_EN, DATA_INTERNAL_REF_EN);      // enable internal reference
-  DAC_WR_REG(CMD_GAIN, DATA_GAIN_B2_A2);            // set multiplier
+  DAC_WR_REG(CMD_GAIN, DATA_GAIN_B1_A1);            // set multiplier TODO DAC 1 [-10..0]V
   DAC_WR_REG(CMD_LDAC_DIS, DATA_LDAC_DIS);          // update the caches
-}
-
-uint16_t DAC8563::Voltage_Convert(float voltage)
-{
-  uint16_t _D_;
-
-  voltage = voltage / 6 + 2.5;   //based on the manual provided by texas instruments
-
-  _D_ = (uint16_t) (65536 * voltage / 5);
-
-  if (_D_ < 32768)
-  {
-    _D_ -= 100;     //fix the errors
-  }
-
-  return _D_;
 }
 
 void DAC8563::setSpiProps()
