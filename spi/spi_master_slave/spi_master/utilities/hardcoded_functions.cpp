@@ -25,7 +25,7 @@ void set_freq(uint32_t freq)
   buf[4] = (0x2000) / (0x100);
   buf[5] = (0x2000) % (0x100);
 
-//  serialPrintBuffer(buf, 6);
+  log(buf, 6);
 
   decoder.activePort(1);
   Spi::setProperties(8, 1, 1);
@@ -60,7 +60,7 @@ void set_clock_enable()
   spi_write_blocking(spi_default, intBuf, 1);
 }
 
-void set_on_cap(uint8_t channel, uint16_t value)
+void set_on_dac(uint8_t channel, uint16_t value)
 {
   decoder.activePort(3);
   dac8563.setSpiProps();

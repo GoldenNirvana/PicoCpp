@@ -25,7 +25,7 @@ void Scanner::start_scan(const Point &point)
     {
       for (uint32_t k = 0; k < conf_.betweenPoints_x; ++k)
       {
-        set_on_cap(1, ++pos_.x);
+        set_on_dac(1, ++pos_.x);
         sleep_us(conf_.delayF);
       }
       sleep_ms(50); // CONST 50ms
@@ -39,7 +39,7 @@ void Scanner::start_scan(const Point &point)
     }
     for (uint32_t j = 0; j < conf_.betweenPoints_x * conf_.nPoints_x; ++j) // GET back
     {
-      set_on_cap(1, --pos_.x);
+      set_on_dac(1, --pos_.x);
       sleep_us(conf_.delayB);
     }
     for (uint32_t j = 0; j < vector_z.size(); j++)     // send info
@@ -64,7 +64,7 @@ void Scanner::start_scan(const Point &point)
     }
     for (uint32_t j = 0; j < conf_.betweenPoints_y; ++j) // go next line
     {
-      set_on_cap(2, ++pos_.y);
+      set_on_dac(2, ++pos_.y);
       sleep_us(conf_.delayF);
     }
   }
@@ -95,22 +95,22 @@ void Scanner::move_to(const Point &point, uint32_t delay)
 
   while (pos_.x < point.x)
   {
-    set_on_cap(1, ++pos_.x);
+    set_on_dac(1, ++pos_.x);
     sleep_us(delay);
   }
   while (pos_.x > point.x)
   {
-    set_on_cap(1, --pos_.x);
+    set_on_dac(1, --pos_.x);
     sleep_us(delay);
   }
   while (pos_.y < point.y)
   {
-    set_on_cap(2, ++pos_.y);
+    set_on_dac(2, ++pos_.y);
     sleep_us(delay);
   }
   while (pos_.y > point.y)
   {
-    set_on_cap(2, --pos_.y);
+    set_on_dac(2, --pos_.y);
     sleep_us(delay);
   }
   std::cout << "end\n";

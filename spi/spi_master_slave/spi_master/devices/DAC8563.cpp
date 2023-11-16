@@ -63,7 +63,7 @@ void DAC8563::initialize(int port)
   DAC_WR_REG(CMD_RESET_ALL_REG, DATA_RESET_ALL_REG);      // reset
   DAC_WR_REG(CMD_PWR_UP_A_B, DATA_PWR_UP_A_B);        // power up
   DAC_WR_REG(CMD_INTERNAL_REF_EN, DATA_INTERNAL_REF_EN);      // enable internal reference
-  DAC_WR_REG(CMD_GAIN, DATA_GAIN_B1_A1);            // set multiplier
+  DAC_WR_REG(CMD_GAIN, DATA_GAIN_B2_A2);            // set multiplier
   DAC_WR_REG(CMD_LDAC_DIS, DATA_LDAC_DIS);          // update the caches
 }
 

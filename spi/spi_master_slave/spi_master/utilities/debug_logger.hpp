@@ -8,6 +8,7 @@
 template<class T>
 void log(T msg, int size, uint level_debug = 2)
 {
+  critical_section_enter_blocking(&criticalSection);
   if (level_debug <= DEBUG_LEVEL)
   {
     std::string out;
@@ -17,6 +18,7 @@ void log(T msg, int size, uint level_debug = 2)
     }
     uart_puts(uart1, out.data());
   }
+  critical_section_exit(&criticalSection);
 }
 
 inline void log(std::string msg, uint level_debug = 2)
