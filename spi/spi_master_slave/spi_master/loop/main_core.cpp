@@ -19,26 +19,28 @@ void MainCore::loop()
     if (APPROACH)   //approach
     {
       blue();
-      static int16_t convergence_data[9];
-      convergence_data[0] = vector[1];   // point
-      convergence_data[1] = vector[2]; // max
-      convergence_data[2] = vector[3]; // min
-      convergence_data[3] = vector[4]; // steps
-      convergence_data[4] = vector[5]; // initdelay
-      convergence_data[5] = vector[6]; // gain
-      convergence_data[6] = vector[7]; // scannerDelay
-      convergence_data[7] = vector[8];  // freq
-      convergence_data[8] = vector[9];   // scv
-      scanner.approacphm(convergence_data);
+      static int16_t approach_data[9];
+      approach_data[0] = vector[1]; // point
+      approach_data[1] = vector[2]; // max
+      approach_data[2] = vector[3]; // min
+      approach_data[3] = vector[4]; // steps
+      approach_data[4] = vector[5]; // initdelay
+      approach_data[5] = vector[6]; // gain
+      approach_data[6] = vector[7]; // scannerDelay
+      approach_data[7] = vector[8]; // freq
+      approach_data[8] = vector[9]; // scv
+      scanner.approacphm(approach_data);
       //  sleep_ms(100);
       green();
+      continue;
     }
     if (LID_UNTIL_STOP)  // пьезо мувер позиционирование
     {
       scanner.positioningXYZ(vector[1], vector[2], vector[3], vector[4], vector[5], vector[6],
                              vector[7]); //int lid_name, int f, int p, int n, int dir
+     continue;
     }
-    // Move scanner to point (x, y)
+      // Move scanner to point (x, y)
     if (MOVE_TOX0Y0) //переместиться в начальную точку  скана из начальной точке предыдущего скана
     {
       MOVE_TOX0Y0 = false;
@@ -50,6 +52,7 @@ void MainCore::loop()
     {
       MOVE_TOZ0 = false;
       scanner.move_toZ0(vector[1], vector[2], vector[3], vector[4], vector[5]);
+      continue;
     }
 
     // Enable scanner and update config on command 50
@@ -58,16 +61,20 @@ void MainCore::loop()
       if (CONFIG_UPDATE)
       {
         CONFIG_UPDATE = false;
-        scanner.update({static_cast<uint32_t>(vector[1]), static_cast<uint32_t>(vector[2]),
-                        static_cast<uint8_t>(vector[3]), static_cast<uint8_t>(vector[4]),
+        scanner.update({
+                        static_cast<uint16_t>(vector[1]), static_cast<uint16_t>(vector[2]),
+                        static_cast<uint8_t>(vector[3]),  static_cast<uint8_t>(vector[4]),
                         static_cast<uint16_t>(vector[5]), static_cast<uint16_t>(vector[6]),
                         static_cast<uint16_t>(vector[7]), static_cast<uint16_t>(vector[8]),
-                        static_cast<uint8_t>(vector[9])});
+                        static_cast<uint8_t>(vector[9]),  static_cast<uint8_t>(vector[10]),
+                        static_cast<uint16_t>(vector[11]),static_cast<uint16_t>(vector[12])
+                       });
         continue;
       }
       if (SCANNING)
       {
         scanner.start_scan();
+        continue;
       }
     }
 
@@ -75,11 +82,13 @@ void MainCore::loop()
     {
       SET_IO_VALUE = false;
       set_io_value(vector[1], vector[2]);
+      continue;
     }
     if (SET_ONE_IO_VALUE)
     {
       SET_ONE_IO_VALUE = false;
       vector[2] == 1 ? io_ports[vector[1] - 1].enable() : io_ports[vector[1] - 1].disable();
+      continue;
     }
     // Enable LID
     if (LID)       // piezo mover
@@ -99,6 +108,7 @@ void MainCore::loop()
     if (RESONANCE)       // АЧХ
     {
       scanner.start_frqscan();
+      continue;
     }
     // SET FREQ ON
     if (FREQ_SET) // установка частоты
@@ -106,22 +116,26 @@ void MainCore::loop()
 //            set_clock_enable();
       FREQ_SET = false;
       set_freq((uint32_t) vector[1]);
+      continue;
     }
     if (AD8400_SET_GAIN) // усиление раскачка зонда
     {
       AD8400_SET_GAIN = false;
       set_gain(vector[1]);
+      continue;
     }
 
     if (DAC8563_INIT_1)
     {
       DAC8563_INIT_1 = false;
       dac8563_1.initialize(vector[1]);
+      continue;
     }
     if (DAC8563_INIT_2)
     {
       DAC8563_INIT_2 = false;
       dac8563_2.initialize(vector[1]);
+      continue;
     }
 
     /// MAIN SPI IF
@@ -138,6 +152,7 @@ void MainCore::loop()
       {
         dac8563_1.writeB(vector[6]);
       }
+      continue;
     }
 
     if (DAC8563_SET_VOLTAGE_2)
@@ -150,6 +165,7 @@ void MainCore::loop()
       {
         dac8563_2.writeB(vector[6]);
       }
+      continue;
     }
 
     if (AD5664)
@@ -157,6 +173,7 @@ void MainCore::loop()
       AD5664 = false;
       AD56X4Class::setChannel(AD56X4_SETMODE_INPUT, vector[6], vector[5]);
       AD56X4Class::updateChannel(vector[6]);
+      continue;
     }
     if (AD9833_SENDER)
     {
@@ -167,6 +184,7 @@ void MainCore::loop()
         buf[j] = vector[5 + j];
       }
       spi_write_blocking(spi_default, buf, 6);
+      continue;
     }
     if (AD8400_SENDER)
     {
@@ -174,6 +192,7 @@ void MainCore::loop()
       uint8_t inBuf[1];
       inBuf[0] = vector[5];
       spi_write_blocking(spi_default, inBuf, 1);
+      continue;
     }
     if (AD7606_ENABLE_DISABLE)
     {
@@ -185,6 +204,7 @@ void MainCore::loop()
       {
         AD7606_READ_FOREVER = true;
       }
+      continue;
     }
     if (AD7606_RESET)
     {
@@ -192,6 +212,7 @@ void MainCore::loop()
       resetPort.enable();
       sleep_us(10);
       resetPort.disable();
+      continue;
     }
     if (AD7606_READ or AD7606_READ_FOREVER)   // read ADC
     {
@@ -221,6 +242,7 @@ void MainCore::loop()
           afc.clear();
         }
       }
+      continue;
     }
     if (SET_PID_GAIN)
     {
@@ -233,23 +255,27 @@ void MainCore::loop()
       std::cout << afc;
       sleep_ms(100);
       if (!flgVirtual) set_io_value(2, vector[1]);
+      continue;
     }
     if (Scanner_Retract)
     {
       scanner.retract();
       Scanner_Retract = false;
       // set_io_value(5,vector[1],vector[2]);
+      continue;
     }
     if (Scanner_Protract)
     {
       scanner.protract();
       Scanner_Protract = false;
       // set_io_value(5,vector[1],vector[2]);
+      continue;
     }
     if (GET_CURRENTX0Y0)
     {
       scanner.getX0Y0();
       GET_CURRENTX0Y0 = false;
+      continue;
     }
   }
 }

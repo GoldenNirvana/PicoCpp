@@ -6,8 +6,8 @@
 
 struct Config
 {
-  uint32_t nPoints_x;        // Точек по линии X
-  uint32_t nPoints_y;        // Точек по линии Y
+  uint16_t nPoints_x;        // Точек по линии X
+  uint16_t nPoints_y;        // Точек по линии Y
    uint8_t path;             // скан  0 - по X, 1 - по Y
    uint8_t method;           // Topo=0,Phase=1,...
   uint16_t delayF;           // Задержка вперёд
@@ -15,7 +15,9 @@ struct Config
   uint16_t betweenPoints_x;  // Расстояние между точками по X дискрет
   uint16_t betweenPoints_y;  // Расстояние между точками по Y дискрет
    uint8_t flag;             // Что измерять Z =1 ; Z,Ampl =2 
-   uint8_t Ti;               // PID Gain
+   uint8_t Ti;               // PID Gain 
+  uint16_t diskretinstep;    // размер шага в дискрет
+  uint16_t pause;            // ms? время ожидания в точке до начала измерения сигналов
 };
   
 struct ConfigCurrent

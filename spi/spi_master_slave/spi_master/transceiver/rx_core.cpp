@@ -97,7 +97,7 @@ void RX_core::launchOnCore1()
  ///*************************************  
       case 14: //add MF set virtual device 
      //   red();      
-        flgVirtual = !flgVirtual;
+        flgVirtual =(bool)vector[1];// !flgVirtual;
     //    dark();
         break;
       case 15: //add mf set debug level =2; if =3 cancel debug info!!

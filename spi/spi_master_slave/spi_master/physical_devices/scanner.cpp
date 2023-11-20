@@ -32,7 +32,7 @@ void Scanner::start_scan()
   //
   afc.clear();
   afc = "debug scan parameters";
-  for (int j = 1; j < 8; ++j)
+  for (int j = 1; j <= 11; ++j)
   {
     afc += ',' + std::to_string(vector[j]);
   }
@@ -41,20 +41,50 @@ void Scanner::start_scan()
   std::cout << afc;
   afc.clear();
   sleep_ms(100);
+/*  
+  uint16_t stepsx;
+  uint16_t stepsy;
+  uint16_t reststepx;
+  uint16_t reststepy;  
+  stepsx=(uint16_t)conf_.betweenPoints_x/conf_.diskretinstep;
+  stepsy=(uint16_t)conf_.betweenPoints_y/conf_.diskretinstep;
+  reststepx=conf_.betweenPoints_x % conf_.diskretinstep;
+  reststepy=conf_.betweenPoints_y % conf_.diskretinstep;
+*/
+
 
   for (uint32_t i = 0; i < conf_.nPoints_y; ++i)
-  {
-    for (uint32_t j = 0; j < conf_.nPoints_x; ++j)
+  {  
+     for (uint32_t j = 0; j < conf_.nPoints_x; ++j)
     {
-      for (uint32_t k = 0; k < conf_.betweenPoints_x; ++k)
+      for (uint32_t k = 0; k < conf_.betweenPoints_x; ++k) //move to next point 
       {
         if (!flgVirtual)
-        { set_on_dac(1, ++pos_.x); }
+        {
+           set_on_dac(1, pos_.x); 
+           pos_.x+=conf_.diskretinstep;
+        }
         else
-        { ++pos_.x; }
+        { pos_.x+=conf_.diskretinstep; }
         sleep_us(conf_.delayF);
       }
-      sleep_ms(50); // CONST 50ms
+   /*
+       if( reststepx!=0)
+       {
+        if (!flgVirtual) // last step
+        {
+         pos_.x=+reststepx;
+         set_on_dac(1, pos_.x);          
+        }
+        else
+        { pos_.x+=reststepx; }
+
+        sleep_us(conf_.delayF);
+       }
+   */
+  //******************************************************************************
+      sleep_ms(conf_.pause); // 50 CONST 50ms wait for start get data 
+  //******************************************************************************     
       if (!flgVirtual)
       {
         getValuesFromAdc();
@@ -73,14 +103,32 @@ void Scanner::start_scan()
         }
       }
     }
-    for (uint16_t j = 0; j < conf_.betweenPoints_x * conf_.nPoints_x; ++j) // GET back
+
+    for (uint32_t j = 0; j <conf_.betweenPoints_x * conf_.nPoints_x; ++j) // move  back
     {
       if (!flgVirtual)
-      { set_on_dac(1, --pos_.x); }
+      {
+          pos_.x=-conf_.diskretinstep;
+          set_on_dac(1, pos_.x);        
+      }
       else
-      { --pos_.x; }
+      {  pos_.x=-conf_.diskretinstep;}
       sleep_us(conf_.delayB);
     }
+  /*
+       if( reststepx!=0)
+       {
+        if (!flgVirtual) // last step
+        {
+         pos_.x-=reststepx;
+         set_on_dac(1, pos_.x);          
+        }
+        else
+        { pos_.x-=reststepx; }
+
+        sleep_us(conf_.delayF);
+       }
+*/
     afc.clear();
     afc = "code50";
     for (size_t j = 0; j < vector_z.size(); j++)     // send data scanline
@@ -100,10 +148,12 @@ void Scanner::start_scan()
     if (CONFIG_UPDATE)
     {
       CONFIG_UPDATE = false;
-      conf_.delayF = vector[1];
-      conf_.delayB = vector[2];
+      conf_.delayF  = vector[1];
+      conf_.delayB  = vector[2];
       set_io_value(2, vector[3]); //gain PID
       sleep_ms(100);    //
+      conf_.diskretinstep=vector[4];
+
       afc.clear();
       afc = "debug parameters update";
       for (int j = 1; j <= 3; ++j)
@@ -128,15 +178,30 @@ void Scanner::start_scan()
     }
     for (uint32_t j = 0; j < conf_.betweenPoints_y; ++j) // go next line
     {
-      //set_on_cap(2, ++pos_.y);
       if (!flgVirtual)
-      { set_on_dac(2, ++pos_.y); }
+      {
+       pos_.y+=conf_.diskretinstep;
+       set_on_dac(2, pos_.y); 
+      }
       else
-      { ++pos_.y; }
+      { pos_.y+=conf_.diskretinstep; }
 
       sleep_us(conf_.delayF);
     }
-  }
+   /*    if( reststepx!=0)
+       {
+        if (!flgVirtual) // last step
+        {
+         pos_.y-=reststepy;
+         set_on_dac(1, pos_.y);          
+        }
+        else
+        { pos_.y-=reststepy; }
+
+        sleep_us(conf_.delayF);
+       }
+     */  
+  } //for
   blue();
 
   SCANNING = false;
@@ -344,27 +409,28 @@ void Scanner::positioningXYZ(int lid_name, int f, int p, int n, int dir, int16_t
         ZValue = (int16_t) ptr[ZPin];
         SignalValue = (int16_t) ptr[SignalPin];
         // check if z > <
-        if (ZValue < GATE_Z_MIN)
+        if (ldir == 1)
         {
+         if (ZValue < GATE_Z_MIN)
+         {
           status = touch;
           break;
-        }
-        if (ZValue < GATE_Z_MAX)
-        {
+         }
+         if (ZValue < GATE_Z_MAX)
+         {
           status = ok;
           break;
-        }
+         }
+        } 
         linearDriver.activate(lid_name, f, p, std::abs(ln), ldir);
-      } else
+      } 
+      else
       {
-        if (ldir == 1)
-        { ZValue -= ln; }
+        if (ldir == 1) { ZValue -= ln; }
         else
         {
-          if (ZValue < (ZMaxValue - ln))
-          { ZValue += ln; }
-          else
-          { ZValue = ZMaxValue; }
+          if (ZValue < (ZMaxValue - ln)) { ZValue += ln; }
+                             else        { ZValue = ZMaxValue; }
         }
         // check if z > <
         if (ZValue < GATE_Z_MIN)
