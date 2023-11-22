@@ -29,10 +29,10 @@ void Scanner::start_scan()
   prev_point = pos_; //запоминание начальной точки скана
   vector_z.clear();
   other_info.clear();
-  //
+
   afc.clear();
   afc = "debug scan parameters";
-  for (int j = 1; j <= 11; ++j)
+  for (int j = 1; j <= 12; ++j)
   {
     afc += ',' + std::to_string(vector[j]);
   }
@@ -65,7 +65,7 @@ void Scanner::start_scan()
            pos_.x+=conf_.diskretinstep;
         }
         else
-        { pos_.x+=conf_.diskretinstep; }
+        {  pos_.x+=conf_.diskretinstep; }
         sleep_us(conf_.delayF);
       }
    /*
@@ -90,14 +90,14 @@ void Scanner::start_scan()
         getValuesFromAdc();
         getValuesFromAdc();
         vector_z.emplace_back((int16_t) spiBuf[0]);  // get Z from adc ??
-        if (conf_.flag == 2) //231102
+        if (conf_.flag == 2) //added signal
         {
           other_info.emplace_back((int16_t) spiBuf[conf_.flag]);
         }
       } else
       {
         vector_z.emplace_back(int16_t(10000.0 * (sin(M_PI * j * 0.1) + sin(M_PI * i * 0.1))));  // get Z from adc
-        if (conf_.flag == 2) //231102
+        if (conf_.flag == 2)  //added signal
         {
           other_info.emplace_back(int16_t(10000.0 * (sin(M_PI * j * 0.1) + sin(M_PI * i * 0.1))));
         }
@@ -134,7 +134,7 @@ void Scanner::start_scan()
     for (size_t j = 0; j < vector_z.size(); j++)     // send data scanline
     {
       afc += ',' + std::to_string(vector_z[j]);
-      if (conf_.flag == 2)
+      if (conf_.flag == 2) //z+ signal 
       {
         afc += ',' + std::to_string(vector_z[j]) + ',' + std::to_string(other_info[j]);
       };

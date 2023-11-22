@@ -95,6 +95,18 @@ void RX_core::launchOnCore1()
         AD7606_READ = true;
         break;
  ///*************************************  
+      case 13: //add MF 
+        if (vector[1]=1)
+        {
+           ZPin=0; 
+           SignalPin=1; 
+        }
+        else
+        {
+           ZPin=1; 
+           SignalPin=0; 
+        }
+       break;
       case 14: //add MF set virtual device 
      //   red();      
         flgVirtual =(bool)vector[1];// !flgVirtual;
