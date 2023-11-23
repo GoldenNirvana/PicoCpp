@@ -83,8 +83,9 @@ void Scanner::start_scan()
        }
    */
   //******************************************************************************
-      sleep_ms(conf_.pause); // 50 CONST 50ms wait for start get data 
-  //******************************************************************************     
+     // sleep_ms(conf_.pause); // 50 CONST 50ms wait for start get data 
+     sleep_us(conf_.pause); // 50 CONST 50ms wait for start get data 
+  //*//******************************************************************************     
       if (!flgVirtual)
       {
         getValuesFromAdc();
@@ -108,11 +109,11 @@ void Scanner::start_scan()
     {
       if (!flgVirtual)
       {
-          pos_.x=-conf_.diskretinstep;
+          pos_.x-=conf_.diskretinstep;
           set_on_dac(1, pos_.x);        
       }
       else
-      {  pos_.x=-conf_.diskretinstep;}
+      {  pos_.x-=conf_.diskretinstep;}
       sleep_us(conf_.delayB);
     }
   /*
@@ -503,7 +504,7 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
   {
     afc += ',' + std::to_string(data[j]);
   }
-  afc += "\n";
+  afc += std::to_string(SignalPin)+','+std::to_string(ZPin)+"\n";
   std::cout << afc;
   afc.clear();
   sleep_ms(200);
@@ -683,7 +684,7 @@ void Scanner::start_frqscan()
     inBuf[j] = vector[1 + j];
     afc += ',' + std::to_string(inBuf[j]);
   }
-  afc += ',' + std::to_string(flgVirtual) + "\n";
+  afc += ',' + std::to_string(flgVirtual) +std::to_string(SignalPin)+','+std::to_string(ZPin)+ "\n";
   std::cout << afc;
   afc.clear();
   sleep_ms(100);
