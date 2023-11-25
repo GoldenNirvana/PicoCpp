@@ -46,33 +46,52 @@ void Scanner::start_scan()
   uint16_t stepsy;
   uint16_t reststepfast;
   uint16_t reststepslow;  
+  uint16_t reststepx;
+  uint16_t reststepy; 
   uint16_t nfastline, nslowline;
   uint16_t stepslowline,stepfastline;
-    
+  uint8_t  portx=1;
+  uint8_t  porty=2;
+  uint8_t  portfast;
+  uint8_t  portslow;
+  uint16_t pos_fast;
+  uint16_t pos_slow;
+  stepsx=(uint16_t)conf_.betweenPoints_x/conf_.diskretinstep;
+  stepsy=(uint16_t)conf_.betweenPoints_y/conf_.diskretinstep;
+  reststepx=conf_.betweenPoints_x % conf_.diskretinstep;
+  reststepy=conf_.betweenPoints_y % conf_.diskretinstep;
+
   switch (conf_.path)
   {
   case 0://X+
    {
-    nfastline=stepsx;//conf_.nPoints_x;
-    nslowline=stepsy;//conf_.nPoints_y;
-    stepslowline=conf_.betweenPoints_y;
-    stepfastline=conf_.betweenPoints_x;
-    reststepfast=conf_.betweenPoints_x % conf_.diskretinstep;
-    reststepslow=conf_.betweenPoints_y % conf_.diskretinstep;
+    portfast=portx;
+    portslow=porty;
+    pos_fast=pos_.x;
+    pos_slow=pos_.y;
+    nfastline=conf_.nPoints_x;
+    nslowline=conf_.nPoints_y;
+    stepslowline=stepsx;
+    stepfastline=stepsy;
+    reststepfast=reststepx;
+    reststepslow=reststepy;
     break;
    } 
   case 1: //Y+
    {
-    nfastline=stepsy;//conf_.nPoints_y;
-    nslowline=stepsx;//conf_.nPoints_x;
-    stepslowline=conf_.betweenPoints_x;
-    stepfastline=conf_.betweenPoints_y;
-    reststepfast=conf_.betweenPoints_y % conf_.diskretinstep;
-    reststepslow=conf_.betweenPoints_x % conf_.diskretinstep;
-        break;
+    portfast=porty;
+    portslow=portx;
+    pos_fast=pos_.y;
+    pos_slow=pos_.x;
+    nfastline=conf_.nPoints_y;
+    nslowline=conf_.nPoints_x;
+    stepslowline=stepsy;
+    stepfastline=stepsx;
+    reststepfast=reststepy;
+    reststepslow=reststepx;
+    break;
    }
   }
-
   for (uint32_t i = 0; i < nslowline; ++i)
   {  
     for (uint32_t j = 0; j < nfastline; ++j)
@@ -81,29 +100,29 @@ void Scanner::start_scan()
       {
         if (!flgVirtual)
         {
-           set_on_dac(1, pos_.x); 
-           pos_.x+=conf_.diskretinstep;
+           set_on_dac(portfast, pos_fast); 
+           pos_fast+=conf_.diskretinstep;
         }
         else
-        {  pos_.x+=conf_.diskretinstep; }
+        {  pos_fast+=conf_.diskretinstep; }
         sleep_us(conf_.delayF);
       }
-       if( reststepfast!=0)
+       if( reststepfast!=0)// добирание остатка
        {
-        if (!flgVirtual) // last step
+        if (!flgVirtual) 
         {
-         pos_.x=+reststepfast;
-         set_on_dac(1, pos_.x);          
+         pos_fast+=reststepfast;
+         set_on_dac(portfast, pos_fast);          
         }
         else
-        { pos_.x+=reststepfast; }
+        { pos_fast+=reststepfast; }
 
         sleep_us(conf_.delayF);
        }
 
   //******************************************************************************
      // sleep_ms(conf_.pause); // 50 CONST 50ms wait for start get data 
-     sleep_us(conf_.pause); // 50 CONST 50ms wait for start get data 
+     sleep_us(conf_.pause);    // 50 CONST 50ms wait for start get data 
   //*//******************************************************************************     
       if (!flgVirtual)
       {
@@ -128,23 +147,23 @@ void Scanner::start_scan()
     {
       if (!flgVirtual)
       {
-          pos_.x-=conf_.diskretinstep;
-          set_on_dac(1, pos_.x);        
+          pos_fast-=conf_.diskretinstep;
+          set_on_dac(portfast, pos_fast);        
       }
       else
-      {  pos_.x-=conf_.diskretinstep;}
+      {  pos_fast-=conf_.diskretinstep;}
       sleep_us(conf_.delayB);
     }
   
-       if( reststepslow!=0)
+       if( reststepfast!=0)// добирание остатка
        {
-        if (!flgVirtual) // last step
+        if (!flgVirtual) 
         {
-         pos_.x-=reststepslow;
-         set_on_dac(1, pos_.x);          
+         pos_fast-=reststepfast;
+         set_on_dac(portfast, pos_fast);          
         }
         else
-        { pos_.x-=reststepslow; }
+        { pos_fast-=reststepfast; }
 
         sleep_us(conf_.delayF);
        }
@@ -200,32 +219,44 @@ void Scanner::start_scan()
     {
       if (!flgVirtual)
       {
-       pos_.y+=conf_.diskretinstep;
-       set_on_dac(2, pos_.y); 
+       pos_slow+=conf_.diskretinstep;
+       set_on_dac(portslow, pos_slow); 
       }
       else
-      { pos_.y+=conf_.diskretinstep; }
+      { pos_slow+=conf_.diskretinstep; }
 
       sleep_us(conf_.delayF);
     }
-   /*    if( reststepx!=0)
+       if( reststepslow!=0)
        {
         if (!flgVirtual) // last step
         {
-         pos_.y-=reststepy;
-         set_on_dac(1, pos_.y);          
+         pos_slow-=reststepslow;
+         set_on_dac(portslow, pos_slow);          
         }
         else
-        { pos_.y-=reststepy; }
+        { pos_slow-=reststepslow; }
 
         sleep_us(conf_.delayF);
-       }
-     */  
+       }  
   } //for
 
   blue();
 
   SCANNING = false;
+ switch (conf_.path)
+  {
+case 0:{
+        pos_.x=pos_fast;
+        pos_.y=pos_slow;
+        break;
+       }
+case 1:{
+        pos_.x=pos_slow;
+        pos_.y=pos_fast;
+        break;
+       }
+  }
   stop_scan();  //возврат в начальную точку скана
   sleep_ms(200);
   while (!TheadDone) { sleep_ms(50); } //ожидание ответа ПК для синхронизации
@@ -243,60 +274,101 @@ void Scanner::start_fastscan()
   prev_point = pos_; //запоминание начальной точки скана
   vector_z.clear();
   afc.clear();
-  afc = "debug scan parameters";
+  afc = "debug fastscan parameters";
   for (int j = 1; j <= 13; ++j)
   {
     afc += ',' + std::to_string(vector[j]);
   }
-  afc += ',' + std::to_string(pos_.x) + ',' + std::to_string(pos_.y);
+  afc += ',' + std::to_string(pos_.x) + ',' + std::to_string(pos_.y)+','+std::to_string(conf_.flgOneFrame);
   afc += +"\n";
   std::cout << afc;
   afc.clear();
   sleep_ms(100);
 
+  uint16_t stepsx;
+  uint16_t stepsy;
+  uint16_t reststepfast;
+  uint16_t reststepslow;  
+  uint16_t reststepx;
+  uint16_t reststepy; 
   uint16_t nfastline, nslowline;
   uint16_t stepslowline,stepfastline;
-    
+  uint8_t  portx=1;
+  uint8_t  porty=2;
+  uint8_t  portfast;
+  uint8_t  portslow;
+  uint16_t pos_fast;
+  uint16_t pos_slow;
+  stepsx=(uint16_t)conf_.betweenPoints_x/conf_.diskretinstep;
+  stepsy=(uint16_t)conf_.betweenPoints_y/conf_.diskretinstep;
+  reststepx=conf_.betweenPoints_x % conf_.diskretinstep;
+  reststepy=conf_.betweenPoints_y % conf_.diskretinstep;
+
   switch (conf_.path)
   {
   case 0://X+
    {
+    portfast=portx;
+    portslow=porty;
+    pos_fast=pos_.x;
+    pos_slow=pos_.y;
     nfastline=conf_.nPoints_x;
     nslowline=conf_.nPoints_y;
-    stepslowline=conf_.betweenPoints_y;
-    stepfastline=conf_.betweenPoints_x;
+    stepslowline=stepsx;
+    stepfastline=stepsy;
+    reststepfast=reststepx;
+    reststepslow=reststepy;
     break;
    } 
   case 1: //Y+
    {
+    portfast=porty;
+    portslow=portx;
+    pos_fast=pos_.y;
+    pos_slow=pos_.x;
     nfastline=conf_.nPoints_y;
     nslowline=conf_.nPoints_x;
-    stepslowline=conf_.betweenPoints_x;
-    stepfastline=conf_.betweenPoints_y;
+    stepslowline=stepsy;
+    stepfastline=stepsx;
+    reststepfast=reststepy;
+    reststepslow=reststepx;
     break;
    }
   }
-
- while (FASTSCANNING)
- {
-  for (uint32_t i = 0; i < nslowline; ++i)
-  {  
+  while(FASTSCANNING)
+  { 
+   for (uint32_t i = 0; i < nslowline; ++i)
+   {  
     for (uint32_t j = 0; j < nfastline; ++j)
     {
       for (uint32_t k = 0; k < stepfastline; ++k) //move to next point 
       {
         if (!flgVirtual)
         {
-           set_on_dac(1, pos_.x); 
-           pos_.x+=conf_.diskretinstep;
+           set_on_dac(portfast, pos_fast); 
+           pos_fast+=conf_.diskretinstep;
         }
         else
-        {  pos_.x+=conf_.diskretinstep; }
+        {  pos_fast+=conf_.diskretinstep; }
         sleep_us(conf_.delayF);
       }
-  //******************************************************************************
-     sleep_us(conf_.pause); // 50 CONST 50ms wait for start get data 
-  //*******************************************************************************     
+       if( reststepfast!=0)// добирание остатка
+       {
+        if (!flgVirtual) 
+        {
+         pos_fast+=reststepfast;
+         set_on_dac(portfast, pos_fast);          
+        }
+        else
+        { pos_fast+=reststepfast; }
+
+        sleep_us(conf_.delayF);
+       }
+//******************************************************************************
+     // sleep_ms(conf_.pause); // 50 CONST 50ms wait for start get data 
+     sleep_us(conf_.pause);    // 50 CONST 50ms wait for start get data 
+//******************************************************************************     
+     
       if (!flgVirtual)
       {
         getValuesFromAdc();
@@ -307,32 +379,34 @@ void Scanner::start_fastscan()
       {
         vector_z.emplace_back(int16_t(10000.0 * (sin(M_PI * j * 0.1) + sin(M_PI * i * 0.1))));  // get Z from adc
       }
-    }
+    } //j
 
-    for (uint32_t j = 0; j < stepfastline*nfastline; ++j) // move  back
-    {
-      if (!flgVirtual)
+     for (uint32_t j = 0; j < stepfastline*nfastline; ++j) // move  back
       {
-        pos_.x-=conf_.diskretinstep;
-        set_on_dac(1, pos_.x);        
+       if (!flgVirtual)
+       {
+          pos_fast-=conf_.diskretinstep;
+          set_on_dac(portfast, pos_fast);        
+       }
+       else
+       {  pos_fast-=conf_.diskretinstep;}
+       sleep_us(conf_.delayB);
       }
-      else
-      {  pos_.x-=conf_.diskretinstep;}
-      sleep_us(conf_.delayB);
-    }
-    for (uint32_t j = 0; j <stepslowline; ++j) // go next line
-    {
-      if (!flgVirtual)
+  
+      if( reststepfast!=0)// добирание остатка
       {
-       pos_.y+=conf_.diskretinstep;
-       set_on_dac(2, pos_.y); 
-      }
-      else
-      { pos_.y+=conf_.diskretinstep; }
+        if (!flgVirtual) 
+        {
+         pos_fast-=reststepfast;
+         set_on_dac(portfast, pos_fast);          
+        }
+        else
+        { pos_fast-=reststepfast; }
 
-      sleep_us(conf_.delayF);
-    } 
-  } 
+        sleep_us(conf_.delayF);
+      }
+   } //i
+ 
     afc.clear();
     afc = "code56";
     for (size_t j = 0; j < vector_z.size(); j++)     // send data scanline
@@ -344,24 +418,35 @@ void Scanner::start_fastscan()
     std::cout << afc;
     sleep_ms(100);
     afc.clear();
-    stop_scan();  //возврат в начальную точку скана
-    if (conf_.flgOneFrame==1) {FASTSCANNING=false;}
-}  //while true;
-  
-     blue();
-      FASTSCANNING = false;
-      sleep_ms(100);
-      afc.clear();
-      afc = "stopped\n";
-      std::cout << afc;
-      sleep_ms(100);
-      vector_z.clear();
-      while (!TheadDone) { sleep_ms(50); } //ожидание ответа ПК для синхронизации
-      TheadDone = false;
-      std::cout << "end\n";
-      activateDark();
-}
 
+    stop_scan();  //возврат в начальную точку скана
+    
+    if (conf_.flgOneFrame==1) {FASTSCANNING=false;};
+ }  //while true; 
+ 
+  blue();
+
+  FASTSCANNING = false;
+ switch (conf_.path)
+  {
+case 0:{
+        pos_.x=pos_fast;
+        pos_.y=pos_slow;
+        break;
+       }
+case 1:{
+        pos_.x=pos_slow;
+        pos_.y=pos_fast;
+        break;
+       }
+  }
+  stop_scan();  //возврат в начальную точку скана
+  sleep_ms(200);
+  while (!TheadDone) { sleep_ms(50); } //ожидание ответа ПК для синхронизации
+  TheadDone = false;
+  std::cout << "end\n";
+  activateDark();
+}
 void Scanner::stop_scan()
 {
   move_to(prev_point, 10);

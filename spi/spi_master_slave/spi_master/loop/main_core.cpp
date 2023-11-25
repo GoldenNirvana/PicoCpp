@@ -67,16 +67,16 @@ void MainCore::loop()
                         static_cast<uint8_t>(vector[3]),  static_cast<uint8_t>(vector[4]),
                         static_cast<uint16_t>(vector[5]), static_cast<uint16_t>(vector[6]),
                         static_cast<uint16_t>(vector[7]), static_cast<uint8_t>(vector[8]),
-                        static_cast<uint8_t>(vector[9]),  static_cast<uint16_t>(vector[10]),
-                        static_cast<uint16_t>(vector[11]),static_cast<uint8_t>(vector[12])
+                        static_cast<uint8_t>(vector[9]),  static_cast<uint8_t>(vector[10]),
+                        static_cast<uint16_t>(vector[11]),static_cast<uint16_t>(vector[12]),
+                        static_cast<uint8_t>(vector[13])
                        });  
-        continue;
       }
       if (SCANNING)
       {
-        scanner.start_scan();
-        continue;
-      }
+        scanner.start_scan(); 
+      } 
+      continue;
     }
     if (FASTSCANNING)
     {
@@ -85,8 +85,9 @@ void MainCore::loop()
                         static_cast<uint8_t>(vector[3]),  static_cast<uint8_t>(vector[4]),
                         static_cast<uint16_t>(vector[5]), static_cast<uint16_t>(vector[6]),
                         static_cast<uint16_t>(vector[7]), static_cast<uint8_t>(vector[8]),
-                        static_cast<uint8_t>(vector[9]),  static_cast<uint16_t>(vector[10]),
-                        static_cast<uint16_t>(vector[11]),static_cast<uint8_t>(vector[12])
+                        static_cast<uint8_t>(vector[9]),  static_cast<uint8_t>(vector[10]),
+                        static_cast<uint16_t>(vector[11]),static_cast<uint16_t>(vector[12]),
+                        static_cast<uint8_t>(vector[13])
                      });
       scanner.start_fastscan();
       FASTSCANNING=false;
