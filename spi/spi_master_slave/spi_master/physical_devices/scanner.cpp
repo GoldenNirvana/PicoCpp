@@ -41,16 +41,11 @@ void Scanner::start_scan()
   std::cout << afc;
   afc.clear();
   sleep_ms(100);
-/*  
+  
   uint16_t stepsx;
   uint16_t stepsy;
-  uint16_t reststepx;
-  uint16_t reststepy;  
-  stepsx=(uint16_t)conf_.betweenPoints_x/conf_.diskretinstep;
-  stepsy=(uint16_t)conf_.betweenPoints_y/conf_.diskretinstep;
-  reststepx=conf_.betweenPoints_x % conf_.diskretinstep;
-  reststepy=conf_.betweenPoints_y % conf_.diskretinstep;
-*/
+  uint16_t reststepfast;
+  uint16_t reststepslow;  
   uint16_t nfastline, nslowline;
   uint16_t stepslowline,stepfastline;
     
@@ -58,19 +53,23 @@ void Scanner::start_scan()
   {
   case 0://X+
    {
-    nfastline=conf_.nPoints_x;
-    nslowline=conf_.nPoints_y;
+    nfastline=stepsx;//conf_.nPoints_x;
+    nslowline=stepsy;//conf_.nPoints_y;
     stepslowline=conf_.betweenPoints_y;
     stepfastline=conf_.betweenPoints_x;
+    reststepfast=conf_.betweenPoints_x % conf_.diskretinstep;
+    reststepslow=conf_.betweenPoints_y % conf_.diskretinstep;
     break;
    } 
   case 1: //Y+
    {
-    nfastline=conf_.nPoints_y;
-    nslowline=conf_.nPoints_x;
+    nfastline=stepsy;//conf_.nPoints_y;
+    nslowline=stepsx;//conf_.nPoints_x;
     stepslowline=conf_.betweenPoints_x;
     stepfastline=conf_.betweenPoints_y;
-    break;
+    reststepfast=conf_.betweenPoints_y % conf_.diskretinstep;
+    reststepslow=conf_.betweenPoints_x % conf_.diskretinstep;
+        break;
    }
   }
 
@@ -89,20 +88,19 @@ void Scanner::start_scan()
         {  pos_.x+=conf_.diskretinstep; }
         sleep_us(conf_.delayF);
       }
-   /*
-       if( reststepx!=0)
+       if( reststepfast!=0)
        {
         if (!flgVirtual) // last step
         {
-         pos_.x=+reststepx;
+         pos_.x=+reststepfast;
          set_on_dac(1, pos_.x);          
         }
         else
-        { pos_.x+=reststepx; }
+        { pos_.x+=reststepfast; }
 
         sleep_us(conf_.delayF);
        }
-   */
+
   //******************************************************************************
      // sleep_ms(conf_.pause); // 50 CONST 50ms wait for start get data 
      sleep_us(conf_.pause); // 50 CONST 50ms wait for start get data 
@@ -137,20 +135,20 @@ void Scanner::start_scan()
       {  pos_.x-=conf_.diskretinstep;}
       sleep_us(conf_.delayB);
     }
-  /*
-       if( reststepx!=0)
+  
+       if( reststepslow!=0)
        {
         if (!flgVirtual) // last step
         {
-         pos_.x-=reststepx;
+         pos_.x-=reststepslow;
          set_on_dac(1, pos_.x);          
         }
         else
-        { pos_.x-=reststepx; }
+        { pos_.x-=reststepslow; }
 
         sleep_us(conf_.delayF);
        }
-*/
+
     afc.clear();
     afc = "code50";
     for (size_t j = 0; j < vector_z.size(); j++)     // send data scanline
