@@ -173,6 +173,9 @@ void RX_core::launchOnCore1()
       case 55:
         CONFIG_UPDATE = true;
         break;
+      case 56:
+        FASTSCANNING =true;
+        break;
       case 60:
         SET_IO_VALUE = true;
         break;

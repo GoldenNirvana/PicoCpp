@@ -51,13 +51,34 @@ void Scanner::start_scan()
   reststepx=conf_.betweenPoints_x % conf_.diskretinstep;
   reststepy=conf_.betweenPoints_y % conf_.diskretinstep;
 */
+  uint16_t nfastline, nslowline;
+  uint16_t stepslowline,stepfastline;
+    
+  switch (conf_.path)
+  {
+  case 0://X+
+   {
+    nfastline=conf_.nPoints_x;
+    nslowline=conf_.nPoints_y;
+    stepslowline=conf_.betweenPoints_y;
+    stepfastline=conf_.betweenPoints_x;
+    break;
+   } 
+  case 1: //Y+
+   {
+    nfastline=conf_.nPoints_y;
+    nslowline=conf_.nPoints_x;
+    stepslowline=conf_.betweenPoints_x;
+    stepfastline=conf_.betweenPoints_y;
+    break;
+   }
+  }
 
-
-  for (uint32_t i = 0; i < conf_.nPoints_y; ++i)
+  for (uint32_t i = 0; i < nslowline; ++i)
   {  
-     for (uint32_t j = 0; j < conf_.nPoints_x; ++j)
+    for (uint32_t j = 0; j < nfastline; ++j)
     {
-      for (uint32_t k = 0; k < conf_.betweenPoints_x; ++k) //move to next point 
+      for (uint32_t k = 0; k < stepfastline; ++k) //move to next point 
       {
         if (!flgVirtual)
         {
@@ -91,21 +112,21 @@ void Scanner::start_scan()
         getValuesFromAdc();
         getValuesFromAdc();
         vector_z.emplace_back((int16_t) spiBuf[0]);  // get Z from adc ??
-        if (conf_.flag == 2) //added signal
+        if (conf_.sz == 2) //added signal
         {
-          other_info.emplace_back((int16_t) spiBuf[conf_.flag]);
+          other_info.emplace_back((int16_t) spiBuf[conf_.method]);
         }
       } else
       {
         vector_z.emplace_back(int16_t(10000.0 * (sin(M_PI * j * 0.1) + sin(M_PI * i * 0.1))));  // get Z from adc
-        if (conf_.flag == 2)  //added signal
+        if (conf_.sz == 2)  //added signal
         {
           other_info.emplace_back(int16_t(10000.0 * (sin(M_PI * j * 0.1) + sin(M_PI * i * 0.1))));
         }
       }
     }
 
-    for (uint32_t j = 0; j <conf_.betweenPoints_x * conf_.nPoints_x; ++j) // move  back
+    for (uint32_t j = 0; j < stepfastline*nfastline; ++j) // move  back
     {
       if (!flgVirtual)
       {
@@ -135,7 +156,7 @@ void Scanner::start_scan()
     for (size_t j = 0; j < vector_z.size(); j++)     // send data scanline
     {
       afc += ',' + std::to_string(vector_z[j]);
-      if (conf_.flag == 2) //z+ signal 
+      if (conf_.sz == 2) //z+ signal 
       {
         afc += ',' + std::to_string(vector_z[j]) + ',' + std::to_string(other_info[j]);
       };
@@ -167,9 +188,9 @@ void Scanner::start_scan()
       sleep_ms(100);
       //    dark();
     }
-    if (STOP_ALL)           // is need to stop
+    if (!SCANNING)           // stop
     {
-      STOP_ALL = false;
+      SCANNING = false;
       sleep_ms(100);
       afc.clear();
       afc = "stopped\n";
@@ -177,7 +198,7 @@ void Scanner::start_scan()
       sleep_ms(100);
       break;
     }
-    for (uint32_t j = 0; j < conf_.betweenPoints_y; ++j) // go next line
+    for (uint32_t j = 0; j <stepslowline; ++j) // go next line
     {
       if (!flgVirtual)
       {
@@ -203,16 +224,144 @@ void Scanner::start_scan()
        }
      */  
   } //for
+
   blue();
 
   SCANNING = false;
   stop_scan();  //возврат в начальную точку скана
   sleep_ms(200);
-  while (!TheadDone)
-  { sleep_ms(50); } //ожидание ответа ПК для синхронизации
+  while (!TheadDone) { sleep_ms(50); } //ожидание ответа ПК для синхронизации
   TheadDone = false;
   std::cout << "end\n";
   activateDark();
+}
+void Scanner::start_hoppingscan()
+{
+
+}
+ 
+void Scanner::start_fastscan()
+{
+  prev_point = pos_; //запоминание начальной точки скана
+  vector_z.clear();
+  afc.clear();
+  afc = "debug scan parameters";
+  for (int j = 1; j <= 13; ++j)
+  {
+    afc += ',' + std::to_string(vector[j]);
+  }
+  afc += ',' + std::to_string(pos_.x) + ',' + std::to_string(pos_.y);
+  afc += +"\n";
+  std::cout << afc;
+  afc.clear();
+  sleep_ms(100);
+
+  uint16_t nfastline, nslowline;
+  uint16_t stepslowline,stepfastline;
+    
+  switch (conf_.path)
+  {
+  case 0://X+
+   {
+    nfastline=conf_.nPoints_x;
+    nslowline=conf_.nPoints_y;
+    stepslowline=conf_.betweenPoints_y;
+    stepfastline=conf_.betweenPoints_x;
+    break;
+   } 
+  case 1: //Y+
+   {
+    nfastline=conf_.nPoints_y;
+    nslowline=conf_.nPoints_x;
+    stepslowline=conf_.betweenPoints_x;
+    stepfastline=conf_.betweenPoints_y;
+    break;
+   }
+  }
+
+ while (FASTSCANNING)
+ {
+  for (uint32_t i = 0; i < nslowline; ++i)
+  {  
+    for (uint32_t j = 0; j < nfastline; ++j)
+    {
+      for (uint32_t k = 0; k < stepfastline; ++k) //move to next point 
+      {
+        if (!flgVirtual)
+        {
+           set_on_dac(1, pos_.x); 
+           pos_.x+=conf_.diskretinstep;
+        }
+        else
+        {  pos_.x+=conf_.diskretinstep; }
+        sleep_us(conf_.delayF);
+      }
+  //******************************************************************************
+     sleep_us(conf_.pause); // 50 CONST 50ms wait for start get data 
+  //*******************************************************************************     
+      if (!flgVirtual)
+      {
+        getValuesFromAdc();
+        getValuesFromAdc();
+        vector_z.emplace_back((int16_t) spiBuf[0]);  // get Z from adc ??
+      } 
+      else
+      {
+        vector_z.emplace_back(int16_t(10000.0 * (sin(M_PI * j * 0.1) + sin(M_PI * i * 0.1))));  // get Z from adc
+      }
+    }
+
+    for (uint32_t j = 0; j < stepfastline*nfastline; ++j) // move  back
+    {
+      if (!flgVirtual)
+      {
+        pos_.x-=conf_.diskretinstep;
+        set_on_dac(1, pos_.x);        
+      }
+      else
+      {  pos_.x-=conf_.diskretinstep;}
+      sleep_us(conf_.delayB);
+    }
+    for (uint32_t j = 0; j <stepslowline; ++j) // go next line
+    {
+      if (!flgVirtual)
+      {
+       pos_.y+=conf_.diskretinstep;
+       set_on_dac(2, pos_.y); 
+      }
+      else
+      { pos_.y+=conf_.diskretinstep; }
+
+      sleep_us(conf_.delayF);
+    } 
+  } 
+    afc.clear();
+    afc = "code56";
+    for (size_t j = 0; j < vector_z.size(); j++)     // send data scanline
+    {
+      afc += ',' + std::to_string(vector_z[j]);
+    }
+    vector_z.clear();
+    afc += "\n";
+    std::cout << afc;
+    sleep_ms(100);
+    afc.clear();
+    stop_scan();  //возврат в начальную точку скана
+    if (conf_.flgOneFrame==1) {FASTSCANNING=false;}
+}  //while true;
+  
+     blue();
+      FASTSCANNING = false;
+      sleep_ms(100);
+      afc.clear();
+      afc = "stopped\n";
+      std::cout << afc;
+      sleep_ms(100);
+      vector_z.clear();
+      while (!TheadDone) { sleep_ms(50); } //ожидание ответа ПК для синхронизации
+      TheadDone = false;
+      std::cout << "end\n";
+      activateDark();
 }
 
 void Scanner::stop_scan()

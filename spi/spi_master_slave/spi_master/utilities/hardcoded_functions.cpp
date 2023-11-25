@@ -88,6 +88,7 @@ void stopAll()
   DAC8563_INIT_1 = false;
   DAC8563_INIT_2 = false;
   SCANNING = false;
+  FASTSCANNING = false;
   APPROACH = false;
   CONFIG_UPDATE = false;
   MOVE_TOX0Y0 = false;

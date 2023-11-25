@@ -32,6 +32,7 @@ void MainCore::loop()
       scanner.approacphm(approach_data);
       //  sleep_ms(100);
       green();
+      activateDark();
       continue;
     }
     if (LID_UNTIL_STOP)  // пьезо мувер позиционирование
@@ -65,10 +66,10 @@ void MainCore::loop()
                         static_cast<uint16_t>(vector[1]), static_cast<uint16_t>(vector[2]),
                         static_cast<uint8_t>(vector[3]),  static_cast<uint8_t>(vector[4]),
                         static_cast<uint16_t>(vector[5]), static_cast<uint16_t>(vector[6]),
-                        static_cast<uint16_t>(vector[7]), static_cast<uint16_t>(vector[8]),
-                        static_cast<uint8_t>(vector[9]),  static_cast<uint8_t>(vector[10]),
-                        static_cast<uint16_t>(vector[11]),static_cast<uint16_t>(vector[12])
-                       });
+                        static_cast<uint16_t>(vector[7]), static_cast<uint8_t>(vector[8]),
+                        static_cast<uint8_t>(vector[9]),  static_cast<uint16_t>(vector[10]),
+                        static_cast<uint16_t>(vector[11]),static_cast<uint8_t>(vector[12])
+                       });  
         continue;
       }
       if (SCANNING)
@@ -77,7 +78,19 @@ void MainCore::loop()
         continue;
       }
     }
-
+    if (FASTSCANNING)
+    {
+      scanner.update({
+                        static_cast<uint16_t>(vector[1]), static_cast<uint16_t>(vector[2]),
+                        static_cast<uint8_t>(vector[3]),  static_cast<uint8_t>(vector[4]),
+                        static_cast<uint16_t>(vector[5]), static_cast<uint16_t>(vector[6]),
+                        static_cast<uint16_t>(vector[7]), static_cast<uint8_t>(vector[8]),
+                        static_cast<uint8_t>(vector[9]),  static_cast<uint16_t>(vector[10]),
+                        static_cast<uint16_t>(vector[11]),static_cast<uint8_t>(vector[12])
+                     });
+      scanner.start_fastscan();
+      FASTSCANNING=false;
+    }
     if (SET_IO_VALUE)
     {
       SET_IO_VALUE = false;

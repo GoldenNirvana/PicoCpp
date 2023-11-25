@@ -57,6 +57,7 @@ extern int16_t ZValue; //??
 extern int16_t SignalValue; //??
 extern bool flgVirtual; // Virtual device for debuging
 extern uint flgDebugLevel; //  leveldebug
+extern bool FASTSCANNING;
 extern bool SET_PID_GAIN;
 extern bool PID_TURN_ON;
 extern bool GET_CURRENTX0Y0;

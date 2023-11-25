@@ -41,6 +41,7 @@ bool APPROACH_CONFIG_UPDATE = false;
 bool flgVirtual =false; // Virtual device for debuging
 uint flgDebugLevel =2; //  leveldebug
 bool SET_PID_GAIN=false;
+bool FASTSCANNING=false;
 bool PID_TURN_ON=false;
 bool GET_CURRENTX0Y0=false;
 bool MOVE_TOZ0=false;   // отвестись в безопастную начальную точку по Z
