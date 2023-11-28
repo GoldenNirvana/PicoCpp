@@ -4,6 +4,8 @@
 #include "../utilities/hardcoded_functions.hpp"
 #include "../utilities/peripheral_functions.hpp"
 #include <cmath>
+//#include <chrono>
+//#include <ctime>    
 
 
 Scanner::Scanner() : pos_({0, 0}), conf_({})
@@ -71,8 +73,8 @@ void Scanner::start_scan()
     pos_slow=pos_.y;
     nfastline=conf_.nPoints_x;
     nslowline=conf_.nPoints_y;
-    stepslowline=stepsx;
-    stepfastline=stepsy;
+    stepslowline=stepsy;
+    stepfastline=stepsx;
     reststepfast=reststepx;
     reststepslow=reststepy;
     break;
@@ -85,16 +87,43 @@ void Scanner::start_scan()
     pos_slow=pos_.x;
     nfastline=conf_.nPoints_y;
     nslowline=conf_.nPoints_x;
-    stepslowline=stepsy;
-    stepfastline=stepsx;
+    stepslowline=stepsx;
+    stepfastline=stepsy;
     reststepfast=reststepy;
     reststepslow=reststepx;
     break;
    }
   }
   for (uint32_t i = 0; i < nslowline; ++i)
-  {  
-    for (uint32_t j = 0; j < nfastline; ++j)
+  { 
+   /*
+    // 231127
+    stepsx=(uint16_t)conf_.betweenPoints_x/conf_.diskretinstep;
+    stepsy=(uint16_t)conf_.betweenPoints_y/conf_.diskretinstep;
+    reststepx=conf_.betweenPoints_x % conf_.diskretinstep;
+    reststepy=conf_.betweenPoints_y % conf_.diskretinstep;
+    switch (conf_.path)
+   {
+   case 0://X+
+    {
+    stepslowline=stepsy;
+    stepfastline=stepsx;
+    reststepfast=reststepx;
+    reststepslow=reststepy;
+    break;
+    } 
+   case 1: //Y+
+    {
+     stepslowline=stepsx;
+     stepfastline=stepsy;
+     reststepfast=reststepy;
+     reststepslow=reststepx;
+     break;
+    }
+   } 
+   */
+   //
+   for (uint32_t j = 0; j < nfastline; ++j)
     {
       for (uint32_t k = 0; k < stepfastline; ++k) //move to next point 
       {
@@ -131,7 +160,7 @@ void Scanner::start_scan()
         vector_z.emplace_back((int16_t) spiBuf[0]);  // get Z from adc ??
         if (conf_.sz == 2) //added signal
         {
-          other_info.emplace_back((int16_t) spiBuf[conf_.method]);
+          other_info.emplace_back((int16_t) spiBuf[1]);//conf_.method]);// ???
         }
       } else
       {
@@ -143,7 +172,7 @@ void Scanner::start_scan()
       }
     }
 
-    for (uint32_t j = 0; j < stepfastline*nfastline; ++j) // move  back
+    for (uint32_t l = 0; l < stepfastline*nfastline; ++l) // move  back
     {
       if (!flgVirtual)
       {
@@ -170,12 +199,12 @@ void Scanner::start_scan()
 
     afc.clear();
     afc = "code50";
-    for (size_t j = 0; j < vector_z.size(); j++)     // send data scanline
+    for (size_t m = 0; m < vector_z.size(); m++)     // send data scanline
     {
-      afc += ',' + std::to_string(vector_z[j]);
+      afc += ',' + std::to_string(vector_z[m]);
       if (conf_.sz == 2) //z+ signal 
       {
-        afc += ',' + std::to_string(vector_z[j]) + ',' + std::to_string(other_info[j]);
+        afc += ',' + std::to_string(vector_z[m]) + ',' + std::to_string(other_info[m]);
       };
     }
     afc += "\n";
@@ -185,7 +214,7 @@ void Scanner::start_scan()
     vector_z.clear();
     other_info.clear();
     if (CONFIG_UPDATE)
-    {
+    {      
       CONFIG_UPDATE = false;
       conf_.delayF  = vector[1];
       conf_.delayB  = vector[2];
@@ -215,7 +244,7 @@ void Scanner::start_scan()
       sleep_ms(100);
       break;
     }
-    for (uint32_t j = 0; j <stepslowline; ++j) // go next line
+    for (uint32_t n = 0; n <stepslowline; ++n) // go next line
     {
       if (!flgVirtual)
       {
@@ -335,6 +364,10 @@ void Scanner::start_fastscan()
     break;
    }
   }
+
+  //  auto start = std::chrono::system_clock::now();
+    // Some computation here
+    
   while(FASTSCANNING)
   { 
    for (uint32_t i = 0; i < nslowline; ++i)
@@ -423,8 +456,20 @@ void Scanner::start_fastscan()
     
     if (conf_.flgOneFrame==1) {FASTSCANNING=false;};
  }  //while true; 
- 
-  blue();
+    
+ /*    auto end = std::chrono::system_clock::now();
+    std::chrono::duration<double> elapsed_seconds = end-start;
+    std::time_t end_time = std::chrono::system_clock::to_time_t(end);
+    afc.clear();
+    afc="debug finished computation at ";
+    double eltime=elapsed_seconds.count();
+    afc=afc+std::ctime(&end_time);
+    afc=afc+std::to_string(elapsed_seconds);
+    afc=afc+"s"+std::endl;
+    std::cout << afc;
+    afc.clear();
+*/
+    blue();
 
   FASTSCANNING = false;
  switch (conf_.path)
@@ -786,12 +831,12 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
     {
       // log("config updated\n",flgDebugLevel);
       APPROACH_CONFIG_UPDATE = false;
-      SET_POINT = vector[1];
-      GATE_Z_MAX = vector[2];
-      GATE_Z_MIN = vector[3];
-      NSTEPS = vector[4];
-      INTDELAY = vector[5];
-      GAIN = vector[6];
+         SET_POINT = vector[1];
+        GATE_Z_MAX = vector[2];
+        GATE_Z_MIN = vector[3];
+            NSTEPS = vector[4];
+          INTDELAY = vector[5];
+              GAIN = vector[6];
       SCANNERDECAY = vector[7];
       sleep_ms(100);  // need for virtual для разделение afc
       afc.clear();
@@ -936,7 +981,7 @@ void Scanner::start_frqscan()
     {
       current_freq = inBuf[1];
       sleep_ms(inBuf[4]);
-      signalvalue = (int16_t) std::round(a * (pow(M_E, -pow((current_freq - res_freq), 2) / 1000000)));
+      signalvalue =(int16_t) std::round(a * (pow(M_E, -pow((current_freq - res_freq), 2) / 1000000))); //231126
       afc += ',' + std::to_string(current_freq) + ',' + std::to_string(signalvalue);//+',';
     }
     sleep_ms(10);

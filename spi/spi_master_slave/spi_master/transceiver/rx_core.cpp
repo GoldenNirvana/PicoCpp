@@ -159,7 +159,7 @@ void RX_core::launchOnCore1()
         break;
       case 50:
         SCANNING = true;
-        CONFIG_UPDATE = true;
+    //    CONFIG_UPDATE = true;
         break;
       case 51:
         MOVE_TOX0Y0 = true;

@@ -57,11 +57,11 @@ void MainCore::loop()
     }
 
     // Enable scanner and update config on command 50
-    if (SCANNING || CONFIG_UPDATE) //scanning
+    if (SCANNING)// || CONFIG_UPDATE) //scanning
     {
-      if (CONFIG_UPDATE)
-      {
-        CONFIG_UPDATE = false;
+   //   if (CONFIG_UPDATE)
+   //   {
+   //     CONFIG_UPDATE = false;
         scanner.update({
                         static_cast<uint16_t>(vector[1]), static_cast<uint16_t>(vector[2]),
                         static_cast<uint8_t>(vector[3]),  static_cast<uint8_t>(vector[4]),
@@ -71,11 +71,14 @@ void MainCore::loop()
                         static_cast<uint16_t>(vector[11]),static_cast<uint16_t>(vector[12]),
                         static_cast<uint8_t>(vector[13])
                        });  
-      }
+   //   }
+   /*
       if (SCANNING)
       {
-        scanner.start_scan(); 
-      } 
+       scanner.start_scan();     
+      }
+   */    
+      scanner.start_scan();
       continue;
     }
     if (FASTSCANNING)
