@@ -209,7 +209,7 @@ void Scanner::start_scan()
     }
     afc += "\n";
     std::cout << afc;
-    sleep_ms(100);
+    sleep_ms(200); //don't delete ! 100; 300 // 231130
     afc.clear();
     vector_z.clear();
     other_info.clear();
