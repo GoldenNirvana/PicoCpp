@@ -57,28 +57,20 @@ void MainCore::loop()
     }
 
     // Enable scanner and update config on command 50
-    if (SCANNING)// || CONFIG_UPDATE) //scanning
+    if (SCANNING) //scanning
     {
-   //   if (CONFIG_UPDATE)
-   //   {
-   //     CONFIG_UPDATE = false;
         scanner.update({
                         static_cast<uint16_t>(vector[1]), static_cast<uint16_t>(vector[2]),
                         static_cast<uint8_t>(vector[3]),  static_cast<uint8_t>(vector[4]),
                         static_cast<uint16_t>(vector[5]), static_cast<uint16_t>(vector[6]),
-                        static_cast<uint16_t>(vector[7]), static_cast<uint8_t>(vector[8]),
+                        static_cast<uint16_t>(vector[7]), static_cast<uint16_t>(vector[8]),
                         static_cast<uint8_t>(vector[9]),  static_cast<uint8_t>(vector[10]),
                         static_cast<uint16_t>(vector[11]),static_cast<uint16_t>(vector[12]),
-                        static_cast<uint8_t>(vector[13])
+                        static_cast<uint8_t>(vector[13]), static_cast<uint8_t>(vector[14]),
+                        static_cast<uint16_t>(vector[15])                                  
                        });  
-   //   }
-   /*
-      if (SCANNING)
-      {
-       scanner.start_scan();     
-      }
-   */    
-      scanner.start_scan();
+      if (!scanner.getHoppingFlg()) {scanner.start_scan();       }
+      else                          {scanner.start_hoppingscan();}
       continue;
     }
     if (FASTSCANNING)
@@ -87,13 +79,14 @@ void MainCore::loop()
                         static_cast<uint16_t>(vector[1]), static_cast<uint16_t>(vector[2]),
                         static_cast<uint8_t>(vector[3]),  static_cast<uint8_t>(vector[4]),
                         static_cast<uint16_t>(vector[5]), static_cast<uint16_t>(vector[6]),
-                        static_cast<uint16_t>(vector[7]), static_cast<uint8_t>(vector[8]),
+                        static_cast<uint16_t>(vector[7]), static_cast<uint16_t>(vector[8]),
                         static_cast<uint8_t>(vector[9]),  static_cast<uint8_t>(vector[10]),
                         static_cast<uint16_t>(vector[11]),static_cast<uint16_t>(vector[12]),
                         static_cast<uint8_t>(vector[13])
                      });
       scanner.start_fastscan();
       FASTSCANNING=false;
+      continue;
     }
     if (SET_IO_VALUE)
     {

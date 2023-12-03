@@ -6,19 +6,21 @@
 
 struct Config
 {
-  uint16_t nPoints_x;        // Точек по линии X
-  uint16_t nPoints_y;        // Точек по линии Y
-   uint8_t path;             // скан  0 - по X, 1 - по Y
-   uint8_t method;           // Что измерять Topo=0,Phase=1, Ampl=2...
-  uint16_t delayF;           // Задержка вперёд
-  uint16_t delayB;           // Задержка назад
-  uint16_t betweenPoints_x;  // Расстояние между точками по X дискрет
-  uint16_t betweenPoints_y;  // Расстояние между точками по Y дискрет
-   uint8_t sz;               // sz=1 Z; sz=2 Z,Signal add signal  
-   uint8_t Ti;               // PID Gain 
-  uint16_t diskretinstep;    // размер шага в дискрет
-  uint16_t pause;            // ms? время ожидания в точке до начала измерения сигналов
-   uint8_t flgOneFrame;      // need for Fast Scanning  =1 only one frame
+  uint16_t nPoints_x;        // Точек по линии X                             1
+  uint16_t nPoints_y;        // Точек по линии Y                             2 
+   uint8_t path;             // скан  0 - по X, 1 - по Y                     3
+   uint8_t method;           // Что измерять Topo=0,Phase=1, Ampl=2...       4 
+  uint16_t delayF;           // Задержка вперёд                              5
+  uint16_t delayB;           // Задержка назад                               6
+  uint16_t betweenPoints_x;  // Расстояние между точками по X дискрет        7 
+  uint16_t betweenPoints_y;  // Расстояние между точками по Y дискрет        8 
+   uint8_t sz;               // sz=1 Z; sz=2 Z,Signal add signal             9 
+   uint8_t Ti;               // PID Gain                                    10  
+  uint16_t diskretinstep;    // размер шага в дискрет                       11
+  uint16_t pause;            // ms? время ожидания в точке измерения        12
+   uint8_t flgOneFrame;      // need for Fast Scanning  =1 only one frame   13
+   uint8_t flgHopping;       // Hopping;                                    14
+  uint16_t HopeDelay;        // delay Hopping;                              15
 };
 
                                        
@@ -65,6 +67,8 @@ public:
   void positioningXYZ(int lid_name, int f, int p, int n, int dir, int16_t gtmax,int16_t gtmin); // abs(n) 
 
   void start_frqscan(); //find resonance
+
+  bool getHoppingFlg();
 
   // void stopAll();
 //

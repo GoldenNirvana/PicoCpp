@@ -25,7 +25,10 @@ void Scanner::protract() //вытянуть
 {
   io3_1.disable();
 }
-
+bool Scanner::getHoppingFlg()
+{
+  return bool(conf_.flgHopping);
+}
 void Scanner::start_scan()
 {
   prev_point = pos_; //запоминание начальной точки скана
@@ -95,9 +98,7 @@ void Scanner::start_scan()
    }
   }
   for (uint32_t i = 0; i < nslowline; ++i)
-  { 
-   /*
-    // 231127
+  {  
     stepsx=(uint16_t)conf_.betweenPoints_x/conf_.diskretinstep;
     stepsy=(uint16_t)conf_.betweenPoints_y/conf_.diskretinstep;
     reststepx=conf_.betweenPoints_x % conf_.diskretinstep;
@@ -120,24 +121,22 @@ void Scanner::start_scan()
      reststepslow=reststepx;
      break;
     }
-   } 
-   */
-   //
+   }   
    for (uint32_t j = 0; j < nfastline; ++j)
     {
       for (uint32_t k = 0; k < stepfastline; ++k) //move to next point 
       {
         if (!flgVirtual)
         {
-           set_on_dac(portfast, pos_fast); 
-           pos_fast+=conf_.diskretinstep;
+          set_on_dac(portfast, pos_fast); 
+          pos_fast+=conf_.diskretinstep;
         }
         else
-        {  pos_fast+=conf_.diskretinstep; }
+        { pos_fast+=conf_.diskretinstep; }
         sleep_us(conf_.delayF);
       }
-       if( reststepfast!=0)// добирание остатка
-       {
+      if( reststepfast!=0)// добирание остатка
+      {
         if (!flgVirtual) 
         {
          pos_fast+=reststepfast;
@@ -145,9 +144,8 @@ void Scanner::start_scan()
         }
         else
         { pos_fast+=reststepfast; }
-
         sleep_us(conf_.delayF);
-       }
+      }
 
   //******************************************************************************
      // sleep_ms(conf_.pause); // 50 CONST 50ms wait for start get data 
@@ -158,16 +156,26 @@ void Scanner::start_scan()
         getValuesFromAdc();
         getValuesFromAdc();
         vector_z.emplace_back((int16_t) spiBuf[0]);  // get Z from adc ??
-        if (conf_.sz == 2) //added signal
-        {
-          other_info.emplace_back((int16_t) spiBuf[1]);//conf_.method]);// ???
+       if (conf_.sz == 2) 
+         switch (conf_.method) 
+         //added signal  Const  BackPass=2;    //PM  Const  Phase=3;  Const  UAM=4;   //Force Image
+       {
+ case 3:{ 
+         other_info.emplace_back((int16_t) spiBuf[1]);
+        break;
         }
-      } else
+ case 4:{ 
+         other_info.emplace_back((int16_t) spiBuf[1]);
+        break;
+        }
+       }
+      } 
+       else
       {
-        vector_z.emplace_back(int16_t(10000.0 * (sin(M_PI * j * 0.1) + sin(M_PI * i * 0.1))));  // get Z from adc
+        vector_z.emplace_back(int16_t(10000.0*(sin(M_PI * j * 0.1) + sin(M_PI * i * 0.1))));  // get Z from adc
         if (conf_.sz == 2)  //added signal
         {
-          other_info.emplace_back(int16_t(10000.0 * (sin(M_PI * j * 0.1) + sin(M_PI * i * 0.1))));
+          other_info.emplace_back(int16_t(10000.0*(sin(M_PI * j * 0.1) + sin(M_PI * i * 0.1))));
         }
       }
     }
@@ -176,36 +184,39 @@ void Scanner::start_scan()
     {
       if (!flgVirtual)
       {
-          pos_fast-=conf_.diskretinstep;
-          set_on_dac(portfast, pos_fast);        
+        pos_fast-=conf_.diskretinstep;
+        set_on_dac(portfast, pos_fast);        
       }
       else
       {  pos_fast-=conf_.diskretinstep;}
       sleep_us(conf_.delayB);
     }
   
-       if( reststepfast!=0)// добирание остатка
-       {
-        if (!flgVirtual) 
-        {
-         pos_fast-=reststepfast;
-         set_on_dac(portfast, pos_fast);          
-        }
-        else
-        { pos_fast-=reststepfast; }
+    if( reststepfast!=0)// добирание остатка
+    {
+      if (!flgVirtual) 
+      {
+        pos_fast-=reststepfast;
+        set_on_dac(portfast, pos_fast);          
+      }
+      else
+      { pos_fast-=reststepfast; }
 
-        sleep_us(conf_.delayF);
-       }
-
+      sleep_us(conf_.delayF);
+    }
     afc.clear();
     afc = "code50";
     for (size_t m = 0; m < vector_z.size(); m++)     // send data scanline
     {
-      afc += ',' + std::to_string(vector_z[m]);
-      if (conf_.sz == 2) //z+ signal 
-      {
-        afc += ',' + std::to_string(vector_z[m]) + ',' + std::to_string(other_info[m]);
-      };
+       switch (conf_.sz)
+     {   
+  case  1: {  afc += ',' + std::to_string(vector_z[m]); break;}
+  case  2: //z+ signal 
+           {
+            afc += ',' + std::to_string(vector_z[m]) + ',' + std::to_string(other_info[m]);
+            break;
+           }
+     }
     }
     afc += "\n";
     std::cout << afc;
@@ -216,11 +227,11 @@ void Scanner::start_scan()
     if (CONFIG_UPDATE)
     {      
       CONFIG_UPDATE = false;
-      conf_.delayF  = vector[1];
-      conf_.delayB  = vector[2];
+          conf_.delayF  = vector[1];
+          conf_.delayB  = vector[2];
       set_io_value(2, vector[3]); //gain PID
-      sleep_ms(100);    //
-      conf_.diskretinstep=vector[4];
+      sleep_ms(100);              //
+      conf_.diskretinstep=vector[4]; //????
 
       afc.clear();
       afc = "debug parameters update";
@@ -244,8 +255,10 @@ void Scanner::start_scan()
       sleep_ms(100);
       break;
     }
-    for (uint32_t n = 0; n <stepslowline; ++n) // go next line
+    if ((nslowline-1-i)>0)  //don't need for last line
     {
+      for (uint32_t n = 0; n <stepslowline; ++n) // go next line
+     {
       if (!flgVirtual)
       {
        pos_slow+=conf_.diskretinstep;
@@ -255,7 +268,7 @@ void Scanner::start_scan()
       { pos_slow+=conf_.diskretinstep; }
 
       sleep_us(conf_.delayF);
-    }
+     }
        if( reststepslow!=0)
        {
         if (!flgVirtual) // last step
@@ -268,6 +281,7 @@ void Scanner::start_scan()
 
         sleep_us(conf_.delayF);
        }  
+    }
   } //for
 
   blue();
@@ -293,9 +307,260 @@ case 1:{
   std::cout << "end\n";
   activateDark();
 }
+
 void Scanner::start_hoppingscan()
 {
+ prev_point = pos_; //запоминание начальной точки скана
+  vector_z.clear();
+  other_info.clear();
 
+  afc.clear();
+  afc = "debug scan parameters";
+  for (int j = 1; j <= 15; ++j)
+  {
+    afc += ',' + std::to_string(vector[j]);
+  }
+  afc += ',' + std::to_string(pos_.x) + ',' + std::to_string(pos_.y);
+  afc += +"\n";
+  std::cout << afc;
+  afc.clear();
+  sleep_ms(100);
+  
+  uint16_t stepsx;
+  uint16_t stepsy;
+  uint16_t reststepfast;
+  uint16_t reststepslow;  
+  uint16_t reststepx;
+  uint16_t reststepy; 
+  uint16_t nfastline, nslowline;
+  uint16_t stepslowline,stepfastline;
+  uint8_t  portx=1;
+  uint8_t  porty=2;
+  uint8_t  portfast;
+  uint8_t  portslow;
+  uint16_t pos_fast;
+  uint16_t pos_slow;
+  stepsx=(uint16_t)conf_.betweenPoints_x/conf_.diskretinstep;
+  stepsy=(uint16_t)conf_.betweenPoints_y/conf_.diskretinstep;
+  reststepx=conf_.betweenPoints_x % conf_.diskretinstep;
+  reststepy=conf_.betweenPoints_y % conf_.diskretinstep;
+
+  switch (conf_.path)
+  {
+  case 0://X+
+   {
+    portfast=portx;
+    portslow=porty;
+    pos_fast=pos_.x;
+    pos_slow=pos_.y;
+    nfastline=conf_.nPoints_x;
+    nslowline=conf_.nPoints_y;
+    stepslowline=stepsy;
+    stepfastline=stepsx;
+    reststepfast=reststepx;
+    reststepslow=reststepy;
+    break;
+   } 
+  case 1: //Y+
+   {
+    portfast=porty;
+    portslow=portx;
+    pos_fast=pos_.y;
+    pos_slow=pos_.x;
+    nfastline=conf_.nPoints_y;
+    nslowline=conf_.nPoints_x;
+    stepslowline=stepsx;
+    stepfastline=stepsy;
+    reststepfast=reststepy;
+    reststepslow=reststepx;
+    break;
+   }
+  }
+  for (uint32_t i = 0; i < nslowline; ++i)
+  { 
+   for (uint32_t j = 0; j < nfastline; ++j)
+    {
+      retract();
+      sleep_us(100);
+      for (uint32_t k = 0; k < stepfastline; ++k) //move to next point 
+      {
+        if (!flgVirtual)
+        {
+          set_on_dac(portfast, pos_fast); 
+          pos_fast+=conf_.diskretinstep;
+        }
+        else
+        { pos_fast+=conf_.diskretinstep; }
+        sleep_us(conf_.delayF);
+      }
+       if( reststepfast!=0)// добирание остатка
+       {
+        if (!flgVirtual) 
+        {
+         pos_fast+=reststepfast;
+         set_on_dac(portfast, pos_fast);          
+        }
+        else
+        { pos_fast+=reststepfast; }
+
+        sleep_us(conf_.delayF);
+       }
+
+  //******************************************************************************
+       protract();
+       sleep_ms(conf_.HopeDelay);   
+       sleep_us(conf_.pause);    // 50 CONST 50ms wait for start get data 
+  //*//******************************************************************************     
+      if (!flgVirtual)
+      {
+        getValuesFromAdc();
+        getValuesFromAdc();
+        vector_z.emplace_back((int16_t) spiBuf[0]);     // get Z from adc ??
+        switch (conf_.method) 
+         //added signal  Const  BackPass=2;    //PM  Const  Phase=3;  Const  UAM=4;   //Force Image
+       {
+ case 3:{ 
+         other_info.emplace_back((int16_t) spiBuf[1]);
+        break;
+        }
+ case 4:{ 
+         other_info.emplace_back((int16_t) spiBuf[1]);
+        break;
+        }
+       }
+      } 
+      else
+      {
+        vector_z.emplace_back(int16_t(10000.0 * (sin(M_PI * j * 0.1) + sin(M_PI * i * 0.1))));  // get Z from adc
+        if (conf_.sz == 2)                               // added signal
+        {
+          other_info.emplace_back(int16_t(10000.0 * (sin(M_PI * j * 0.1) + sin(M_PI * i * 0.1))));
+        }
+      }
+    }
+    retract();
+    sleep_us(50);
+
+     if (!flgVirtual)
+      {
+        pos_fast-=conf_.diskretinstep*stepfastline*nfastline;
+        set_on_dac(portfast, pos_fast);        
+      }
+      else
+      {  pos_fast-=conf_.diskretinstep*stepfastline*nfastline;}
+      sleep_us(conf_.delayB);
+  
+    if( reststepfast!=0)// добирание остатка
+    {
+      if (!flgVirtual) 
+      {
+        pos_fast-=reststepfast;
+        set_on_dac(portfast, pos_fast);          
+      }
+      else
+      { pos_fast-=reststepfast; }
+
+      sleep_us(conf_.delayF);
+    }
+
+    afc.clear();
+    afc = "code50";
+    for (size_t m = 0; m < vector_z.size(); m++)     // send data scanline
+    {
+       switch (conf_.sz)
+     {   
+  case  1: {  afc += ',' + std::to_string(vector_z[m]); break;}
+  case  2: //z+ signal 
+           {
+            afc += ',' + std::to_string(vector_z[m]) + ',' + std::to_string(other_info[m]);
+            break;
+           }
+     }
+    }
+    afc += "\n";
+    std::cout << afc;
+    sleep_ms(200); //don't delete ! 100; 300 // 231130
+    afc.clear();
+    vector_z.clear();
+    other_info.clear();
+    if (CONFIG_UPDATE)
+    {      
+      CONFIG_UPDATE  = false;
+      conf_.delayF   = vector[1];
+      conf_.delayB   = vector[2];
+      set_io_value(2, vector[3]); //gain PID
+      conf_.HopeDelay= vector[4];   
+      
+      sleep_ms(100);    //
+      afc.clear();
+      afc = "debug parameters update";
+      for (int j = 1; j <= 4; ++j)
+      {
+        afc += ',' + std::to_string(vector[j]);
+      }
+      afc += +"\n";
+      std::cout << afc;
+      afc.clear();
+      sleep_ms(100);
+      //    dark();
+    }
+    if (!SCANNING)           // stop
+    {
+      SCANNING = false;
+      sleep_ms(100);
+      afc.clear();
+      afc = "stopped\n";
+      std::cout << afc;
+      sleep_ms(100);
+      break;
+    }
+    // go next line
+   if ((nslowline-1-i)>0)  //don't need for last line
+    { 
+      if (!flgVirtual)
+      {
+       pos_slow+=conf_.diskretinstep*stepslowline;
+       set_on_dac(portslow, pos_slow); 
+      }
+      else
+      { pos_slow+=conf_.diskretinstep*stepslowline; }
+      sleep_us(conf_.delayF);
+      if( reststepslow!=0)
+      {
+        if (!flgVirtual) // last step
+        {
+         pos_slow-=reststepslow;
+         set_on_dac(portslow, pos_slow);          
+        }
+        else
+        { pos_slow-=reststepslow; }
+        sleep_us(conf_.delayF);
+      }  
+    }   
+  } //for i
+
+  blue();
+
+  SCANNING = false;
+ switch (conf_.path)
+  {
+case 0:{
+        pos_.x=pos_fast;
+        pos_.y=pos_slow;
+        break;
+       }
+case 1:{
+        pos_.x=pos_slow;
+        pos_.y=pos_fast;
+        break;
+       }
+  }
+  stop_scan();  //возврат в начальную точку скана
+  sleep_ms(200);
+  while (!TheadDone) { sleep_ms(50); } //ожидание ответа ПК для синхронизации
+  TheadDone = false;
+  std::cout << "end\n";
+  activateDark();
 }
  
 void Scanner::start_fastscan()
@@ -385,8 +650,8 @@ void Scanner::start_fastscan()
         {  pos_fast+=conf_.diskretinstep; }
         sleep_us(conf_.delayF);
       }
-       if( reststepfast!=0)// добирание остатка
-       {
+      if( reststepfast!=0)// добирание остатка
+      {
         if (!flgVirtual) 
         {
          pos_fast+=reststepfast;
@@ -396,7 +661,7 @@ void Scanner::start_fastscan()
         { pos_fast+=reststepfast; }
 
         sleep_us(conf_.delayF);
-       }
+      }
 //******************************************************************************
      // sleep_ms(conf_.pause); // 50 CONST 50ms wait for start get data 
      sleep_us(conf_.pause);    // 50 CONST 50ms wait for start get data 
@@ -438,6 +703,33 @@ void Scanner::start_fastscan()
 
         sleep_us(conf_.delayF);
       }
+     if ((nslowline-1-i)>0)  //don't need for last line
+     {
+      for (uint32_t n = 0; n <stepslowline; ++n) // go next line
+      {
+       if (!flgVirtual)
+       {
+        pos_slow+=conf_.diskretinstep;
+        set_on_dac(portslow, pos_slow); 
+       }
+       else
+       { pos_slow+=conf_.diskretinstep; }
+ 
+       sleep_us(conf_.delayF);
+      }
+      if( reststepslow!=0)
+      {
+        if (!flgVirtual) // last step
+        {
+         pos_slow-=reststepslow;
+         set_on_dac(portslow, pos_slow);          
+        }
+        else
+        { pos_slow-=reststepslow; }
+
+        sleep_us(conf_.delayF);
+      }  
+    }
    } //i
  
     afc.clear();
@@ -571,7 +863,7 @@ void Scanner::move_to(const Point &point, uint16_t delay)
   {
     pos_.x = point.x;
     pos_.y = point.y;
-    sleep_us(delay * (std::abs(pos_.x - point.x) + std::abs(pos_.y - point.y)));
+    sleep_us(delay*(std::abs(pos_.x - point.x) + std::abs(pos_.y - point.y)));
   }
 }
 
