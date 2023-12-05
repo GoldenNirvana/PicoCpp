@@ -301,8 +301,10 @@ case 1:{
        }
   }
   stop_scan();  //возврат в начальную точку скана
-  sleep_ms(200);
-  while (!TheadDone) { sleep_ms(50); } //ожидание ответа ПК для синхронизации
+  sleep_ms(300); //200
+  green();
+  int16_t count=0;
+  while ((!TheadDone)/*||(count<100)*/ ) { sleep_ms(50); count++;} //ожидание ответа ПК для синхронизации
   TheadDone = false;
   std::cout << "end\n";
   activateDark();
