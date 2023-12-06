@@ -310,7 +310,7 @@ case 1:{
   activateDark();
 }
 
-void Scanner::start_hoppingscan()
+void Scanner::start_hopingscan()
 {
  prev_point = pos_; //запоминание начальной точки скана
   vector_z.clear();
@@ -1036,8 +1036,7 @@ void Scanner::positioningXYZ(int lid_name, int f, int p, int n, int dir, int16_t
   std::cout << afc;
   afc.clear();
   sleep_ms(100);
-  while (not TheadDone)
-  { sleep_ms(50); }
+  while (not TheadDone)  { sleep_ms(50); }
   TheadDone = false;
   LID_UNTIL_STOP = false;
   std::cout << "end\n";
@@ -1059,19 +1058,19 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
   uint16_t INTDELAY, SCANNERDECAY;
 
   // SET VALUE FROM RX_CORE
-  SET_POINT = data[0];
-  GATE_Z_MAX = data[1];
-  GATE_Z_MIN = data[2];
-  NSTEPS = data[3];
-  INTDELAY = data[4];
-  GAIN = data[5];
+  SET_POINT    = data[0];
+  GATE_Z_MAX   = data[1];
+  GATE_Z_MIN   = data[2];
+  NSTEPS       = data[3];
+  INTDELAY     = data[4];
+  GAIN         = data[5];
   SCANNERDECAY = data[6];
-  freq = data[7];
-  scv = data[8];
+  freq         = data[7];
+  scv          = data[8];
 
   afc.clear();
   afc = "debug approach parameters ";
-  for (size_t j = 0; j < 7; j++)     // send info
+  for (size_t j = 0; j < 9; j++)     // send info
   {
     afc += ',' + std::to_string(data[j]);
   }
@@ -1083,6 +1082,7 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
   dac8563_1.writeA(SET_POINT);
   std::vector<int16_t> buf_params;
   buf_params.reserve(7);
+
   for (int i = 0; i < 7; ++i)
     buf_params.push_back(data[i]);
 
@@ -1091,7 +1091,7 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
     getValuesFromAdc();
     uint16_t *ptr = getValuesFromAdc();
     SignalValue = (int16_t) ptr[SignalPin];
-    ZValue = (int16_t) ptr[ZPin];
+    ZValue      = (int16_t) ptr[ZPin];
   }
   std::vector<int16_t> buf_status;
   buf_status.push_back(none);
@@ -1161,7 +1161,8 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
       if (NSTEPS >= 0)
       {
         ZValue = ZValue - 500;
-      } else
+      }
+      else
       {
         if ((ZMaxValue - ZValue) > 0)
         { ZValue += 500; }
@@ -1234,8 +1235,7 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
     protract();// io3_1.disable();//вытянуть
     sleep_ms(INTDELAY);
   }
-  while (not TheadDone)
-  { sleep_ms(50); }
+  while (not TheadDone)  { sleep_ms(50); }
   TheadDone = false;
   std::cout << "end\n";
 }
@@ -1285,6 +1285,9 @@ void Scanner::start_frqscan()
   sleep_ms(100);
   afc.clear();
   current_channel = -1;
+   while (not TheadDone)  { sleep_ms(50); }
+  TheadDone = false;
+  std::cout << "end\n";
   RESONANCE = false;
   RESONANCE_STOP = false;
 }

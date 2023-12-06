@@ -42,7 +42,7 @@ public:
 
   void start_scan();
 
-  void start_hoppingscan();
+  void start_hopingscan();
  
   void start_fastscan();
 

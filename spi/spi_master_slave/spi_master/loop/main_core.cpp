@@ -20,7 +20,7 @@ void MainCore::loop()
     {
       blue();
       static int16_t approach_data[9];
-      approach_data[0] = vector[1]; // point
+      approach_data[0] = vector[1]; //set point
       approach_data[1] = vector[2]; // max
       approach_data[2] = vector[3]; // min
       approach_data[3] = vector[4]; // steps
@@ -67,10 +67,10 @@ void MainCore::loop()
                         static_cast<uint8_t>(vector[9]),  static_cast<uint8_t>(vector[10]),
                         static_cast<uint16_t>(vector[11]),static_cast<uint16_t>(vector[12]),
                         static_cast<uint8_t>(vector[13]), static_cast<uint8_t>(vector[14]),
-                        static_cast<uint16_t>(vector[15])                                  
+                        static_cast<uint16_t>(vector[15])                                  // int32_t vector[16];
                        });  
       if (!scanner.getHoppingFlg()) {scanner.start_scan();       }
-      else                          {scanner.start_hoppingscan();}
+      else                          {scanner.start_hopingscan();}
       continue;
     }
     if (FASTSCANNING)
@@ -82,7 +82,7 @@ void MainCore::loop()
                         static_cast<uint16_t>(vector[7]), static_cast<uint16_t>(vector[8]),
                         static_cast<uint8_t>(vector[9]),  static_cast<uint8_t>(vector[10]),
                         static_cast<uint16_t>(vector[11]),static_cast<uint16_t>(vector[12]),
-                        static_cast<uint8_t>(vector[13])
+                        static_cast<uint8_t>(vector[13])                                      // int32_t vector[16];
                      });
       scanner.start_fastscan();
       FASTSCANNING=false;
