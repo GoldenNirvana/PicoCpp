@@ -382,7 +382,10 @@ void Scanner::start_hoppingscan()
   { 
    for (uint32_t j = 0; j < nfastline; ++j)
     {
-      retract();
+      if (!flgVirtual)
+      {
+         retract();
+      }   
       sleep_us(100);
       for (uint32_t k = 0; k < stepfastline; ++k) //move to next point 
       {
@@ -409,8 +412,12 @@ void Scanner::start_hoppingscan()
        }
 
   //******************************************************************************
-       protract();
-       sleep_ms(conf_.HopeDelay);   
+      if (!flgVirtual)
+      {
+          protract();
+      }
+    //   sleep_ms(conf_.HopeDelay);   
+       sleep_ms(30);
        sleep_us(conf_.pause);    // 50 CONST 50ms wait for start get data 
   //*//******************************************************************************     
       if (!flgVirtual)
@@ -440,7 +447,10 @@ void Scanner::start_hoppingscan()
         }
       }
     }
-    retract();
+     if (!flgVirtual)
+     {
+         retract();
+     } 
     sleep_us(50);
 
      if (!flgVirtual)
@@ -559,6 +569,11 @@ case 1:{
   }
   stop_scan();  //возврат в начальную точку скана
   sleep_ms(200);
+  if (!flgVirtual)
+  {
+     protract();
+  }
+  sleep_ms(1000);
   while (!TheadDone) { sleep_ms(50); } //ожидание ответа ПК для синхронизации
   TheadDone = false;
   std::cout << "end\n";
@@ -871,10 +886,13 @@ void Scanner::move_to(const Point &point, uint16_t delay)
 
 void Scanner::move_toZ0(int lid_name, int f, int p, int n, int dir)  //отвестись в безопастную начальную точку по Z
 {
+ if (!flgVirtual)
+ {
   scanner.retract();  //втянуть сканер
   sleep_ms(50);
   if (!flgVirtual) linearDriver.activate(lid_name, f, p, std::abs(n), dir);
   scanner.protract();  //вытянуть сканер
+ } 
   sleep_ms(1000);
   afc.clear();
   afc = "debug autorising done " + std::to_string(n) + ',' + std::to_string(dir);
