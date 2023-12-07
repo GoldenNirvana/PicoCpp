@@ -909,13 +909,13 @@ void Scanner::positioningXYZ(int lid_name, int f, int p, int n, int dir, int16_t
     {
       if (POSXYZ_CONFIG_UPDATE)
       {
+        POSXYZ_CONFIG_UPDATE = false;
         ln = vector[1]; // with sign
         GATE_Z_MAX = vector[2];
         GATE_Z_MIN = vector[3];
         ldir = 0;
         if (ln > 0) ldir = 1;
         ln = abs(ln);
-        POSXYZ_CONFIG_UPDATE = false;
         sleep_ms(100);
         afc.clear();
         afc = "debug parameters update";
@@ -933,7 +933,8 @@ void Scanner::positioningXYZ(int lid_name, int f, int p, int n, int dir, int16_t
       if (!flgVirtual) //add mf
       {
         linearDriver.activate(lid_name, f, p, std::abs(ln), ldir);
-      } else
+      } 
+      else
       {
 
       }
