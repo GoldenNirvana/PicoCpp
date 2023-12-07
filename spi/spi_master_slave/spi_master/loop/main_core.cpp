@@ -61,11 +61,11 @@ void MainCore::loop()
     {   // int32_t vector[16];  !!!!
       scanner.update({
                          static_cast<uint16_t>(vector[1]), static_cast<uint16_t>(vector[2]),
-                         static_cast<uint8_t>(vector[3]), static_cast<uint8_t>(vector[4]),
+                         static_cast<uint8_t>(vector[3]),  static_cast<uint8_t>(vector[4]),
                          static_cast<uint16_t>(vector[5]), static_cast<uint16_t>(vector[6]),
                          static_cast<uint16_t>(vector[7]), static_cast<uint16_t>(vector[8]),
-                         static_cast<uint8_t>(vector[9]), static_cast<uint8_t>(vector[10]),
-                         static_cast<uint16_t>(vector[11]), static_cast<uint16_t>(vector[12]),
+                         static_cast<uint8_t>(vector[9]),  static_cast<uint8_t>(vector[10]),
+                         static_cast<uint16_t>(vector[11]),static_cast<uint16_t>(vector[12]),
                          static_cast<uint8_t>(vector[13]), static_cast<uint8_t>(vector[14]),
                          static_cast<uint16_t>(vector[15])
                      });
@@ -78,7 +78,7 @@ void MainCore::loop()
     params[5]:=ScanParams.MicrostepDelayBW; // задержка в каждой дискрете  при движении назад                           6
     params[6]:=ScanParams.XMicrostepNmb;  //step x  в дискретах                                                         7
     params[7]:=ScanParams.YMicrostepNmb;  //step y =step x пока в дискретах                                             8
-    params[8]:=ScanParams.size;                                                                                           9
+    params[8]:=ScanParams.size;         // =1  Z;  =2  Z + add signal                                                   9
     params[9]:=PidParams.Ti;   // add gain!!!!!!!!!!!!!!!!!!!                                                          10 
     params[10]:=ScanParams.DiscrNumInMicroStep;  //                                                                    11  
     params[11]:=round(ScanParams.TimMeasurePoint*1000);  // mcs задержка до начала измерения сигналов                  12
@@ -112,13 +112,13 @@ void MainCore::loop()
     {// int32_t vector[16];
       scanner.update({
                          static_cast<uint16_t>(vector[1]), static_cast<uint16_t>(vector[2]),
-                         static_cast<uint8_t>(vector[3]), static_cast<uint8_t>(vector[4]),
+                         static_cast<uint8_t>(vector[3]),  static_cast<uint8_t>(vector[4]),
                          static_cast<uint16_t>(vector[5]), static_cast<uint16_t>(vector[6]),
                          static_cast<uint16_t>(vector[7]), static_cast<uint16_t>(vector[8]),
-                         static_cast<uint8_t>(vector[9]), static_cast<uint8_t>(vector[10]),
-                         static_cast<uint16_t>(vector[11]), static_cast<uint16_t>(vector[12]),
+                         static_cast<uint8_t>(vector[9]),  static_cast<uint8_t>(vector[10]),
+                         static_cast<uint16_t>(vector[11]),static_cast<uint16_t>(vector[12]),
                          static_cast<uint8_t>(vector[13])
-                     });
+                     }); 
       scanner.start_fastscan();
       FASTSCANNING = false;
       continue;

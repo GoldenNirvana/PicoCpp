@@ -28,7 +28,7 @@ void Scanner::protract() //вытянуть
 
 bool Scanner::getHoppingFlg()
 {
-  return conf_.flgHopping;
+  return conf_.flgHoping;
 }
 
 void Scanner::start_scan()
@@ -161,19 +161,18 @@ void Scanner::start_scan()
           {
             case 3:
             {
-              other_info.emplace_back((int16_t) spiBuf[1]);
+              other_info.emplace_back((int16_t) spiBuf[1]); //phase
               break;
             }
             case 4:
             {
-              other_info.emplace_back((int16_t) spiBuf[1]);
+              other_info.emplace_back((int16_t) spiBuf[1]); //ampl
               break;
             }
           }
       } else
       {
-        vector_z.emplace_back(
-            int16_t(10000.0 * (sin(M_PI * j * 0.1) + sin(M_PI * i * 0.1))));  // get Z from adc
+        vector_z.emplace_back(int16_t(10000.0 * (sin(M_PI * j * 0.1) + sin(M_PI * i * 0.1))));  // get Z from adc
         if (conf_.size == 2)  //added signal
         {
           other_info.emplace_back(int16_t(10000.0 * (sin(M_PI * j * 0.1) + sin(M_PI * i * 0.1))));
@@ -396,7 +395,7 @@ void Scanner::start_hopingscan()
       {
          retract();
       }   
-      sleep_us(100);
+      sleep_us(50);
       for (uint32_t k = 0; k < stepfastline; ++k) //move to next point
       {
         if (!flgVirtual)
@@ -424,12 +423,6 @@ void Scanner::start_hopingscan()
       {
           protract();
       }
-    //   sleep_ms(conf_.HopeDelay);   
-       sleep_ms(30);
-       sleep_us(conf_.pause);    // 50 CONST 50ms wait for start get data 
-  //*//******************************************************************************     
-      //******************************************************************************
-      protract();
       sleep_ms(conf_.HopeDelay);
       sleep_us(conf_.pause);    // 50 CONST 50ms wait for start get data
       //*//******************************************************************************
@@ -471,7 +464,8 @@ void Scanner::start_hopingscan()
     {
       pos_fast -= conf_.diskretinstep * stepfastline * nfastline;
       set_on_dac(portfast, pos_fast);
-    } else
+    }
+    else
     { pos_fast -= conf_.diskretinstep * stepfastline * nfastline; }
     sleep_us(conf_.delayB);
 
@@ -592,6 +586,7 @@ void Scanner::start_hopingscan()
   sleep_ms(1000);
   while (!TheadDone) { sleep_ms(50); } //ожидание ответа ПК для синхронизации
   TheadDone = false;
+  conf_.flgHoping=0;
   std::cout << "end\n";
   activateDark();
 }
@@ -620,14 +615,14 @@ void Scanner::start_fastscan()
   uint16_t reststepy;
   uint16_t nfastline, nslowline;
   uint16_t stepslowline, stepfastline;
-  uint8_t portx = 1;
-  uint8_t porty = 2;
-  uint8_t portfast;
-  uint8_t portslow;
+  uint8_t  portx = 1;
+  uint8_t  porty = 2;
+  uint8_t  portfast;
+  uint8_t  portslow;
   uint16_t pos_fast;
   uint16_t pos_slow;
-  stepsx = (uint16_t) conf_.betweenPoints_x / conf_.diskretinstep;
-  stepsy = (uint16_t) conf_.betweenPoints_y / conf_.diskretinstep;
+  stepsx    = (uint16_t) conf_.betweenPoints_x / conf_.diskretinstep;
+  stepsy    = (uint16_t) conf_.betweenPoints_y / conf_.diskretinstep;
   reststepx = conf_.betweenPoints_x % conf_.diskretinstep;
   reststepy = conf_.betweenPoints_y % conf_.diskretinstep;
 
@@ -635,10 +630,10 @@ void Scanner::start_fastscan()
   {
     case 0://X+
     {
-      portfast = portx;
-      portslow = porty;
-      pos_fast = pos_.x;
-      pos_slow = pos_.y;
+      portfast  = portx;
+      portslow  = porty;
+      pos_fast  = pos_.x;
+      pos_slow  = pos_.y;
       nfastline = conf_.nPoints_x;
       nslowline = conf_.nPoints_y;
       stepslowline = stepsx;
@@ -649,10 +644,10 @@ void Scanner::start_fastscan()
     }
     case 1: //Y+
     {
-      portfast = porty;
-      portslow = portx;
-      pos_fast = pos_.y;
-      pos_slow = pos_.x;
+      portfast  = porty;
+      portslow  = portx;
+      pos_fast  = pos_.y;
+      pos_slow  = pos_.x;
       nfastline = conf_.nPoints_y;
       nslowline = conf_.nPoints_x;
       stepslowline = stepsy;
@@ -702,7 +697,8 @@ void Scanner::start_fastscan()
         {
           getValuesFromAdc();
           vector_z.emplace_back((int16_t) spiBuf[0]);  // get Z from adc ??
-        } else
+        }
+        else
         {
           vector_z.emplace_back(
               int16_t(10000.0 * (sin(M_PI * j * 0.1) + sin(M_PI * i * 0.1))));  // get Z from adc
@@ -715,7 +711,8 @@ void Scanner::start_fastscan()
         {
           pos_fast -= conf_.diskretinstep;
           set_on_dac(portfast, pos_fast);
-        } else
+        } 
+        else
         { pos_fast -= conf_.diskretinstep; }
         sleep_us(conf_.delayB);
       }
@@ -726,7 +723,8 @@ void Scanner::start_fastscan()
         {
           pos_fast -= reststepfast;
           set_on_dac(portfast, pos_fast);
-        } else
+        }
+        else
         { pos_fast -= reststepfast; }
 
         sleep_us(conf_.delayF);
@@ -772,22 +770,9 @@ void Scanner::start_fastscan()
 
     stop_scan();  //возврат в начальную точку скана
 
-    if (conf_.flgOneFrame == 1)
-    { FASTSCANNING = false; };
+    if (conf_.flgOneFrame == 1) { FASTSCANNING = false; };
   }  //while true;
 
-  /*    auto end = std::chrono::system_clock::now();
-     std::chrono::duration<double> elapsed_seconds = end-start;
-     std::time_t end_time = std::chrono::system_clock::to_time_t(end);
-     afc.clear();
-     afc="debug finished computation at ";
-     double eltime=elapsed_seconds.count();
-     afc=afc+std::ctime(&end_time);
-     afc=afc+std::to_string(elapsed_seconds);
-     afc=afc+"s"+std::endl;
-     std::cout << afc;
-     afc.clear();
- */
   blue();
 
   FASTSCANNING = false;
@@ -1095,13 +1080,13 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
   uint16_t INTDELAY, SCANNERDECAY;
 
   // SET VALUE FROM RX_CORE
-  SET_POINT = data[0];
-  GATE_Z_MAX = data[1];
-  GATE_Z_MIN = data[2];
-  NSTEPS = data[3];
-  INTDELAY = data[4];
-  GAIN = data[5];
-  SCANNERDECAY = data[6];
+  SET_POINT   = data[0];
+  GATE_Z_MAX  = data[1];
+  GATE_Z_MIN  = data[2];
+  NSTEPS      = data[3];
+  INTDELAY    = data[4];
+  GAIN        = data[5];
+  SCANNERDECAY= data[6];
   freq = data[7];
   scv = data[8];
 
