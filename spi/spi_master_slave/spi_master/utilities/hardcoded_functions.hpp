@@ -7,6 +7,8 @@
 
 void set_freq(uint32_t freq);
 
+uint16_t *repeatTwoTimes();
+
 uint16_t *getValuesFromAdc();
 
 void get_result_from_adc();

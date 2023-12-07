@@ -20,7 +20,7 @@ void MainCore::loop()
     {
       blue();
       static int16_t approach_data[9];
-      approach_data[0] = vector[1]; // point
+      approach_data[0] = vector[1]; //set point
       approach_data[1] = vector[2]; // max
       approach_data[2] = vector[3]; // min
       approach_data[3] = vector[4]; // steps
@@ -39,9 +39,9 @@ void MainCore::loop()
     {
       scanner.positioningXYZ(vector[1], vector[2], vector[3], vector[4], vector[5], vector[6],
                              vector[7]); //int lid_name, int f, int p, int n, int dir
-     continue;
+      continue;
     }
-      // Move scanner to point (x, y)
+    // Move scanner to point (x, y)
     if (MOVE_TOX0Y0) //переместиться в начальную точку  скана из начальной точке предыдущего скана
     {
       MOVE_TOX0Y0 = false;
@@ -58,34 +58,69 @@ void MainCore::loop()
 
     // Enable scanner and update config on command 50
     if (SCANNING) //scanning
-    {
-        scanner.update({
-                        static_cast<uint16_t>(vector[1]), static_cast<uint16_t>(vector[2]),
-                        static_cast<uint8_t>(vector[3]),  static_cast<uint8_t>(vector[4]),
-                        static_cast<uint16_t>(vector[5]), static_cast<uint16_t>(vector[6]),
-                        static_cast<uint16_t>(vector[7]), static_cast<uint16_t>(vector[8]),
-                        static_cast<uint8_t>(vector[9]),  static_cast<uint8_t>(vector[10]),
-                        static_cast<uint16_t>(vector[11]),static_cast<uint16_t>(vector[12]),
-                        static_cast<uint8_t>(vector[13]), static_cast<uint8_t>(vector[14]),
-                        static_cast<uint16_t>(vector[15])                                  
-                       });  
-      if (!scanner.getHoppingFlg()) {scanner.start_scan();       }
-      else                          {scanner.start_hoppingscan();}
+    {   // int32_t vector[16];  !!!!
+      scanner.update({
+                         static_cast<uint16_t>(vector[1]), static_cast<uint16_t>(vector[2]),
+                         static_cast<uint8_t>(vector[3]), static_cast<uint8_t>(vector[4]),
+                         static_cast<uint16_t>(vector[5]), static_cast<uint16_t>(vector[6]),
+                         static_cast<uint16_t>(vector[7]), static_cast<uint16_t>(vector[8]),
+                         static_cast<uint8_t>(vector[9]), static_cast<uint8_t>(vector[10]),
+                         static_cast<uint16_t>(vector[11]), static_cast<uint16_t>(vector[12]),
+                         static_cast<uint8_t>(vector[13]), static_cast<uint8_t>(vector[14]),
+                         static_cast<uint16_t>(vector[15])
+                     });
+/*
+    params[0]:=ScanParams.NX;        // кол точек в линии                                                               1
+    params[1]:=ScanParams.NY;        // кол линий в скане                                                               2
+    params[2]:=ScanParams.ScanPath; {X+:0,Y+:1,X+-:2; Y+-=3;} //тип пути сканирования +- сьем данных туда и обратно     3
+    params[3]:=ScanParams.ScanMethod;  // {0,1,2,3,4,5,6,7,8,9,10,11}                                                   4      
+    params[4]:=ScanParams.MicrostepDelay;   // задержка в каждой дискрете  при движении вперед                          5
+    params[5]:=ScanParams.MicrostepDelayBW; // задержка в каждой дискрете  при движении назад                           6
+    params[6]:=ScanParams.XMicrostepNmb;  //step x  в дискретах                                                         7
+    params[7]:=ScanParams.YMicrostepNmb;  //step y =step x пока в дискретах                                             8
+    params[8]:=ScanParams.size;                                                                                           9
+    params[9]:=PidParams.Ti;   // add gain!!!!!!!!!!!!!!!!!!!                                                          10 
+    params[10]:=ScanParams.DiscrNumInMicroStep;  //                                                                    11  
+    params[11]:=round(ScanParams.TimMeasurePoint*1000);  // mcs задержка до начала измерения сигналов                  12
+    params[12]:=datatype(ScanParams.flgOneFrame);      //fast scanning                                                 13
+    params[13]:=datatype(ScanParams.flgHoping);        //hope                                                          14  
+    params[14]:=ScanParams.HopingDelay;                                                                                15    
+*/
+/*
+    scanmethod
+  Const  Topography=0; // пока сделать  только это
+//долнительные сигналы
+  Const  WorkF=1;     // не используется
+  Const  BackPass=2;  // не используется путь X+-, Y+-
+  Const  Phase=3;     //Фаза
+  Const  UAM=4;       //Force Image -  Амплитуда
+  Const  Spectr=5;    //пока не надо
+  Const  Litho=6;     //пока не надо
+  Const  CurrentScan=7; //ток
+  Const  FastScan=8;  //быстрое сканирование ток
+  Const  TopoError=9;
+  Const  FastScanPhase=10;  // //пока не надо - быстрое сканирование ток
+  Const  OneLineScan=11;    //сканированиепо одной линии
+*/
+      if (!scanner.getHoppingFlg())
+      { scanner.start_scan(); }
+      else
+      { scanner.start_hopingscan(); }
       continue;
     }
     if (FASTSCANNING)
-    {
+    {// int32_t vector[16];
       scanner.update({
-                        static_cast<uint16_t>(vector[1]), static_cast<uint16_t>(vector[2]),
-                        static_cast<uint8_t>(vector[3]),  static_cast<uint8_t>(vector[4]),
-                        static_cast<uint16_t>(vector[5]), static_cast<uint16_t>(vector[6]),
-                        static_cast<uint16_t>(vector[7]), static_cast<uint16_t>(vector[8]),
-                        static_cast<uint8_t>(vector[9]),  static_cast<uint8_t>(vector[10]),
-                        static_cast<uint16_t>(vector[11]),static_cast<uint16_t>(vector[12]),
-                        static_cast<uint8_t>(vector[13])
+                         static_cast<uint16_t>(vector[1]), static_cast<uint16_t>(vector[2]),
+                         static_cast<uint8_t>(vector[3]), static_cast<uint8_t>(vector[4]),
+                         static_cast<uint16_t>(vector[5]), static_cast<uint16_t>(vector[6]),
+                         static_cast<uint16_t>(vector[7]), static_cast<uint16_t>(vector[8]),
+                         static_cast<uint8_t>(vector[9]), static_cast<uint8_t>(vector[10]),
+                         static_cast<uint16_t>(vector[11]), static_cast<uint16_t>(vector[12]),
+                         static_cast<uint8_t>(vector[13])
                      });
       scanner.start_fastscan();
-      FASTSCANNING=false;
+      FASTSCANNING = false;
       continue;
     }
     if (SET_IO_VALUE)
@@ -235,7 +270,6 @@ void MainCore::loop()
         afc = "code12";
         if (!flgVirtual)
         {
-          getValuesFromAdc();
           auto ptr = getValuesFromAdc();
           logger(ptr, 8);
           ZValue = (int16_t) ptr[ZPin];
