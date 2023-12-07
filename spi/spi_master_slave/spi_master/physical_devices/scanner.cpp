@@ -154,7 +154,6 @@ void Scanner::start_scan()
       if (!flgVirtual)
       {
         getValuesFromAdc();
-        getValuesFromAdc();
         vector_z.emplace_back((int16_t) spiBuf[0]);  // get Z from adc ??
         if (conf_.size == 2)
           switch (conf_.method)
@@ -425,7 +424,6 @@ void Scanner::start_hopingscan()
       if (!flgVirtual)
       {
         getValuesFromAdc();
-        getValuesFromAdc();
         vector_z.emplace_back((int16_t) spiBuf[0]);     // get Z from adc ??
         switch (conf_.method)
           //added signal  Const  BackPass=2;    //PM  Const  Phase=3;  Const  UAM=4;   //Force Image
@@ -683,7 +681,6 @@ void Scanner::start_fastscan()
 
         if (!flgVirtual)
         {
-          getValuesFromAdc();
           getValuesFromAdc();
           vector_z.emplace_back((int16_t) spiBuf[0]);  // get Z from adc ??
         } else
@@ -991,7 +988,6 @@ void Scanner::positioningXYZ(int lid_name, int f, int p, int n, int dir, int16_t
       status = none;
       if (!flgVirtual) //add mf
       {
-        getValuesFromAdc();   //test
         auto ptr = getValuesFromAdc();
         ZValue = (int16_t) ptr[ZPin];
         SignalValue = (int16_t) ptr[SignalPin];
@@ -1107,7 +1103,6 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
 
   if (!flgVirtual) //add mf
   {
-    getValuesFromAdc();
     uint16_t *ptr = getValuesFromAdc();
     SignalValue = (int16_t) ptr[SignalPin];
     ZValue = (int16_t) ptr[ZPin];
@@ -1171,7 +1166,6 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
 
     if (!flgVirtual)
     {
-      getValuesFromAdc();
       auto ptr = getValuesFromAdc();
       ZValue = (int16_t) ptr[ZPin];
       SignalValue = (int16_t) ptr[SignalPin];
@@ -1207,7 +1201,6 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
         {
           if (!flgVirtual)
           {
-            getValuesFromAdc();
             auto ptr = getValuesFromAdc();
             ZValue = (int16_t) ptr[ZPin];
           }
@@ -1288,7 +1281,6 @@ void Scanner::start_frqscan()
     {
       set_freq(inBuf[1]);
       sleep_ms(inBuf[4]);
-      getValuesFromAdc();
       afc +=
           ',' + std::to_string(inBuf[1]) + ',' +
           std::to_string((int16_t) getValuesFromAdc()[current_channel]);//+ ',';

@@ -270,7 +270,6 @@ void MainCore::loop()
         afc = "code12";
         if (!flgVirtual)
         {
-          getValuesFromAdc();
           auto ptr = getValuesFromAdc();
           logger(ptr, 8);
           ZValue = (int16_t) ptr[ZPin];
