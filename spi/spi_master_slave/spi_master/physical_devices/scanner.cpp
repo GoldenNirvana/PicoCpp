@@ -257,8 +257,10 @@ void Scanner::start_scan()
     }
     if ((nslowline-1-i)>0)  //don't need for last line
     {
-      for (uint32_t n = 0; n <stepslowline; ++n) // go next line
+     if (conf_.method!=11) //not one line 
      {
+      for (uint32_t n = 0; n <stepslowline; ++n) // go next line
+      {
       if (!flgVirtual)
       {
        pos_slow+=conf_.diskretinstep;
@@ -267,8 +269,8 @@ void Scanner::start_scan()
       else
       { pos_slow+=conf_.diskretinstep; }
 
-      sleep_us(conf_.delayF);
-     }
+       sleep_us(conf_.delayF);
+      }
        if( reststepslow!=0)
        {
         if (!flgVirtual) // last step
@@ -281,6 +283,7 @@ void Scanner::start_scan()
 
         sleep_us(conf_.delayF);
        }  
+     }
     }
   } //for
 
