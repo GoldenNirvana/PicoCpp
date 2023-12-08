@@ -281,7 +281,7 @@ void MainCore::loop()
           afc.clear();
         } else
         {
-          afc += ',' + std::to_string(ZValue) + ',' + std::to_string(SignalValue) + "\n";   //Z,Signal
+          afc += ',' + std::to_string(ZValue) + ',' + std::to_string(SignalValue) +',' + std::to_string(vector[1])+"\n";   //Z,Signal
           std::cout << afc;
           afc.clear();
         }

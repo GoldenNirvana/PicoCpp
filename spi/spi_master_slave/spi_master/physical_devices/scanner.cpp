@@ -309,7 +309,7 @@ void Scanner::start_scan()
   sleep_ms(300); //200
   green();
   int16_t count = 0;
-  while ((!TheadDone) || (count<100) )
+  while ((!TheadDone) || (count<2000) )
   {
     sleep_ms(50);
     count++;
@@ -584,7 +584,12 @@ void Scanner::start_hopingscan()
      protract();
   }
   sleep_ms(1000);
-  while (!TheadDone) { sleep_ms(50); } //ожидание ответа ПК для синхронизации
+   int16_t count = 0;
+  while ((!TheadDone) || (count<2000) )
+  {
+    sleep_ms(50);
+    count++;
+  } //ожидание ответа ПК для синхронизации
   TheadDone = false;
   conf_.flgHoping=0;
   std::cout << "end\n";
@@ -793,8 +798,12 @@ void Scanner::start_fastscan()
   }
   stop_scan();  //возврат в начальную точку скана
   sleep_ms(200);
-  while (!TheadDone)
-  { sleep_ms(50); } //ожидание ответа ПК для синхронизации
+   int16_t count = 0;
+  while ((!TheadDone) || (count<2000) )
+  {
+    sleep_ms(50);
+    count++;
+  } //ожидание ответа ПК для синхронизации
   TheadDone = false;
   std::cout << "end\n";
   activateDark();
@@ -846,8 +855,12 @@ void Scanner::move_toX0Y0(int x, int y,
   std::cout << afc;
   afc.clear();
   sleep_ms(200);
-  while (not TheadDone)
-  { sleep_ms(50); }
+   int16_t count = 0;
+  while ((!TheadDone) || (count<2000) )
+  {
+    sleep_ms(50);
+    count++;
+  } //ожидание ответа ПК для синхронизации
   TheadDone = false;
   std::cout << "end\n";
 }
@@ -1057,8 +1070,12 @@ void Scanner::positioningXYZ(int lid_name, int f, int p, int n, int dir, int16_t
   std::cout << afc;
   afc.clear();
   sleep_ms(100);
-  while (not TheadDone)
-  { sleep_ms(50); }
+   int16_t count = 0;
+  while ((!TheadDone) || (count<2000) )
+  {
+    sleep_ms(50);
+    count++;
+  } //ожидание ответа ПК для синхронизации
   TheadDone = false;
   LID_UNTIL_STOP = false;
   std::cout << "end\n";
