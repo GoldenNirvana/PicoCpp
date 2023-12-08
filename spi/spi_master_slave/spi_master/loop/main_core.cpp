@@ -272,7 +272,7 @@ void MainCore::loop()
         {
           auto ptr = getValuesFromAdc();
           logger(ptr, 8);
-          ZValue = (int16_t) ptr[ZPin];
+               ZValue = (int16_t) ptr[ZPin];
           SignalValue = (int16_t) ptr[SignalPin];
           set_io_value(2, vector[1]);   //add 231114 gain pid
           afc +=
