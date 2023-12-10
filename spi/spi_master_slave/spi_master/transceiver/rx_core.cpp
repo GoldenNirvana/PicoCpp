@@ -74,7 +74,7 @@ void RX_core::launchOnCore1()
 ////        std::cout << "Mutex captured by core1 << '\n";
     /// PARSING
     parse(vector);
-    logger("command" + std::to_string(vector[0]) + '\n');
+ //   logger("command" + std::to_string(vector[0]) + '\n'); //231210
 //    uart_puts(uart1, "String for uart");
     switch (vector[0])
     {

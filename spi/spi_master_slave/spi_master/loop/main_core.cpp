@@ -259,8 +259,7 @@ void MainCore::loop()
     }
     if (AD7606_READ or AD7606_READ_FOREVER)   // read ADC
     {
-      if (flgDebugLevel <= DEBUG_LEVEL)
-        logger("ReadADC\n");
+    //  if (flgDebugLevel <= DEBUG_LEVEL)       logger("ReadADC\n");
       AD7606_READ = false;
       if (AD_7606_IS_READY_TO_READ)
       {
@@ -277,11 +276,13 @@ void MainCore::loop()
               ',' + std::to_string(ZValue) + ',' + std::to_string(SignalValue) + ',' + std::to_string(vector[1]) + "\n";
           std::cout << afc;
           afc.clear();
-        } else
+        } 
+        else
         {
           afc += ',' + std::to_string(ZValue) + ',' + std::to_string(SignalValue) +',' + std::to_string(vector[1])+"\n";   //Z,Signal
           std::cout << afc;
           afc.clear();
+          sleep_ms(100);
         }
       }
       continue;

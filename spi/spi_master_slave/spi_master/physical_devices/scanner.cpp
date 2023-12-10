@@ -1036,16 +1036,14 @@ void Scanner::positioningXYZ(int lid_name, int f, int p, int n, int dir, int16_t
         }
         linearDriver.activate(lid_name, f, p, std::abs(ln), ldir);
       } 
-      else
+      else //virtual
       {
         if (ldir == 1)
         { ZValue -= ln; }
         else
         {
-          if (ZValue < (ZMaxValue - ln))
-          { ZValue += ln; }
-          else
-          { ZValue = ZMaxValue; }
+          if (ZValue < (ZMaxValue - ln)) { ZValue += ln;       }
+          else                           { ZValue = ZMaxValue; }
         }
         // check if z > <
         if (ZValue < GATE_Z_MIN)
@@ -1058,11 +1056,11 @@ void Scanner::positioningXYZ(int lid_name, int f, int p, int n, int dir, int16_t
           status = ok;
           break;
         }
+        sleep_ms(100); //need to adjust       
       }
       afc.clear();
       afc = "code" + std::to_string(lid_name) + ',' + std::to_string(status) + ',' + std::to_string(ZValue) +
-            ',' +
-            std::to_string(SignalValue) + "\n";
+            ',' + std::to_string(SignalValue) + "\n";
       std::cout << afc;
       sleep_ms(200); //need to adjust
       afc.clear();
