@@ -87,8 +87,8 @@ void MainCore::loop()
     params[14]:=ScanParams.HopingDelay;                                                                                15    
 */
 /*
-    scanmethod
-  Const  Topography=0; // пока сделать  только это
+    ScanMethod
+  Const  Topography=0; // 
 //долнительные сигналы
   Const  WorkF=1;     // не используется
   Const  BackPass=2;  // не используется путь X+-, Y+-
@@ -97,15 +97,13 @@ void MainCore::loop()
   Const  Spectr=5;    //пока не надо
   Const  Litho=6;     //пока не надо
   Const  CurrentScan=7; //ток
-  Const  FastScan=8;  //быстрое сканирование ток
+  Const  FastScan=8;    //быстрое сканирование ток
   Const  TopoError=9;
   Const  FastScanPhase=10;  // //пока не надо - быстрое сканирование ток
   Const  OneLineScan=11;    //сканированиепо одной линии
 */
-      if (!scanner.getHoppingFlg())
-      { scanner.start_scan(); }
-      else
-      { scanner.start_hopingscan(); }
+      if (!scanner.getHoppingFlg())  { scanner.start_scan();       }
+      else                           { scanner.start_hopingscan(); }
       continue;
     }
     if (FASTSCANNING)

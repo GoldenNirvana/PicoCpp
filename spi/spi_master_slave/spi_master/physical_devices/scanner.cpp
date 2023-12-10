@@ -28,7 +28,7 @@ void Scanner::protract() //вытянуть
 
 bool Scanner::getHoppingFlg()
 {
-  return conf_.flgHoping;
+  return (bool)conf_.flgHoping;
 }
 
 void Scanner::start_scan()
@@ -67,6 +67,14 @@ void Scanner::start_scan()
   stepsy = (uint16_t) conf_.betweenPoints_y / conf_.diskretinstep;
   reststepx = conf_.betweenPoints_x % conf_.diskretinstep;
   reststepy = conf_.betweenPoints_y % conf_.diskretinstep;
+
+  afc.clear();
+  afc = "debug scan parameters stepsxy  ";
+  afc +=std::to_string(stepsx)+','+ std::to_string(stepsy)+','+ std::to_string(reststepx)+','+ std::to_string(reststepy);
+  afc += +"\n";
+  std::cout << afc;
+  afc.clear();
+  sleep_ms(100);
 
   switch (conf_.path)
   {
@@ -222,7 +230,7 @@ void Scanner::start_scan()
     }
     afc += "\n";
     std::cout << afc;
-    sleep_ms(200); //don't delete ! 100; 300 // 231130
+    sleep_ms(300); //don't delete ! 100; 300 // 231130
     afc.clear();
     vector_z.clear();
     other_info.clear();
@@ -307,14 +315,15 @@ void Scanner::start_scan()
   }
   stop_scan();  //возврат в начальную точку скана
   sleep_ms(300); //200
-  green();
+  red();
   int16_t count = 0;
-  while ((!TheadDone) || (count<2000) )
+  while ((!TheadDone) || (count<20) )
   {
-    sleep_ms(50);
+    sleep_ms(100);
     count++;
   } //ожидание ответа ПК для синхронизации
   TheadDone = false;
+  green();
   std::cout << "end\n";
   activateDark();
 }
@@ -585,9 +594,9 @@ void Scanner::start_hopingscan()
   }
   sleep_ms(1000);
    int16_t count = 0;
-  while ((!TheadDone) || (count<2000) )
+  while ((!TheadDone) || (count<20) )
   {
-    sleep_ms(50);
+    sleep_ms(100);
     count++;
   } //ожидание ответа ПК для синхронизации
   TheadDone = false;
@@ -799,9 +808,9 @@ void Scanner::start_fastscan()
   stop_scan();  //возврат в начальную точку скана
   sleep_ms(200);
    int16_t count = 0;
-  while ((!TheadDone) || (count<2000) )
+  while ((!TheadDone) || (count<20) )
   {
-    sleep_ms(50);
+    sleep_ms(100);
     count++;
   } //ожидание ответа ПК для синхронизации
   TheadDone = false;
@@ -856,9 +865,9 @@ void Scanner::move_toX0Y0(int x, int y,
   afc.clear();
   sleep_ms(200);
    int16_t count = 0;
-  while ((!TheadDone) || (count<2000) )
+  while ((!TheadDone) || (count<20) )
   {
-    sleep_ms(50);
+    sleep_ms(100);
     count++;
   } //ожидание ответа ПК для синхронизации
   TheadDone = false;
@@ -1026,7 +1035,8 @@ void Scanner::positioningXYZ(int lid_name, int f, int p, int n, int dir, int16_t
           }
         }
         linearDriver.activate(lid_name, f, p, std::abs(ln), ldir);
-      } else
+      } 
+      else
       {
         if (ldir == 1)
         { ZValue -= ln; }
@@ -1071,9 +1081,9 @@ void Scanner::positioningXYZ(int lid_name, int f, int p, int n, int dir, int16_t
   afc.clear();
   sleep_ms(100);
    int16_t count = 0;
-  while ((!TheadDone) || (count<2000) )
+  while ((!TheadDone) || (count<20) )
   {
-    sleep_ms(50);
+    sleep_ms(100);
     count++;
   } //ожидание ответа ПК для синхронизации
   TheadDone = false;

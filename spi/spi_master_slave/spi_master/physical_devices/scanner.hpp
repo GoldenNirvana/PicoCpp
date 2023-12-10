@@ -41,34 +41,33 @@ public:
 
   void start_scan();
 
-  void start_hopingscan();
+  void start_hopingscan();  //сканирование прыжками
 
-  void start_fastscan();
+  void start_fastscan();    // быстрое сканирование и вывод скана целиком, а не по линиям
 
-  void stop_scan();
+  void stop_scan();   // возвращение сканера в  начальную точку скана
 
-  void update(const Config &config);
+  void update(const Config &config); // обновить параметры скнирования
 
   void move_to(const Point &point, uint16_t delay);  // переместиться в нач.точку скана текущего скана
 
-  void move_toX0Y0(int x, int y,
-                   int delay);  // //переместиться в начальную точку  скана из начальной точке предыдущего скана
+  void move_toX0Y0(int x, int y, int delay); //переместиться в начальную точку скана из начальной точке предыдущего скана
   //add mf 
-  Point getX0Y0();
+  Point getX0Y0(); // получить текущую точку сканера в покое
 
-  void move_toZ0(int lid_name, int f, int p, int n, int dir);  // отвестись в безопастную начальную точку по Z
+  void move_toZ0(int lid_name, int f, int p, int n, int dir);// отвестись в безопастную начальную точку по Z при старте и выходе из программы
 
   void retract(); //втянуть сканер
 
   void protract(); //втянуть сканер
 
-  void approacphm(const int16_t *const data);
+  void approacphm(const int16_t *const data);  // захват взаимодействия с контролем ворот
 
-  void positioningXYZ(int lid_name, int f, int p, int n, int dir, int16_t gtmax, int16_t gtmin); // abs(n)
+  void positioningXYZ(int lid_name, int f, int p, int n, int dir, int16_t gtmax, int16_t gtmin); // abs(n) перемещение по  X,Y и Z (с контроллем ворот)
 
   void start_frqscan(); //find resonance
 
-  bool getHoppingFlg();
+  bool getHoppingFlg(); // получить флаг сканирования прыжками
 
   // void stopAll();
 //
