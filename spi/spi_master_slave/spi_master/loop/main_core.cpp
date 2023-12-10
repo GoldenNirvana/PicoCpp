@@ -97,7 +97,7 @@ void MainCore::loop()
   Const  Spectr=5;    //пока не надо
   Const  Litho=6;     //пока не надо
   Const  CurrentScan=7; //ток
-  Const  FastScan=8;    //быстрое сканирование ток
+  Const  FastScan=8;    //быстрое сканирование ток ?
   Const  TopoError=9;
   Const  FastScanPhase=10;  // //пока не надо - быстрое сканирование ток
   Const  OneLineScan=11;    //сканированиепо одной линии
