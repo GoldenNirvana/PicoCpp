@@ -25,7 +25,7 @@ void RX_core::comReceiveISR(uint a, uint32_t b)
   spi_read16_blocking(spi_default, 0, spiBuf, 8);
   if (Z_STATE)
   {
-    ZValue =(int16_t) spiBuf[0]; //0 or 1
+        ZValue =(int16_t) spiBuf[0]; //0 or 1
     SignalValue=(int16_t)spiBuf[1];
     Z_STATE = false;
     if (!flgVirtual) serialPrintBuffer(spiBuf, 8);
@@ -68,14 +68,14 @@ void RX_core::launchOnCore1()
 {
   while (true)
   {
-//      vector[0] = 12;
-//      std::cout << "Receive core\n";
-////        mutex_enter_timeout_ms(&mut, 10);
-////        std::cout << "Mutex captured by core1 << '\n";
-    /// PARSING
+//  vector[0] = 12;
+//  std::cout << "Receive core\n";
+//  mutex_enter_timeout_ms(&mut, 10);
+//  std::cout << "Mutex captured by core1 << '\n";
+//  PARSING
     parse(vector);
- //   logger("command" + std::to_string(vector[0]) + '\n'); //231210
-//    uart_puts(uart1, "String for uart");
+//  logger("command" + std::to_string(vector[0]) + '\n'); //231210
+//  uart_puts(uart1, "String for uart");
     switch (vector[0])
     {
       case 1:

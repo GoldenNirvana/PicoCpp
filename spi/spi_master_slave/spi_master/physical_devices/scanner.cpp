@@ -1279,8 +1279,12 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
     protract();// io3_1.disable();//вытянуть
     sleep_ms(INTDELAY);
   }
-  while (not TheadDone)
-  { sleep_ms(50); }
+  int16_t count = 0;
+  while ((!TheadDone) || (count<20) )
+  {
+    sleep_ms(100);
+    count++;
+  } //ожидание ответа ПК для синхронизации
   TheadDone = false;
   std::cout << "end\n";
 }
@@ -1330,8 +1334,12 @@ void Scanner::start_frqscan()
   sleep_ms(100);
   afc.clear();
   current_channel = -1;
-  while (not TheadDone)
-  { sleep_ms(50); }
+  int16_t count = 0;
+  while ((!TheadDone) || (count<20) )
+  {
+    sleep_ms(100);
+    count++;
+  } //ожидание ответа ПК для синхронизации
   TheadDone = false;
   std::cout << "end\n";
   RESONANCE = false;
