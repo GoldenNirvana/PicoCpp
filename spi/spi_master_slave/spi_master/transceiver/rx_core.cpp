@@ -17,7 +17,7 @@ void RX_core::comReceiveISR(uint a, uint32_t b)
 {
   if (AD_7606_IS_READY_TO_READ)
   {
-    logger("ADC read recursion\n");
+  //  logger("ADC read recursion\n");
     return;
   }
   decoder.activePort(0);

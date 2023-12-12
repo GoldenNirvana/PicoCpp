@@ -105,6 +105,18 @@ void stopAll()
 
 uint16_t *getValuesFromAdc()
 {
+ get_result_from_adc();
+  int i = 0;
+  while (!AD_7606_IS_READY_TO_READ && i++ < 3)
+  {
+//    std::cout << "EndlessLoop\n";
+    sleep_us(100);
+  }
+  return spiBuf;
+}
+/*
+uint16_t *getValuesFromAdc()
+{
   return repeatTwoTimes();
 }
 
@@ -119,3 +131,4 @@ uint16_t *repeatTwoTimes()
   return spiBuf;
 }
 
+*/
