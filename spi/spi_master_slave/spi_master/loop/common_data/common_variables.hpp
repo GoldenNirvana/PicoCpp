@@ -59,6 +59,9 @@ extern bool flgVirtual; // Virtual device for debuging
 extern uint flgDebugLevel; //  leveldebug
 extern bool FASTSCANNING;
 extern bool SET_PID_GAIN;
+extern bool SET_AMPLMOD_GAIN;
+extern bool SETBIAS;
+extern bool SET_SETPOINT;
 extern bool PID_TURN_ON;
 extern bool GET_CURRENTX0Y0;
 extern bool Scanner_Retract;
@@ -66,7 +69,8 @@ extern bool Scanner_Protract;
 extern bool POSXYZ_CONFIG_UPDATE;
 extern bool TheadDone;
 extern uint8_t ZPin;
-extern uint8_t SignalPin;
+extern uint8_t AmplPin; //amplitude
+extern uint8_t IPin;    //current
 extern int16_t ZMaxValue;
 extern int16_t shiftScannerZeroPoint;
 //

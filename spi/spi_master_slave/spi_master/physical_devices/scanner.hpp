@@ -46,6 +46,15 @@ public:
   void start_fastscan();    // быстрое сканирование и вывод скана целиком, а не по линиям
 
   void stop_scan();   // возвращение сканера в  начальную точку скана
+ 
+  void approacphm(const int16_t *const data);  // захват взаимодействия с контролем ворот
+
+ // void positioningXYZ(int lid_name, int f, int p, int n, int dir, int16_t gtmax, int16_t gtmin); // abs(n) перемещение по  X,Y и Z (с контроллем ворот)
+  void positioningXYZ(const int16_t *const data); // abs(n) перемещение по  X,Y и Z (с контроллем ворот)
+
+  void start_frqscan(); //find resonance
+
+  void spectroscopyIV(int32_t vector[16]);
 
   void update(const Config &config); // обновить параметры скнирования
 
@@ -60,12 +69,6 @@ public:
   void retract(); //втянуть сканер
 
   void protract(); //втянуть сканер
-
-  void approacphm(const int16_t *const data);  // захват взаимодействия с контролем ворот
-
-  void positioningXYZ(int lid_name, int f, int p, int n, int dir, int16_t gtmax, int16_t gtmin); // abs(n) перемещение по  X,Y и Z (с контроллем ворот)
-
-  void start_frqscan(); //find resonance
 
   bool getHoppingFlg(); // получить флаг сканирования прыжками
 

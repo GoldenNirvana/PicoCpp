@@ -42,6 +42,32 @@ void get_result_from_adc()
   conv.enable();
 }
 
+void IniSPI( uint8_t port ,uint8_t v2 ,uint8_t v3, uint8_t v4 )
+{
+ decoder.activePort(port);
+ Spi::setProperties(v2, v3, v4);
+}
+void Init_DAC1(uint8_t port)
+{
+  dac8563_1.initialize(port); //code 23
+}
+
+void Init_DAC2(uint8_t port)
+{
+  dac8563_2.initialize(port); //code 27
+}
+
+void set_Bias(int16_t Bias)
+{
+   dac8563_1.writeB(Bias);
+//   code  22 , 2, 8, 0, 1, 1, value	
+}
+
+void set_SetPoint(int16_t SetPoint)
+{
+   dac8563_1.writeA(SetPoint);
+//  code  22, 2, 8, 0, 1, 0, value
+}
 void set_gain(int gain, int p)
 {
   uint8_t intBuf[1];
@@ -50,7 +76,10 @@ void set_gain(int gain, int p)
   intBuf[0] = gain;
   spi_write_blocking(spi_default, intBuf, 3);
 }
-
+void set_gainPID(int gain)
+{
+   set_io_value(2, gain); 
+}
 void set_clock_enable()
 {
   uint8_t intBuf[1];

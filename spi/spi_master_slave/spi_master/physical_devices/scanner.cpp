@@ -927,23 +927,30 @@ void Scanner::move_toZ0(int lid_name, int f, int p, int n, int dir)  //отве�
   sleep_ms(100);
 }
 
-void Scanner::positioningXYZ(int lid_name, int f, int p, int n, int dir, int16_t gtmax, int16_t gtmin) // n-nsteps
+//void Scanner::positioningXYZ(int lid_name, int f, int p, int n, int dir, int16_t gtmax, int16_t gtmin) // n-nsteps
+void Scanner::positioningXYZ(const int16_t *const data)
 {
   //uint32_t SET_POINT;
+  uint8_t lid_name;
   uint16_t GATE_Z_MAX, GATE_Z_MIN;
   int8_t status;
   const int none = 30;
   const int ok = 3;
   const int touch = 2;
-
-  int ln; //>0
-  int ldir;
-
-  ln = n;  ///????? sign abs?
-  ldir = dir;
-  GATE_Z_MAX = gtmax;
-  GATE_Z_MIN = gtmin;
-
+  int16_t ln;  ///????? sign abs?
+  bool ldir;
+  int16_t p,f;
+ // SET VALUE FROM RX_CORE
+      lid_name=(uint8_t)data[0]; //  int lid_name
+      f=data[1]; //  int f
+      p=data[2]; //  int p
+      ln=data[3]; //  int n
+      ldir=(bool)data[4]; //  int dir
+      GATE_Z_MAX=data[5]; //  int Z gate max
+      GATE_Z_MIN=data[6]; //  int Z gate min
+   //   pos_data[7] / //  0= SFM, 1=STM ;SICMAC-2; SICMDC-3;  device type
+  //    pos_data[8]/ //  Voltage
+    
   red();
 
   if (lid_name == 90 || lid_name == 95) //X,Y
@@ -1022,8 +1029,8 @@ void Scanner::positioningXYZ(int lid_name, int f, int p, int n, int dir, int16_t
       {
         getValuesFromAdc();
         auto ptr = getValuesFromAdc();
-        ZValue = (int16_t) ptr[ZPin];
-        SignalValue = (int16_t) ptr[SignalPin];
+        ZValue      = (int16_t) ptr[ZPin];
+        SignalValue = (int16_t) ptr[AmplPin];
         // check if z > <
         if (ldir == 1)
         {
@@ -1094,7 +1101,10 @@ void Scanner::positioningXYZ(int lid_name, int f, int p, int n, int dir, int16_t
   dark();
   //  sleep_ms(100); //need to adjust
 }
+void Scanner::spectroscopyIV(int32_t vector[16])
+{
 
+}
 void Scanner::approacphm(const int16_t *const data) //uint16_t
 {
   const int none = 30;
@@ -1107,17 +1117,21 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
   int16_t freq, scv;//
   int16_t GAIN, NSTEPS;
   uint16_t INTDELAY, SCANNERDECAY;
-
+  uint8_t flgDev;
+  int16_t Bias;
   // SET VALUE FROM RX_CORE
-  SET_POINT   = data[0];
-  GATE_Z_MAX  = data[1];
-  GATE_Z_MIN  = data[2];
-  NSTEPS      = data[3];
-  INTDELAY    = data[4];
-  GAIN        = data[5];
-  SCANNERDECAY= data[6];
-  freq = data[7];
-  scv = data[8];
+  SET_POINT      = data[0];
+  GATE_Z_MAX     = data[1];
+  GATE_Z_MIN     = data[2];
+  NSTEPS         = data[3];
+  INTDELAY       = data[4];
+  GAIN           = data[5];
+  SCANNERDECAY   = data[6]; 
+  freq           = data[7];
+  scv            = data[8];
+  flgDev= (uint8_t)data[9]; // 0= SFM, 1=STM ;SICMAC-2; SICMDC-3;  device type
+  Bias           = data[10];         //Voltage for 1,2,3
+ 
 
   afc.clear();
   afc = "debug approach parameters ";
@@ -1125,7 +1139,7 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
   {
     afc += ',' + std::to_string(data[j]);
   }
-  afc += std::to_string(SignalPin) + ',' + std::to_string(ZPin) + "\n";
+  afc += std::to_string(AmplPin) + ',' + std::to_string(ZPin) + "\n";
   std::cout << afc;
   afc.clear();
   sleep_ms(200);
@@ -1134,15 +1148,27 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
   std::vector<int16_t> buf_params;
   buf_params.reserve(7);
 
-  for (int i = 0; i < 7; ++i)
-    buf_params.push_back(data[i]);
+  for (int i = 0; i < 7; ++i)  buf_params.push_back(data[i]);
 
   if (!flgVirtual) //add mf
   {
     getValuesFromAdc();
-    uint16_t *ptr = getValuesFromAdc();
-    SignalValue = (int16_t) ptr[SignalPin];
+    uint16_t *ptr = getValuesFromAdc(); 
     ZValue = (int16_t) ptr[ZPin];
+    switch (flgDev)
+   {
+     case 0: 
+     {
+      SignalValue = (int16_t) ptr[AmplPin];
+      break;  
+     } 
+   case 1:
+   case 3:  
+     {
+      SignalValue = (int16_t) ptr[IPin];
+      break;  
+     } 
+   }
   }
   std::vector<int16_t> buf_status;
   buf_status.push_back(none);
@@ -1205,10 +1231,23 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
     {
       getValuesFromAdc();
       auto ptr = getValuesFromAdc();
-      ZValue = (int16_t) ptr[ZPin];
-      SignalValue = (int16_t) ptr[SignalPin];
-      if (flgDebugLevel <= DEBUG_LEVEL);//log("Z = " + std::to_string(Z) + '\n',flgDebugLevel);
-    } else
+     switch (flgDev)
+    {
+     case 0: 
+     {
+      SignalValue = (int16_t) ptr[AmplPin];
+      break;  
+     } 
+     case 1:
+     case 3:  
+     {
+      SignalValue = (int16_t) ptr[IPin];
+      break;  
+     } 
+    }     
+    if (flgDebugLevel <= DEBUG_LEVEL);//log("Z = " + std::to_string(Z) + '\n',flgDebugLevel);
+    }
+    else
     {
       if (NSTEPS >= 0)
       {
@@ -1311,7 +1350,7 @@ void Scanner::start_frqscan()
     inBuf[j] = vector[1 + j];
     afc += ',' + std::to_string(inBuf[j]);
   }
-  afc += ',' + std::to_string(flgVirtual) + std::to_string(SignalPin) + ',' + std::to_string(ZPin) + "\n";
+  afc += ',' + std::to_string(flgVirtual) + std::to_string(AmplPin) + ',' + std::to_string(ZPin) + "\n";
   std::cout << afc;
   afc.clear();
   sleep_ms(100);

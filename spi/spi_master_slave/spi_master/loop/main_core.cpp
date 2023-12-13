@@ -19,7 +19,7 @@ void MainCore::loop()
     if (APPROACH)   //approach
     {
       blue();
-      static int16_t approach_data[9];
+      static int16_t approach_data[11];
       approach_data[0] = vector[1]; //set point
       approach_data[1] = vector[2]; // max
       approach_data[2] = vector[3]; // min
@@ -29,6 +29,10 @@ void MainCore::loop()
       approach_data[6] = vector[7]; // scannerDelay
       approach_data[7] = vector[8]; // freq
       approach_data[8] = vector[9]; // scv
+      approach_data[9] = vector[10]; //  0= SFM, 1=STM ;SICMAC-2; SICMDC-3;  device type
+      approach_data[10]= vector[11]; // Voltage
+
+
       scanner.approacphm(approach_data);
       //  sleep_ms(100);
       green();
@@ -37,8 +41,19 @@ void MainCore::loop()
     }
     if (LID_UNTIL_STOP)  // пьезо мувер позиционирование
     {
-      scanner.positioningXYZ(vector[1], vector[2], vector[3], vector[4], vector[5], vector[6],
-                             vector[7]); //int lid_name, int f, int p, int n, int dir
+      static int16_t pos_data[9];
+      pos_data[0] = vector[1]; //  int lid_name
+      pos_data[1] = vector[2]; //  int f
+      pos_data[2] = vector[3]; //  int p
+      pos_data[3] = vector[4]; //  int n
+      pos_data[4] = vector[5]; //  int dir
+      pos_data[5] = vector[6]; //  int Z gate max
+      pos_data[6] = vector[7]; //  int Z gate min
+      pos_data[7] = vector[8]; //  0= SFM, 1=STM ;SICMAC-2; SICMDC-3;  device type
+      pos_data[8] = vector[9]; //  Voltage
+    
+      scanner.positioningXYZ(pos_data); 
+
       continue;
     }
     // Move scanner to point (x, y)
@@ -161,9 +176,10 @@ void MainCore::loop()
       set_freq((uint32_t) vector[1]);
       continue;
     }
-    if (AD8400_SET_GAIN) // усиление раскачка зонда
+    if (SET_AMPLMOD_GAIN) //(AD8400_SET_GAIN) // усиление раскачка зонда
     {
-      AD8400_SET_GAIN = false;
+    //  AD8400_SET_GAIN = false;
+      SET_AMPLMOD_GAIN=false;
       set_gain(vector[1]);
       continue;
     }
@@ -182,7 +198,8 @@ void MainCore::loop()
     }
 
     /// MAIN SPI IF
-    decoder.activePort(vector[1]);
+/* 
+     decoder.activePort(vector[1]);
     Spi::setProperties(vector[2], vector[3], vector[4]);
 
     if (DAC8563_SET_VOLTAGE_1)
@@ -210,7 +227,56 @@ void MainCore::loop()
       }
       continue;
     }
-
+*/
+ if ( SETBIAS) 
+    {
+      SETBIAS=false;
+      int16_t v1=2;
+      int16_t v2=8;
+      int16_t v3=0;
+      int16_t v4=1;
+      IniSPI(v1,v2,v3,v4);//22, 2, 8, 0, 1, channel, value	
+      set_Bias(vector[1]);
+      continue;
+    }
+ if (SET_SETPOINT)
+    {
+     SET_SETPOINT=false;
+      int16_t v1=2;
+      int16_t v2=8;
+      int16_t v3=0;
+      int16_t v4=1;
+      IniSPI(v1,v2,v3,v4);
+      set_SetPoint(vector[1]);
+      continue;
+    }
+ 
+ /*if (DAC8563_SET_VOLTAGE_1)
+    {
+      DAC8563_SET_VOLTAGE_1 = false;
+      if (vector[5] == 0)
+      {
+        dac8563_1.writeA(vector[6]);
+      } else if (vector[5] == 1)
+      {
+        dac8563_1.writeB(vector[6]);
+      }
+      continue;
+    }
+*/
+    if (DAC8563_SET_VOLTAGE_2)
+    {
+      DAC8563_SET_VOLTAGE_2 = false;
+      if (vector[5] == 0)
+      {
+        dac8563_2.writeA(vector[6]);
+      } else if (vector[5] == 1)
+      {
+        dac8563_2.writeB(vector[6]);
+      }
+      continue;
+    }
+   
     if (AD5664)
     {
       AD5664 = false;
@@ -270,8 +336,9 @@ void MainCore::loop()
           auto ptr = getValuesFromAdc();
           logger(ptr, 8);
                ZValue = (int16_t) ptr[ZPin];
-          SignalValue = (int16_t) ptr[SignalPin];
-          set_io_value(2, vector[1]);   //add 231114 gain pid
+          SignalValue = (int16_t) ptr[AmplPin];
+        //  set_io_value(2, vector[1]);   //add 231114 gain pid
+        //   set_gainPID(vector[1]);  //add 231114 gain pid
           afc +=
               ',' + std::to_string(ZValue) + ',' + std::to_string(SignalValue) + ',' + std::to_string(vector[1]) + "\n";
           std::cout << afc;
@@ -297,7 +364,7 @@ void MainCore::loop()
       afc += +"\n";
       std::cout << afc;
       sleep_ms(100);
-      if (!flgVirtual) set_io_value(2, vector[1]);
+      if (!flgVirtual) set_gainPID(vector[1]);//set_io_value(2, vector[1]); //231213
       continue;
     }
     if (Scanner_Retract)

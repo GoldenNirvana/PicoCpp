@@ -13,6 +13,7 @@
 
 
 #warning DO NOT SLEEP IN THIS FUNC !!!
+
 void RX_core::comReceiveISR(uint a, uint32_t b)
 {
   if (AD_7606_IS_READY_TO_READ)
@@ -25,7 +26,7 @@ void RX_core::comReceiveISR(uint a, uint32_t b)
   spi_read16_blocking(spi_default, 0, spiBuf, 8);
   if (Z_STATE)
   {
-        ZValue =(int16_t) spiBuf[0]; //0 or 1
+        ZValue =(int16_t)spiBuf[0]; //0 or 1
     SignalValue=(int16_t)spiBuf[1];
     Z_STATE = false;
     if (!flgVirtual) serialPrintBuffer(spiBuf, 8);
@@ -99,24 +100,24 @@ void RX_core::launchOnCore1()
         if (vector[1]=1)
         {
            ZPin=0; 
-           SignalPin=1; 
+           AmplPin=1; 
         }
         else
         {
            ZPin=1; 
-           SignalPin=0; 
+           AmplPin=0; 
         }
        break;
       case 14: //add MF set virtual device 
      //   red();      
         flgVirtual =(bool)vector[1];// !flgVirtual;
-    //    dark();
         break;
       case 15: //add mf set debug level =2; if =3 cancel debug info!!
-    //    red();      
-        flgDebugLevel =vector[1];
-    //    dark();
+         flgDebugLevel =vector[1];
         break;
+      case 16: //add mf set gain ampl!!
+        SET_AMPLMOD_GAIN=true;
+        break;  
       case 17: //add mf set PID GAIN!    
         SET_PID_GAIN=true; 
         break;
@@ -124,14 +125,18 @@ void RX_core::launchOnCore1()
         GET_CURRENTX0Y0=true; 
         break; 
  //*************************************** 
+      case 19:
+        SETBIAS=true;
+        break;    
       case 21:
         AD5664 = true;
         break;
       case 22:
-        DAC8563_SET_VOLTAGE_1 = true;
+        SET_SETPOINT=true;
+        //DAC8563_SET_VOLTAGE_1 = true; // управление опорой и Bias
         break;
       case 23:
-        DAC8563_INIT_1 = true;
+        DAC8563_INIT_1 = true;       // init  управление опорой и Bias
         break;
       case 24:// get signal value current signal or all signal ?
         AD7606_GET_VALUE = true;
@@ -143,19 +148,20 @@ void RX_core::launchOnCore1()
         RESONANCE_STOP = true;
         break;
       case 27:
-        DAC8563_INIT_2 = true;
+        DAC8563_INIT_2 = true;    // init управление X,Y
         break;
       case 28: // mf  
         TheadDone = true;
         break;
       case 29:
-        DAC8563_SET_VOLTAGE_2 = true;
+        DAC8563_SET_VOLTAGE_2 = true; // управление X,Y
         break;
       case 30:
         FREQ_SET = true;
         break;
       case 40:
-        AD8400_SET_GAIN = true;
+    //    AD8400_SET_GAIN = true;
+        SET_AMPLMOD_GAIN= true;
         break;
       case 50:
         SCANNING = true;

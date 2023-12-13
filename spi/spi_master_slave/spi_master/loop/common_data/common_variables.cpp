@@ -40,7 +40,10 @@ bool APPROACH_CONFIG_UPDATE = false;
 //add Mf
 bool flgVirtual = false; // Virtual device for debuging
 uint flgDebugLevel = 2; //  leveldebug
-bool SET_PID_GAIN = false;
+bool SET_PID_GAIN=false;
+bool SET_AMPLMOD_GAIN=false; // gain ampl mod Resonance
+bool SETBIAS=false;
+bool SET_SETPOINT=false;
 bool FASTSCANNING = false;
 bool PID_TURN_ON = false;
 bool GET_CURRENTX0Y0 = false;
@@ -51,8 +54,9 @@ bool POSXYZ_CONFIG_UPDATE = false;
 int16_t ZValue = 32767;
 int16_t SignalValue = 32767;
 bool TheadDone = false;
-uint8_t ZPin = 0;
-uint8_t SignalPin = 1;
+uint8_t ZPin    = 0;
+uint8_t AmplPin = 1;
+uint8_t IPin    = 2; //current   
 int16_t ZMaxValue = 32767;
 int16_t shiftScannerZeroPoint = -32768;
 
