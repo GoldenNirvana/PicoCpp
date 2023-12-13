@@ -333,10 +333,25 @@ void MainCore::loop()
         afc = "code12";
         if (!flgVirtual)
         {
+          getValuesFromAdc();
           auto ptr = getValuesFromAdc();
           logger(ptr, 8);
-               ZValue = (int16_t) ptr[ZPin];
-          SignalValue = (int16_t) ptr[AmplPin];
+          ZValue = (int16_t) ptr[ZPin];
+            switch (vector[1])
+         {
+          case 0: 
+                {
+                 SignalValue = (int16_t) ptr[AmplPin];
+                 break;  
+                } 
+          case 1:
+          case 3:  
+                {
+                 SignalValue = (int16_t) ptr[IPin];
+                 break;  
+                } 
+          }       
+    
         //  set_io_value(2, vector[1]);   //add 231114 gain pid
         //   set_gainPID(vector[1]);  //add 231114 gain pid
           afc +=
