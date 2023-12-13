@@ -15,7 +15,7 @@ void Init_DAC2(uint8_t port);
 
 void set_Bias(int16_t Bias);
 
-void set_SetPoint(int16_t SetPoint);
+void set_SetPoint(uint16_t SetPoint);
 
 uint16_t *repeatTwoTimes();
 

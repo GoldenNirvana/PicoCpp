@@ -247,7 +247,7 @@ void MainCore::loop()
       int16_t v3=0;
       int16_t v4=1;
       IniSPI(v1,v2,v3,v4);
-      set_SetPoint(vector[1]);
+      set_SetPoint((uint16_t)vector[1]);
       continue;
     }
  

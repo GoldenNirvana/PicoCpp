@@ -63,7 +63,7 @@ void set_Bias(int16_t Bias)
 //   code  22 , 2, 8, 0, 1, 1, value	
 }
 
-void set_SetPoint(int16_t SetPoint)
+void set_SetPoint(uint16_t SetPoint)
 {
    dac8563_1.writeA(SetPoint);
 //  code  22, 2, 8, 0, 1, 0, value
