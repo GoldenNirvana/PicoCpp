@@ -151,9 +151,11 @@ void stopAll()
   AD8400_SET_GAIN = false;
   AD8400_SENDER = false;
   AD5664 = false;
-  DAC8563_SET_VOLTAGE_1 = false;
-  DAC8563_INIT_1 = false;
-  DAC8563_INIT_2 = false;
+  SET_BIAS=false;
+  SET_SETPOINT=false;
+  SET_XY=false;
+  InitDAC_BIAS_SET_POINT=false;
+  InitDAC_XY=false;
   SCANNING = false;
   FASTSCANNING = false;
   APPROACH = false;
@@ -163,7 +165,6 @@ void stopAll()
   SET_IO_VALUE = false;
   SET_ONE_IO_VALUE = false;
   LID = false;
-  DAC8563_SET_VOLTAGE_1 = false;
   LID_UNTIL_STOP = false;
   RESONANCE = false;
   RESONANCE_STOP = true;

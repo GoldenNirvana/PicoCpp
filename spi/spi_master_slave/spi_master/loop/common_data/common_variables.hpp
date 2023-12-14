@@ -21,10 +21,10 @@ extern uint16_t spiBuf[8];
 extern int32_t vector[16];
 extern int vectorSize;
 
-extern bool DAC8563_SET_VOLTAGE_1;
-extern bool DAC8563_SET_VOLTAGE_2;
-extern bool DAC8563_INIT_1;
-extern bool DAC8563_INIT_2;
+//extern bool DAC8563_SET_VOLTAGE_1;
+//extern bool DAC8563_SET_VOLTAGE_2;
+//extern bool DAC8563_INIT_1;
+//extern bool DAC8563_INIT_2;
 
 
 extern bool AD9833_SENDER;
@@ -60,8 +60,11 @@ extern uint flgDebugLevel; //  leveldebug
 extern bool FASTSCANNING;
 extern bool SET_PID_GAIN;
 extern bool SET_AMPLMOD_GAIN;
-extern bool SETBIAS;
+extern bool InitDAC_BIAS_SET_POINT;
+extern bool SET_BIAS;
 extern bool SET_SETPOINT;
+extern bool InitDAC_XY;
+extern bool SET_XY;////DAC8563_SET_VOLTAGE_2
 extern bool PID_TURN_ON;
 extern bool GET_CURRENTX0Y0;
 extern bool Scanner_Retract;

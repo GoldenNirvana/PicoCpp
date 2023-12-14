@@ -240,7 +240,9 @@ void Scanner::start_scan()
       CONFIG_UPDATE = false;
       conf_.delayF = vector[1];
       conf_.delayB = vector[2];
-      set_io_value(2, vector[3]); //gain PID
+      set_gainPID(vector[3]);//gain PID
+    //  set_io_value(2, vector[3]); 
+   
       sleep_ms(100);              //
       conf_.diskretinstep = vector[4]; //????
 
@@ -521,7 +523,8 @@ void Scanner::start_hopingscan()
       CONFIG_UPDATE = false;
       conf_.delayF = vector[1];
       conf_.delayB = vector[2];
-      set_io_value(2, vector[3]); //gain PID
+      set_gainPID(vector[3]);//gain PID
+      //set_io_value(2, vector[3]); 
       conf_.HopeDelay = vector[4];
 
       sleep_ms(100);    //
@@ -1230,7 +1233,7 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
       //dac8563_1.writeA(SET_POINT); //231214
       set_SetPoint(0,SET_POINT); //add 231214 
       set_gainPID(GAIN);
-      set_io_value(2, GAIN); 
+     // set_io_value(2, GAIN); 
       sleep_ms(100);  // need for virtual для разделение afc
       afc.clear();
       afc = "debug parameters update";
