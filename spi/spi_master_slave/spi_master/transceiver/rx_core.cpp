@@ -97,7 +97,7 @@ void RX_core::launchOnCore1()
         break;
  ///*************************************  
       case 13: //add MF 
-        if (vector[1]=1)
+        if (vector[1]==1)
         {
            ZPin=0; 
            AmplPin=1; 
