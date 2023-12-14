@@ -17,6 +17,7 @@ void set_Bias(int8_t chanel,int16_t Bias);
 
 void set_SetPoint(int8_t chanel,int16_t SetPoint);
 
+
 uint16_t *repeatTwoTimes();
 
 uint16_t *getValuesFromAdc();
