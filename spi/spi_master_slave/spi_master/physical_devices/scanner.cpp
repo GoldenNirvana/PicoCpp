@@ -1131,7 +1131,8 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
   scv            = data[8];
   flgDev= (uint8_t)data[9]; // 0= SFM, 1=STM ;SICMAC-2; SICMDC-3;  device type
   Bias           = data[10];         //Voltage for 1,2,3
- 
+ //need to add channel Bias ????
+ //need to add channel SetPoint ????
 
   afc.clear();
   afc = "debug approach parameters ";
@@ -1144,7 +1145,11 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
   afc.clear();
   sleep_ms(200);
 
-  dac8563_1.writeA(SET_POINT);
+ // dac8563_1.writeA(SET_POINT); ///??????
+ set_SetPoint(0,SET_POINT); //add 231214
+  if (flgDev!=0) set_Bias(1,Bias);  //add 231214???
+  set_gainPID(GAIN);
+  
   std::vector<int16_t> buf_params;
   buf_params.reserve(7);
 
@@ -1210,6 +1215,13 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
       INTDELAY = vector[5];
       GAIN = vector[6];
       SCANNERDECAY = vector[7];
+     
+      if (flgDev!=0) set_Bias(1,Bias);  
+
+      dac8563_1.writeA(SET_POINT);
+   // set_SetPoint(0,SET_Point); //add 231214 ?
+   // set_gainPID(GAIN);
+      set_io_value(2, GAIN); 
       sleep_ms(100);  // need for virtual для разделение afc
       afc.clear();
       afc = "debug parameters update";
@@ -1221,10 +1233,9 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
       std::cout << afc;
       afc.clear();
       sleep_ms(100);
+  
     }
-
-    dac8563_1.writeA(SET_POINT);
-    set_io_value(2, GAIN);
+  
     sleep_ms(INTDELAY);
 
     if (!flgVirtual)

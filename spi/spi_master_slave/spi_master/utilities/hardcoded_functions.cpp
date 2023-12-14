@@ -50,23 +50,62 @@ void IniSPI( uint8_t port ,uint8_t v2 ,uint8_t v3, uint8_t v4 )
 void Init_DAC1(uint8_t port)
 {
   dac8563_1.initialize(port); //code 23
+  afc.clear();
+  afc = "debug Init DAC1 " + std::to_string(port);
+  afc += +"\n";
+  std::cout << afc;
+  afc.clear();
+  sleep_ms(100);
 }
 
 void Init_DAC2(uint8_t port)
 {
   dac8563_2.initialize(port); //code 27
+  afc.clear();
+  afc = "debug Init DAC2 " + std::to_string(port);
+  afc += +"\n";
+  std::cout << afc;
+  afc.clear();
+  sleep_ms(100);
 }
 
-void set_Bias(int16_t Bias)
+void set_Bias(int8_t chanel,int16_t Bias)
 {
-   dac8563_1.writeB(Bias);
-//   code  22 , 2, 8, 0, 1, 1, value	
+//   code  22 , 2, 8, 0, 1, 1,, value 
+    if (chanel == 0)
+      {
+        dac8563_1.writeA(Bias);
+      }
+      else 
+      if (chanel == 1)
+      {
+        dac8563_1.writeB(Bias);
+      }	
+  afc.clear();
+  afc = "debug Bias " + std::to_string(chanel) + ',' + std::to_string(Bias);
+  afc += +"\n";
+  std::cout << afc;
+  afc.clear();
+  sleep_ms(100);
 }
 
-void set_SetPoint(int16_t SetPoint)
-{
-   dac8563_1.writeA(SetPoint);
-//  code  22, 2, 8, 0, 1, 0, value
+void set_SetPoint(int8_t chanel, int16_t SetPoint)
+{//  code  22, 2, 8, 0, 1, 0, value
+   if (chanel == 0)
+   {
+     dac8563_1.writeA(SetPoint);
+   }
+   else 
+   if (chanel == 1)
+   {
+     dac8563_1.writeB(SetPoint);
+    }	
+  afc.clear();
+  afc = "debugSetPoint " + std::to_string(chanel) + ',' + std::to_string(SetPoint);
+  afc += +"\n";
+  std::cout << afc;
+  afc.clear();
+  sleep_ms(100);
 }
 void set_gain(int gain, int p)
 {

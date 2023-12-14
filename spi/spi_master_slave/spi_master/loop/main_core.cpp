@@ -231,23 +231,23 @@ void MainCore::loop()
  if ( SETBIAS) 
     {
       SETBIAS=false;
-      int16_t v1=2;
-      int16_t v2=8;
-      int16_t v3=0;
-      int16_t v4=1;
-      IniSPI(v1,v2,v3,v4);//22, 2, 8, 0, 1, channel, value	
-      set_Bias(vector[1]);
+      int16_t v1=vector[1];
+      int16_t v2=vector[2];
+      int16_t v3=vector[3];
+      int16_t v4=vector[4];
+      IniSPI(v1,v2,v3,v4);//22, 2, 8, 0, 1, 1, value	
+      set_Bias(vector[5],vector[6]);
       continue;
     }
  if (SET_SETPOINT)
     {
      SET_SETPOINT=false;
-      int16_t v1=2;
-      int16_t v2=8;
-      int16_t v3=0;
-      int16_t v4=1;
-      IniSPI(v1,v2,v3,v4);
-      set_SetPoint(vector[1]);
+      int16_t v1=vector[1];
+      int16_t v2=vector[2];
+      int16_t v3=vector[3];
+      int16_t v4=vector[4];
+      IniSPI(v1,v2,v3,v4);  //22, 2, 8, 0, 1, 0, value	
+      set_SetPoint(vector[5],vector[6]);
       continue;
     }
  
