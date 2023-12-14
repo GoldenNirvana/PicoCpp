@@ -950,8 +950,17 @@ void Scanner::positioningXYZ(const int16_t *const data)
       GATE_Z_MIN=data[6]; //  int Z gate min
    //   pos_data[7] / //  0= SFM, 1=STM ;SICMAC-2; SICMDC-3;  device type
   //    pos_data[8]/ //  Voltage
-    
-  red();
+      afc.clear();
+        afc = "debug parameters pos update";
+        for (int j = 0; j <= 6; ++j)
+        {
+          afc += ',' + std::to_string(data[j]);
+        }
+        afc +="\n";
+        std::cout << afc;
+        afc.clear();
+        sleep_ms(100);
+//  red();
 
   if (lid_name == 90 || lid_name == 95) //X,Y
   {
@@ -1242,6 +1251,7 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
     {
       getValuesFromAdc();
       auto ptr = getValuesFromAdc();
+      ZValue = (int16_t) ptr[ZPin];
      switch (flgDev)
     {
      case 0: 

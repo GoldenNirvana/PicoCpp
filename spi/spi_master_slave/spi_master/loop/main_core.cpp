@@ -45,12 +45,12 @@ void MainCore::loop()
       pos_data[0] = vector[1]; //  int lid_name
       pos_data[1] = vector[2]; //  int f
       pos_data[2] = vector[3]; //  int p
-      pos_data[3] = vector[4]; //  int n
+      pos_data[3] =abs(vector[4]); //  int n
       pos_data[4] = vector[5]; //  int dir
       pos_data[5] = vector[6]; //  int Z gate max
       pos_data[6] = vector[7]; //  int Z gate min
-      pos_data[7] = vector[8]; //  0= SFM, 1=STM ;SICMAC-2; SICMDC-3;  device type
-      pos_data[8] = vector[9]; //  Voltage
+    //  pos_data[7] = vector[8]; //  0= SFM, 1=STM ;SICMAC-2; SICMDC-3;  device type
+    //  pos_data[8] = vector[9]; //  Voltage
     
       scanner.positioningXYZ(pos_data); 
 
