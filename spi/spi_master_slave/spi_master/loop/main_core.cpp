@@ -353,9 +353,8 @@ void MainCore::loop()
           }       
     
         //  set_io_value(2, vector[1]);   //add 231114 gain pid
-        //   set_gainPID(vector[1]);  //add 231114 gain pid
-          afc +=
-              ',' + std::to_string(ZValue) + ',' + std::to_string(SignalValue) + ',' + std::to_string(vector[1]) + "\n";
+        //  set_gainPID(vector[1]);       //add 231114 gain pid
+          afc +=',' + std::to_string(ZValue) + ',' + std::to_string(SignalValue) + ',' + std::to_string(vector[1]) + "\n";
           std::cout << afc;
           afc.clear();
         } 

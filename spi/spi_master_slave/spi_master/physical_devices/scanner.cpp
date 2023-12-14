@@ -1113,6 +1113,9 @@ void Scanner::positioningXYZ(const int16_t *const data)
 void Scanner::spectroscopyIV(int32_t vector[16])
 {
 
+
+
+
 }
 void Scanner::approacphm(const int16_t *const data) //uint16_t
 {
@@ -1189,10 +1192,8 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
   buf_status.push_back(ZValue);
   buf_status.push_back(SignalValue);
   afc.clear();
-  afc =
-      "code75," + std::to_string(APPROACH) + ',' + std::to_string(buf_status[1]) + ',' +
-      std::to_string(buf_status[2]) +
-      "\n";
+  afc ="code75," + std::to_string(APPROACH) + ',' + std::to_string(buf_status[1]) + ',' 
+      +std::to_string(buf_status[2]) + "\n";
   std::cout << afc;
   afc.clear();
   sleep_ms(100);
@@ -1217,18 +1218,17 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
     {
       // log("config updated\n",flgDebugLevel);
       APPROACH_CONFIG_UPDATE = false;
-      SET_POINT = vector[1];
-      GATE_Z_MAX = vector[2];
-      GATE_Z_MIN = vector[3];
-      NSTEPS = vector[4];
-      INTDELAY = vector[5];
-      GAIN = vector[6];
+      SET_POINT    = vector[1];
+      GATE_Z_MAX   = vector[2];
+      GATE_Z_MIN   = vector[3];
+      NSTEPS       = vector[4];
+      INTDELAY     = vector[5];
+      GAIN         = vector[6];
       SCANNERDECAY = vector[7];
      
       if (flgDev!=0) set_Bias(1,Bias);  
-
-      dac8563_1.writeA(SET_POINT);
-      set_SetPoint(0,SET_POINT); //add 231214 ?
+      //dac8563_1.writeA(SET_POINT); //231214
+      set_SetPoint(0,SET_POINT); //add 231214 
       set_gainPID(GAIN);
       set_io_value(2, GAIN); 
       sleep_ms(100);  // need for virtual для разделение afc
