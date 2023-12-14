@@ -1146,7 +1146,7 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
   sleep_ms(200);
 
  // dac8563_1.writeA(SET_POINT); ///??????
- set_SetPoint(0,SET_POINT); //add 231214
+  set_SetPoint(0,SET_POINT); //add 231214
   if (flgDev!=0) set_Bias(1,Bias);  //add 231214???
   set_gainPID(GAIN);
   
@@ -1219,8 +1219,8 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
       if (flgDev!=0) set_Bias(1,Bias);  
 
       dac8563_1.writeA(SET_POINT);
-   // set_SetPoint(0,SET_Point); //add 231214 ?
-   // set_gainPID(GAIN);
+      set_SetPoint(0,SET_POINT); //add 231214 ?
+      set_gainPID(GAIN);
       set_io_value(2, GAIN); 
       sleep_ms(100);  // need for virtual для разделение afc
       afc.clear();

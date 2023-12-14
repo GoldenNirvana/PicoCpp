@@ -241,7 +241,7 @@ void MainCore::loop()
     }
  if (SET_SETPOINT)
     {
-     SET_SETPOINT=false;
+      SET_SETPOINT=false;
       int16_t v1=vector[1];
       int16_t v2=vector[2];
       int16_t v3=vector[3];
