@@ -26,43 +26,11 @@ void RX_core::comReceiveISR(uint a, uint32_t b)
   spi_read16_blocking(spi_default, 0, spiBuf, 8);
   if (Z_STATE)
   {
-        ZValue =(int16_t)spiBuf[0]; //0 or 1
-    SignalValue=(int16_t)spiBuf[1];
     Z_STATE = false;
     if (!flgVirtual) serialPrintBuffer(spiBuf, 8);
     return;
   } 
   ADC_IS_READY_TO_READ = true;
-  /*
-  if (is_already_scanning)
-  { //231025
-    if (!flgVirtual) {afc += std::to_string(current_freq) + ',' + std::to_string(spiBuf[current_channel]) + ',';}
-    else { 
-          current_freq=1000;
-          afc += std::to_string(current_freq) + ',' + std::to_string(current_freq) + ',';
-         }
-  }
-  else 
-  if (AD7606_TRIG_GET_VALUE)
-  {
-    AD7606_TRIG_GET_VALUE = false;
-    if (current_channel == -1)
-    {
-      std::cout << "error\n";
-      return;
-    }
-    std::cout << "code24,"<<spiBuf[current_channel] << '\n'; // add "code,"  codevalue, value //add 231025
-    current_channel = -1;
-  } 
-  else 
-  if (AD7606_GET_ALL_VALUES)
-  {
-    AD7606_GET_ALL_VALUES = false;
-    if (!flgVirtual) {serialPrintBuffer(spiBuf, 8);}//edited 231025
-    else { serialPrint2Buffer(spiBuf);} 
-    AD_7606_IS_READY_TO_READ = true;
-  }
-  */
 }
 
 void RX_core::launchOnCore1()
@@ -86,14 +54,13 @@ void RX_core::launchOnCore1()
         AD8400_SENDER = true;
         break;
       case 6:
-        AD7606_ENABLE_DISABLE = true;
+        ADC_ENABLE_DISABLE = true;
         break;
       case 11:
-        AD7606_RESET = true;
+        ADC_RESET = true;
         break;
       case 12:
-//          std::cout << "SetTrue\n";
-        AD7606_READ = true;
+        ADC_READ = true;
         break;
  ///*************************************  
       case 13: //add MF 
@@ -132,14 +99,13 @@ void RX_core::launchOnCore1()
         AD5664 = true;
         break;
       case 22:
-        SET_SETPOINT=true;// управление опорой и Bias
-        //DAC8563_SET_VOLTAGE_1 = true; 
+        SET_SETPOINT=true;// управление опорой и Bias   //DAC8563_SET_VOLTAGE_1 = true; 
         break;
       case 23:
-        InitDAC_BIAS_SET_POINT=true;   // init  управление опорой и Bias   //DAC8563_INIT_1 = true;     
+        InitDAC_BIAS_SET_POINT=true;  // init  управление опорой и Bias  //DAC8563_INIT_1 = true;     
         break;
       case 24:// get signal value current signal or all signal ?
-        AD7606_GET_VALUE = true;
+        ADC_GET_VALUE = true;
         break;
       case 25:
         RESONANCE = true;
@@ -148,14 +114,13 @@ void RX_core::launchOnCore1()
         RESONANCE_STOP = true;
         break;
       case 27:
-        InitDAC_XY=true;; // init управление X,Y   //DAC8563_INIT_2 = true;   
+        InitDAC_XY=true;; // init управление X,Y //DAC8563_INIT_2 = true;   
         break;
       case 28: // mf  
         TheadDone = true;
         break;
       case 29:
-        SET_XY=true;// управление X,Y
-        //DAC8563_SET_VOLTAGE_2 = true; 
+        SET_XY=true;// управление сканер X,Y   //DAC8563_SET_VOLTAGE_2 = true; 
         break;
       case 30:
         FREQ_SET = true;
@@ -184,10 +149,14 @@ void RX_core::launchOnCore1()
         FASTSCANNING =true;
         break;
       case 60:
-        SET_IO_VALUE = true;
+       // SET_IO_VALUE = true;  /231215
+        SET_PID_GAIN =true;
         break;
-      case 61:
-        SET_ONE_IO_VALUE = true;
+      case 61:  // управление ПИД - втянуть вытянуть
+        SCANNER_RETRACT_PROTRACT = true;
+        break;
+      case 65:  // управление ПИД - втянуть вытянуть
+        SPECTROSOPY_IV = true;
         break;
       case 70:
         stopAll();

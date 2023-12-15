@@ -28,12 +28,11 @@
 #define DATA_INTERNAL_REF_EN      0x0001  // Enable Internal Reference & reset DACs to gain = 2
 
 
-class DAC8563
+class DAC8563  // DAC 
 {
 private:
   int mode;
   int port_;
-
 public:
   DAC8563(int mode);
   void begin();
@@ -41,7 +40,6 @@ public:
   void writeA(int input);
   void writeB(int input);
   void setSpiProps();
-
 private:
   void DAC_WR_REG(uint8_t cmd_byte, uint16_t data_byte );
   void outPutValue(uint8_t cmd_byte,uint16_t input);

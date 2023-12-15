@@ -54,7 +54,7 @@ public:
 
   void start_frqscan(); //find resonance
 
-  void spectroscopyIV(int32_t vector[16]);
+  void spectroscopyIV(const int16_t *const data);
 
   void update(const Config &config); // обновить параметры скнирования
 
@@ -76,7 +76,7 @@ public:
 //
 private:
 
-  std::vector<uint16_t> vector_z, other_info;
+  std::vector<uint16_t> vector_z, other_info,vectorI_V;
   Point pos_, prev_point;
   Config conf_;
 };

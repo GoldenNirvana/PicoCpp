@@ -72,36 +72,34 @@ void MainCore::loop()
     if (SCANNING) //scanning
     {   // int32_t vector[16];  !!!!
       scanner.update({
-                         static_cast<uint16_t>(vector[1]), static_cast<uint16_t>(vector[2]),
-                         static_cast<uint8_t>(vector[3]),  static_cast<uint8_t>(vector[4]),
-                         static_cast<uint16_t>(vector[5]), static_cast<uint16_t>(vector[6]),
-                         static_cast<uint16_t>(vector[7]), static_cast<uint16_t>(vector[8]),
-                         static_cast<uint8_t>(vector[9]),  static_cast<uint8_t>(vector[10]),
-                         static_cast<uint16_t>(vector[11]),static_cast<uint16_t>(vector[12]),
-                         static_cast<uint8_t>(vector[13]), static_cast<uint8_t>(vector[14]),
-                         static_cast<uint16_t>(vector[15])
+                        static_cast<uint16_t>(vector[1]), static_cast<uint16_t>(vector[2]),
+                        static_cast<uint8_t>(vector[3]),  static_cast<uint8_t>(vector[4]),
+                        static_cast<uint16_t>(vector[5]), static_cast<uint16_t>(vector[6]),
+                        static_cast<uint16_t>(vector[7]), static_cast<uint16_t>(vector[8]),
+                        static_cast<uint8_t>(vector[9]),  static_cast<uint8_t>(vector[10]),
+                        static_cast<uint16_t>(vector[11]),static_cast<uint16_t>(vector[12]),
+                        static_cast<uint8_t>(vector[13]), static_cast<uint8_t>(vector[14]),
+                        static_cast<uint16_t>(vector[15])
                      });
 /*
     vector[1]:=ScanParams.NX;        // кол точек в линии                                                               1
-    params[2]:=ScanParams.NY;        // кол линий в скане                                                               2
-    params[3]:=ScanParams.ScanPath; {X+:0,Y+:1,X+-:2; Y+-=3;} //тип пути сканирования +- съем данных туда и обратно     3
-    params[4]:=ScanParams.ScanMethod;  // {Topo=0, 1, 2,3,4,5,6,7,8,9,10,11}                                                   4      
-    params[5]:=ScanParams.MicrostepDelay;   // задержка в каждой дискрете  при движении вперед                          5
-    params[6]:=ScanParams.MicrostepDelayBW; // задержка в каждой дискрете  при движении назад                           6
-    params[7]:=ScanParams.XMicrostepNmb;  //step x  в дискретах                                                         7
-    params[8]:=ScanParams.YMicrostepNmb;  //step y =step x пока в дискретах                                             8
-    params[9]:=ScanParams.size;         // =1  Z;  =2  Z + add signal                                                   9
-    params[10]:=PidParams.Ti;   //  PID gain                                                                           10 
-    params[11]:=ScanParams.DiscrNumInMicroStep;        //                                                              11  
-    params[12]:=round(ScanParams.TimMeasurePoint*1000);// mcs задержка до начала измерения сигналов                    12
-    params[13]:=datatype(ScanParams.flgOneFrame);      //fast scanning    One frame or serial                          13
-    params[14]:=datatype(ScanParams.flgHoping);        //hope                                                          14  
-    params[15]:=ScanParams.HopingDelay;                                                                                15    
-*/
-/*
-    ScanMethod
-  Const  Topography=0; // 
-//долнительные сигналы
+    vector[2]:=ScanParams.NY;        // кол линий в скане                                                               2
+    vector[3]:=ScanParams.ScanPath; {X+:0,Y+:1,X+-:2; Y+-=3;} //тип пути сканирования +- съем данных туда и обратно     3
+    vector[4]:=ScanParams.ScanMethod;  // {Topo=0, 1, 2,3,4,5,6,7,8,9,10,11}                                            4      
+    vector[5]:=ScanParams.MicrostepDelay;   // задержка в каждой дискрете  при движении вперед                          5
+    vector[6]:=ScanParams.MicrostepDelayBW; // задержка в каждой дискрете  при движении назад                           6
+    vector[7]:=ScanParams.XMicrostepNmb;  //step x  в дискретах                                                         7
+    vector[8]:=ScanParams.YMicrostepNmb;  //step y =step x пока в дискретах                                             8
+    vector[9]:=ScanParams.size;         // =1  Z;  =2  Z + add signal                                                   9
+    vector[10]:=PidParams.Ti;                          //  PID gain                                                    10 
+    vector[11]:=ScanParams.DiscrNumInMicroStep;        //                                                              11  
+    vector[12]:=round(ScanParams.TimMeasurePoint*1000);// mcs задержка до начала измерения сигналов                    12
+    vector[13]:=datatype(ScanParams.flgOneFrame);      //fast scanning    One frame or serial                          13
+    vector[14]:=datatype(ScanParams.flgHoping);        //hope                                                          14  
+    vector[15]:=ScanParams.HopingDelay;                                                                                15    
+  ScanMethod
+  Const  Topography=0;  
+  долнительные сигналы
   Const  WorkF=1;     // не используется
   Const  BackPass=2;  // не используется путь X+-, Y+-
   Const  Phase=3;     //Фаза
@@ -133,15 +131,15 @@ void MainCore::loop()
       FASTSCANNING = false;
       continue;
     }
-    if (SET_IO_VALUE)
+    if (SET_PID_GAIN)         //(SET_IO_VALUE)
     {
-      SET_IO_VALUE = false;
+      SET_PID_GAIN=false;    // SET_IO_VALUE = false;
       set_io_value(vector[1], vector[2]);
       continue;
     }
-    if (SET_ONE_IO_VALUE)
+    if (SCANNER_RETRACT_PROTRACT) //scanner protract-retract
     {
-      SET_ONE_IO_VALUE = false;
+      SCANNER_RETRACT_PROTRACT = false;
       vector[2] == 1 ? io_ports[vector[1] - 1].enable() : io_ports[vector[1] - 1].disable();
       continue;
     }
@@ -164,6 +162,22 @@ void MainCore::loop()
     {
       scanner.start_frqscan();
       continue;
+    }
+
+    if (SPECTROSOPY_IV)
+    {
+      static int16_t data[7];
+      data[0] = vector[1]; // n points
+      data[1] = vector[2]; // m curves
+      data[2] = vector[3]; // V start
+      data[3] = vector[4]; // V step
+      data[4] = vector[5]; // delay in the point
+      data[5] = vector[6]; // device
+      data[6] = vector[7]; // V current
+   
+      scanner.spectroscopyIV(data);
+   
+      SPECTROSOPY_IV=false;
     }
     // SET FREQ ON
     if (FREQ_SET) // установка частоты
@@ -291,30 +305,30 @@ void MainCore::loop()
       spi_write_blocking(spi_default, inBuf, 1);
       continue;
     }
-    if (AD7606_ENABLE_DISABLE)
+    if (ADC_ENABLE_DISABLE)
     {
-      AD7606_ENABLE_DISABLE = false;
+      ADC_ENABLE_DISABLE = false;
       if (vector[5] == 1)
       {
-        AD7606_READ_FOREVER = false;
+        ADC_READ_FOREVER = false;
       } else if (vector[5] == 0)
       {
-        AD7606_READ_FOREVER = true;
+        ADC_READ_FOREVER = true;
       }
       continue;
     }
-    if (AD7606_RESET)
+    if (ADC_RESET)
     {
-      AD7606_RESET = false;
+      ADC_RESET = false;
       resetPort.enable();
       sleep_us(10);
       resetPort.disable();
       continue;
     }
-    if (AD7606_READ or AD7606_READ_FOREVER)   // read ADC and send Z+AddSignal
+    if (ADC_READ or ADC_READ_FOREVER)   // read ADC and send Z+AddSignal
     {
     //  if (flgDebugLevel <= DEBUG_LEVEL)       logger("ReadADC\n");
-      AD7606_READ = false;
+      ADC_READ = false;
       if (ADC_IS_READY_TO_READ)
       {
         afc.clear();
@@ -366,17 +380,17 @@ void MainCore::loop()
       if (!flgVirtual) set_gainPID(vector[1]);//set_io_value(2, vector[1]); //231213
       continue;
     }
-    if (Scanner_Retract)
+    if (SCANNER_RETRACT)
     {
       scanner.retract();
-      Scanner_Retract = false;
+      SCANNER_RETRACT = false;
       // set_io_value(5,vector[1],vector[2]);
       continue;
     }
-    if (Scanner_Protract)
+    if (SCANNER_PROTRACT)
     {
       scanner.protract();
-      Scanner_Protract = false;
+      SCANNER_PROTRACT = false;
       // set_io_value(5,vector[1],vector[2]);
       continue;
     }

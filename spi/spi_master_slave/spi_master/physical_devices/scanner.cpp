@@ -195,7 +195,8 @@ void Scanner::start_scan()
       {
         pos_fast -= conf_.diskretinstep;
         set_on_dac(portfast, pos_fast);
-      } else
+      }
+      else
       { pos_fast -= conf_.diskretinstep; }
       sleep_us(conf_.delayB);
     }
@@ -206,7 +207,8 @@ void Scanner::start_scan()
       {
         pos_fast -= reststepfast;
         set_on_dac(portfast, pos_fast);
-      } else
+      }
+      else
       { pos_fast -= reststepfast; }
 
       sleep_us(conf_.delayF);
@@ -1015,7 +1017,7 @@ void Scanner::positioningXYZ(const int16_t *const data)
     status = none;
     while (LID_UNTIL_STOP)
     {
-      Z_STATE = true;
+    //   Z_STATE = true;  // 231215 ????
       if (POSXYZ_CONFIG_UPDATE)
       {
         ln = vector[1];
@@ -1037,7 +1039,7 @@ void Scanner::positioningXYZ(const int16_t *const data)
         sleep_ms(100);
       }
       status = none;
-      if (!flgVirtual) //add mf
+      if (!flgVirtual) 
       {
         getValuesFromAdc();
         auto ptr = getValuesFromAdc();
@@ -1113,12 +1115,134 @@ void Scanner::positioningXYZ(const int16_t *const data)
   dark();
   //  sleep_ms(100); //need to adjust
 }
-void Scanner::spectroscopyIV(int32_t vector[16])
+
+void Scanner::spectroscopyIV(const int16_t *const data)
 {
+    int i,j;
+		int16_t  UBackup;
+    int16_t  delay;
+    int16_t  UPoints;
+    int16_t  UCurves;
+    int16_t  UStep;
+    int16_t  UStart;
+    int8_t  flgDev;
+    int16_t dacU;
+    int16_t start_step;
+    int16_t step;
 
+    UPoints         =   data[0];
+    UCurves         =   data[1];
+		UStart	      	=   data[2];    
+		UStep		        =   data[3];    
+  	delay           =   data[4]; 
+    flgDev          =   data[5];
+    UBackup         =   data[6]; 
+//start
+ afc.clear();
+  afc = "debug I_V parameters";
+  for (int j = 0; j <= 6; ++j)
+  {
+    afc += ',' + std::to_string(data[j]);
+  }
+  afc += +"\n";
+  std::cout << afc;
+  afc.clear();
+  sleep_ms(100);
+ //  Simple.fcupBypass(0,true); //turn off   FB     false???
+     sleep_ms(300);
+ // move to start point
+      int16_t kk;
+      int16_t dlt;
+      start_step=100;
+      dacU=UBackup;
+      step=-start_step;
+     int16_t nstep;
+     int16_t rest;
+ for (j=0; j<UCurves; j++)
+ {
+      vectorI_V.clear();
+      step=-start_step;
+      dlt=(dacU-UStart);
+      if (dlt<0)
+      {
+        step=start_step;
+	      dlt=-dlt;
+      }
+        nstep=dlt / start_step;
+        rest=dlt%start_step;
+      for (kk=0; kk<nstep; kk++)
+      {
+       if (!flgVirtual) set_Bias(1,dacU);    
+       sleep_ms(50);   
+       dacU+=step;
+      } 
+       dacU+=rest;
+      if (!flgVirtual)set_Bias(1,dacU);         
+      sleep_ms(50);  
+  
+      for(i=0; i<UPoints; i++)
+      {
+       if (!flgVirtual) {set_Bias(1,dacU); }
+       sleep_ms(delay);
+       if (!flgVirtual)
+       {
+        getValuesFromAdc();
+        auto ptr = getValuesFromAdc();
+        vectorI_V.emplace_back(UStart+i*UStep);
+        vectorI_V.emplace_back((int16_t)ptr[IPin]);
+       }
+       else
+       {
+        vectorI_V.emplace_back(UStart+i*UStep);
+        vectorI_V.emplace_back(dacU);
+       }
+       dacU+=UStep;
+      }
+    afc.clear();
+    afc="code65";
+   for (size_t m = 0; m < vectorI_V.size(); m++)     // send data scanline
+    {
+      afc += ',' + std::to_string(vectorI_V[m]);
+    }
+    vectorI_V.clear();
 
-
-
+    afc += "\n";
+    std::cout << afc;
+    sleep_ms(200); //don't delete ! 100; 300 // 231130
+    afc.clear();
+  //move to start point
+  }// j Curves
+    
+    //move to  UBackup
+     dacU-=UStep;
+     step=-start_step;
+     dlt=(dacU-UBackup);
+     if (dlt<0)
+     {
+        step=start_step;
+	      dlt=-dlt;
+     }
+      
+  rest=dlt%start_step ;
+  nstep=dlt/start_step;
+ for (kk=0; kk<nstep; kk++)
+ {
+   set_Bias(1,dacU);  
+   sleep_ms(delay);
+   dacU+=step;
+ }
+    dacU+=rest;
+    set_Bias(1,dacU);  
+    sleep_ms(delay);
+//  Simple.fcupBypass(0,false); //turn on  FB
+   int16_t count = 0;
+  while ((!TheadDone) || (count<20) )
+  {
+    sleep_ms(100);
+    count++;
+  } //ожидание ответа ПК для синхронизации
+  TheadDone = false;
+  std::cout << "end\n";  
 }
 void Scanner::approacphm(const int16_t *const data) //uint16_t
 {

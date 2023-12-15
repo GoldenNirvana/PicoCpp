@@ -7,7 +7,6 @@ Decoder decoder(4, 5, 6);
 Scanner scanner;
 DAC8563 dac8563_1(1);
 DAC8563 dac8563_2(2);
-
 //#warning REMOVE STATIC !!! side effects???
 uint16_t spiBuf[8];
 int32_t vector[16];
@@ -16,54 +15,58 @@ int vectorSize;
 bool AD9833_SENDER = false;
 bool AD8400_SENDER = false;
 bool AD8400_SET_GAIN = false;
-bool AD7606_ENABLE_DISABLE = false;
-bool AD7606_RESET = false;
-bool AD7606_READ = false;
-bool AD7606_READ_FOREVER = false;
-bool AD7606_GET_VALUE = false;
 bool AD5664 = false;
+bool SET_IO_VALUE = false;
 //bool DAC8563_SET_VOLTAGE_1 = false;
 //bool DAC8563_SET_VOLTAGE_2 = false;
 //bool DAC8563_INIT_1 = false;
 //bool DAC8563_INIT_2 = false;
-bool SET_IO_VALUE = false;
-bool SET_ONE_IO_VALUE = false;
+bool ADC_ENABLE_DISABLE = false;
+bool ADC_RESET = false;
+bool ADC_READ = false;
+bool ADC_READ_FOREVER = false;
+bool ADC_GET_VALUE = false;
+bool SCANNER_RETRACT_PROTRACT = false;
 bool INIT_ADC;
 bool READ_ADC;  // чтение сигналов ЦАП
 bool FREQ_SET = false; //AD9833
 bool SCANNING = false;
+bool SPECTROSOPY_IV=false;
 bool CONFIG_UPDATE = false;
 bool MOVE_TOX0Y0 = false; //переместиться в начальную точку X0Y0 скана из начальной точке предыдущего скана
 bool STOP_ALL = false;
-
 bool LID = false;
 bool LID_UNTIL_STOP = false;
 bool APPROACH = false;
 bool APPROACH_CONFIG_UPDATE = false;
 //add Mf
-bool flgVirtual = false; // Virtual device for debuging
-uint flgDebugLevel = 2; //  leveldebug
 bool SET_PID_GAIN=false;
 bool SET_AMPLMOD_GAIN=false; // gain ampl mod Resonance
-bool SET_BIAS=false;
-bool SET_SETPOINT=false;
-bool InitDAC_BIAS_SET_POINT=false;
-bool InitDAC_XY=false;
-bool SET_XY=false;
+bool SET_BIAS=false;                //DAC8563
+bool SET_SETPOINT=false;            //DAC8563
+bool InitDAC_BIAS_SET_POINT=false;  //DAC8563
+bool InitDAC_XY=false;              //DAC8563
+bool SET_XY=false;                  //DAC8563
 bool FASTSCANNING = false;
-bool PID_TURN_ON = false;
+bool POSXYZ_CONFIG_UPDATE = false;
 bool GET_CURRENTX0Y0 = false;
 bool MOVE_TOZ0 = false;   // отвестись в безопастную начальную точку по Z
-bool Scanner_Retract = false;
-bool Scanner_Protract = false;
-bool POSXYZ_CONFIG_UPDATE = false;
+bool PID_TURN_ON = false;
+bool SCANNER_RETRACT = false;
+bool SCANNER_PROTRACT = false;
+
+
+bool flgVirtual = false; // Virtual device for debuging
+uint flgDebugLevel = 2; //  leveldebug
+//need for virtual simulation
 int16_t ZValue = 32767;
 int16_t SignalValue = 32767;
+int16_t ZMaxValue = 32767;
 bool TheadDone = false;
 uint8_t ZPin    = 0;
 uint8_t AmplPin = 1;
 uint8_t IPin    = 2; //current   
-int16_t ZMaxValue = 32767;
+
 int16_t shiftScannerZeroPoint = -32768;
 
 //uint32_t DEBUG_LEVEL = 2;

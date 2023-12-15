@@ -81,12 +81,13 @@ void set_Bias(int8_t chanel,int16_t Bias)
       {
         dac8563_1.writeB(Bias);
       }	
-  afc.clear();
+ /* afc.clear();
   afc = "debug Bias " + std::to_string(chanel) + ',' + std::to_string(Bias);
   afc += +"\n";
   std::cout << afc;
   afc.clear();
   sleep_ms(100);
+  */
 }
 
 void set_SetPoint(int8_t chanel, int16_t SetPoint)
@@ -100,12 +101,14 @@ void set_SetPoint(int8_t chanel, int16_t SetPoint)
    {
      dac8563_1.writeB(SetPoint);
     }	
+  /*
   afc.clear();
   afc = "debugSetPoint " + std::to_string(chanel) + ',' + std::to_string(SetPoint);
   afc += +"\n";
   std::cout << afc;
   afc.clear();
   sleep_ms(100);
+  */
 }
 void set_gain(int gain, int p)
 {
@@ -141,11 +144,11 @@ void stopAll()
 {
   AD9833_SENDER = false;
   AD8400_SENDER = false;
-  AD7606_ENABLE_DISABLE = false;
-  AD7606_RESET = false;
-  AD7606_READ = false;
-  AD7606_READ_FOREVER = false;
-  AD7606_GET_VALUE = false;
+  ADC_ENABLE_DISABLE = false;
+  ADC_RESET = false;
+  ADC_READ = false;
+  ADC_READ_FOREVER = false;
+  ADC_GET_VALUE = false;
   ADC_IS_READY_TO_READ = true;
   FREQ_SET = false;
   AD8400_SET_GAIN = false;
@@ -163,7 +166,7 @@ void stopAll()
   MOVE_TOX0Y0 = false;
   STOP_ALL = true;
   SET_IO_VALUE = false;
-  SET_ONE_IO_VALUE = false;
+  SCANNER_RETRACT_PROTRACT = false;
   LID = false;
   LID_UNTIL_STOP = false;
   RESONANCE = false;
