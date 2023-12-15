@@ -77,7 +77,7 @@ extern uint8_t IPin;    //current
 extern int16_t ZMaxValue;
 extern int16_t shiftScannerZeroPoint;
 //
-extern bool AD_7606_IS_READY_TO_READ;
+extern bool ADC_IS_READY_TO_READ;
 extern bool RESONANCE;  //AD9833 
 extern bool RESONANCE_STOP;
 extern volatile bool RESONANCE_ACTIVE;

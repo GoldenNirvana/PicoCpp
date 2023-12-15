@@ -16,7 +16,7 @@
 
 void RX_core::comReceiveISR(uint a, uint32_t b)
 {
-  if (AD_7606_IS_READY_TO_READ)
+  if (ADC_IS_READY_TO_READ)
   {
   //  logger("ADC read recursion\n");
     return;
@@ -32,7 +32,7 @@ void RX_core::comReceiveISR(uint a, uint32_t b)
     if (!flgVirtual) serialPrintBuffer(spiBuf, 8);
     return;
   } 
-  AD_7606_IS_READY_TO_READ = true;
+  ADC_IS_READY_TO_READ = true;
   /*
   if (is_already_scanning)
   { //231025

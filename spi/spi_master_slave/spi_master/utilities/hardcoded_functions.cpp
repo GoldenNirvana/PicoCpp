@@ -36,7 +36,7 @@ void set_freq(uint32_t freq)
 
 void get_result_from_adc()
 {
-  AD_7606_IS_READY_TO_READ = false;
+  ADC_IS_READY_TO_READ = false;
   conv.disable();
   sleep_us(10);
   conv.enable();
@@ -146,7 +146,7 @@ void stopAll()
   AD7606_READ = false;
   AD7606_READ_FOREVER = false;
   AD7606_GET_VALUE = false;
-  AD_7606_IS_READY_TO_READ = true;
+  ADC_IS_READY_TO_READ = true;
   FREQ_SET = false;
   AD8400_SET_GAIN = false;
   AD8400_SENDER = false;
@@ -176,7 +176,7 @@ uint16_t *getValuesFromAdc()
 {
  get_result_from_adc();
   int i = 0;
-  while (!AD_7606_IS_READY_TO_READ && i++ < 3)
+  while (!ADC_IS_READY_TO_READ && i++ < 3)
   {
 //    std::cout << "EndlessLoop\n";
     sleep_us(100);

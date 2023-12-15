@@ -315,7 +315,7 @@ void MainCore::loop()
     {
     //  if (flgDebugLevel <= DEBUG_LEVEL)       logger("ReadADC\n");
       AD7606_READ = false;
-      if (AD_7606_IS_READY_TO_READ)
+      if (ADC_IS_READY_TO_READ)
       {
         afc.clear();
         afc = "code12";
