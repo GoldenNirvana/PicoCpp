@@ -1108,10 +1108,10 @@ void Scanner::spectroscopyIV(const int16_t *const data)
     int16_t  UCurves;
     int16_t  UStep;
     int16_t  UStart;
-    int8_t  flgDev;
-    int16_t dacU;
-    int16_t start_step;
-    int16_t step;
+    int8_t   flgDev;
+    int16_t  dacU;
+    int16_t  start_step;
+    int16_t  step;
 
     UPoints         =   data[0];
     UCurves         =   data[1];
