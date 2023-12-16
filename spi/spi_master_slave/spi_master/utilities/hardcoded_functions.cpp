@@ -191,16 +191,16 @@ uint16_t *getValuesFromAdc()
 {
   return repeatTwoTimes();
 }
+*/
 
 uint16_t *repeatTwoTimes()
 {
   get_result_from_adc();
   int i = 0;
-  while (!AD_7606_IS_READY_TO_READ && i++ < 3)
+  while (!ADC_IS_READY_TO_READ && i++ < 3)
   {
     sleep_us(100);
   }
   return spiBuf;
 }
 
-*/

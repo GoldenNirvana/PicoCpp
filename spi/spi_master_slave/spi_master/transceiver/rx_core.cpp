@@ -68,11 +68,13 @@ void RX_core::launchOnCore1()
         {
            ZPin=0; 
            AmplPin=1; 
+           IPin=2;
         }
         else
         {
            ZPin=1; 
            AmplPin=0; 
+           IPin=2;
         }
        break;
       case 14: //add MF set virtual device 
