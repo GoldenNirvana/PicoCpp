@@ -71,7 +71,7 @@ void Init_DAC2(uint8_t port)
 
 void set_Bias(int8_t chanel,int16_t Bias)
 {
-//   code  22 , 2, 8, 0, 1, 1,, value 
+//   code  22 , 2, 8, 0, 1, 1, value 
     if (chanel == 0)
       {
         dac8563_1.writeA(Bias);
@@ -81,7 +81,8 @@ void set_Bias(int8_t chanel,int16_t Bias)
       {
         dac8563_1.writeB(Bias);
       }	
- /* afc.clear();
+ /*  отладка
+   afc.clear();
   afc = "debug Bias " + std::to_string(chanel) + ',' + std::to_string(Bias);
   afc += +"\n";
   std::cout << afc;
@@ -101,7 +102,7 @@ void set_SetPoint(int8_t chanel, int16_t SetPoint)
    {
      dac8563_1.writeB(SetPoint);
     }	
-  /*
+  /* отладка
   afc.clear();
   afc = "debugSetPoint " + std::to_string(chanel) + ',' + std::to_string(SetPoint);
   afc += +"\n";

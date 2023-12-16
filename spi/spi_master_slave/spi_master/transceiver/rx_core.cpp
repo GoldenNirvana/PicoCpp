@@ -24,7 +24,7 @@ void RX_core::comReceiveISR(uint a, uint32_t b)
   decoder.activePort(0);
   Spi::setProperties(16, 1, 0);
   spi_read16_blocking(spi_default, 0, spiBuf, 8);
-  if (Z_STATE) //????? 
+  if (Z_STATE) 
   {
     Z_STATE = false;
     if (!flgVirtual) serialPrintBuffer(spiBuf, 8);
@@ -37,14 +37,7 @@ void RX_core::launchOnCore1()
 {
   while (true)
   {
-//  vector[0] = 12;
-//  std::cout << "Receive core\n";
-//  mutex_enter_timeout_ms(&mut, 10);
-//  std::cout << "Mutex captured by core1 << '\n";
-//  PARSING
-    parse(vector);
-//  logger("command" + std::to_string(vector[0]) + '\n'); //231210
-//  uart_puts(uart1, "String for uart");
+    parse(vector); // парсинг входящих данных из ПК
     switch (vector[0])
     {
       case 1:
@@ -62,8 +55,7 @@ void RX_core::launchOnCore1()
       case 12:
         ADC_READ = true;
         break;
- ///*************************************  
-      case 13: //add MF 
+      case 13: 
         if (vector[1]==1)
         {
            ZPin=0; 
@@ -77,20 +69,19 @@ void RX_core::launchOnCore1()
            IPin=2;
         }
        break;
-      case 14: //add MF set virtual device 
-     //   red();      
-        flgVirtual =(bool)vector[1];// !flgVirtual;
+      case 14: //флаг симуляции работы микрокотроллера      
+        flgVirtual =(bool)vector[1];
         break;
-      case 15: //add mf set debug level =2; if =3 cancel debug info!!
+      case 15: // флаг вывода отладочной инофрмации debug level =2;  =3 запрет вывода!
          flgDebugLevel =vector[1];
         break;
-      case 16: //add mf set gain ampl!!
+      case 16: //изменить значение усиления амплитуды раскачки зонда
         SET_AMPLMOD_GAIN=true;
         break;  
-      case 17: //add mf set PID GAIN!    
+      case 17: // изменить значение усиления ПИД
         SET_PID_GAIN=true; 
         break;
-      case 18: //get current pointX0Y0 - pos_ 
+      case 18: // получитб текущее знание координат сканера 
         GET_CURRENTX0Y0=true; 
         break; 
  //*************************************** 
@@ -101,13 +92,13 @@ void RX_core::launchOnCore1()
         AD5664 = true;
         break;
       case 22:
-        SET_SETPOINT=true;// управление опорой и Bias   //DAC8563_SET_VOLTAGE_1 = true; 
+        SET_SETPOINT=true;// управление опорой и напряжением  
         break;
       case 23:
-        InitDAC_BIAS_SET_POINT=true;  // init  управление опорой и Bias  //DAC8563_INIT_1 = true;     
+        InitDAC_BIAS_SET_POINT=true;  //иницирование управлением опорой и напряжением     
         break;
-      case 24:// get signal value current signal or all signal ?
-        ADC_GET_VALUE = true;
+      case 24:            
+        ADC_GET_VALUE = true;// прочитатать сигналы АЦП      
         break;
       case 25:
         RESONANCE = true;
@@ -116,25 +107,23 @@ void RX_core::launchOnCore1()
         RESONANCE_STOP = true;
         break;
       case 27:
-        InitDAC_XY=true;; // init управление X,Y //DAC8563_INIT_2 = true;   
+        InitDAC_XY=true;; // иницирование  управлением сканера по X,Y 
         break;
       case 28: // mf  
         TheadDone = true;
         break;
       case 29:
-        SET_XY=true;// управление сканер X,Y   //DAC8563_SET_VOLTAGE_2 = true; 
+        SET_XY=true;// управление сканер X,Y  
         break;
       case 30:
         FREQ_SET = true;
         break;
       case 40:
-    //    AD8400_SET_GAIN = true;
         SET_AMPLMOD_GAIN= true;
         break;
       case 50:
         SCANNING = true;
-    //    CONFIG_UPDATE = true;
-        break;
+         break;
       case 51:
         MOVE_TOX0Y0 = true;
         break;
@@ -151,28 +140,27 @@ void RX_core::launchOnCore1()
         FASTSCANNING =true;
         break;
       case 60:
-       // SET_IO_VALUE = true;  /231215
-        SET_PID_GAIN =true;
+         SET_PID_GAIN =true;
         break;
-      case 61:  // управление ПИД - втянуть вытянуть
+      case 61:  // управление ПИД - втянуть-вытянуть
         SCANNER_RETRACT_PROTRACT = true;
         break;
-      case 65:  // управление ПИД - втянуть вытянуть
+      case 65:  // спектроскопия  I-V
         SPECTROSOPY_IV = true;
         break;
       case 70:
         stopAll();
         break;
-      case 75: //approach
+      case 75: //сближение зонда и образца
         APPROACH = true;
         break;
-      case 76:// change parameters  approach
+      case 76:// изменение параметров сближения
         APPROACH_CONFIG_UPDATE = true;
         break;
       case 80:
         LID_UNTIL_STOP = true; 
         break;
-      case 82:// change parameters  positionXYZ
+      case 82:// изменение параметров позиционирования ZYX
         POSXYZ_CONFIG_UPDATE = true;
         break;
       case 84:
@@ -184,8 +172,6 @@ void RX_core::launchOnCore1()
       default:
         activateError();
     }
-//        mutex_exit(&mut);
-//        std::cout << "Mutex released by core1\n";
   }
 }
 

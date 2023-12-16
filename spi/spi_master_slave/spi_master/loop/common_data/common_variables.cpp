@@ -17,10 +17,6 @@ bool AD8400_SENDER = false;
 bool AD8400_SET_GAIN = false;
 bool AD5664 = false;
 bool SET_IO_VALUE = false;
-//bool DAC8563_SET_VOLTAGE_1 = false;
-//bool DAC8563_SET_VOLTAGE_2 = false;
-//bool DAC8563_INIT_1 = false;
-//bool DAC8563_INIT_2 = false;
 bool ADC_ENABLE_DISABLE = false;
 bool ADC_RESET = false;
 bool ADC_READ = false;
@@ -29,7 +25,7 @@ bool ADC_GET_VALUE = false;
 bool SCANNER_RETRACT_PROTRACT = false;
 bool INIT_ADC;
 bool READ_ADC;  // чтение сигналов ЦАП
-bool FREQ_SET = false; //AD9833
+bool FREQ_SET = false;     //AD9833
 bool SCANNING = false;
 bool SPECTROSOPY_IV=false;
 bool CONFIG_UPDATE = false;
@@ -39,9 +35,8 @@ bool LID = false;
 bool LID_UNTIL_STOP = false;
 bool APPROACH = false;
 bool APPROACH_CONFIG_UPDATE = false;
-//add Mf
 bool SET_PID_GAIN=false;
-bool SET_AMPLMOD_GAIN=false; // gain ampl mod Resonance
+bool SET_AMPLMOD_GAIN=false; // усиление модуляции зонда
 bool SET_BIAS=false;                //DAC8563
 bool SET_SETPOINT=false;            //DAC8563
 bool InitDAC_BIAS_SET_POINT=false;  //DAC8563
@@ -56,16 +51,16 @@ bool SCANNER_RETRACT = false;
 bool SCANNER_PROTRACT = false;
 
 
-bool flgVirtual = false; // Virtual device for debuging
-uint flgDebugLevel = 2; //  leveldebug
-//need for virtual simulation
-int16_t ZValue = 32767;
+bool flgVirtual = false; // флаг симуляции работа микроконтроллера
+uint flgDebugLevel = 2; //  уровень отладки
+//данные для симуляции 
+int16_t ZValue      = 32767;
 int16_t SignalValue = 32767;
-int16_t ZMaxValue = 32767;
+int16_t ZMaxValue   = 32767;
 bool TheadDone = false;
-uint8_t ZPin    = 0;
-uint8_t AmplPin = 1;
-uint8_t IPin    = 2; //current   
+uint8_t ZPin    = 0; // Z
+uint8_t AmplPin = 1; // амплитуда
+uint8_t IPin    = 2; // ток  
 
 int16_t shiftScannerZeroPoint = -32768;
 
