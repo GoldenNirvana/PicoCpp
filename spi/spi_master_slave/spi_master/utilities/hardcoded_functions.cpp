@@ -177,7 +177,7 @@ void stopAll()
 
 uint16_t *getValuesFromAdc()
 {
- get_result_from_adc();
+  get_result_from_adc();
   int i = 0;
   while (!ADC_IS_READY_TO_READ && i++ < 3)
   {

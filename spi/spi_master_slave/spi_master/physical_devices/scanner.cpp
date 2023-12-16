@@ -33,6 +33,7 @@ bool Scanner::getHoppingFlg()
 
 void Scanner::start_scan()
 {
+  const int8_t oneline=11;
   prev_point = pos_; //запоминание начальной точки скана
   vector_z.clear();
   other_info.clear();
@@ -163,25 +164,31 @@ void Scanner::start_scan()
       {
         getValuesFromAdc();
         getValuesFromAdc();
-        vector_z.emplace_back((int16_t) spiBuf[0]);  // get Z from adc ??
+        vector_z.emplace_back((int16_t) spiBuf[ZPin]);  // get Z from adc ??
         if (conf_.size == 2)
           switch (conf_.method)
             //added signal  Const  BackPass=2;    //PM  Const  Phase=3;  Const  UAM=4;   //Force Image
           {
-            case 3:
+            case 3://phase ????
             {
-              other_info.emplace_back((int16_t) spiBuf[1]); //phase
+              other_info.emplace_back((int16_t) spiBuf[1]); 
               break;
             }
-            case 4:
+            case 4://ampl
             {
-              other_info.emplace_back((int16_t) spiBuf[1]); //ampl
+              other_info.emplace_back((int16_t) spiBuf[AmplPin]); 
+              break;
+            }
+            case 7://current
+            {
+              other_info.emplace_back((int16_t) spiBuf[IPin]); 
               break;
             }
           }
       } else
       {
-        vector_z.emplace_back(int16_t(10000.0 * (sin(M_PI * j * 0.1) + sin(M_PI * i * 0.1))));  // get Z from adc
+       if (conf_.method!=oneline) vector_z.emplace_back(int16_t(10000.0 * (sin(M_PI * j * 0.1) + sin(M_PI * i * 0.1))));  // get Z from adc
+       else  vector_z.emplace_back(int16_t(10000.0 * (sin(M_PI * j * 0.1) + sin(M_PI * 0 * 0.1)))); 
         if (conf_.size == 2)  //added signal
         {
           other_info.emplace_back(int16_t(10000.0 * (sin(M_PI * j * 0.1) + sin(M_PI * i * 0.1))));
@@ -272,7 +279,7 @@ void Scanner::start_scan()
     }
     if ((nslowline - 1 - i) > 0)  //don't need for last line
     {
-      if (conf_.method != 11) //not one line
+      if (conf_.method != oneline) //not one line
       {
         for (uint32_t n = 0; n < stepslowline; ++n) // go next line
         {
@@ -335,6 +342,7 @@ void Scanner::start_scan()
 
 void Scanner::start_hopingscan()
 {
+  const int8_t oneline=11;
   prev_point = pos_; //запоминание начальной точки скана
   vector_z.clear();
   other_info.clear();
@@ -444,20 +452,26 @@ void Scanner::start_hopingscan()
       {
         getValuesFromAdc();
         getValuesFromAdc();
-        vector_z.emplace_back((int16_t) spiBuf[0]);     // get Z from adc ??
+        vector_z.emplace_back((int16_t) spiBuf[ZPin]);     // get Z from adc ??
         switch (conf_.method)
           //added signal  Const  BackPass=2;    //PM  Const  Phase=3;  Const  UAM=4;   //Force Image
         {
-          case 3:
+          case 3://phase !!!!
           {
             other_info.emplace_back((int16_t) spiBuf[1]);
             break;
           }
-          case 4:
+          case 4://ampl
           {
-            other_info.emplace_back((int16_t) spiBuf[1]);
+            other_info.emplace_back((int16_t) spiBuf[AmplPin]);
             break;
           }
+          case 7://current
+          {
+            other_info.emplace_back((int16_t) spiBuf[IPin]);
+            break;
+          }
+
         }
       } else
       {
@@ -555,7 +569,8 @@ void Scanner::start_hopingscan()
     // go next line
     if ((nslowline - 1 - i) > 0)  //don't need for last line
     {
-      if (!flgVirtual)
+     if (conf_.method !=oneline) //not one line
+     {  if (!flgVirtual)
       {
         pos_slow += conf_.diskretinstep * stepslowline;
         set_on_dac(portslow, pos_slow);
@@ -572,6 +587,7 @@ void Scanner::start_hopingscan()
         { pos_slow -= reststepslow; }
         sleep_us(conf_.delayF);
       }
+     } 
     }
   } //for i
 
@@ -718,7 +734,7 @@ void Scanner::start_fastscan()
         {
           getValuesFromAdc();
           getValuesFromAdc();
-          vector_z.emplace_back((int16_t) spiBuf[0]);  // get Z from adc ??
+          vector_z.emplace_back((int16_t) spiBuf[ZPin]);  // get Z from adc ??
         }
         else
         {
@@ -1204,12 +1220,11 @@ void Scanner::spectroscopyIV(const int16_t *const data)
     {
       afc += ',' + std::to_string(vectorI_V[m]);
     }
-    vectorI_V.clear();
-
     afc += "\n";
     std::cout << afc;
     sleep_ms(200); //don't delete ! 100; 300 // 231130
-    afc.clear();
+    afc.clear(); 
+    vectorI_V.clear();
   //move to start point
   }// j Curves
     

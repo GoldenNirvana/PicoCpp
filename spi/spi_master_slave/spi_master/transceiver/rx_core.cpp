@@ -24,7 +24,7 @@ void RX_core::comReceiveISR(uint a, uint32_t b)
   decoder.activePort(0);
   Spi::setProperties(16, 1, 0);
   spi_read16_blocking(spi_default, 0, spiBuf, 8);
-  if (Z_STATE)
+  if (Z_STATE) //????? 
   {
     Z_STATE = false;
     if (!flgVirtual) serialPrintBuffer(spiBuf, 8);
