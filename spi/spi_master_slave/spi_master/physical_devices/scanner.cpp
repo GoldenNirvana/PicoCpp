@@ -4,9 +4,6 @@
 #include "../utilities/hardcoded_functions.hpp"
 #include "../utilities/peripheral_functions.hpp"
 #include <cmath>
-//#include <chrono>
-//#include <ctime>    
-
 
 Scanner::Scanner() : pos_({0, 0}), conf_({})
 {}
@@ -26,12 +23,12 @@ void Scanner::protract() //вытянуть
   io3_1.disable();
 }
 
-bool Scanner::getHoppingFlg()
+bool Scanner::getHoppingFlg() //получить флаг установлен ли флаг сканирования прыжками
 {
   return (bool)conf_.flgHoping;
 }
 
-void Scanner::start_scan()
+void Scanner::start_scan() //сканирование
 {
   const int8_t oneline=11;
   prev_point = pos_; //запоминание начальной точки скана
@@ -135,7 +132,7 @@ void Scanner::start_scan()
     }
     for (uint32_t j = 0; j < nfastline; ++j)
     {
-      for (uint32_t k = 0; k < stepfastline; ++k) //move to next point
+      for (uint32_t k = 0; k < stepfastline; ++k)  
       {
         if (!flgVirtual)
         {
@@ -157,19 +154,17 @@ void Scanner::start_scan()
       }
 
       //******************************************************************************
-      // sleep_ms(conf_.pause); // 50 CONST 50ms wait for start get data
       sleep_us(conf_.pause);    // 50 CONST 50ms wait for start get data
-      //*//******************************************************************************
+      //*******************************************************************************
       if (!flgVirtual)
       {
         getValuesFromAdc();
         getValuesFromAdc();
-        vector_z.emplace_back((int16_t) spiBuf[ZPin]);  // get Z from adc ??
+        vector_z.emplace_back((int16_t) spiBuf[ZPin]);  // get Z from adc
         if (conf_.size == 2)
           switch (conf_.method)
-            //added signal  Const  BackPass=2;    //PM  Const  Phase=3;  Const  UAM=4;   //Force Image
           {
-            case 3://phase ????
+            case 3://phase 
             {
               other_info.emplace_back((int16_t) spiBuf[1]); 
               break;
@@ -189,7 +184,7 @@ void Scanner::start_scan()
       {
        if (conf_.method!=oneline) vector_z.emplace_back(int16_t(10000.0 * (sin(M_PI * j * 0.1) + sin(M_PI * i * 0.1))));  // get Z from adc
        else  vector_z.emplace_back(int16_t(10000.0 * (sin(M_PI * j * 0.1) + sin(M_PI * 0 * 0.1)))); 
-        if (conf_.size == 2)  //added signal
+        if (conf_.size == 2)  //дополнительный сигнал
         {
           other_info.emplace_back(int16_t(10000.0 * (sin(M_PI * j * 0.1) + sin(M_PI * i * 0.1))));
         }
@@ -222,7 +217,7 @@ void Scanner::start_scan()
     }
     afc.clear();
     afc = "code50";
-    for (size_t m = 0; m < vector_z.size(); m++)     // send data scanline
+    for (size_t m = 0; m < vector_z.size(); m++)     // подготовка результатов
     {
       switch (conf_.size)
       {
@@ -239,7 +234,7 @@ void Scanner::start_scan()
       }
     }
     afc += "\n";
-    std::cout << afc;
+    std::cout << afc;   // посылка результатов на ПК
     sleep_ms(300); //don't delete ! 100; 300 // 231130
     afc.clear();
     vector_z.clear();
@@ -249,11 +244,9 @@ void Scanner::start_scan()
       CONFIG_UPDATE = false;
       conf_.delayF = vector[1];
       conf_.delayB = vector[2];
-      set_gainPID(vector[3]);//gain PID
-    //  set_io_value(2, vector[3]); 
-   
-      sleep_ms(100);              //
-      conf_.diskretinstep = vector[4]; //????
+      set_gainPID(vector[3]);
+      sleep_ms(100);              
+      conf_.diskretinstep = vector[4]; 
 
       afc.clear();
       afc = "debug parameters update";
@@ -267,7 +260,7 @@ void Scanner::start_scan()
       sleep_ms(100);
       //    dark();
     }
-    if (!SCANNING)           // stop
+    if (!SCANNING)   // stop
     {
       SCANNING = false;
       sleep_ms(100);
@@ -277,11 +270,11 @@ void Scanner::start_scan()
       sleep_ms(100);
       break;
     }
-    if ((nslowline - 1 - i) > 0)  //don't need for last line
+    if ((nslowline - 1 - i) > 0)  //если непоследняя линия
     {
-      if (conf_.method != oneline) //not one line
+      if (conf_.method != oneline) //не сканирование по одной линии
       {
-        for (uint32_t n = 0; n < stepslowline; ++n) // go next line
+        for (uint32_t n = 0; n < stepslowline; ++n) // переход на следующую линию
         {
           if (!flgVirtual)
           {
@@ -294,7 +287,7 @@ void Scanner::start_scan()
         }
         if (reststepslow != 0)
         {
-          if (!flgVirtual) // last step
+          if (!flgVirtual) 
           {
             pos_slow -= reststepslow;
             set_on_dac(portslow, pos_slow);
@@ -305,7 +298,7 @@ void Scanner::start_scan()
         }
       }
     }
-  } //for
+  } 
 
   blue();
 
@@ -418,7 +411,7 @@ void Scanner::start_hopingscan()
          retract();
       }   
       sleep_us(50);
-      for (uint32_t k = 0; k < stepfastline; ++k) //move to next point
+      for (uint32_t k = 0; k < stepfastline; ++k) 
       {
         if (!flgVirtual)
         {
@@ -428,7 +421,7 @@ void Scanner::start_hopingscan()
         { pos_fast += conf_.diskretinstep; }
         sleep_us(conf_.delayF);
       }
-      if (reststepfast != 0)// добирание остатка
+      if (reststepfast != 0)
       {
         if (!flgVirtual)
         {
@@ -447,12 +440,12 @@ void Scanner::start_hopingscan()
       }
       sleep_ms(conf_.HopeDelay);
       sleep_us(conf_.pause);    // 50 CONST 50ms wait for start get data
-      //*//******************************************************************************
+    //*******************************************************************************
       if (!flgVirtual)
       {
         getValuesFromAdc();
         getValuesFromAdc();
-        vector_z.emplace_back((int16_t) spiBuf[ZPin]);     // get Z from adc ??
+        vector_z.emplace_back((int16_t) spiBuf[ZPin]);     // считать  Z 
         switch (conf_.method)
           //added signal  Const  BackPass=2;    //PM  Const  Phase=3;  Const  UAM=4;   //Force Image
         {
@@ -471,7 +464,6 @@ void Scanner::start_hopingscan()
             other_info.emplace_back((int16_t) spiBuf[IPin]);
             break;
           }
-
         }
       } else
       {
@@ -498,7 +490,7 @@ void Scanner::start_hopingscan()
     { pos_fast -= conf_.diskretinstep * stepfastline * nfastline; }
     sleep_us(conf_.delayB);
 
-    if (reststepfast != 0)// добирание остатка
+    if (reststepfast != 0)
     {
       if (!flgVirtual)
       {
@@ -512,7 +504,7 @@ void Scanner::start_hopingscan()
 
     afc.clear();
     afc = "code50";
-    for (size_t m = 0; m < vector_z.size(); m++)     // send data scanline
+    for (size_t m = 0; m < vector_z.size(); m++)     
     {
       switch (conf_.size)
       {
@@ -529,7 +521,7 @@ void Scanner::start_hopingscan()
       }
     }
     afc += "\n";
-    std::cout << afc;
+    std::cout << afc; //посылка данных cканирования на ПК
     sleep_ms(200); //don't delete ! 100; 300 // 231130
     afc.clear();
     vector_z.clear();
@@ -539,11 +531,9 @@ void Scanner::start_hopingscan()
       CONFIG_UPDATE = false;
       conf_.delayF = vector[1];
       conf_.delayB = vector[2];
-      set_gainPID(vector[3]);//gain PID
-      //set_io_value(2, vector[3]); 
+      set_gainPID(vector[3]);
       conf_.HopeDelay = vector[4];
-
-      sleep_ms(100);    //
+      sleep_ms(100);   
       afc.clear();
       afc = "debug parameters update";
       for (int j = 1; j <= 4; ++j)
@@ -554,9 +544,8 @@ void Scanner::start_hopingscan()
       std::cout << afc;
       afc.clear();
       sleep_ms(100);
-      //    dark();
     }
-    if (!SCANNING)           // stop
+    if (!SCANNING)  // stop
     {
       SCANNING = false;
       sleep_ms(100);
@@ -566,10 +555,9 @@ void Scanner::start_hopingscan()
       sleep_ms(100);
       break;
     }
-    // go next line
-    if ((nslowline - 1 - i) > 0)  //don't need for last line
+     if ((nslowline - 1 - i) > 0)  //если непоследняя линия
     {
-     if (conf_.method !=oneline) //not one line
+     if (conf_.method !=oneline) //не сканирование по одной линии
      {  if (!flgVirtual)
       {
         pos_slow += conf_.diskretinstep * stepslowline;
@@ -579,7 +567,7 @@ void Scanner::start_hopingscan()
       sleep_us(conf_.delayF);
       if (reststepslow != 0)
       {
-        if (!flgVirtual) // last step
+        if (!flgVirtual) 
         {
           pos_slow -= reststepslow;
           set_on_dac(portslow, pos_slow);
@@ -589,10 +577,8 @@ void Scanner::start_hopingscan()
       }
      } 
     }
-  } //for i
-
+  } 
   blue();
-
   SCANNING = false;
   switch (conf_.path)
   {
@@ -694,17 +680,13 @@ void Scanner::start_fastscan()
       break;
     }
   }
-
-  //  auto start = std::chrono::system_clock::now();
-  // Some computation here
-
   while (FASTSCANNING)
   {
     for (uint32_t i = 0; i < nslowline; ++i)
     {
       for (uint32_t j = 0; j < nfastline; ++j)
       {
-        for (uint32_t k = 0; k < stepfastline; ++k) //move to next point
+        for (uint32_t k = 0; k < stepfastline; ++k) 
         {
           if (!flgVirtual)
           {
@@ -714,7 +696,7 @@ void Scanner::start_fastscan()
           { pos_fast += conf_.diskretinstep; }
           sleep_us(conf_.delayF);
         }
-        if (reststepfast != 0)// добирание остатка
+        if (reststepfast != 0)
         {
           if (!flgVirtual)
           {
@@ -726,24 +708,23 @@ void Scanner::start_fastscan()
           sleep_us(conf_.delayF);
         }
 //******************************************************************************
-        // sleep_ms(conf_.pause); // 50 CONST 50ms wait for start get data
-        sleep_us(conf_.pause);    // 50 CONST 50ms wait for start get data
+         sleep_us(conf_.pause);    // 50 CONST 50ms wait for start get data
 //******************************************************************************     
 
         if (!flgVirtual)
         {
           getValuesFromAdc();
           getValuesFromAdc();
-          vector_z.emplace_back((int16_t) spiBuf[ZPin]);  // get Z from adc ??
+          vector_z.emplace_back((int16_t) spiBuf[ZPin]);  // считать Z из АЦП
         }
         else
         {
           vector_z.emplace_back(
-              int16_t(10000.0 * (sin(M_PI * j * 0.1) + sin(M_PI * i * 0.1))));  // get Z from adc
+              int16_t(10000.0 * (sin(M_PI * j * 0.1) + sin(M_PI * i * 0.1)))); 
         }
       } //j
 
-      for (uint32_t j = 0; j < stepfastline * nfastline; ++j) // move  back
+      for (uint32_t j = 0; j < stepfastline * nfastline; ++j) // возврат в начальную точку линии
       {
         if (!flgVirtual)
         {
@@ -767,9 +748,9 @@ void Scanner::start_fastscan()
 
         sleep_us(conf_.delayF);
       }
-      if ((nslowline - 1 - i) > 0)  //don't need for last line
+      if ((nslowline - 1 - i) > 0)  //если непослелняя лниия
       {
-        for (uint32_t n = 0; n < stepslowline; ++n) // go next line
+        for (uint32_t n = 0; n < stepslowline; ++n) 
         {
           if (!flgVirtual)
           {
@@ -782,7 +763,7 @@ void Scanner::start_fastscan()
         }
         if (reststepslow != 0)
         {
-          if (!flgVirtual) // last step
+          if (!flgVirtual) 
           {
             pos_slow -= reststepslow;
             set_on_dac(portslow, pos_slow);
@@ -796,23 +777,21 @@ void Scanner::start_fastscan()
 
     afc.clear();
     afc = "code56";
-    for (size_t j = 0; j < vector_z.size(); j++)     // send data scanline
+    for (size_t j = 0; j < vector_z.size(); j++)     
     {
       afc += ',' + std::to_string(vector_z[j]);
     }
     vector_z.clear();
     afc += "\n";
-    std::cout << afc;
+    std::cout << afc;// посылка данных на ПК
     sleep_ms(100);
     afc.clear();
 
     stop_scan();  //возврат в начальную точку скана
 
     if (conf_.flgOneFrame == 1) { FASTSCANNING = false; };
-  }  //while true;
-
+  } 
   blue();
-
   FASTSCANNING = false;
   switch (conf_.path)
   {
@@ -864,8 +843,8 @@ Point Scanner::getX0Y0()
   return pos_;
 }
 
-void Scanner::move_toX0Y0(int x, int y,
-                          int delay)  //переместиться в начальную точку  скана из начальной точке предыдущего скана
+void Scanner::move_toX0Y0(int x, int y,int delay) 
+ //переместиться в начальную точку  скана из начальной точке предыдущего скана
 {
   Point pointX0Y0;
   pointX0Y0.x = (uint16_t) (x);
@@ -947,18 +926,15 @@ void Scanner::move_toZ0(int lid_name, int f, int p, int n, int dir)  //отве�
   afc.clear();
   sleep_ms(100);
 }
-
-//void Scanner::positioningXYZ(int lid_name, int f, int p, int n, int dir, int16_t gtmax, int16_t gtmin) // n-nsteps
 void Scanner::positioningXYZ(const int16_t *const data)
 {
-  //uint32_t SET_POINT;
   uint8_t lid_name;
   uint16_t GATE_Z_MAX, GATE_Z_MIN;
   int8_t status;
   const int none = 30;
   const int ok = 3;
   const int touch = 2;
-  int16_t ln;  ///????? sign abs?
+  int16_t ln;  
   bool ldir;
   int16_t p,f;
  // SET VALUE FROM RX_CORE
@@ -981,8 +957,6 @@ void Scanner::positioningXYZ(const int16_t *const data)
         std::cout << afc;
         afc.clear();
         sleep_ms(100);
-//  red();
-
   if (lid_name == 90 || lid_name == 95) //X,Y
   {
     while (LID_UNTIL_STOP)
@@ -1007,7 +981,6 @@ void Scanner::positioningXYZ(const int16_t *const data)
         std::cout << afc;
         afc.clear();
         sleep_ms(100);
-
       }
       status = none;
       if (!flgVirtual) //add mf
@@ -1017,14 +990,11 @@ void Scanner::positioningXYZ(const int16_t *const data)
       {
 
       }
-      afc.clear(); //231025
+      afc.clear(); 
       afc = "code" + std::to_string(lid_name) + ',' + std::to_string(status) + ',' + std::to_string(ZValue) +
-            ',' +
-            std::to_string(SignalValue) // Zval,SigVal??
-            //+','+std::to_string(ln)
-            + "\n";
+            ',' + std::to_string(SignalValue)+"\n";
       std::cout << afc;
-      sleep_ms(100); //231104
+      sleep_ms(100); 
       afc.clear();
     }
   }
@@ -1086,7 +1056,6 @@ void Scanner::positioningXYZ(const int16_t *const data)
           if (ZValue < (ZMaxValue - ln)) { ZValue += ln;       }
           else                           { ZValue = ZMaxValue; }
         }
-        // check if z > <
         if (ZValue < GATE_Z_MIN)
         {
           status = touch;
@@ -1109,9 +1078,7 @@ void Scanner::positioningXYZ(const int16_t *const data)
   }
   afc.clear();
   afc = "code" + std::to_string(lid_name) + ',' + std::to_string(status) + ',' + std::to_string(ZValue) + ',' +
-        std::to_string(SignalValue)
-        // +','+std::to_string(GATE_Z_MIN)+','+std::to_string(GATE_Z_MAX)
-        + "\n";
+        std::to_string(SignalValue) + "\n";
   std::cout << afc;
   sleep_ms(200); //need to adjust
   afc.clear();
@@ -1129,7 +1096,7 @@ void Scanner::positioningXYZ(const int16_t *const data)
   LID_UNTIL_STOP = false;
   std::cout << "end\n";
   dark();
-  //  sleep_ms(100); //need to adjust
+  //  sleep_ms(100); 
 }
 
 void Scanner::spectroscopyIV(const int16_t *const data)
@@ -1166,7 +1133,7 @@ void Scanner::spectroscopyIV(const int16_t *const data)
   sleep_ms(100);
  //  Simple.fcupBypass(0,true); //turn off   FB     false???
      sleep_ms(300);
- // move to start point
+ // установка начального значения напряжения
       int16_t kk;
       int16_t dlt;
       start_step=100;
@@ -1174,6 +1141,7 @@ void Scanner::spectroscopyIV(const int16_t *const data)
       step=-start_step;
      int16_t nstep;
      int16_t rest;
+//  снятие ВАХ
  for (j=0; j<UCurves; j++)
  {
       vectorI_V.clear();
@@ -1222,13 +1190,13 @@ void Scanner::spectroscopyIV(const int16_t *const data)
     }
     afc += "\n";
     std::cout << afc;
-    sleep_ms(200); //don't delete ! 100; 300 // 231130
+    sleep_ms(200); //don't delete 
     afc.clear(); 
     vectorI_V.clear();
   //move to start point
   }// j Curves
     
-    //move to  UBackup
+    //возврат к исходному напряжению
      dacU-=UStep;
      step=-start_step;
      dlt=(dacU-UBackup);
@@ -1265,7 +1233,6 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
   const int ok = 3;
   const int touch = 2;
   const int stopdone = 1;
-
   uint16_t ZMaxValue = 32767;
   uint16_t SET_POINT, GATE_Z_MAX, GATE_Z_MIN;
   int16_t freq, scv;//
@@ -1298,10 +1265,8 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
   std::cout << afc;
   afc.clear();
   sleep_ms(200);
-
- // dac8563_1.writeA(SET_POINT); ///??????
-  set_SetPoint(0,SET_POINT); //add 231214
-  if (flgDev!=0) set_Bias(1,Bias);  //add 231214???
+  set_SetPoint(0,SET_POINT); 
+  if (flgDev!=0) set_Bias(1,Bias);  
   set_gainPID(GAIN);
   
   std::vector<int16_t> buf_params;
@@ -1309,7 +1274,7 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
 
   for (int i = 0; i < 7; ++i)  buf_params.push_back(data[i]);
 
-  if (!flgVirtual) //add mf
+  if (!flgVirtual)
   {
     getValuesFromAdc();
     uint16_t *ptr = getValuesFromAdc(); 
@@ -1369,10 +1334,8 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
       SCANNERDECAY = vector[7];
      
       if (flgDev!=0) set_Bias(1,Bias);  
-      //dac8563_1.writeA(SET_POINT); //231214
       set_SetPoint(0,SET_POINT); //add 231214 
       set_gainPID(GAIN);
-     // set_io_value(2, GAIN); 
       sleep_ms(100);  // need for virtual для разделение afc
       afc.clear();
       afc = "debug parameters update";
@@ -1383,12 +1346,9 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
       afc += +"\n";
       std::cout << afc;
       afc.clear();
-      sleep_ms(100);
-  
+      sleep_ms(100); 
     }
-  
-    sleep_ms(INTDELAY);
-
+     sleep_ms(INTDELAY);
     if (!flgVirtual)
     {
       getValuesFromAdc();
@@ -1471,10 +1431,10 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
     afc.clear();
     if (!flgVirtual)
     {
-      retract(); //io3_1.enable(); // втянуть 231025
+      retract();  //втянуть сканнер
       sleep_ms(SCANNERDECAY);
       linearDriver.activate(99, freq, scv, std::abs(NSTEPS), NSTEPS > 0);
-      protract(); //io3_1.disable(); //вытянуть
+      protract(); //вытянуть
     }
   }
   afc.clear();
@@ -1485,7 +1445,7 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
   APPROACH = false;
   if (!flgVirtual)
   {
-    protract();// io3_1.disable();//вытянуть
+    protract();//вытянуть
     sleep_ms(INTDELAY);
   }
   int16_t count = 0;
@@ -1517,7 +1477,6 @@ void Scanner::start_frqscan()
   std::cout << afc;
   afc.clear();
   sleep_ms(100);
-
   current_channel = inBuf[3] - 1;  //ampl=0;
   afc = "code25";
   while ((scan_index++ < inBuf[0]))
@@ -1527,8 +1486,7 @@ void Scanner::start_frqscan()
       set_freq(inBuf[1]);
       sleep_ms(inBuf[4]);
       getValuesFromAdc();
-      afc +=
-          ',' + std::to_string(inBuf[1]) + ',' +
+      afc +=',' + std::to_string(inBuf[1]) + ',' +
           std::to_string((int16_t) getValuesFromAdc()[current_channel]);//+ ',';
     } else
     {

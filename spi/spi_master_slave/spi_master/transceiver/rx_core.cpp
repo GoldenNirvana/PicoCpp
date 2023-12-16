@@ -11,7 +11,6 @@
 #include "../utilities/hardcoded_functions.hpp"
 #include "../utilities/debug_logger.hpp"
 
-
 #warning DO NOT SLEEP IN THIS FUNC !!!
 
 void RX_core::comReceiveISR(uint a, uint32_t b)
@@ -32,7 +31,6 @@ void RX_core::comReceiveISR(uint a, uint32_t b)
   } 
   ADC_IS_READY_TO_READ = true;
 }
-
 void RX_core::launchOnCore1()
 {
   while (true)
