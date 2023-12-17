@@ -175,7 +175,7 @@ void stopAll()
   RESONANCE_ACTIVE = false;
   afc.clear();
 }
-
+/*
 uint16_t *getValuesFromAdc()
 {
   get_result_from_adc();
@@ -187,21 +187,24 @@ uint16_t *getValuesFromAdc()
   }
   return spiBuf;
 }
-/*
+*/
+
 uint16_t *getValuesFromAdc()
 {
   return repeatTwoTimes();
 }
-*/
 
 uint16_t *repeatTwoTimes()
 {
-  get_result_from_adc();
-  int i = 0;
-  while (!ADC_IS_READY_TO_READ && i++ < 3)
+ for (int8_t i = 0; i < 2; ++i)
+ {
+   get_result_from_adc();
+  int j = 0;
+  while (!ADC_IS_READY_TO_READ && j++ < 3)
   {
     sleep_us(100);
   }
+ }
   return spiBuf;
 }
 

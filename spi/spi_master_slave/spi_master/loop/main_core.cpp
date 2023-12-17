@@ -36,7 +36,7 @@ void MainCore::loop()
       activateDark();
       continue;
     }
-    if (LID_UNTIL_STOP)  // пьезодвижетель  позиционирование
+    if (LID_UNTIL_STOP)  // пьезодвижитель  позиционирование
     {
       static int16_t pos_data[7];
       pos_data[0] = vector[1]; //  int lid_name
@@ -268,7 +268,7 @@ void MainCore::loop()
         afc = "code12";
         if (!flgVirtual)
         {
-          getValuesFromAdc();
+       //   getValuesFromAdc();
           auto ptr = getValuesFromAdc();
           logger(ptr, 8);
           ZValue = (int16_t) ptr[ZPin];

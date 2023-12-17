@@ -158,7 +158,7 @@ void Scanner::start_scan() //сканирование
       //*******************************************************************************
       if (!flgVirtual)
       {
-        getValuesFromAdc();
+       // getValuesFromAdc();
         getValuesFromAdc();
         vector_z.emplace_back((int16_t) spiBuf[ZPin]);  // get Z from adc
         if (conf_.size == 2)
@@ -443,7 +443,7 @@ void Scanner::start_hopingscan()
     //*******************************************************************************
       if (!flgVirtual)
       {
-        getValuesFromAdc();
+       // getValuesFromAdc();
         getValuesFromAdc();
         vector_z.emplace_back((int16_t) spiBuf[ZPin]);     // считать  Z 
         switch (conf_.method)
@@ -713,7 +713,7 @@ void Scanner::start_fastscan()
 
         if (!flgVirtual)
         {
-          getValuesFromAdc();
+          //getValuesFromAdc();
           getValuesFromAdc();
           vector_z.emplace_back((int16_t) spiBuf[ZPin]);  // считать Z из АЦП
         }
@@ -1027,7 +1027,7 @@ void Scanner::positioningXYZ(const int16_t *const data)
       status = none;
       if (!flgVirtual) 
       {
-        getValuesFromAdc();
+        //getValuesFromAdc();
         auto ptr = getValuesFromAdc();
         ZValue      = (int16_t) ptr[ZPin];
         SignalValue = (int16_t) ptr[AmplPin];
@@ -1131,7 +1131,7 @@ void Scanner::spectroscopyIV(const int16_t *const data)
   std::cout << afc;
   afc.clear();
   sleep_ms(100);
- //  Simple.fcupBypass(0,true); //turn off   FB     false???
+ // add  turn off   FB     false!!!!!!!!!
      sleep_ms(300);
  // установка начального значения напряжения
       int16_t kk;
@@ -1170,7 +1170,7 @@ void Scanner::spectroscopyIV(const int16_t *const data)
        sleep_ms(delay);
        if (!flgVirtual)
        {
-        getValuesFromAdc();
+        //getValuesFromAdc();
         auto ptr = getValuesFromAdc();
         vectorI_V.emplace_back(UStart+i*UStep);
         vectorI_V.emplace_back((int16_t)ptr[IPin]);
@@ -1217,7 +1217,7 @@ void Scanner::spectroscopyIV(const int16_t *const data)
     dacU+=rest;
     set_Bias(1,dacU);  
     sleep_ms(delay);
-//  Simple.fcupBypass(0,false); //turn on  FB
+//  add  turn on  FB   !!!!!!!!!!!!!!!
    int16_t count = 0;
   while ((!TheadDone) || (count<20) )
   {
@@ -1276,7 +1276,7 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
 
   if (!flgVirtual)
   {
-    getValuesFromAdc();
+   // getValuesFromAdc();
     uint16_t *ptr = getValuesFromAdc(); 
     ZValue = (int16_t) ptr[ZPin];
     switch (flgDev)
@@ -1351,7 +1351,7 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
      sleep_ms(INTDELAY);
     if (!flgVirtual)
     {
-      getValuesFromAdc();
+      //getValuesFromAdc();
       auto ptr = getValuesFromAdc();
       ZValue = (int16_t) ptr[ZPin];
      switch (flgDev)
@@ -1485,7 +1485,7 @@ void Scanner::start_frqscan()
     {
       set_freq(inBuf[1]);
       sleep_ms(inBuf[4]);
-      getValuesFromAdc();
+      //getValuesFromAdc();
       afc +=',' + std::to_string(inBuf[1]) + ',' +
           std::to_string((int16_t) getValuesFromAdc()[current_channel]);//+ ',';
     } else
