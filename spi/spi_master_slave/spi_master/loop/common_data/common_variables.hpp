@@ -30,7 +30,7 @@ extern int vectorSize;
 extern bool AD9833_SENDER;
 extern bool AD8400_SENDER;
 extern bool AD8400_SET_GAIN;   // AD8400
-extern bool AD5664;             //
+extern bool AD5664;            //
 
 extern bool ADC_ENABLE_DISABLE;//AD7606
 extern bool ADC_RESET;         //AD7606
@@ -41,11 +41,10 @@ extern bool FREQ_SET;          //AD9833
 extern bool SCANNING;
 extern bool SPECTROSOPY_IV;
 extern bool SCAN_CONFIG_UPDATE;
-extern bool LID_MOVE_TOX0Y0; // переместиться в начальную точку  скана из начальной точке предыдущего скана
+extern bool MOVE_TOX0Y0; // переместиться в начальную точку  скана из начальной точке предыдущего скана
 extern bool LID_MOVE_TOZ0;   // отвестись в безопастную начальную точку по Z
 extern bool LID;
 extern bool LID_MOVE_UNTIL_STOP;
-extern bool STOP_ALL;
 extern bool SET_IO_VALUE;
 extern bool SCANNER_RETRACT_PROTRACT;    //SET_ONE_IO_VALUE;
 extern bool APPROACH;
@@ -72,9 +71,9 @@ extern volatile bool RESONANCE_ACTIVE;
 
 extern int16_t ZValue; //??
 extern int16_t SignalValue; //??
-extern bool flgVirtual; // Virtual device for debuging
-extern uint flgDebugLevel; //  leveldebug
-extern bool TheadDone;
+extern bool    flgVirtual; // Virtual device for debuging
+extern uint    flgDebugLevel; //  leveldebug
+extern bool    TheadDone;
 extern uint8_t ZPin;
 extern uint8_t AmplPin; //amplitude
 extern uint8_t IPin;    //current
@@ -84,7 +83,7 @@ extern int16_t shiftScannerZeroPoint;
 extern volatile int32_t current_channel;
 extern critical_section_t criticalSection;
 
-extern InputPort busy;
+extern InputPort  busy;
 extern OutputPort conv;
 extern OutputPort dec;
 extern OutputPort resetPort;

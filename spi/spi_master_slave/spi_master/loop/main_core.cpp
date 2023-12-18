@@ -51,9 +51,9 @@ void MainCore::loop()
 
       continue;
     }
-    if (LID_MOVE_TOX0Y0) //переместиться в начальную точку  скана из начальной точке предыдущего скана
+    if (MOVE_TOX0Y0) //переместиться в начальную точку  скана из начальной точке предыдущего скана
     {
-      LID_MOVE_TOX0Y0 = false;
+      MOVE_TOX0Y0 = false;
       scanner.move_toX0Y0(static_cast<uint16_t>(vector[1]), static_cast<uint16_t>(vector[2]), vector[3]);
       continue;
     }
@@ -61,12 +61,12 @@ void MainCore::loop()
     if (LID_MOVE_TOZ0) //отвестись в безопасную начальную точку по Z
     {
       LID_MOVE_TOZ0 = false;
-      scanner.move_toZ0(vector[1], vector[2], vector[3], vector[4], vector[5]);
+      scanner.LID_move_toZ0(vector[1], vector[2], vector[3], vector[4], vector[5]);
       continue;
     }
     if (SCANNING) //сканирование
     {   // int32_t vector[16];  
-      scanner.update({
+      scanner.scan_update({
                         static_cast<uint16_t>(vector[1]), static_cast<uint16_t>(vector[2]),
                         static_cast<uint8_t>(vector[3]),  static_cast<uint8_t>(vector[4]),
                         static_cast<uint16_t>(vector[5]), static_cast<uint16_t>(vector[6]),
@@ -83,7 +83,7 @@ void MainCore::loop()
     }
     if (FASTSCANNING)
     {// int32_t vector[16];
-      scanner.update({
+      scanner.scan_update({
                        static_cast<uint16_t>(vector[1]), static_cast<uint16_t>(vector[2]),
                        static_cast<uint8_t>(vector[3]),  static_cast<uint8_t>(vector[4]),
                        static_cast<uint16_t>(vector[5]), static_cast<uint16_t>(vector[6]),
@@ -171,7 +171,7 @@ void MainCore::loop()
       dac8563_2.initialize(vector[1]);
       continue;
     }
-    if ( SET_BIAS) 
+    if (SET_BIAS) 
     {
       SET_BIAS=false;
       int16_t v1=vector[1];

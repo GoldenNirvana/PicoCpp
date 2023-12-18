@@ -164,11 +164,10 @@ void stopAll()
   FASTSCANNING = false;
   SCAN_CONFIG_UPDATE = false;
   APPROACH = false;
-  LID_MOVE_TOX0Y0 = false;
+  MOVE_TOX0Y0 = false;
   LID_MOVE_TOZ0 = false;
   LID = false;
   LID_MOVE_UNTIL_STOP = false;  
-  STOP_ALL = true;
   SET_IO_VALUE = false;
   SCANNER_RETRACT_PROTRACT = false;
   RESONANCE = false;

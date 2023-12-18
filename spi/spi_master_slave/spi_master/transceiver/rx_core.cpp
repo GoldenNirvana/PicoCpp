@@ -123,10 +123,7 @@ void RX_core::launchOnCore1()
         SCANNING = true;
          break;
       case 51:
-        LID_MOVE_TOX0Y0 = true;
-        break;
-      case 52:
-        STOP_ALL = true;
+        MOVE_TOX0Y0 = true;
         break;
       case 53:
         SCANNING = true;

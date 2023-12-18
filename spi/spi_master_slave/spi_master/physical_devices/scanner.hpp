@@ -33,6 +33,13 @@ struct ConfigCurrent
 
 class Scanner
 {
+
+private:
+  
+   void stop_scan();         // возвращение сканера в  начальную точку скана
+  
+   void move_to(const Point &point, uint16_t delay);  // переместиться в начальную точку скана текущего скана
+
 public:
 
   Scanner();
@@ -45,8 +52,6 @@ public:
 
   void start_fastscan();    // быстрое сканирование и вывод скана целиком, а не по линиям
 
-  void stop_scan();         // возвращение сканера в  начальную точку скана
- 
   void approacphm(const int16_t *const data);  // захват взаимодействия с контролем ворот
 
   void positioningXYZ(const int16_t *const data); // abs(n) перемещение по  X,Y и Z (с контроллем ворот)
@@ -55,13 +60,11 @@ public:
 
   void spectroscopyIV(const int32_t *const data); // спектроскопия I-V
 
-  void update(const Config &config); // обновить параметры скнирования
-
-  void move_to(const Point &point, uint16_t delay);  // переместиться в начальную точку скана текущего скана
+  void scan_update(const Config &config);  // обновить параметры скaнирования
 
   void move_toX0Y0(int x, int y, int delay); //переместиться в начальную точку скана из начальной точке предыдущего скана
 
-  void move_toZ0(int lid_name, int f, int p, int n, int dir);// отвестись в безопасную начальную точку по Z при старте и выходе из программы
+  void LID_move_toZ0(int lid_name, int f, int p, int n, int dir);// отвестись в безопасную начальную точку по Z при старте и выходе из программы
 
   void retract();       // втянуть сканер
 

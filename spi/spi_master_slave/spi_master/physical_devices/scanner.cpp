@@ -826,7 +826,7 @@ void Scanner::stop_scan()
   move_to(prev_point, 10);
 }
 
-void Scanner::update(const Config &config)
+void Scanner::scan_update(const Config &config)
 {
   conf_ = config;
 }
@@ -909,7 +909,7 @@ void Scanner::move_to(const Point &point, uint16_t delay)
   }
 }
 
-void Scanner::move_toZ0(int lid_name, int f, int p, int n, int dir)  //отвестись в безопастную начальную точку по Z
+void Scanner::LID_move_toZ0(int lid_name, int f, int p, int n, int dir)  //отвестись в безопасную начальную точку по Z
 {
  if (!flgVirtual)
  {
