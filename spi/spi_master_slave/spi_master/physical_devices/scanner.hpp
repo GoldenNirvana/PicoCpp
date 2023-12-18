@@ -53,7 +53,7 @@ public:
 
   void start_frqscan(); //поиск резонанса датчика
 
-  void spectroscopyIV(const int16_t *const data); // спектроскопия I-V
+  void spectroscopyIV(const int32_t *const data); // спектроскопия I-V
 
   void update(const Config &config); // обновить параметры скнирования
 

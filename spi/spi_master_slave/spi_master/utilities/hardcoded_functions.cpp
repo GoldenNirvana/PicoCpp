@@ -69,7 +69,7 @@ void Init_DAC2(uint8_t port)
   sleep_ms(100);
 }
 
-void set_Bias(int8_t chanel,int16_t Bias)
+void set_Bias(int8_t chanel,int32_t Bias)
 {
 //   code  22 , 2, 8, 0, 1, 1, value 
     if (chanel == 0)
@@ -91,7 +91,7 @@ void set_Bias(int8_t chanel,int16_t Bias)
   */
 }
 
-void set_SetPoint(int8_t chanel, int16_t SetPoint)
+void set_SetPoint(int8_t chanel, int32_t SetPoint)
 {//  code  22, 2, 8, 0, 1, 0, value
    if (chanel == 0)
    {

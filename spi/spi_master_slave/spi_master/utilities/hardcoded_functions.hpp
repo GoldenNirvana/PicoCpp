@@ -13,9 +13,9 @@ void Init_DAC1(uint8_t port); //инициирование ЦАП1
 
 void Init_DAC2(uint8_t port); //инициирование ЦАП2
 
-void set_Bias(int8_t chanel,int16_t Bias); //установка заданного значения напряжения
+void set_Bias(int8_t chanel,int32_t Bias); //установка заданного значения напряжения
 
-void set_SetPoint(int8_t chanel,int16_t SetPoint);//установка заданной опроры для ПИД
+void set_SetPoint(int8_t chanel,int32_t SetPoint);//установка заданной опроры для ПИД
 
 void get_result_from_adc();       // чтение АЦП
 

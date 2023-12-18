@@ -26,14 +26,14 @@ bool SCANNER_RETRACT_PROTRACT = false;
 bool INIT_ADC;
 bool READ_ADC;  // чтение сигналов ЦАП
 bool FREQ_SET = false;     //AD9833
-bool SCANNING = false;
+bool SCANNING = false;     //сканирование
 bool SPECTROSOPY_IV=false;
 bool CONFIG_UPDATE = false;
 bool MOVE_TOX0Y0 = false; //переместиться в начальную точку X0Y0 скана из начальной точке предыдущего скана
 bool STOP_ALL = false;
 bool LID = false;
-bool LID_UNTIL_STOP = false;
-bool APPROACH = false;
+bool LID_UNTIL_STOP = false; //позиционирование
+bool APPROACH = false;       //сближение
 bool APPROACH_CONFIG_UPDATE = false;
 bool SET_PID_GAIN=false;
 bool SET_AMPLMOD_GAIN=false; // усиление модуляции зонда
@@ -42,7 +42,7 @@ bool SET_SETPOINT=false;            //DAC8563
 bool InitDAC_BIAS_SET_POINT=false;  //DAC8563
 bool InitDAC_XY=false;              //DAC8563
 bool SET_XY=false;                  //DAC8563
-bool FASTSCANNING = false;
+bool FASTSCANNING = false;  //быстрое сканирование
 bool POSXYZ_CONFIG_UPDATE = false;
 bool GET_CURRENTX0Y0 = false;
 bool MOVE_TOZ0 = false;   // отвестись в безопастную начальную точку по Z

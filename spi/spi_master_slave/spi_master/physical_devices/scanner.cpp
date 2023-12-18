@@ -1099,29 +1099,29 @@ void Scanner::positioningXYZ(const int16_t *const data)
   //  sleep_ms(100); 
 }
 
-void Scanner::spectroscopyIV(const int16_t *const data)
+void Scanner::spectroscopyIV(const int32_t *const data)
 {
     int i,j;
-		int16_t  UBackup;
+		int32_t  UBackup;
     int16_t  delay;
     int16_t  UPoints;
     int16_t  UCurves;
-    int16_t  UStep;
-    int16_t  UStart;
+    int32_t  UStep;
+    int32_t  UStart;
     int8_t   flgDev;
-    int16_t  dacU;
-    int16_t  start_step;
-    int16_t  step;
+    int32_t  dacU;
+    int32_t  start_step;
+    int32_t  step;
 
-    UPoints         =   data[0];
-    UCurves         =   data[1];
-		UStart	      	=   data[2];    
-		UStep		        =   data[3];    
-  	delay           =   data[4]; 
-    flgDev          =   data[5];
-    UBackup         =   data[6]; 
+    UPoints         = (int16_t) data[0];
+    UCurves         = (int16_t) data[1];
+		UStart	      	=           data[2];    
+		UStep		        =           data[3];    
+  	delay           = (int16_t) data[4]; 
+    flgDev          = (int8_t)  data[5];
+    UBackup         =           data[6]; 
 //start
- afc.clear();
+  afc.clear();
   afc = "debug I_V parameters";
   for (int j = 0; j <= 6; ++j)
   {
@@ -1132,10 +1132,10 @@ void Scanner::spectroscopyIV(const int16_t *const data)
   afc.clear();
   sleep_ms(100);
  // add  turn off   FB     false!!!!!!!!!
-     sleep_ms(300);
+  sleep_ms(300);
  // установка начального значения напряжения
       int16_t kk;
-      int16_t dlt;
+      int32_t dlt;
       start_step=100;
       dacU=UBackup;
       step=-start_step;
@@ -1157,12 +1157,12 @@ void Scanner::spectroscopyIV(const int16_t *const data)
       for (kk=0; kk<nstep; kk++)
       {
        if (!flgVirtual) set_Bias(1,dacU);    
-       sleep_ms(50);   
+       sleep_ms(10);   
        dacU+=step;
       } 
        dacU+=rest;
       if (!flgVirtual)set_Bias(1,dacU);         
-      sleep_ms(50);  
+      sleep_ms(10);  
   
       for(i=0; i<UPoints; i++)
       {
@@ -1182,6 +1182,8 @@ void Scanner::spectroscopyIV(const int16_t *const data)
        }
        dacU+=UStep;
       }
+
+      sleep_ms(300);
     afc.clear();
     afc="code65";
    for (size_t m = 0; m < vectorI_V.size(); m++)     // send data scanline
@@ -1211,12 +1213,14 @@ void Scanner::spectroscopyIV(const int16_t *const data)
  for (kk=0; kk<nstep; kk++)
  {
    set_Bias(1,dacU);  
-   sleep_ms(delay);
+   sleep_ms(10);
    dacU+=step;
  }
     dacU+=rest;
     set_Bias(1,dacU);  
-    sleep_ms(delay);
+    sleep_ms(10);
+    set_Bias(1,UBackup);  
+    sleep_ms(10);
 //  add  turn on  FB   !!!!!!!!!!!!!!!
    int16_t count = 0;
   while ((!TheadDone) || (count<20) )
@@ -1235,11 +1239,11 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
   const int stopdone = 1;
   uint16_t ZMaxValue = 32767;
   uint16_t SET_POINT, GATE_Z_MAX, GATE_Z_MIN;
-  int16_t freq, scv;//
-  int16_t GAIN, NSTEPS;
+  int16_t  freq, scv;//
+  int16_t  GAIN, NSTEPS;
   uint16_t INTDELAY, SCANNERDECAY;
-  uint8_t flgDev;
-  int16_t Bias;
+  uint8_t  flgDev;
+  int32_t  Bias;
   // SET VALUE FROM RX_CORE
   SET_POINT      = data[0];
   GATE_Z_MAX     = data[1];

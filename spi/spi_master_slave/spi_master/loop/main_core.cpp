@@ -131,7 +131,7 @@ void MainCore::loop()
 
     if (SPECTROSOPY_IV)
     {
-      static int16_t data[7];
+      static int32_t data[7];
       data[0] = vector[1]; // n точек
       data[1] = vector[2]; // m кривых
       data[2] = vector[3]; // V начальное значение
