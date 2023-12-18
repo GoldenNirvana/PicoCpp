@@ -239,9 +239,9 @@ void Scanner::start_scan() //сканирование
     afc.clear();
     vector_z.clear();
     other_info.clear();
-    if (CONFIG_UPDATE)
+    if (SCAN_CONFIG_UPDATE)
     {
-      CONFIG_UPDATE = false;
+      SCAN_CONFIG_UPDATE = false;
       conf_.delayF = vector[1];
       conf_.delayB = vector[2];
       set_gainPID(vector[3]);
@@ -526,9 +526,9 @@ void Scanner::start_hopingscan()
     afc.clear();
     vector_z.clear();
     other_info.clear();
-    if (CONFIG_UPDATE)
+    if (SCAN_CONFIG_UPDATE)
     {
-      CONFIG_UPDATE = false;
+      SCAN_CONFIG_UPDATE = false;
       conf_.delayF = vector[1];
       conf_.delayB = vector[2];
       set_gainPID(vector[3]);
@@ -959,7 +959,7 @@ void Scanner::positioningXYZ(const int16_t *const data)
         sleep_ms(100);
   if (lid_name == 90 || lid_name == 95) //X,Y
   {
-    while (LID_UNTIL_STOP)
+    while (LID_MOVE_UNTIL_STOP)
     {
       if (POSXYZ_CONFIG_UPDATE)
       {
@@ -1001,7 +1001,7 @@ void Scanner::positioningXYZ(const int16_t *const data)
   if (lid_name == 99) //Z
   {
     status = none;
-    while (LID_UNTIL_STOP)
+    while (LID_MOVE_UNTIL_STOP)
     {
     //   Z_STATE = true;  // 231215 ????
       if (POSXYZ_CONFIG_UPDATE)
@@ -1093,7 +1093,7 @@ void Scanner::positioningXYZ(const int16_t *const data)
     count++;
   } //ожидание ответа ПК для синхронизации
   TheadDone = false;
-  LID_UNTIL_STOP = false;
+  LID_MOVE_UNTIL_STOP = false;
   std::cout << "end\n";
   dark();
   //  sleep_ms(100); 

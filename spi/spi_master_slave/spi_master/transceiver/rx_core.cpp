@@ -123,7 +123,7 @@ void RX_core::launchOnCore1()
         SCANNING = true;
          break;
       case 51:
-        MOVE_TOX0Y0 = true;
+        LID_MOVE_TOX0Y0 = true;
         break;
       case 52:
         STOP_ALL = true;
@@ -132,7 +132,7 @@ void RX_core::launchOnCore1()
         SCANNING = true;
         break;
       case 55:
-        CONFIG_UPDATE = true;
+        SCAN_CONFIG_UPDATE = true;
         break;
       case 56:
         FASTSCANNING =true;
@@ -156,13 +156,13 @@ void RX_core::launchOnCore1()
         APPROACH_CONFIG_UPDATE = true;
         break;
       case 80:
-        LID_UNTIL_STOP = true; 
+        LID_MOVE_UNTIL_STOP = true; 
         break;
       case 82:// изменение параметров позиционирования ZYX
         POSXYZ_CONFIG_UPDATE = true;
         break;
       case 84:
-        MOVE_TOZ0 = true; 
+        LID_MOVE_TOZ0 = true; 
         break;  
       case 90 ... 99:
         LID = true;

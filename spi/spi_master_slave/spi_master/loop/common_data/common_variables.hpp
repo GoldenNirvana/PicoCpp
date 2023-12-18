@@ -40,14 +40,14 @@ extern bool ADC_GET_VALUE;     //AD7606
 extern bool FREQ_SET;          //AD9833
 extern bool SCANNING;
 extern bool SPECTROSOPY_IV;
-extern bool CONFIG_UPDATE;
-extern bool MOVE_TOX0Y0; // переместиться в начальную точку  скана из начальной точке предыдущего скана
-extern bool MOVE_TOZ0;   // отвестись в безопастную начальную точку по Z
+extern bool SCAN_CONFIG_UPDATE;
+extern bool LID_MOVE_TOX0Y0; // переместиться в начальную точку  скана из начальной точке предыдущего скана
+extern bool LID_MOVE_TOZ0;   // отвестись в безопастную начальную точку по Z
+extern bool LID;
+extern bool LID_MOVE_UNTIL_STOP;
 extern bool STOP_ALL;
 extern bool SET_IO_VALUE;
 extern bool SCANNER_RETRACT_PROTRACT;    //SET_ONE_IO_VALUE;
-extern bool LID;
-extern bool LID_UNTIL_STOP;
 extern bool APPROACH;
 extern bool APPROACH_CONFIG_UPDATE;
 extern bool Z_STATE;

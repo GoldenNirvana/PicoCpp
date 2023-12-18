@@ -36,7 +36,7 @@ void MainCore::loop()
       activateDark();
       continue;
     }
-    if (LID_UNTIL_STOP)  // пьезодвижитель  позиционирование
+    if (LID_MOVE_UNTIL_STOP)  // пьезодвижитель  позиционирование
     {
       static int16_t pos_data[7];
       pos_data[0] = vector[1]; //  int lid_name
@@ -51,16 +51,16 @@ void MainCore::loop()
 
       continue;
     }
-    if (MOVE_TOX0Y0) //переместиться в начальную точку  скана из начальной точке предыдущего скана
+    if (LID_MOVE_TOX0Y0) //переместиться в начальную точку  скана из начальной точке предыдущего скана
     {
-      MOVE_TOX0Y0 = false;
+      LID_MOVE_TOX0Y0 = false;
       scanner.move_toX0Y0(static_cast<uint16_t>(vector[1]), static_cast<uint16_t>(vector[2]), vector[3]);
       continue;
     }
 
-    if (MOVE_TOZ0) //отвестись в безопасную начальную точку по Z
+    if (LID_MOVE_TOZ0) //отвестись в безопасную начальную точку по Z
     {
-      MOVE_TOZ0 = false;
+      LID_MOVE_TOZ0 = false;
       scanner.move_toZ0(vector[1], vector[2], vector[3], vector[4], vector[5]);
       continue;
     }
