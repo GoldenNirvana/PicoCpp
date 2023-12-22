@@ -20,20 +20,19 @@ bool AD5664 = false;
 bool SET_IO_VALUE = false;
 bool ADC_ENABLE_DISABLE = false;
 bool ADC_RESET = false;
-bool ADC_READ = false;
+bool ADC_READ = false;// чтение сигналов ЦАП
 bool ADC_READ_FOREVER = false;
 bool ADC_GET_VALUE = false;
 bool SCANNER_RETRACT_PROTRACT = false;
 bool INIT_ADC;
-bool READ_ADC;  // чтение сигналов ЦАП
 bool FREQ_SET = false;     //AD9833
 bool SCANNING = false;     //сканирование
 bool SCAN_CONFIG_UPDATE = false;
 bool SPECTROSOPY_IV=false;
-bool MOVE_TOX0Y0 = false;     // переместиться в начальную точку X0Y0 скана из начальной точке предыдущего скана
-bool LID_MOVE_TOZ0 = false;   // отвестись в безопастную начальную точку по Z
+bool MOVE_TOX0Y0 = false;     // сканнер -переместиться в начальную точку X0Y0 скана из начальной точке предыдущего скана
+bool LID_MOVE_TOZ0 = false;   // пьезомуавер - отвестись в безопастную начальную точку по Z
 bool LID = false;
-bool LID_MOVE_UNTIL_STOP = false; //позиционирование
+bool LID_MOVE_UNTIL_STOP = false; //пьезомуавер - позиционирование
 bool APPROACH = false;       //сближение
 bool APPROACH_CONFIG_UPDATE = false;
 bool SET_PID_GAIN=false;
