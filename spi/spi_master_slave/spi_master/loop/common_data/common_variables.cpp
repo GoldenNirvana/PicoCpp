@@ -12,6 +12,8 @@ uint16_t spiBuf[8];
 int32_t vector[16];
 int vectorSize;
 
+
+bool STOP=false;
 bool AD9833_SENDER = false;
 bool AD8400_SENDER = false;
 bool AD8400_SET_GAIN = false;

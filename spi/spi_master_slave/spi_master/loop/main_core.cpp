@@ -199,7 +199,7 @@ void MainCore::loop()
       int16_t v2=vector[2];
       int16_t v3=vector[3];
       int16_t v4=vector[4];
-      IniSPI(v1,v2,v3,v4);//22, 2, 8, 0, 1, 1, value	
+      IniSPI(v1,v2,v3,v4);//22, 3, 8, 0, 1, 1, value	
       if (vector[5] == 0)
       {
         dac8563_2.writeA(vector[6]);
@@ -268,7 +268,6 @@ void MainCore::loop()
         afc = "code12";
         if (!flgVirtual)
         {
-       //   getValuesFromAdc();
           auto ptr = getValuesFromAdc();
           logger(ptr, 8);
           ZValue = (int16_t) ptr[ZPin];

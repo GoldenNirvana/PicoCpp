@@ -67,12 +67,14 @@ void RX_core::launchOnCore1()
            IPin=2;
         }
        break;
+   //*************************************** 
       case 14: //флаг симуляции работы микрокотроллера      
         flgVirtual =(bool)vector[1];
         break;
       case 15: // флаг вывода отладочной инофрмации debug level =2;  =3 запрет вывода!
          flgDebugLevel =vector[1];
         break;
+  //***************************************    
       case 16: //изменить значение усиления амплитуды раскачки зонда
         SET_AMPLMOD_GAIN=true;
         break;  
@@ -82,7 +84,6 @@ void RX_core::launchOnCore1()
       case 18: // получитб текущее знание координат сканера 
         GET_CURRENTX0Y0=true; 
         break; 
- //*************************************** 
       case 19:
         SET_BIAS=true;
         break;    
@@ -101,9 +102,6 @@ void RX_core::launchOnCore1()
       case 25:
         RESONANCE = true;
         break;
-      case 26:
-        RESONANCE_STOP = true;
-        break;
       case 27:
         InitDAC_XY=true;; // иницирование  управлением сканера по X,Y 
         break;
@@ -121,7 +119,7 @@ void RX_core::launchOnCore1()
         break;
       case 50:
         SCANNING = true;
-         break;
+        break;
       case 51:
         MOVE_TOX0Y0 = true;
         break;
@@ -135,7 +133,7 @@ void RX_core::launchOnCore1()
         FASTSCANNING =true;
         break;
       case 60:
-         SET_PID_GAIN =true;
+        SET_PID_GAIN =true;
         break;
       case 61:  // управление ПИД - втянуть-вытянуть
         SCANNER_RETRACT_PROTRACT = true;
@@ -144,7 +142,7 @@ void RX_core::launchOnCore1()
         SPECTROSOPY_IV = true;
         break;
       case 70:
-        stopAll();
+        STOP=true; //stopAll(); stop algorithm 
         break;
       case 75: //сближение зонда и образца
         APPROACH = true;

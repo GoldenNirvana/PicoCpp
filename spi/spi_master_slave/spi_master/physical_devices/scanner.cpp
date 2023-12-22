@@ -55,10 +55,10 @@ void Scanner::start_scan() //сканирование
   uint16_t reststepy;
   uint16_t nfastline, nslowline;
   uint16_t stepslowline, stepfastline;
-  uint8_t portx = 1;
-  uint8_t porty = 2;
-  uint8_t portfast;
-  uint8_t portslow;
+  uint8_t  portx = 1;
+  uint8_t  porty = 2;
+  uint8_t  portfast;
+  uint8_t  portslow;
   uint16_t pos_fast;
   uint16_t pos_slow;
   stepsx = (uint16_t) conf_.betweenPoints_x / conf_.diskretinstep;
@@ -136,7 +136,7 @@ void Scanner::start_scan() //сканирование
       {
         if (!flgVirtual)
         {
-          set_on_dac(portfast, pos_fast);
+          set_DACXY(portfast, pos_fast);
           pos_fast += conf_.diskretinstep;
         } else
         { pos_fast += conf_.diskretinstep; }
@@ -147,7 +147,7 @@ void Scanner::start_scan() //сканирование
         if (!flgVirtual)
         {
           pos_fast += reststepfast;
-          set_on_dac(portfast, pos_fast);
+          set_DACXY(portfast, pos_fast);
         } else
         { pos_fast += reststepfast; }
         sleep_us(conf_.delayF);
@@ -158,7 +158,6 @@ void Scanner::start_scan() //сканирование
       //*******************************************************************************
       if (!flgVirtual)
       {
-       // getValuesFromAdc();
         getValuesFromAdc();
         vector_z.emplace_back((int16_t) spiBuf[ZPin]);  // get Z from adc
         if (conf_.size == 2)
@@ -196,7 +195,7 @@ void Scanner::start_scan() //сканирование
       if (!flgVirtual)
       {
         pos_fast -= conf_.diskretinstep;
-        set_on_dac(portfast, pos_fast);
+        set_DACXY(portfast, pos_fast);
       }
       else
       { pos_fast -= conf_.diskretinstep; }
@@ -208,7 +207,7 @@ void Scanner::start_scan() //сканирование
       if (!flgVirtual)
       {
         pos_fast -= reststepfast;
-        set_on_dac(portfast, pos_fast);
+        set_DACXY(portfast, pos_fast);
       }
       else
       { pos_fast -= reststepfast; }
@@ -260,9 +259,9 @@ void Scanner::start_scan() //сканирование
       sleep_ms(100);
       //    dark();
     }
-    if (!SCANNING)   // stop
+    if (STOP)   // stop
     {
-      SCANNING = false;
+      STOP = false;
       sleep_ms(100);
       afc.clear();
       afc = "stopped\n";
@@ -279,7 +278,7 @@ void Scanner::start_scan() //сканирование
           if (!flgVirtual)
           {
             pos_slow += conf_.diskretinstep;
-            set_on_dac(portslow, pos_slow);
+            set_DACXY(portslow, pos_slow);
           } else
           { pos_slow += conf_.diskretinstep; }
 
@@ -290,7 +289,7 @@ void Scanner::start_scan() //сканирование
           if (!flgVirtual) 
           {
             pos_slow -= reststepslow;
-            set_on_dac(portslow, pos_slow);
+            set_DACXY(portslow, pos_slow);
           } else
           { pos_slow -= reststepslow; }
 
@@ -415,7 +414,7 @@ void Scanner::start_hopingscan()
       {
         if (!flgVirtual)
         {
-          set_on_dac(portfast, pos_fast);
+          set_DACXY(portfast, pos_fast);
           pos_fast += conf_.diskretinstep;
         } else
         { pos_fast += conf_.diskretinstep; }
@@ -426,7 +425,7 @@ void Scanner::start_hopingscan()
         if (!flgVirtual)
         {
           pos_fast += reststepfast;
-          set_on_dac(portfast, pos_fast);
+          set_DACXY(portfast, pos_fast);
         } else
         { pos_fast += reststepfast; }
 
@@ -443,8 +442,7 @@ void Scanner::start_hopingscan()
     //*******************************************************************************
       if (!flgVirtual)
       {
-       // getValuesFromAdc();
-        getValuesFromAdc();
+         getValuesFromAdc();
         vector_z.emplace_back((int16_t) spiBuf[ZPin]);     // считать  Z 
         switch (conf_.method)
           //added signal  Const  BackPass=2;    //PM  Const  Phase=3;  Const  UAM=4;   //Force Image
@@ -484,7 +482,7 @@ void Scanner::start_hopingscan()
     if (!flgVirtual)
     {
       pos_fast -= conf_.diskretinstep * stepfastline * nfastline;
-      set_on_dac(portfast, pos_fast);
+      set_DACXY(portfast, pos_fast);
     }
     else
     { pos_fast -= conf_.diskretinstep * stepfastline * nfastline; }
@@ -495,7 +493,7 @@ void Scanner::start_hopingscan()
       if (!flgVirtual)
       {
         pos_fast -= reststepfast;
-        set_on_dac(portfast, pos_fast);
+        set_DACXY(portfast, pos_fast);
       } else
       { pos_fast -= reststepfast; }
 
@@ -545,9 +543,9 @@ void Scanner::start_hopingscan()
       afc.clear();
       sleep_ms(100);
     }
-    if (!SCANNING)  // stop
+    if (STOP)  // stop
     {
-      SCANNING = false;
+      STOP = false;
       sleep_ms(100);
       afc.clear();
       afc = "stopped\n";
@@ -561,7 +559,7 @@ void Scanner::start_hopingscan()
      {  if (!flgVirtual)
       {
         pos_slow += conf_.diskretinstep * stepslowline;
-        set_on_dac(portslow, pos_slow);
+        set_DACXY(portslow, pos_slow);
       } else
       { pos_slow += conf_.diskretinstep * stepslowline; }
       sleep_us(conf_.delayF);
@@ -570,7 +568,7 @@ void Scanner::start_hopingscan()
         if (!flgVirtual) 
         {
           pos_slow -= reststepslow;
-          set_on_dac(portslow, pos_slow);
+          set_DACXY(portslow, pos_slow);
         } else
         { pos_slow -= reststepslow; }
         sleep_us(conf_.delayF);
@@ -680,7 +678,7 @@ void Scanner::start_fastscan()
       break;
     }
   }
-  while (FASTSCANNING)
+  while (!STOP)
   {
     for (uint32_t i = 0; i < nslowline; ++i)
     {
@@ -690,7 +688,7 @@ void Scanner::start_fastscan()
         {
           if (!flgVirtual)
           {
-            set_on_dac(portfast, pos_fast);
+            set_DACXY(portfast, pos_fast);
             pos_fast += conf_.diskretinstep;
           } else
           { pos_fast += conf_.diskretinstep; }
@@ -701,7 +699,7 @@ void Scanner::start_fastscan()
           if (!flgVirtual)
           {
             pos_fast += reststepfast;
-            set_on_dac(portfast, pos_fast);
+            set_DACXY(portfast, pos_fast);
           } else
           { pos_fast += reststepfast; }
 
@@ -713,7 +711,6 @@ void Scanner::start_fastscan()
 
         if (!flgVirtual)
         {
-          //getValuesFromAdc();
           getValuesFromAdc();
           vector_z.emplace_back((int16_t) spiBuf[ZPin]);  // считать Z из АЦП
         }
@@ -729,7 +726,7 @@ void Scanner::start_fastscan()
         if (!flgVirtual)
         {
           pos_fast -= conf_.diskretinstep;
-          set_on_dac(portfast, pos_fast);
+          set_DACXY(portfast, pos_fast);
         } 
         else
         { pos_fast -= conf_.diskretinstep; }
@@ -741,7 +738,7 @@ void Scanner::start_fastscan()
         if (!flgVirtual)
         {
           pos_fast -= reststepfast;
-          set_on_dac(portfast, pos_fast);
+          set_DACXY(portfast, pos_fast);
         }
         else
         { pos_fast -= reststepfast; }
@@ -755,7 +752,7 @@ void Scanner::start_fastscan()
           if (!flgVirtual)
           {
             pos_slow += conf_.diskretinstep;
-            set_on_dac(portslow, pos_slow);
+            set_DACXY(portslow, pos_slow);
           } else
           { pos_slow += conf_.diskretinstep; }
 
@@ -766,7 +763,7 @@ void Scanner::start_fastscan()
           if (!flgVirtual) 
           {
             pos_slow -= reststepslow;
-            set_on_dac(portslow, pos_slow);
+            set_DACXY(portslow, pos_slow);
           } else
           { pos_slow -= reststepslow; }
 
@@ -793,6 +790,7 @@ void Scanner::start_fastscan()
   } 
   blue();
   FASTSCANNING = false;
+  STOP=false;
   switch (conf_.path)
   {
     case 0:
@@ -810,7 +808,7 @@ void Scanner::start_fastscan()
   }
   stop_scan();  //возврат в начальную точку скана
   sleep_ms(200);
-   int16_t count = 0;
+  int16_t count = 0;
   while ((!TheadDone) || (count<20) )
   {
     sleep_ms(100);
@@ -883,22 +881,22 @@ void Scanner::move_to(const Point &point, uint16_t delay)
   {
     while (pos_.x < point.x)
     {
-      set_on_dac(1, ++pos_.x);
+      set_DACXY(1, ++pos_.x);
       sleep_us(delay);
     }
     while (pos_.x > point.x)
     {
-      set_on_dac(1, --pos_.x);
+      set_DACXY(1, --pos_.x);
       sleep_us(delay);
     }
     while (pos_.y < point.y)
     {
-      set_on_dac(2, ++pos_.y);
+      set_DACXY(2, ++pos_.y);
       sleep_us(delay);
     }
     while (pos_.y > point.y)
     {
-      set_on_dac(2, --pos_.y);
+      set_DACXY(2, --pos_.y);
       sleep_us(delay);
     }
   } else
@@ -959,7 +957,7 @@ void Scanner::positioningXYZ(const int16_t *const data)
         sleep_ms(100);
   if (lid_name == 90 || lid_name == 95) //X,Y
   {
-    while (LID_MOVE_UNTIL_STOP)
+    while (!STOP) //LID_MOVE_UNTIL_STOP)
     {
       if (POSXYZ_CONFIG_UPDATE)
       {
@@ -1001,7 +999,7 @@ void Scanner::positioningXYZ(const int16_t *const data)
   if (lid_name == 99) //Z
   {
     status = none;
-    while (LID_MOVE_UNTIL_STOP)
+    while (!STOP) //(LID_MOVE_UNTIL_STOP)
     {
     //   Z_STATE = true;  // 231215 ????
       if (POSXYZ_CONFIG_UPDATE)
@@ -1027,7 +1025,6 @@ void Scanner::positioningXYZ(const int16_t *const data)
       status = none;
       if (!flgVirtual) 
       {
-        //getValuesFromAdc();
         auto ptr = getValuesFromAdc();
         ZValue      = (int16_t) ptr[ZPin];
         SignalValue = (int16_t) ptr[AmplPin];
@@ -1076,6 +1073,7 @@ void Scanner::positioningXYZ(const int16_t *const data)
       afc.clear();
     }
   }
+  STOP=false;
   afc.clear();
   afc = "code" + std::to_string(lid_name) + ',' + std::to_string(status) + ',' + std::to_string(ZValue) + ',' +
         std::to_string(SignalValue) + "\n";
@@ -1170,7 +1168,6 @@ void Scanner::spectroscopyIV(const int32_t *const data)
        sleep_ms(delay);
        if (!flgVirtual)
        {
-        //getValuesFromAdc();
         auto ptr = getValuesFromAdc();
         vectorI_V.emplace_back(UStart+i*UStep);
         vectorI_V.emplace_back((int16_t)ptr[IPin]);
@@ -1280,7 +1277,6 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
 
   if (!flgVirtual)
   {
-   // getValuesFromAdc();
     uint16_t *ptr = getValuesFromAdc(); 
     ZValue = (int16_t) ptr[ZPin];
     switch (flgDev)
@@ -1312,8 +1308,9 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
   while (true)
   {
     buf_status[0] = none;
-    if (!APPROACH)
+    if (STOP)
     {
+      STOP=false;
       buf_status[0] = stopdone;
       buf_status[1] = ZValue;
       buf_status[2] = SignalValue;
@@ -1355,7 +1352,6 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
      sleep_ms(INTDELAY);
     if (!flgVirtual)
     {
-      //getValuesFromAdc();
       auto ptr = getValuesFromAdc();
       ZValue = (int16_t) ptr[ZPin];
      switch (flgDev)
@@ -1405,7 +1401,6 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
         {
           if (!flgVirtual)
           {
-           getValuesFromAdc();
             auto ptr = getValuesFromAdc();
             ZValue = (int16_t) ptr[ZPin];
           }
@@ -1489,7 +1484,6 @@ void Scanner::start_frqscan()
     {
       set_freq(inBuf[1]);
       sleep_ms(inBuf[4]);
-      //getValuesFromAdc();
       afc +=',' + std::to_string(inBuf[1]) + ',' +
           std::to_string((int16_t) getValuesFromAdc()[current_channel]);//+ ',';
     } else

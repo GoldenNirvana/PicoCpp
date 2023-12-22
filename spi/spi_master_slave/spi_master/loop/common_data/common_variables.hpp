@@ -51,6 +51,7 @@ extern bool APPROACH;
 extern bool APPROACH_CONFIG_UPDATE;
 extern bool Z_STATE;
 // add MF
+extern bool STOP;
 extern bool FASTSCANNING;
 extern bool SET_PID_GAIN;
 extern bool SET_AMPLMOD_GAIN;

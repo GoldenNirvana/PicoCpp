@@ -131,18 +131,19 @@ void set_clock_enable()
   spi_write_blocking(spi_default, intBuf, 1);
 }
 
-void set_on_dac(uint8_t channel, uint16_t value)
+void set_DACXY(uint8_t channel, uint16_t value) 
 {
-  dac8563_1.setSpiProps();
+  dac8563_2.setSpiProps();
 //  AD56X4Class::setChannel(AD56X4_SETMODE_INPUT, channel, value);
 //  AD56X4Class::updateChannel(channel);
   channel--;
-  if (channel == 0)  dac8563_1.writeA(value);
-  if (channel == 1)  dac8563_1.writeB(value);
+  if (channel == 0)  dac8563_2.writeA(value);
+  if (channel == 1)  dac8563_2.writeB(value);
 }
 
 void stopAll()
 {
+  STOP=false;
   AD9833_SENDER = false;
   AD8400_SENDER = false;
   ADC_ENABLE_DISABLE = false;

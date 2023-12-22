@@ -9,9 +9,9 @@ void set_freq(uint32_t freq); //установка заданной частот
 
 void IniSPI(uint8_t port ,uint8_t v2 ,uint8_t v3, uint8_t v4); //инициирование SPI
 
-void Init_DAC1(uint8_t port); //инициирование ЦАП1
+void Init_DAC1(uint8_t port); //инициирование ЦАП1  SetPoint,BIAS
 
-void Init_DAC2(uint8_t port); //инициирование ЦАП2
+void Init_DAC2(uint8_t port); //инициирование ЦАП2  XY
 
 void set_Bias(int8_t chanel,int32_t Bias); //установка заданного значения напряжения
 
@@ -25,7 +25,7 @@ void set_gainPID(int gain);          //установить усиления П�
 
 void set_clock_enable();
 
-void set_on_dac(uint8_t channel, uint16_t value);
+void set_DACXY(uint8_t channel, uint16_t value); 
 
 void stopAll(); //остановка  выполнения алгоритма
 
