@@ -13,8 +13,8 @@ extern Spi spi;
 extern LinearDriver linearDriver;
 extern Decoder decoder;
 extern Scanner scanner;
-extern DAC8563 dac8563_1;
-extern DAC8563 dac8563_2;
+extern DAC8563 dac8563_1;  // DAC BIas,SetPoint
+extern DAC8563 dac8563_2;  // DAC X,Y
 
 extern std::string afc;
 extern uint16_t spiBuf[8];

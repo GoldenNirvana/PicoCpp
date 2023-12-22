@@ -5,15 +5,14 @@ Spi spi;
 LinearDriver linearDriver;
 Decoder decoder(4, 5, 6);
 Scanner scanner;
-DAC8563 dac8563_1(1);
-DAC8563 dac8563_2(2);
+DAC8563 dac8563_1(1); // DAC BIAS,SetPoint
+DAC8563 dac8563_2(2); // DAC X,Y
 //#warning REMOVE STATIC !!! side effects???
 uint16_t spiBuf[8];
 int32_t vector[16];
 int vectorSize;
 
-
-bool STOP=false;
+bool STOP=false;   // stop algorithms
 bool AD9833_SENDER = false;
 bool AD8400_SENDER = false;
 bool AD8400_SET_GAIN = false;
@@ -50,7 +49,6 @@ bool GET_CURRENTX0Y0 = false;
 bool PID_TURN_ON = false;
 bool SCANNER_RETRACT = false;
 bool SCANNER_PROTRACT = false;
-
 
 bool flgVirtual = false; // флаг симуляции работа микроконтроллера
 uint flgDebugLevel = 2; //  уровень отладки
