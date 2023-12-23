@@ -173,7 +173,6 @@ void stopAll()
   SCANNER_RETRACT_PROTRACT = false;
   RESONANCE = false;
   RESONANCE_STOP = true;
-  RESONANCE_ACTIVE = false;
   afc.clear();
 }
 /*

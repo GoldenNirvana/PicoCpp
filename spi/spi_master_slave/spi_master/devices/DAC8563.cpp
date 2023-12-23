@@ -17,7 +17,6 @@ void DAC8563::DAC_WR_REG(uint8_t cmd_byte, uint16_t data_byte)
   decoder.activePort(7);
 }
 
-
 void DAC8563::outPutValue(uint8_t cmd_byte, uint16_t input)
 {
   uint8_t inputMid = ((input << 8) >> 8);

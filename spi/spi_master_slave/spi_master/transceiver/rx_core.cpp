@@ -72,7 +72,7 @@ void RX_core::launchOnCore1()
         flgVirtual =(bool)vector[1];
         break;
       case 15: // флаг вывода отладочной инофрмации debug level =2;  =3 запрет вывода!
-         flgDebugLevel =vector[1];
+        flgDebugLevel =vector[1];
         break;
   //***************************************    
       case 16: //изменить значение усиления амплитуды раскачки зонда
@@ -123,9 +123,11 @@ void RX_core::launchOnCore1()
       case 51:
         MOVE_TOX0Y0 = true;
         break;
+    /*
       case 53:
         SCANNING = true;
         break;
+    */    
       case 55:
         SCAN_CONFIG_UPDATE = true;
         break;
@@ -211,7 +213,7 @@ void RX_core::parse(int32_t *vec)
   getline(std::cin, s);
   // todo mb add const_cast
   Parser parser(s.data(), ',');
-  for (int c = 0; c < 10; c++)
+  for (int c = 0; c < 16; c++) //????
   {
     vec[c] = -1;
   }
