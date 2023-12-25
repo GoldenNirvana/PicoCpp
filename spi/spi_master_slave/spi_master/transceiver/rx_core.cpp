@@ -123,11 +123,11 @@ void RX_core::launchOnCore1()
       case 51:
         MOVE_TOX0Y0 = true;
         break;
-    /*
-      case 53:
+  /*      
+       case 53:
         SCANNING = true;
         break;
-    */    
+  */      
       case 55:
         SCAN_CONFIG_UPDATE = true;
         break;

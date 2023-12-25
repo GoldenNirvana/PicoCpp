@@ -41,8 +41,8 @@ extern bool FREQ_SET;          //AD9833
 extern bool SCANNING;
 extern bool SPECTROSOPY_IV;
 extern bool SCAN_CONFIG_UPDATE;
-extern bool MOVE_TOX0Y0; // переместиться в начальную точку  скана из начальной точке предыдущего скана
-extern bool LID_MOVE_TOZ0;   // отвестись в безопастную начальную точку по Z
+extern bool MOVE_TOX0Y0;      // переместиться в начальную точку  скана из начальной точке предыдущего скана
+extern bool LID_MOVE_TOZ0;    // отвестись в безопасную начальную точку по Z
 extern bool LID;
 extern bool LID_MOVE_UNTIL_STOP;
 extern bool SET_IO_VALUE;

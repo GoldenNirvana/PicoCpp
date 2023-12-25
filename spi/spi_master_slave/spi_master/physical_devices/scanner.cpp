@@ -319,7 +319,7 @@ void Scanner::start_scan() //сканирование
   }
   stop_scan();  //возврат в начальную точку скана
   sleep_ms(300); //200
-  red();
+  //red();
   int16_t count = 0;
   while ((!TheadDone) || (count<20) )
   {
