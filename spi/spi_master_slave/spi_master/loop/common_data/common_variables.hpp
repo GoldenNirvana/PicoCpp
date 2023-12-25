@@ -66,20 +66,18 @@ extern bool SCANNER_RETRACT;
 extern bool SCANNER_PROTRACT;
 extern bool POSXYZ_CONFIG_UPDATE;
 extern bool ADC_IS_READY_TO_READ;
-extern bool RESONANCE;  //AD9833 
-extern bool RESONANCE_STOP;
-extern volatile bool RESONANCE_ACTIVE;
-
-extern int16_t ZValue; //??
-extern int16_t SignalValue; //??
-extern bool    flgVirtual; // Virtual device for debuging
-extern uint    flgDebugLevel; //  leveldebug
-extern bool    TheadDone;
+extern bool RESONANCE;              //AD9833 
+extern bool RESONANCE_STOP; //???
+extern bool TheadDone;   //need dor synchronization with PC 
 extern uint8_t ZPin;
 extern uint8_t AmplPin; //amplitude
 extern uint8_t IPin;    //current
+
+extern int16_t ZValue; //for simulation
+extern int16_t SignalValue; //for simulation
+extern bool    flgVirtual;  // Virtual device for debuging and simulation
+extern uint    flgDebugLevel; //  leveldebug
 extern int16_t ZMaxValue;
-extern int16_t shiftScannerZeroPoint;
 //
 extern volatile int32_t current_channel;
 extern critical_section_t criticalSection;
