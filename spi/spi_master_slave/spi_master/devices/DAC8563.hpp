@@ -47,5 +47,4 @@ private:
   void writeVoltage(int input);
 };
 
-
 #endif
