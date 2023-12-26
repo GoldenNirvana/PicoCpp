@@ -62,11 +62,9 @@ void set_clock_enable()
 void set_on_dac(uint8_t channel, uint16_t value)
 {
   dac8563_1.setSpiProps();
-//  AD56X4::setChannel(AD56X4_SETMODE_INPUT, channel, value);
-//  AD56X4::updateChannel(channel);
   channel--;
-  if (channel == 0)  dac8563_1.writeA(value);
-  if (channel == 1)  dac8563_1.writeB(value);
+  if (channel == 0) dac8563_1.writeA(value);
+  if (channel == 1) dac8563_1.writeB(value);
 }
 
 void stopAll()
@@ -104,6 +102,7 @@ void stopAll()
 
 uint16_t *getValuesFromAdc()
 {
+  repeatTwoTimes();
   return repeatTwoTimes();
 }
 

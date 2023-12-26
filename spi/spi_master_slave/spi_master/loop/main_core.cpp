@@ -10,12 +10,9 @@
 void MainCore::loop()
 {
   dark();
-  // remove true and add var
   uint64_t time = 0;
   while (time++ < UINT64_MAX - 1000)
   {
-//    log(vector, vectorSize);
-    // Enable LID while stop command is come to PICO
     if (APPROACH)   //approach
     {
       blue();

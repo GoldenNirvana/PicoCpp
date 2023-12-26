@@ -1,9 +1,7 @@
 #include "rx_core.hpp"
 
 #include <iostream>
-#include <iomanip>
 #include <pico/bootrom.h>
-#include "pico/mutex.h"
 #include "rx_utils/parser.hpp"
 #include "../utilities/base_types/Spi.hpp"
 #include "../loop/common_data/common_variables.hpp"
@@ -33,50 +31,13 @@ void RX_core::comReceiveISR(uint a, uint32_t b)
     return;
   }
   AD_7606_IS_READY_TO_READ = true;
-  /*
-  if (is_already_scanning)
-  { //231025
-    if (!flgVirtual) {afc += std::to_string(current_freq) + ',' + std::to_string(spiBuf[current_channel]) + ',';}
-    else { 
-          current_freq=1000;
-          afc += std::to_string(current_freq) + ',' + std::to_string(current_freq) + ',';
-         }
-  }
-  else 
-  if (AD7606_TRIG_GET_VALUE)
-  {
-    AD7606_TRIG_GET_VALUE = false;
-    if (current_channel == -1)
-    {
-      std::cout << "error\n";
-      return;
-    }
-    std::cout << "code24,"<<spiBuf[current_channel] << '\n'; // add "code,"  codevalue, value //add 231025
-    current_channel = -1;
-  } 
-  else 
-  if (AD7606_GET_ALL_VALUES)
-  {
-    AD7606_GET_ALL_VALUES = false;
-    if (!flgVirtual) {serialPrintBuffer(spiBuf, 8);}//edited 231025
-    else { serialPrint2Buffer(spiBuf);} 
-    AD_7606_IS_READY_TO_READ = true;
-  }
-  */
 }
 
 void RX_core::launchOnCore1()
 {
   while (true)
   {
-//      vector[0] = 12;
-//      std::cout << "Receive core\n";
-////        mutex_enter_timeout_ms(&mut, 10);
-////        std::cout << "Mutex captured by core1 << '\n";
-    /// PARSING
     parse(vector);
-    //   logger("command" + std::to_string(vector[0]) + '\n'); //231210
-//    uart_puts(uart1, "String for uart");
     switch (vector[0])
     {
       case 1:
@@ -92,11 +53,9 @@ void RX_core::launchOnCore1()
         AD7606_RESET = true;
         break;
       case 12:
-//          std::cout << "SetTrue\n";
         AD7606_READ = true;
         break;
-        ///*************************************
-      case 13: //add MF 
+      case 13:
         if (vector[1] == 1)
         {
           ZPin = 0;
@@ -107,23 +66,18 @@ void RX_core::launchOnCore1()
           SignalPin = 0;
         }
         break;
-      case 14: //add MF set virtual device 
-        //   red();
+      case 14: // set virtual device
         flgVirtual = (bool) vector[1];// !flgVirtual;
-        //    dark();
         break;
-      case 15: //add mf set debug level =2; if =3 cancel debug info!!
-        //    red();
+      case 15: // set debug level =2; if =3 cancel debug info!!
         flgDebugLevel = vector[1];
-        //    dark();
         break;
-      case 17: //add mf set PID GAIN!    
+      case 17: // set PID GAIN!
         SET_PID_GAIN = true;
         break;
       case 18: //get current pointX0Y0 - pos_ 
         GET_CURRENTX0Y0 = true;
         break;
-        //***************************************
       case 21:
         AD5664 = true;
         break;

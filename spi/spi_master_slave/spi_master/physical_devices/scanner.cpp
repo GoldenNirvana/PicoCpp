@@ -26,7 +26,7 @@ void Scanner::protract() //вытянуть
 
 bool Scanner::getHoppingFlag() const
 {
-  return (bool)conf_.flgHoping;
+  return (bool) conf_.flgHoping;
 }
 
 void Scanner::start_scan()
@@ -68,7 +68,8 @@ void Scanner::start_scan()
 
   afc.clear();
   afc = "debug scan parameters stepsxy  ";
-  afc +=std::to_string(stepsx)+','+ std::to_string(stepsy)+','+ std::to_string(reststepx)+','+ std::to_string(reststepy);
+  afc += std::to_string(stepsx) + ',' + std::to_string(stepsy) + ',' + std::to_string(reststepx) + ',' +
+         std::to_string(reststepy);
   afc += +"\n";
   std::cout << afc;
   afc.clear();
@@ -153,10 +154,7 @@ void Scanner::start_scan()
         sleep_us(conf_.delayF);
       }
 
-      //******************************************************************************
-      // sleep_ms(conf_.pause); // 50 CONST 50ms wait for start get data
       sleep_us(conf_.pause);    // 50 CONST 50ms wait for start get data
-      //*//******************************************************************************
       if (!flgVirtual)
       {
         getValuesFromAdc();
@@ -315,10 +313,9 @@ void Scanner::start_scan()
   sleep_ms(300); //200
   red();
   int16_t count = 0;
-  while ((!TheadDone) || (count<20) )
+  while ((!TheadDone) || (count++ < 20))
   {
     sleep_ms(100);
-    count++;
   } //ожидание ответа ПК для синхронизации
   TheadDone = false;
   green();
@@ -395,13 +392,13 @@ void Scanner::start_hopingscan()
     }
   }
   for (uint32_t i = 0; i < nslowline; ++i)
-  { 
-   for (uint32_t j = 0; j < nfastline; ++j)
+  {
+    for (uint32_t j = 0; j < nfastline; ++j)
     {
       if (!flgVirtual)
       {
-         retract();
-      }   
+        retract();
+      }
       sleep_us(50);
       for (uint32_t k = 0; k < stepfastline; ++k) //move to next point
       {
@@ -425,10 +422,10 @@ void Scanner::start_hopingscan()
         sleep_us(conf_.delayF);
       }
 
-  //******************************************************************************
+      //******************************************************************************
       if (!flgVirtual)
       {
-          protract();
+        protract();
       }
       sleep_ms(conf_.HopeDelay);
       sleep_us(conf_.pause);    // 50 CONST 50ms wait for start get data
@@ -461,18 +458,17 @@ void Scanner::start_hopingscan()
         }
       }
     }
-     if (!flgVirtual)
-     {
-         retract();
-     } 
+    if (!flgVirtual)
+    {
+      retract();
+    }
     sleep_us(50);
 
     if (!flgVirtual)
     {
       pos_fast -= conf_.diskretinstep * stepfastline * nfastline;
       set_on_dac(portfast, pos_fast);
-    }
-    else
+    } else
     { pos_fast -= conf_.diskretinstep * stepfastline * nfastline; }
     sleep_us(conf_.delayB);
 
@@ -588,17 +584,17 @@ void Scanner::start_hopingscan()
   sleep_ms(200);
   if (!flgVirtual)
   {
-     protract();
+    protract();
   }
   sleep_ms(1000);
-   int16_t count = 0;
-  while ((!TheadDone) || (count<20) )
+  int16_t count = 0;
+  while ((!TheadDone) || (count < 20))
   {
     sleep_ms(100);
     count++;
   } //ожидание ответа ПК для синхронизации
   TheadDone = false;
-  conf_.flgHoping=0;
+  conf_.flgHoping = 0;
   std::cout << "end\n";
   activateDark();
 }
@@ -627,14 +623,14 @@ void Scanner::start_fastscan()
   uint16_t reststepy;
   uint16_t nfastline, nslowline;
   uint16_t stepslowline, stepfastline;
-  uint8_t  portx = 1;
-  uint8_t  porty = 2;
-  uint8_t  portfast;
-  uint8_t  portslow;
+  uint8_t portx = 1;
+  uint8_t porty = 2;
+  uint8_t portfast;
+  uint8_t portslow;
   uint16_t pos_fast;
   uint16_t pos_slow;
-  stepsx    = (uint16_t) conf_.betweenPoints_x / conf_.diskretinstep;
-  stepsy    = (uint16_t) conf_.betweenPoints_y / conf_.diskretinstep;
+  stepsx = (uint16_t) conf_.betweenPoints_x / conf_.diskretinstep;
+  stepsy = (uint16_t) conf_.betweenPoints_y / conf_.diskretinstep;
   reststepx = conf_.betweenPoints_x % conf_.diskretinstep;
   reststepy = conf_.betweenPoints_y % conf_.diskretinstep;
 
@@ -642,10 +638,10 @@ void Scanner::start_fastscan()
   {
     case 0://X+
     {
-      portfast  = portx;
-      portslow  = porty;
-      pos_fast  = pos_.x;
-      pos_slow  = pos_.y;
+      portfast = portx;
+      portslow = porty;
+      pos_fast = pos_.x;
+      pos_slow = pos_.y;
       nfastline = conf_.nPoints_x;
       nslowline = conf_.nPoints_y;
       stepslowline = stepsx;
@@ -656,10 +652,10 @@ void Scanner::start_fastscan()
     }
     case 1: //Y+
     {
-      portfast  = porty;
-      portslow  = portx;
-      pos_fast  = pos_.y;
-      pos_slow  = pos_.x;
+      portfast = porty;
+      portslow = portx;
+      pos_fast = pos_.y;
+      pos_slow = pos_.x;
       nfastline = conf_.nPoints_y;
       nslowline = conf_.nPoints_x;
       stepslowline = stepsy;
@@ -709,8 +705,7 @@ void Scanner::start_fastscan()
         {
           getValuesFromAdc();
           vector_z.emplace_back((int16_t) spiBuf[0]);  // get Z from adc ??
-        }
-        else
+        } else
         {
           vector_z.emplace_back(
               int16_t(10000.0 * (sin(M_PI * j * 0.1) + sin(M_PI * i * 0.1))));  // get Z from adc
@@ -723,8 +718,7 @@ void Scanner::start_fastscan()
         {
           pos_fast -= conf_.diskretinstep;
           set_on_dac(portfast, pos_fast);
-        } 
-        else
+        } else
         { pos_fast -= conf_.diskretinstep; }
         sleep_us(conf_.delayB);
       }
@@ -735,8 +729,7 @@ void Scanner::start_fastscan()
         {
           pos_fast -= reststepfast;
           set_on_dac(portfast, pos_fast);
-        }
-        else
+        } else
         { pos_fast -= reststepfast; }
 
         sleep_us(conf_.delayF);
@@ -782,7 +775,8 @@ void Scanner::start_fastscan()
 
     stop_scan();  //возврат в начальную точку скана
 
-    if (conf_.flgOneFrame == 1) { FASTSCANNING = false; };
+    if (conf_.flgOneFrame == 1)
+    { FASTSCANNING = false; };
   }  //while true;
 
   blue();
@@ -805,8 +799,8 @@ void Scanner::start_fastscan()
   }
   stop_scan();  //возврат в начальную точку скана
   sleep_ms(200);
-   int16_t count = 0;
-  while ((!TheadDone) || (count<20) )
+  int16_t count = 0;
+  while ((!TheadDone) || (count < 20))
   {
     sleep_ms(100);
     count++;
@@ -862,8 +856,8 @@ void Scanner::move_toX0Y0(int x, int y,
   std::cout << afc;
   afc.clear();
   sleep_ms(200);
-   int16_t count = 0;
-  while ((!TheadDone) || (count<20) )
+  int16_t count = 0;
+  while ((!TheadDone) || (count < 20))
   {
     sleep_ms(100);
     count++;
@@ -906,13 +900,13 @@ void Scanner::move_to(const Point &point, uint16_t delay)
 
 void Scanner::move_toZ0(int lid_name, int f, int p, int n, int dir)  //отвестись в безопастную начальную точку по Z
 {
- if (!flgVirtual)
- {
-  scanner.retract();  //втянуть сканер
-  sleep_ms(50);
-  if (!flgVirtual) linearDriver.activate(lid_name, f, p, std::abs(n), dir);
-  scanner.protract();  //вытянуть сканер
- } 
+  if (!flgVirtual)
+  {
+    scanner.retract();  //втянуть сканер
+    sleep_ms(50);
+    if (!flgVirtual) linearDriver.activate(lid_name, f, p, std::abs(n), dir);
+    scanner.protract();  //вытянуть сканер
+  }
   sleep_ms(1000);
   afc.clear();
   afc = "debug autorising done " + std::to_string(n) + ',' + std::to_string(dir);
@@ -1033,15 +1027,16 @@ void Scanner::positioningXYZ(int lid_name, int f, int p, int n, int dir, int16_t
           }
         }
         linearDriver.activate(lid_name, f, p, std::abs(ln), ldir);
-      } 
-      else //virtual
+      } else //virtual
       {
         if (ldir == 1)
         { ZValue -= ln; }
         else
         {
-          if (ZValue < (ZMaxValue - ln)) { ZValue += ln;       }
-          else                           { ZValue = ZMaxValue; }
+          if (ZValue < (ZMaxValue - ln))
+          { ZValue += ln; }
+          else
+          { ZValue = ZMaxValue; }
         }
         // check if z > <
         if (ZValue < GATE_Z_MIN)
@@ -1076,8 +1071,8 @@ void Scanner::positioningXYZ(int lid_name, int f, int p, int n, int dir, int16_t
   std::cout << afc;
   afc.clear();
   sleep_ms(100);
-   int16_t count = 0;
-  while ((!TheadDone) || (count<20) )
+  int16_t count = 0;
+  while ((!TheadDone) || (count < 20))
   {
     sleep_ms(100);
     count++;
@@ -1103,13 +1098,13 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
   uint16_t INTDELAY, SCANNERDECAY;
 
   // SET VALUE FROM RX_CORE
-  SET_POINT   = data[0];
-  GATE_Z_MAX  = data[1];
-  GATE_Z_MIN  = data[2];
-  NSTEPS      = data[3];
-  INTDELAY    = data[4];
-  GAIN        = data[5];
-  SCANNERDECAY= data[6];
+  SET_POINT = data[0];
+  GATE_Z_MAX = data[1];
+  GATE_Z_MIN = data[2];
+  NSTEPS = data[3];
+  INTDELAY = data[4];
+  GAIN = data[5];
+  SCANNERDECAY = data[6];
   freq = data[7];
   scv = data[8];
 
@@ -1286,7 +1281,6 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
 void Scanner::start_frqscan()
 {
   static uint16_t inBuf[5]; // n, start_freq, step, channel, delay
-  int16_t signalvalue;
   int16_t res_freq = 10000;
   int16_t a = 10000;
   int16_t scan_index = 0;
@@ -1318,7 +1312,8 @@ void Scanner::start_frqscan()
     {
       current_freq = inBuf[1];
       sleep_ms(inBuf[4]);
-      signalvalue = (int16_t) std::round(a * (pow(M_E, -pow((current_freq - res_freq), 2) / 1000000))); //231126
+      uint16_t signalvalue = (int16_t) std::round(
+          a * (pow(M_E, -pow((current_freq - res_freq), 2) / 1000000))); //231126
       afc += ',' + std::to_string(current_freq) + ',' + std::to_string(signalvalue);//+',';
     }
     sleep_ms(10);
@@ -1335,4 +1330,3 @@ void Scanner::start_frqscan()
   RESONANCE = false;
   RESONANCE_STOP = false;
 }
-
