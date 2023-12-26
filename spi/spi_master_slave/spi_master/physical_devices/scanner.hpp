@@ -67,7 +67,7 @@ public:
 
   void start_frqscan(); //find resonance
 
-  bool getHoppingFlg(); // получить флаг сканирования прыжками
+  bool getHoppingFlag() const; // получить флаг сканирования прыжками
 
   // void stopAll();
 //

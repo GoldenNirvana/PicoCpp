@@ -2,9 +2,9 @@
 #include <cstdlib>
 #include <cstring>
 
-Parser::Parser(char *data, char newDiv)
+Parser::Parser(int8_t *data, char newDiv)
 {
-  buf = data;
+  buf = (char *) data;
   div = newDiv;
 }
 
@@ -13,58 +13,45 @@ Parser::~Parser()
   clear();
 }
 
-void Parser::clear()
+void Parser::clear() const
 {
   if (str)
   { free(str); }
 }
 
-int Parser::amount()
+int Parser::amount() const
 {
   int i = 0, count = 0;
   while (buf[i++])
   {
     if (buf[i] == div)
-    { count++; }
-  }  // подсчёт разделителей
+    {
+      count++;
+    }
+  }
   return ++count;
 }
 
 int Parser::split()
 {
-  int am = amount();            // количество данных
-  clear();                      // освобождаем буфер
-  str = (char **) malloc(am * sizeof(char *)); // создаём буфер
-  str[0] = buf;                 // строка 0
-  int i = 0, j = 0;             // счётчики
+  int am = amount();
+  clear();
+  str = (char **) malloc(am * sizeof(char *));
+  str[0] = buf;
+  int i = 0, j = 0;
   while (buf[i])
-  {              // пока не NULL
+  {
     if (buf[i] == div)
-    {        // если разделитель
-      buf[i] = '\0';            // меняем на NULL
-      str[++j] = buf + i + 1;   // запоминаем начало строки
+    {
+      buf[i] = '\0';
+      str[++j] = buf + i + 1;
     }
     i++;
   }
   return am;
 }
 
-int16_t Parser::getInt(int num)
-{
-  return atol(str[num]);
-}
-
-float Parser::getFloat(int num)
-{
-  return atof(str[num]);
-}
-
-bool Parser::equals(int num, const char *comp)
-{
-  return !strcmp(str[num], comp);
-}
-
-int Parser::parseInts(int32_t *data)
+int Parser::parseInts(int32_t *data) const
 {
   int count = 0;
   char *offset = buf;
@@ -73,14 +60,17 @@ int Parser::parseInts(int32_t *data)
     data[count++] = atoi(offset);
     offset = strchr(offset, div);
     if (offset)
-    { offset++; }
-    else
-    { break; }
+    {
+      offset++;
+    } else
+    {
+      break;
+    }
   }
   return count;
 }
 
-char *Parser::operator[](uint16_t idx)
+char *Parser::operator[](uint16_t idx) const
 {
   return str[idx];
 }

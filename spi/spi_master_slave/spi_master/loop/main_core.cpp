@@ -102,7 +102,7 @@ void MainCore::loop()
   Const  FastScanPhase=10;  // //пока не надо - быстрое сканирование ток
   Const  OneLineScan=11;    //сканированиепо одной линии
 */
-      if (!scanner.getHoppingFlg())  { scanner.start_scan();       }
+      if (!scanner.getHoppingFlag())  { scanner.start_scan();       }
       else                           { scanner.start_hopingscan(); }
       continue;
     }
@@ -214,8 +214,8 @@ void MainCore::loop()
     if (AD5664)
     {
       AD5664 = false;
-      AD56X4Class::setChannel(AD56X4_SETMODE_INPUT, vector[6], vector[5]);
-      AD56X4Class::updateChannel(vector[6]);
+      AD56X4::setChannel(AD56X4_SETMODE_INPUT, vector[6], vector[5]);
+      AD56X4::updateChannel(vector[6]);
       continue;
     }
     if (AD9833_SENDER)

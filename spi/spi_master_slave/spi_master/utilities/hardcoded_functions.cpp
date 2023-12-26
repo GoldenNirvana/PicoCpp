@@ -62,8 +62,8 @@ void set_clock_enable()
 void set_on_dac(uint8_t channel, uint16_t value)
 {
   dac8563_1.setSpiProps();
-//  AD56X4Class::setChannel(AD56X4_SETMODE_INPUT, channel, value);
-//  AD56X4Class::updateChannel(channel);
+//  AD56X4::setChannel(AD56X4_SETMODE_INPUT, channel, value);
+//  AD56X4::updateChannel(channel);
   channel--;
   if (channel == 0)  dac8563_1.writeA(value);
   if (channel == 1)  dac8563_1.writeB(value);
@@ -77,7 +77,6 @@ void stopAll()
   AD7606_RESET = false;
   AD7606_READ = false;
   AD7606_READ_FOREVER = false;
-  AD7606_GET_VALUE = false;
   AD_7606_IS_READY_TO_READ = true;
   FREQ_SET = false;
   AD8400_SET_GAIN = false;

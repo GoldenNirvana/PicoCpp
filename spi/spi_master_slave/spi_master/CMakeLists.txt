@@ -17,8 +17,8 @@ add_executable(spi_master spi_master.cpp transceiver/rx_utils/parser.hpp utiliti
 target_link_libraries(spi_master pico_stdlib hardware_spi hardware_gpio pico_multicore pico_mem_ops hardware_pio hardware_dma)
 #target_link_libraries(spi_master pico_stdlib hardware_spi)
 
-pico_enable_stdio_usb(spi_master 1)
-pico_enable_stdio_uart(spi_master 0)
+pico_enable_stdio_usb(spi_master 0)
+pico_enable_stdio_uart(spi_master 1)
 
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O2")
 #set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -Werror")

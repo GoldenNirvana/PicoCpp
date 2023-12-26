@@ -8,13 +8,13 @@
 class Parser
 {
 public:
-  explicit Parser(char *data, char newDiv = ',');
+  explicit Parser(int8_t *data, char newDiv = ',');
 
   ~Parser();
 
-  void clear();
+  void clear() const;
 
-  int amount();
+  int amount() const;
 
   int split();
 
@@ -24,12 +24,12 @@ public:
 
   bool equals(int num, const char *comp);
 
-  int parseInts(int32_t *data);
+  int parseInts(int32_t *data) const;
 
   char *buf = NULL;
   char **str = NULL;
 
-  char *operator[](uint16_t idx);
+  char *operator[](uint16_t idx) const;
 
   char div;
 private:

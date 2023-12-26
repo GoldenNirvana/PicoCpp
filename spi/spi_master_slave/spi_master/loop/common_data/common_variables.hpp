@@ -19,7 +19,6 @@ extern DAC8563 dac8563_2;
 extern std::string afc;
 extern uint16_t spiBuf[8];
 extern int32_t vector[16];
-extern int vectorSize;
 
 extern bool DAC8563_SET_VOLTAGE_1;
 extern bool DAC8563_SET_VOLTAGE_2;
@@ -34,7 +33,6 @@ extern bool AD7606_ENABLE_DISABLE;
 extern bool AD7606_RESET;
 extern bool AD7606_READ;
 extern bool AD7606_READ_FOREVER;
-extern bool AD7606_GET_VALUE;
 //
 extern bool FREQ_SET;        // AD9833
 extern bool AD8400_SET_GAIN; // AD8400

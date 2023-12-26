@@ -32,7 +32,7 @@
 #define boolean bool
 
 
-class AD56X4Class
+class AD56X4
 {
 
 public:
@@ -92,6 +92,6 @@ private:
 
 };
 
-extern AD56X4Class AD56X4;
+extern AD56X4 AD56X4;
 
 #endif 

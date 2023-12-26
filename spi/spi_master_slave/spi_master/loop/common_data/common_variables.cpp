@@ -11,7 +11,6 @@ DAC8563 dac8563_2(2);
 //#warning REMOVE STATIC !!! side effects???
 uint16_t spiBuf[8];
 int32_t vector[16];
-int vectorSize;
 
 bool AD9833_SENDER = false;
 bool AD8400_SENDER = false;
@@ -21,7 +20,6 @@ bool AD7606_READ = false;
 bool AD7606_READ_FOREVER = false;
 bool FREQ_SET = false; //AD9833
 bool AD8400_SET_GAIN = false;
-bool AD7606_GET_VALUE = false;
 bool AD5664 = false;
 bool SCANNING = false;
 bool CONFIG_UPDATE = false;

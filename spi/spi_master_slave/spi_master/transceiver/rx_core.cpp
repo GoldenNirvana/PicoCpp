@@ -13,6 +13,7 @@
 
 
 #warning DO NOT SLEEP IN THIS FUNC !!!
+
 void RX_core::comReceiveISR(uint a, uint32_t b)
 {
   if (AD_7606_IS_READY_TO_READ)
@@ -25,12 +26,12 @@ void RX_core::comReceiveISR(uint a, uint32_t b)
   spi_read16_blocking(spi_default, 0, spiBuf, 8);
   if (Z_STATE)
   {
-    ZValue =(int16_t) spiBuf[0]; //0 or 1
-    SignalValue=(int16_t)spiBuf[1];
+    ZValue = (int16_t) spiBuf[0]; //0 or 1
+    SignalValue = (int16_t) spiBuf[1];
     Z_STATE = false;
     if (!flgVirtual) serialPrintBuffer(spiBuf, 8);
     return;
-  } 
+  }
   AD_7606_IS_READY_TO_READ = true;
   /*
   if (is_already_scanning)
@@ -74,7 +75,7 @@ void RX_core::launchOnCore1()
 ////        std::cout << "Mutex captured by core1 << '\n";
     /// PARSING
     parse(vector);
- //   logger("command" + std::to_string(vector[0]) + '\n'); //231210
+    //   logger("command" + std::to_string(vector[0]) + '\n'); //231210
 //    uart_puts(uart1, "String for uart");
     switch (vector[0])
     {
@@ -94,36 +95,35 @@ void RX_core::launchOnCore1()
 //          std::cout << "SetTrue\n";
         AD7606_READ = true;
         break;
- ///*************************************  
+        ///*************************************
       case 13: //add MF 
-        if (vector[1]=1)
+        if (vector[1] == 1)
         {
-           ZPin=0; 
-           SignalPin=1; 
-        }
-        else
+          ZPin = 0;
+          SignalPin = 1;
+        } else
         {
-           ZPin=1; 
-           SignalPin=0; 
+          ZPin = 1;
+          SignalPin = 0;
         }
-       break;
+        break;
       case 14: //add MF set virtual device 
-     //   red();      
-        flgVirtual =(bool)vector[1];// !flgVirtual;
-    //    dark();
+        //   red();
+        flgVirtual = (bool) vector[1];// !flgVirtual;
+        //    dark();
         break;
       case 15: //add mf set debug level =2; if =3 cancel debug info!!
-    //    red();      
-        flgDebugLevel =vector[1];
-    //    dark();
+        //    red();
+        flgDebugLevel = vector[1];
+        //    dark();
         break;
       case 17: //add mf set PID GAIN!    
-        SET_PID_GAIN=true; 
+        SET_PID_GAIN = true;
         break;
       case 18: //get current pointX0Y0 - pos_ 
-        GET_CURRENTX0Y0=true; 
-        break; 
- //*************************************** 
+        GET_CURRENTX0Y0 = true;
+        break;
+        //***************************************
       case 21:
         AD5664 = true;
         break;
@@ -132,9 +132,6 @@ void RX_core::launchOnCore1()
         break;
       case 23:
         DAC8563_INIT_1 = true;
-        break;
-      case 24:// get signal value current signal or all signal ?
-        AD7606_GET_VALUE = true;
         break;
       case 25:
         RESONANCE = true;
@@ -159,7 +156,7 @@ void RX_core::launchOnCore1()
         break;
       case 50:
         SCANNING = true;
-    //    CONFIG_UPDATE = true;
+        //    CONFIG_UPDATE = true;
         break;
       case 51:
         MOVE_TOX0Y0 = true;
@@ -174,7 +171,7 @@ void RX_core::launchOnCore1()
         CONFIG_UPDATE = true;
         break;
       case 56:
-        FASTSCANNING =true;
+        FASTSCANNING = true;
         break;
       case 60:
         SET_IO_VALUE = true;
@@ -192,14 +189,14 @@ void RX_core::launchOnCore1()
         APPROACH_CONFIG_UPDATE = true;
         break;
       case 80:
-        LID_UNTIL_STOP = true; 
+        LID_UNTIL_STOP = true;
         break;
       case 82:// change parameters  positionXYZ
         POSXYZ_CONFIG_UPDATE = true;
         break;
       case 84:
-        MOVE_TOZ0 = true; 
-        break;  
+        MOVE_TOZ0 = true;
+        break;
       case 90 ... 99:
         LID = true;
         break;
@@ -213,52 +210,29 @@ void RX_core::launchOnCore1()
 
 void RX_core::serialPrintBuffer(const uint16_t *const buf, int len)
 {
- if (flgDebugLevel<=DEBUG_LEVEL)
- { 
-  uint64_t a = time_us_64();
-  std::cout << "[" << std::fixed << std::setfill('0') << std::setw(15) << std::right << a << "_u64]     ";
-  std::cout << std::resetiosflags(std::ios_base::right);
-  std::cout << std::resetiosflags(std::ios_base::fixed);
-  for (int i = 0; i < len; ++i)
-  {
-    std::cout << buf[i] << ' ';
-  }
-  std::cout << "\n";
- }
-} 
-void RX_core::serialPrint2Buffer(const uint16_t *const buf)
-{
- // uint64_t a = time_us_64();
-  std::cout << "code12,"<< std::to_string(buf[0]) << ','<<std::to_string( buf[1]) <<"\n";
-}
-
-void RX_core::serialPrintBuffer(const uint8_t *const buf, int len)
-{
- if (flgDebugLevel<=DEBUG_LEVEL)
- {
-  uint32_t x = time_us_64();
-  std::cout << "[" << std::fixed << std::setfill('0') << std::setw(15) << std::right << x << "]     ";
-  std::cout << std::resetiosflags(std::ios_base::right);
-  std::cout << std::resetiosflags(std::ios_base::fixed);
-  for (int i = 0; i < len; ++i)
-  {
-    std::cout << buf[i] << ' ';
-  }
-  std::cout << "\n";
- }
+// if (flgDebugLevel<=DEBUG_LEVEL)
+// {
+//  uint64_t a = time_us_64();
+//  std::cout << "[" << std::fixed << std::setfill('0') << std::setw(15) << std::right << a << "_u64]     ";
+//  std::cout << std::resetiosflags(std::ios_base::right);
+//  std::cout << std::resetiosflags(std::ios_base::fixed);
+//  for (int i = 0; i < len; ++i)
+//  {
+//    std::cout << buf[i] << ' ';
+//  }
+//  std::cout << "\n";
+// }
 }
 
 void RX_core::parse(int32_t *vec)
 {
   std::string s;
   getline(std::cin, s);
-  // todo mb add const_cast
-  Parser parser(s.data(), ',');
+  Parser parser((int8_t *) s.data(), ',');
   for (int c = 0; c < 10; c++)
   {
     vec[c] = -1;
   }
-  vectorSize = parser.parseInts(vec);
 }
 
 

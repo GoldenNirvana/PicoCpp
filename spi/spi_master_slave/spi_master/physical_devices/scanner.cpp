@@ -4,8 +4,6 @@
 #include "../utilities/hardcoded_functions.hpp"
 #include "../utilities/peripheral_functions.hpp"
 #include <cmath>
-//#include <chrono>
-//#include <ctime>    
 
 
 Scanner::Scanner() : pos_({0, 0}), conf_({})
@@ -26,7 +24,7 @@ void Scanner::protract() //вытянуть
   io3_1.disable();
 }
 
-bool Scanner::getHoppingFlg()
+bool Scanner::getHoppingFlag() const
 {
   return (bool)conf_.flgHoping;
 }
