@@ -43,6 +43,7 @@ void setDefaultSettings()
   io_ports.push_back(io2_2);
   io_ports.push_back(io3_0);
   io_ports.push_back(io3_1);
+  //io_ports.push_back(io3_2);
 }
 
 void activateError()

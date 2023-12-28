@@ -40,6 +40,7 @@ extern bool ADC_GET_VALUE;     //AD7606
 extern bool FREQ_SET;          //AD9833
 extern bool SCANNING;
 extern bool SPECTROSOPY_IV;
+extern bool SPECTROSOPY_AZ;
 extern bool SCAN_CONFIG_UPDATE;
 extern bool MOVE_TOX0Y0;      // переместиться в начальную точку  скана из начальной точке предыдущего скана
 extern bool LID_MOVE_TOZ0;    // отвестись в безопасную начальную точку по Z
@@ -51,6 +52,7 @@ extern bool APPROACH;
 extern bool APPROACH_CONFIG_UPDATE;
 extern bool Z_STATE;
 // add MF
+extern bool LOOP_FREEZE_UNFREEZE;
 extern bool STOP;
 extern bool FASTSCANNING;
 extern bool SET_PID_GAIN;

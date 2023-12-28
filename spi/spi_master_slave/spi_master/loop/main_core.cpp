@@ -108,6 +108,12 @@ void MainCore::loop()
       vector[2] == 1 ? io_ports[vector[1] - 1].enable() : io_ports[vector[1] - 1].disable();
       continue;
     }
+    if (LOOP_FREEZE_UNFREEZE) //заморозить- разморозить ПИД
+    {
+      LOOP_FREEZE_UNFREEZE = false;
+      vector[2] == 1 ? io_ports[vector[1] - 1].enable() : io_ports[vector[1] - 1].disable();
+      continue;
+    }
     // управление пьезодвижителем
     if (LID)       
     {
@@ -144,7 +150,20 @@ void MainCore::loop()
    
       SPECTROSOPY_IV=false;
     }
-    
+    if (SPECTROSOPY_AZ)
+    {
+      static int32_t data[6];
+      data[0] = vector[1]; // n точек
+      data[1] = vector[2]; // ZStart
+      data[2] = vector[3]; // ZStep
+      data[3] = vector[4]; // Threshold
+      data[4] = vector[5]; // delay
+      data[5] = vector[6]; // flgmode stm,sfm
+      
+      scanner.spectroscopyAZ(data);
+   
+      SPECTROSOPY_AZ=false;
+    }
     if (FREQ_SET) // установка частоты колебаний зонда
     {
       FREQ_SET = false;

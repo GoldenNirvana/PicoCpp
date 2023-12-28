@@ -23,6 +23,16 @@ void Scanner::protract() //вытянуть
   io3_1.disable();
 }
 
+void Scanner::freezeLOOP()    // заморозить ПИД
+{
+ // io3_2.enable(); //???
+}
+
+void Scanner::unfreezeLOOP()  // разморозить ПИД
+{
+ // io3_2.disable();  //??
+}
+
 bool Scanner::getHoppingFlg() //получить флаг установлен ли флаг сканирования прыжками
 {
   return (bool)conf_.flgHoping;
@@ -1095,6 +1105,154 @@ void Scanner::positioningXYZ(const int16_t *const data)
   std::cout << "end\n";
   dark();
   //  sleep_ms(100); 
+}
+ static int ZMove( int Z0, int step, int mstep, int delay )   // st1 = +-1
+	{
+	  int16_t Zt;
+    int16_t max  =  32767;
+    int16_t min  = -32768;
+
+	  Zt = Z0;
+	  for (int16_t j=0; j< step; j++)
+	  {
+            Zt=Zt;
+            if (mstep>0)
+            {
+             if (Zt==max-mstep) { Zt=(max-mstep);}
+             else  Zt=(Zt+mstep);
+            }
+            else
+            {
+             if (Zt==min-mstep)  { Zt=(min-mstep);}
+             else  Zt=(Zt+mstep);
+            }
+            for(int16_t k=0; k < delay; k++) { }// задержка в каждом дискрете
+
+        //    Simple.cellWrite(M_scan_Z_offset, Zt); ///?????????????????????????
+	  }
+	  return(Zt);
+	}
+void Scanner::spectroscopyAZ(const int32_t *const data) // спектроскопия Ampl-Z
+{
+/*
+   params[0]:=(SpectrParams.Npoints);
+   params[1]:=(round(SpectrParams.StartP*TransformUnit.Znm_d) );   //SFM
+   params[2]:=(round(SpectrParams.Step*TransformUnit.Znm_d));
+//   Threshold
+     case  SpectrParams.flgType of
+   I_Z:  params[3]:=(round((SpectrParams.LevelIZ)*0.01*round(abs(ApproachParams.SetPoint*TransformUnit.nA_d))));//stop approach i-z
+   A_Z:  params[3]:=(round((100-SpectrParams.LevelSFM)*0.01*ApproachParams.UAMMax));//stop approach SFM  ampl-z
+         end;
+   params[4]:=(SpectrParams.T);
+   params[5]:=(integer(flgmode));
+ //  params[6]:=(apiType(round(SpectrParams.BiasV*TransformUnit.BiasV_d))); // add 22/10/25
+*/
+ const int16_t SFM=0;
+ const int16_t STM=1;
+ int16_t   NPoints=data[0];
+ int16_t    ZStart=data[1];
+ int16_t     ZStep=data[2];
+ int16_t Threshold=data[3];
+ int16_t     Delay=data[4];
+ int16_t   flgModa=data[5];
+
+ int16_t ampl;
+ int16_t dlt,dacZ,dacZ0;
+
+ int16_t MicrostepDelay=3;
+  
+  auto ptr = getValuesFromAdc();
+     
+  dacZ0=(int16_t)ptr[ZPin];
+  dacZ=dacZ0;
+ //start
+  ampl=0;
+ int16_t k=0;
+ vectorA_Z.clear();
+
+ freezeLOOP();
+       
+ dacZ = ZMove( dacZ, (-ZStart), 1, MicrostepDelay );
+        
+ for(int16_t i=0; i<NPoints; i++)     //сближение
+  {
+      sleep_ms(Delay);  //ms  add 30/05/22
+      auto ptr = getValuesFromAdc();
+     
+        switch (flgModa)
+   {
+    case SFM:  { ampl=(int16_t)ptr[AmplPin]; break;}  
+    case STM:  { ampl=(int16_t)ptr[IPin];    break;}  
+   }
+     vectorA_Z.emplace_back(ampl);
+     vectorA_Z.emplace_back(-(dacZ-dacZ0));
+     vectorA_Z.emplace_back(1);
+
+   if (flgModa==STM) //i  sfm    error corrected 14/09/21
+   {
+    if (ampl<0) ampl=-ampl;
+    int imax=Threshold;
+    if (imax<0) imax=-imax;
+    if ((ampl<imax) &(i!=NPoints-1))
+     {
+         dacZ = ZMove( dacZ, (ZStep >> 16), -1, MicrostepDelay);
+     }
+     else break;
+   };
+   if (flgModa==SFM) //sfm  error corrected 14/09/21
+   {
+    if ((ampl>Threshold) &(i!=NPoints-1))
+    {
+       dacZ = ZMove( dacZ, (ZStep >> 16), -1, MicrostepDelay);
+    }
+    else break;
+   }
+ }  // for    i
+    NPoints= k / 3;
+    sleep_ms(300);
+
+ // off = NPoints;
+  for(int16_t i=NPoints; i>=1; i--)
+  {
+    sleep_ms(Delay); //add 30/05/22
+
+     auto ptr = getValuesFromAdc();
+     
+        switch (flgModa)
+   {
+    case SFM:  { ampl=(int16_t)ptr[AmplPin]; break;}  
+    case STM:  { ampl=(int16_t)ptr[IPin]; break;}  
+   }
+     vectorA_Z.emplace_back(ampl);
+     vectorA_Z.emplace_back(-(dacZ-dacZ0));
+     vectorA_Z.emplace_back(-1);
+     dacZ = ZMove( dacZ, (ZStep >> 16), +1, MicrostepDelay);
+  }
+
+ //move to start point
+
+  sleep_ms(300);
+  if (dacZ-dacZ0 > 0) {dlt = dacZ-dacZ0;}
+  else {dlt = -dacZ+dacZ0;}
+
+  dacZ = ZMove( dacZ, dlt, -1, MicrostepDelay );
+ 
+ //send data
+   afc.clear();
+   afc="code66";
+   for (size_t m = 0; m < vectorA_Z.size(); m++)     // send data scanline
+    {
+      afc += ',' + std::to_string(vectorA_Z[m]);
+    }
+    afc += "\n";
+    std::cout << afc;
+    sleep_ms(200); //don't delete 
+    afc.clear(); 
+    vectorA_Z.clear();
+ // разморозка состояния pid
+    unfreezeLOOP();
+ //
+
 }
 
 void Scanner::spectroscopyIV(const int32_t *const data)

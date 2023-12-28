@@ -31,6 +31,7 @@ bool SCANNING  = false;     //сканирование
 bool SCAN_CONFIG_UPDATE = false;
 bool FASTSCANNING  = false;  //быстрое сканирование
 bool SPECTROSOPY_IV= false;
+bool SPECTROSOPY_AZ= false;
 bool MOVE_TOX0Y0   = false;   // сканнер -переместиться в начальную точку X0Y0 скана из начальной точке предыдущего скана
 bool LID_MOVE_TOZ0 = false;   // пьезомуавер - отвестись в безопасную начальную точку по Z
 bool LID = false;
@@ -48,7 +49,8 @@ bool PID_TURN_ON = false;
 bool SCANNER_RETRACT = false;
 bool SCANNER_PROTRACT = false;
 bool SCANNER_RETRACT_PROTRACT = false;
-
+bool LOOP_FREEZE_UNFREEZE=false;
+//************************************************
 bool flgVirtual = false; // флаг симуляции работа микроконтроллера
 uint flgDebugLevel = 2; //  уровень отладки
 //данные для симуляции 

@@ -143,6 +143,9 @@ void RX_core::launchOnCore1()
       case 65:  // спектроскопия  I-V
         SPECTROSOPY_IV = true;
         break;
+      case 66:  // спектроскопия  A-Z
+        SPECTROSOPY_AZ = true;
+        break;  
       case 70:
         STOP=true; //stopAll(); stop algorithm 
         break;

@@ -60,6 +60,8 @@ public:
 
   void spectroscopyIV(const int32_t *const data); // спектроскопия I-V
 
+  void spectroscopyAZ(const int32_t *const data); // спектроскопия Ampl-Z
+
   void scan_update(const Config &config);  // обновить параметры скaнирования
 
   void move_toX0Y0(int x, int y, int delay); //переместиться в начальную точку скана из начальной точке предыдущего скана
@@ -70,13 +72,17 @@ public:
 
   void protract();      // втянуть сканер
 
+  void freezeLOOP();    // заморизить ПИД
+
+  void unfreezeLOOP();  // разморизить ПИД
+
   bool getHoppingFlg(); // получить флаг сканирования прыжками
 
   Point getX0Y0();      // получить текущую точку сканера в покое
 
 private:
 
-  std::vector<uint16_t> vector_z, other_info,vectorI_V;
+  std::vector<uint16_t> vector_z, other_info,vectorI_V,vectorA_Z;
   Point pos_, prev_point;
   Config conf_;
 };
