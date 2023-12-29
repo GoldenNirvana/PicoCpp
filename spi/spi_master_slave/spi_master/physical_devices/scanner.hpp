@@ -52,7 +52,7 @@ public:
 
   void start_fastscan();    // быстрое сканирование и вывод скана целиком, а не по линиям
 
-  void approacphm(const int16_t *const data);  // захват взаимодействия с контролем ворот
+  void approacphm(const int32_t *const data);  // захват взаимодействия с контролем ворот
 
   void positioningXYZ(const int16_t *const data); // abs(n) перемещение по  X,Y и Z (с контроллем ворот)
 

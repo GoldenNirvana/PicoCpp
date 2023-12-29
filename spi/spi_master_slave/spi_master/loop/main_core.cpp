@@ -17,7 +17,7 @@ void MainCore::loop()
     if (APPROACH)   //сближение зонда и образца
     {
       blue();
-      static int16_t approach_data[11];
+      static int32_t approach_data[11];
       approach_data[0] = vector[1]; //set point
       approach_data[1] = vector[2]; // max
       approach_data[2] = vector[3]; // min
@@ -108,9 +108,8 @@ void MainCore::loop()
       vector[2] == 1 ? io_ports[vector[1] - 1].enable() : io_ports[vector[1] - 1].disable();
       continue;
     }
-    if (LOOP_FREEZE_UNFREEZE) //заморозить- разморозить ПИД
-    {
-      LOOP_FREEZE_UNFREEZE = false;
+    if (LOOP_FREEZE_UNFREEZE) //заморозить- разморозить ПИД ??????????
+    {  LOOP_FREEZE_UNFREEZE = false;
       vector[2] == 1 ? io_ports[vector[1] - 1].enable() : io_ports[vector[1] - 1].disable();
       continue;
     }

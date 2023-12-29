@@ -15,6 +15,7 @@ void setDefaultSettings()
   /// BASIC SETTINGS
 
   uart_init(uart1, 115200);
+ // uart_init(uart0, 256000);
   gpio_set_function(UART_TX_PIN, GPIO_FUNC_UART);
   gpio_set_function(UART_RX_PIN, GPIO_FUNC_UART);
 

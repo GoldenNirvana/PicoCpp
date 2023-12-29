@@ -25,12 +25,12 @@ void Scanner::protract() //вытянуть
 
 void Scanner::freezeLOOP()    // заморозить ПИД
 {
- // io3_2.enable(); //???
+  io3_0.enable(); //???
 }
 
 void Scanner::unfreezeLOOP()  // разморозить ПИД
 {
- // io3_2.disable();  //??
+  io3_0.disable();  //??
 }
 
 bool Scanner::getHoppingFlg() //получить флаг установлен ли флаг сканирования прыжками
@@ -1171,14 +1171,13 @@ void Scanner::spectroscopyAZ(const int32_t *const data) // спектроско�
  vectorA_Z.clear();
 
  freezeLOOP();
-       
+ sleep_ms(200);      
  dacZ = ZMove( dacZ, (-ZStart), 1, MicrostepDelay );
         
  for(int16_t i=0; i<NPoints; i++)     //сближение
   {
       sleep_ms(Delay);  //ms  add 30/05/22
-      auto ptr = getValuesFromAdc();
-     
+      auto ptr = getValuesFromAdc();   
         switch (flgModa)
    {
     case SFM:  { ampl=(int16_t)ptr[AmplPin]; break;}  
@@ -1251,6 +1250,7 @@ void Scanner::spectroscopyAZ(const int32_t *const data) // спектроско�
     vectorA_Z.clear();
  // разморозка состояния pid
     unfreezeLOOP();
+    sleep_ms(500);
  //
 
 }
@@ -1386,7 +1386,7 @@ void Scanner::spectroscopyIV(const int32_t *const data)
   TheadDone = false;
   std::cout << "end\n";  
 }
-void Scanner::approacphm(const int16_t *const data) //uint16_t
+void Scanner::approacphm(const int32_t *const data) //uint16_t
 {
   const int none = 30;
   const int ok = 3;
@@ -1415,7 +1415,7 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
  //need to add channel SetPoint ????
 
   afc.clear();
-  afc = "debug approach parameters ";
+  afc = "debug approach parameters 1 ";
   for (size_t j = 0; j < 9; j++)     // send info
   {
     afc += ',' + std::to_string(data[j]);
@@ -1513,20 +1513,22 @@ void Scanner::approacphm(const int16_t *const data) //uint16_t
       auto ptr = getValuesFromAdc();
       ZValue = (int16_t) ptr[ZPin];
      switch (flgDev)
-    {
-     case 0: 
      {
+      case 0: 
+      {
       SignalValue = (int16_t) ptr[AmplPin];
       break;  
-     } 
-     case 1:
-     case 3:  
-     {
+      } 
+      case 1:
+      case 3:  
+      {
       SignalValue = (int16_t) ptr[IPin];
       break;  
-     } 
-    }     
-    if (flgDebugLevel <= DEBUG_LEVEL);//log("Z = " + std::to_string(Z) + '\n',flgDebugLevel);
+      } 
+     }     
+   // if (flgDebugLevel <= DEBUG_LEVEL);//log("Z = " + std::to_string(Z) + '\n',flgDebugLevel);
+      buf_status[1] = ZValue;
+      buf_status[2] = SignalValue;    
     }
     else
     {
