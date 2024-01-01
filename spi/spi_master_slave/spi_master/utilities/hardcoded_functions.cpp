@@ -191,7 +191,7 @@ uint16_t *getValuesFromAdc()
 
 uint16_t *getValuesFromAdc()
 {
-  repeatTwoTimes;
+  repeatTwoTimes();
   return repeatTwoTimes();
 }
 
