@@ -328,7 +328,7 @@ void MainCore::loop()
       std::cout << afc;
       sleep_ms(100);
      */
-      if (!flgVirtual) set_gainPID(vector[1]);
+      if (!flgVirtual) set_gainPID((int8_t)vector[2]);
       continue;
     }
     if (SCANNER_RETRACT)
