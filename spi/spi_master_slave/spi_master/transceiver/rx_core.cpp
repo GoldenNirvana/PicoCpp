@@ -78,9 +78,10 @@ void RX_core::launchOnCore1()
       case 16: //изменить значение усиления амплитуды раскачки зонда
         SET_AMPLMOD_GAIN=true;
         break;  
-      case 17: // изменить значение усиления ПИД
+    /*  case 17: // изменить значение усиления ПИД
         SET_PID_GAIN=true; 
         break;
+    */    
       case 18: // получитб текущее знание координат сканера 
         GET_CURRENTX0Y0=true; 
         break; 
@@ -134,7 +135,7 @@ void RX_core::launchOnCore1()
       case 56:
         FASTSCANNING =true;
         break;
-      case 60:
+      case 60: // изменить значение усиления ПИД
         SET_PID_GAIN =true;
         break;
       case 61:  // управление ПИД - втянуть-вытянуть

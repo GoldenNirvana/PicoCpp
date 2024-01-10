@@ -99,7 +99,15 @@ void MainCore::loop()
     if (SET_PID_GAIN)         // установить усиление ПИД
     {
       SET_PID_GAIN=false;   
-      set_io_value(vector[1], vector[2]);
+       /* для отладки
+      afc.clear();
+      afc = "debug PID gain parameters";
+      afc += ',' + std::to_string(vector[1]);
+      afc += +"\n";
+      std::cout << afc;
+      sleep_ms(100);
+     */
+      if (!flgVirtual) set_io_value(vector[1], vector[2]);   
       continue;
     }
     if (SCANNER_RETRACT_PROTRACT) //втянуть-вытянуть сканер
@@ -315,20 +323,6 @@ void MainCore::loop()
           sleep_ms(100);
         }
       }
-      continue;
-    }
-    if (SET_PID_GAIN)
-    {
-      SET_PID_GAIN = false;
-     /* для отладки
-      afc.clear();
-      afc = "debug PID gain parameters";
-      afc += ',' + std::to_string(vector[1]);
-      afc += +"\n";
-      std::cout << afc;
-      sleep_ms(100);
-     */
-      if (!flgVirtual) set_gainPID((int8_t)vector[2]);
       continue;
     }
     if (SCANNER_RETRACT)
