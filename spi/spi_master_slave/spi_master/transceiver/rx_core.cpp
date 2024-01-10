@@ -82,7 +82,7 @@ void RX_core::launchOnCore1()
         SET_PID_GAIN=true; 
         break;
     */    
-      case 18: // получитб текущее знание координат сканера 
+      case 18: // получить текущее знание координат сканера 
         GET_CURRENTX0Y0=true; 
         break; 
       case 19:
