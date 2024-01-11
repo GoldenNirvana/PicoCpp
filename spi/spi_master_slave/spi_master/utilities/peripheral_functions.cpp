@@ -1,11 +1,11 @@
 #include "peripheral_functions.hpp"
 #include "../loop/common_data/common_variables.hpp"
-#include "../transceiver/rx_core.hpp"
-#include "hardcoded_functions.hpp"
-#include <pico/multicore.h>
-#include <iostream>
-#include <bitset>
-
+//#include "../transceiver/rx_core.hpp"
+//#include "hardcoded_functions.hpp"
+//#include <pico/multicore.h>
+//#include <iostream>
+//#include <bitset>
+/*
 #define UART_TX_PIN 8
 #define UART_RX_PIN 9
 
@@ -46,7 +46,7 @@ void setDefaultSettings()
   io_ports.push_back(io3_1);
   //io_ports.push_back(io3_2);
 }
-
+*/
 void activateError()
 {
   while (true)
@@ -214,7 +214,7 @@ void activateDark()
     busy_wait_at_least_cycles(85);
   }
 }
-
+/*
 void set_io_value(int port, int value)  
 {
   SET_IO_VALUE = false;
@@ -236,3 +236,4 @@ void set_io_value(int port, int value)
     binary[0] == '1' ? io3_1.enable() : io3_1.disable();
   }
 }
+*/

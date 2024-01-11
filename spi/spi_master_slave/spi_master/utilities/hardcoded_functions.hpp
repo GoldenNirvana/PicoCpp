@@ -4,6 +4,9 @@
 #include "../devices/ad5664.hpp"
 
 // WARNING HARDCODED FUNCTIONS
+void setDefaultSettings();
+
+void set_io_value(int, int);
 
 void set_freq(uint32_t freq); //установка заданной частоты генератора
 
