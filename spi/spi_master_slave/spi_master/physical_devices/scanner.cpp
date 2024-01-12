@@ -47,6 +47,11 @@ void Scanner::readADC()
           sleep_ms(100);
   }
 }
+void Scanner::scanner_retract_protract(int port, int flg)
+ {
+  flg == 1 ? io_ports[port - 1].enable() : io_ports[port - 1].disable(); 
+ } 
+
 void Scanner::retract() //втянуть
 {
   io3_1.enable();
@@ -56,7 +61,10 @@ void Scanner::protract() //вытянуть
 {
   io3_1.disable();
 }
-
+void Scanner::LOOP_freeze_unfreeze(int port, int flg) // port virtual
+{
+ flg == 1 ? io_ports[port - 1].enable() : io_ports[port - 1].disable();
+}
 void Scanner::freezeLOOP()    // заморозить ПИД
 {
   io3_0.enable(); //???
@@ -72,7 +80,7 @@ bool Scanner::getHoppingFlg() //получить флаг установлен �
   return (bool)conf_.flgHoping;
 }
 
-void Scanner::start_scan() //сканирование
+void Scanner::start_scan(int32_t *vector) //сканирование
 {
   const int8_t oneline=11;
   prev_point = pos_; //запоминание начальной точки скана
@@ -105,6 +113,18 @@ void Scanner::start_scan() //сканирование
   uint8_t  portslow;
   uint16_t pos_fast;
   uint16_t pos_slow;
+
+ scan_update({
+              static_cast<uint16_t>(vector[1]), static_cast<uint16_t>(vector[2]),
+              static_cast<uint8_t>(vector[3]),  static_cast<uint8_t>(vector[4]),
+              static_cast<uint16_t>(vector[5]), static_cast<uint16_t>(vector[6]),
+              static_cast<uint16_t>(vector[7]), static_cast<uint16_t>(vector[8]),
+              static_cast<uint8_t>(vector[9]),  static_cast<uint8_t>(vector[10]),
+              static_cast<uint16_t>(vector[11]),static_cast<uint16_t>(vector[12]),
+              static_cast<uint8_t>(vector[13]), static_cast<uint8_t>(vector[14]),
+              static_cast<uint16_t>(vector[15])
+             });
+
   stepsx = (uint16_t) conf_.betweenPoints_x / conf_.diskretinstep;
   stepsy = (uint16_t) conf_.betweenPoints_y / conf_.diskretinstep;
   reststepx = conf_.betweenPoints_x % conf_.diskretinstep;
@@ -376,7 +396,7 @@ void Scanner::start_scan() //сканирование
   activateDark();
 }
 
-void Scanner::start_hopingscan()
+void Scanner::start_hopingscan(int32_t *vector)
 {
   const int8_t oneline=11;
   prev_point = pos_; //запоминание начальной точки скана
@@ -409,6 +429,17 @@ void Scanner::start_hopingscan()
   uint8_t portslow;
   uint16_t pos_fast;
   uint16_t pos_slow;
+   scan_update({
+               static_cast<uint16_t>(vector[1]), static_cast<uint16_t>(vector[2]),
+               static_cast<uint8_t>(vector[3]),  static_cast<uint8_t>(vector[4]),
+               static_cast<uint16_t>(vector[5]), static_cast<uint16_t>(vector[6]),
+               static_cast<uint16_t>(vector[7]), static_cast<uint16_t>(vector[8]),
+               static_cast<uint8_t>(vector[9]),  static_cast<uint8_t>(vector[10]),
+               static_cast<uint16_t>(vector[11]),static_cast<uint16_t>(vector[12]),
+               static_cast<uint8_t>(vector[13]), static_cast<uint8_t>(vector[14]),
+               static_cast<uint16_t>(vector[15])
+              });
+
   stepsx = (uint16_t) conf_.betweenPoints_x / conf_.diskretinstep;
   stepsy = (uint16_t) conf_.betweenPoints_y / conf_.diskretinstep;
   reststepx = conf_.betweenPoints_x % conf_.diskretinstep;
@@ -656,7 +687,7 @@ void Scanner::start_hopingscan()
   activateDark();
 }
 
-void Scanner::start_fastscan()
+void Scanner::start_fastscan(int32_t *vector)
 {
   prev_point = pos_; //запоминание начальной точки скана
   vector_z.clear();
@@ -686,6 +717,16 @@ void Scanner::start_fastscan()
   uint8_t  portslow;
   uint16_t pos_fast;
   uint16_t pos_slow;
+
+  scan_update({
+               static_cast<uint16_t>(vector[1]), static_cast<uint16_t>(vector[2]),
+               static_cast<uint8_t>(vector[3]),  static_cast<uint8_t>(vector[4]),
+               static_cast<uint16_t>(vector[5]), static_cast<uint16_t>(vector[6]),
+               static_cast<uint16_t>(vector[7]), static_cast<uint16_t>(vector[8]),
+               static_cast<uint8_t>(vector[9]),  static_cast<uint8_t>(vector[10]),
+               static_cast<uint16_t>(vector[11]),static_cast<uint16_t>(vector[12]),
+               static_cast<uint8_t>(vector[13])
+              }); 
   stepsx    = (uint16_t) conf_.betweenPoints_x / conf_.diskretinstep;
   stepsy    = (uint16_t) conf_.betweenPoints_y / conf_.diskretinstep;
   reststepx = conf_.betweenPoints_x % conf_.diskretinstep;
@@ -968,7 +1009,7 @@ void Scanner::LID_move_toZ0(int lid_name, int f, int p, int n, int dir)  //от�
   afc.clear();
   sleep_ms(100);
 }
-void Scanner::positioningXYZ(const int16_t *const data)
+void Scanner::positioningXYZ(int32_t *vector)
 {
   uint8_t lid_name;
   uint16_t GATE_Z_MAX, GATE_Z_MIN;
@@ -979,6 +1020,16 @@ void Scanner::positioningXYZ(const int16_t *const data)
   int16_t ln;  
   bool ldir;
   int16_t p,f;
+
+      int16_t data[7];
+      data[0] = vector[1]; //  int lid_name
+      data[1] = vector[2]; //  int f
+      data[2] = vector[3]; //  int p
+      data[3] =abs(vector[4]); //  int n
+      data[4] = vector[5]; //  int dir
+      data[5] = vector[6]; //  int Z gate max
+      data[6] = vector[7]; //  int Z gate min
+
  // SET VALUE FROM RX_CORE
       lid_name=(uint8_t)data[0]; //  int lid_name
       f=data[1]; //  int f
@@ -1166,7 +1217,7 @@ void Scanner::positioningXYZ(const int16_t *const data)
 	  }
 	  return(Zt);
 	}
-void Scanner::spectroscopyAZ(const int32_t *const data) // спектроскопия Ampl-Z
+void Scanner::spectroscopyAZ(int32_t *vector) // спектроскопия Ampl-Z
 {
 /*
    params[0]:=(SpectrParams.Npoints);
@@ -1183,6 +1234,14 @@ void Scanner::spectroscopyAZ(const int32_t *const data) // спектроско�
 */
  const int16_t SFM=0;
  const int16_t STM=1;
+ int32_t data[6];
+      data[0] = vector[1]; // n точек
+      data[1] = vector[2]; // ZStart
+      data[2] = vector[3]; // ZStep
+      data[3] = vector[4]; // Threshold
+      data[4] = vector[5]; // delay
+      data[5] = vector[6]; // flgmode stm,sfm
+      
  int16_t   NPoints=data[0];
  int16_t    ZStart=data[1];
  int16_t     ZStep=data[2];
@@ -1289,7 +1348,7 @@ void Scanner::spectroscopyAZ(const int32_t *const data) // спектроско�
 
 }
 
-void Scanner::spectroscopyIV(const int32_t *const data)
+void Scanner::spectroscopyIV(int32_t *vector)
 {
     int i,j;
 		int32_t  UBackup;
@@ -1302,7 +1361,15 @@ void Scanner::spectroscopyIV(const int32_t *const data)
     int32_t  dacU;
     int32_t  start_step;
     int32_t  step;
-
+    int32_t data[7];
+      data[0] = vector[1]; // n точек
+      data[1] = vector[2]; // m кривых
+      data[2] = vector[3]; // V начальное значение
+      data[3] = vector[4]; // V шаг
+      data[4] = vector[5]; // задержка в точке измерения
+      data[5] = vector[6]; // прибор
+      data[6] = vector[7]; // V текущее значение напряжения
+   
     UPoints         = (int16_t) data[0];
     UCurves         = (int16_t) data[1];
 		UStart	      	=           data[2];    
@@ -1420,7 +1487,8 @@ void Scanner::spectroscopyIV(const int32_t *const data)
   TheadDone = false;
   std::cout << "end\n";  
 }
-void Scanner::approacphm(const int32_t *const data) //uint16_t
+
+void Scanner::approacphm(int32_t *vector) //uint16_t
 {
   const int none = 30;
   const int ok = 3;
@@ -1433,6 +1501,19 @@ void Scanner::approacphm(const int32_t *const data) //uint16_t
   uint16_t INTDELAY, SCANNERDECAY;
   uint8_t  flgDev;
   int32_t  Bias;
+  int32_t data[11];
+      data[0] = vector[1]; //set point
+      data[1] = vector[2]; // max
+      data[2] = vector[3]; // min
+      data[3] = vector[4]; // steps     
+      data[4] = vector[5]; // initdelay
+      data[5] = vector[6]; // gain
+      data[6] = vector[7]; // scannerDelay
+      data[7] = vector[8]; // freq
+      data[8] = vector[9]; // scv
+      data[9] = vector[10]; //  0= SFM, 1=STM ;SICMAC-2; SICMDC-3;  device type
+      data[10]= vector[11]; // Voltage need for STM,SICM
+
   // SET VALUE FROM RX_CORE
   SET_POINT      = data[0];
   GATE_Z_MAX     = data[1];

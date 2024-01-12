@@ -17,38 +17,14 @@ void MainCore::loop()
     if (APPROACH)   //сближение зонда и образца
     {
       blue();
-      static int32_t approach_data[11];
-      approach_data[0] = vector[1]; //set point
-      approach_data[1] = vector[2]; // max
-      approach_data[2] = vector[3]; // min
-      approach_data[3] = vector[4]; // steps
-      approach_data[4] = vector[5]; // initdelay
-      approach_data[5] = vector[6]; // gain
-      approach_data[6] = vector[7]; // scannerDelay
-      approach_data[7] = vector[8]; // freq
-      approach_data[8] = vector[9]; // scv
-      approach_data[9] = vector[10]; //  0= SFM, 1=STM ;SICMAC-2; SICMDC-3;  device type
-      approach_data[10]= vector[11]; // Voltage need for STM,SICM
-
-      scanner.approacphm(approach_data);
- 
+      scanner.approacphm(vector);
       green();
       activateDark();
       continue;
     }
     if (LID_MOVE_UNTIL_STOP)  // пьезодвижитель  позиционирование
     {
-      static int16_t pos_data[7];
-      pos_data[0] = vector[1]; //  int lid_name
-      pos_data[1] = vector[2]; //  int f
-      pos_data[2] = vector[3]; //  int p
-      pos_data[3] =abs(vector[4]); //  int n
-      pos_data[4] = vector[5]; //  int dir
-      pos_data[5] = vector[6]; //  int Z gate max
-      pos_data[6] = vector[7]; //  int Z gate min
-      
-      scanner.positioningXYZ(pos_data); 
-
+      scanner.positioningXYZ(vector); 
       continue;
     }
     if (MOVE_TOX0Y0) //переместиться в начальную точку  скана из начальной точке предыдущего скана
@@ -65,35 +41,15 @@ void MainCore::loop()
       continue;
     }
     if (SCANNING) //сканирование
-    {   // int32_t vector[16];  
-      scanner.scan_update({
-                        static_cast<uint16_t>(vector[1]), static_cast<uint16_t>(vector[2]),
-                        static_cast<uint8_t>(vector[3]),  static_cast<uint8_t>(vector[4]),
-                        static_cast<uint16_t>(vector[5]), static_cast<uint16_t>(vector[6]),
-                        static_cast<uint16_t>(vector[7]), static_cast<uint16_t>(vector[8]),
-                        static_cast<uint8_t>(vector[9]),  static_cast<uint8_t>(vector[10]),
-                        static_cast<uint16_t>(vector[11]),static_cast<uint16_t>(vector[12]),
-                        static_cast<uint8_t>(vector[13]), static_cast<uint8_t>(vector[14]),
-                        static_cast<uint16_t>(vector[15])
-                     });
-
-      if (!scanner.getHoppingFlg())  { scanner.start_scan();       }
-      else                           { scanner.start_hopingscan(); }
+    {  
+      if (!scanner.getHoppingFlg())  { scanner.start_scan(vector);       }
+      else                           { scanner.start_hopingscan(vector); }
       continue;
     }
     if (FASTSCANNING)
-    {// int32_t vector[16];
-      scanner.scan_update({
-                       static_cast<uint16_t>(vector[1]), static_cast<uint16_t>(vector[2]),
-                       static_cast<uint8_t>(vector[3]),  static_cast<uint8_t>(vector[4]),
-                       static_cast<uint16_t>(vector[5]), static_cast<uint16_t>(vector[6]),
-                       static_cast<uint16_t>(vector[7]), static_cast<uint16_t>(vector[8]),
-                       static_cast<uint8_t>(vector[9]),  static_cast<uint8_t>(vector[10]),
-                       static_cast<uint16_t>(vector[11]),static_cast<uint16_t>(vector[12]),
-                       static_cast<uint8_t>(vector[13])
-                     }); 
-      scanner.start_fastscan();
+    {  
       FASTSCANNING = false;
+      scanner.start_fastscan(vector);  
       continue;
     }
     if (SET_PID_GAIN)         // установить усиление ПИД
@@ -113,12 +69,15 @@ void MainCore::loop()
     if (SCANNER_RETRACT_PROTRACT) //втянуть-вытянуть сканер
     {
       SCANNER_RETRACT_PROTRACT = false;
-      vector[2] == 1 ? io_ports[vector[1] - 1].enable() : io_ports[vector[1] - 1].disable();
+      scanner.scanner_retract_protract(vector[1],vector[2]);
+     // vector[2] == 1 ? io_ports[vector[1] - 1].enable() : io_ports[vector[1] - 1].disable();
       continue;
     }
     if (LOOP_FREEZE_UNFREEZE) //заморозить- разморозить ПИД ??????????
-    {  LOOP_FREEZE_UNFREEZE = false;
-      vector[2] == 1 ? io_ports[vector[1] - 1].enable() : io_ports[vector[1] - 1].disable();
+    {  
+      LOOP_FREEZE_UNFREEZE = false;
+      scanner.LOOP_freeze_unfreeze(vector[1],vector[2]); 
+      //vector[2] == 1 ? io_ports[vector[1] - 1].enable() : io_ports[vector[1] - 1].disable();
       continue;
     }
     // управление пьезодвижителем
@@ -143,33 +102,16 @@ void MainCore::loop()
     }
 
     if (SPECTROSOPY_IV)
-    {
-      static int32_t data[7];
-      data[0] = vector[1]; // n точек
-      data[1] = vector[2]; // m кривых
-      data[2] = vector[3]; // V начальное значение
-      data[3] = vector[4]; // V шаг
-      data[4] = vector[5]; // задержка в точке измерения
-      data[5] = vector[6]; // прибор
-      data[6] = vector[7]; // V текущее значение напряжения
-   
-      scanner.spectroscopyIV(data);
-   
+    { 
       SPECTROSOPY_IV=false;
+      scanner.spectroscopyIV(vector);
+      continue;
     }
     if (SPECTROSOPY_AZ)
     {
-      static int32_t data[6];
-      data[0] = vector[1]; // n точек
-      data[1] = vector[2]; // ZStart
-      data[2] = vector[3]; // ZStep
-      data[3] = vector[4]; // Threshold
-      data[4] = vector[5]; // delay
-      data[5] = vector[6]; // flgmode stm,sfm
-      
-      scanner.spectroscopyAZ(data);
-   
       SPECTROSOPY_AZ=false;
+      scanner.spectroscopyAZ(vector);
+      continue;
     }
     if (FREQ_SET) // установка частоты колебаний зонда
     {

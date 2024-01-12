@@ -46,21 +46,21 @@ public:
 
   ~Scanner();
 
-  void start_scan();
+  void start_scan(int32_t *vector);
 
-  void start_hopingscan();  //сканирование прыжками
+  void start_hopingscan(int32_t *vector);  //сканирование прыжками
 
-  void start_fastscan();    // быстрое сканирование и вывод скана целиком, а не по линиям
+  void start_fastscan(int32_t *vector);    // быстрое сканирование и вывод скана целиком, а не по линиям
 
-  void approacphm(const int32_t *const data);  // захват взаимодействия с контролем ворот
+  void approacphm(int32_t *vector);  // захват взаимодействия с контролем ворот
 
-  void positioningXYZ(const int16_t *const data); // abs(n) перемещение по  X,Y и Z (с контроллем ворот)
+  void positioningXYZ(int32_t *vector); // abs(n) перемещение по  X,Y и Z (с контроллем ворот)
 
   void start_frqscan(); //поиск резонанса датчика
 
-  void spectroscopyIV(const int32_t *const data); // спектроскопия I-V
+  void spectroscopyIV(int32_t *vector); // спектроскопия I-V
 
-  void spectroscopyAZ(const int32_t *const data); // спектроскопия Ampl-Z
+  void spectroscopyAZ(int32_t *vector); // спектроскопия Ampl-Z
 
   void scan_update(const Config &config);  // обновить параметры скaнирования
 
@@ -70,10 +70,14 @@ public:
   
   void readADC();
   
+  void scanner_retract_protract(int port, int flg);
+  
   void retract();       // втянуть сканер
 
   void protract();      // втянуть сканер
-
+ 
+  void LOOP_freeze_unfreeze(int port, int flg);  
+ 
   void freezeLOOP();    // заморизить ПИД
 
   void unfreezeLOOP();  // разморизить ПИД
