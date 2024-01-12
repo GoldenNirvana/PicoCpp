@@ -130,13 +130,13 @@ void MainCore::loop()
     if (InitDAC_BIAS_SET_POINT) 
     {
       InitDAC_BIAS_SET_POINT=false; 
-      DACSPB_Init(vector[1]);     
+      init_DACSPB(vector[1]);     
       continue;
     }
     if (InitDAC_XY)
     {
       InitDAC_XY=false; 
-      DACXY_Init(vector[1]);
+      init_DACXY(vector[1]);
       continue;
     }
     if (SET_BIAS) 

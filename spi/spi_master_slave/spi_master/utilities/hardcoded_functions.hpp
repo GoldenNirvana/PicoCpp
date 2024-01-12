@@ -12,9 +12,9 @@ void set_freq(uint32_t freq); //установка заданной частот
 
 void IniSPI(uint8_t port ,uint8_t v2 ,uint8_t v3, uint8_t v4); //инициирование SPI
 
-void DACSPB_Init(uint8_t port); //инициирование ЦАП1  SetPoint,BIAS
+void init_DACSPB(uint8_t port); //инициирование ЦАП1  SetPoint,BIAS
 
-void DACXY_Init(uint8_t port); //инициирование ЦАП2  XY
+void init_DACXY(uint8_t port); //инициирование ЦАП2  XY
 
 void set_Bias(int8_t chanel,int32_t Bias); //установка заданного значения напряжения
 
