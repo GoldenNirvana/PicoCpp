@@ -290,38 +290,7 @@ void MainCore::loop()
       ADC_READ = false;
       if (ADC_IS_READY_TO_READ)
       {
-        afc.clear();
-        afc = "code12";
-        if (!flgVirtual)
-        {
-          auto ptr = getValuesFromAdc();
-          logger(ptr, 8);
-          ZValue = (int16_t) ptr[ZPin];
-            switch (vector[1]) //прибор
-         {
-          case 0: //SFM
-                {
-                 SignalValue = (int16_t) ptr[AmplPin];
-                 break;  
-                } 
-          case 1://STM
-          case 3://SICMDC  
-                {
-                 SignalValue = (int16_t) ptr[IPin];
-                 break;  
-                } 
-          }       
-          afc +=',' + std::to_string(ZValue) + ',' + std::to_string(SignalValue) + ',' + std::to_string(vector[1]) + "\n";
-          std::cout << afc;
-          afc.clear();
-        } 
-        else
-        {
-          afc += ',' + std::to_string(ZValue) + ',' + std::to_string(SignalValue) +',' + std::to_string(vector[1])+"\n";   //Z,Signal
-          std::cout << afc;
-          afc.clear();
-          sleep_ms(100);
-        }
+       scanner.readADC();
       }
       continue;
     }

@@ -68,6 +68,8 @@ public:
 
   void LID_move_toZ0(int lid_name, int f, int p, int n, int dir);// отвестись в безопасную начальную точку по Z при старте и выходе из программы
   
+  void readADC();
+  
   void retract();       // втянуть сканер
 
   void protract();      // втянуть сканер
