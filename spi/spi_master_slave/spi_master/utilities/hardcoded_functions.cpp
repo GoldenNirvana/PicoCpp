@@ -130,7 +130,15 @@ void init_DACXY(uint8_t port)
   afc.clear();
   sleep_ms(100);
 }
+void move_scannerX(int x)
+{
+ dac8563_2.writeA(x);
+}
+void move_scannerY(int y)
+{
+ dac8563_2.writeB(y);
 
+}
 void set_Bias(int8_t chanel,int32_t Bias)
 {
 //   code  22 , 2, 8, 0, 1, 1, value 

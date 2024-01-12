@@ -8,6 +8,8 @@
 #include "../../physical_devices/scanner.hpp"
 #include "../../devices/DAC8563.hpp"
 
+
+
 extern uint32_t DEBUG_LEVEL;
 extern Spi spi;
 extern LinearDriver linearDriver;

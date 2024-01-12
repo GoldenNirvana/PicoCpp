@@ -34,6 +34,10 @@ void set_DACZ(uint16_t value);
 
 void stopAll(); //остановка  выполнения алгоритма
 
+void move_scannerX(int x);
+
+void move_scannerY(int y);
+
 uint16_t *repeatTwoTimes();
 
 uint16_t *getValuesFromAdc();  // чтение АЦП

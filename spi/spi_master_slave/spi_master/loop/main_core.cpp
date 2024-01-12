@@ -142,40 +142,30 @@ void MainCore::loop()
     if (SET_BIAS) 
     {
       SET_BIAS=false;
-      int16_t v1=vector[1];
-      int16_t v2=vector[2];
-      int16_t v3=vector[3];
-      int16_t v4=vector[4];
-      IniSPI(v1,v2,v3,v4);//22, 2, 8, 0, 1, 1, value	
+      IniSPI(vector[1],vector[2],vector[3],vector[4]);//22, 2, 8, 0, 1, 1, value	
       set_Bias(vector[5],vector[6]);
       continue;
     }
     if (SET_SETPOINT)
     {
       SET_SETPOINT=false;
-      int16_t v1=vector[1];
-      int16_t v2=vector[2];
-      int16_t v3=vector[3];
-      int16_t v4=vector[4];
-      IniSPI(v1,v2,v3,v4);  //22, 2, 8, 0, 1, 0, value	
+      IniSPI(vector[1],vector[2],vector[3],vector[4]);  //22, 2, 8, 0, 1, 0, value	
       set_SetPoint(vector[5],vector[6]);
       continue;
     }
     if (SET_XY)  //управление  сканером X,Y
     {
-      int16_t v1=vector[1];
-      int16_t v2=vector[2];
-      int16_t v3=vector[3];
-      int16_t v4=vector[4];
-      IniSPI(v1,v2,v3,v4);//22, 3, 8, 0, 1, 1, value	
+      IniSPI(vector[1],vector[2],vector[3],vector[4]);//22, 3, 8, 0, 1, 1, value	
       if (vector[5] == 0)
       {
-        dac8563_2.writeA(vector[6]);
+        move_scannerX(vector[6]);
+       // dac8563_2.writeA(vector[6]);
       } 
       else 
       if (vector[5] == 1)
       {
-        dac8563_2.writeB(vector[6]);
+        move_scannerY(vector[6]);
+       // dac8563_2.writeB(vector[6]);
       }
       SET_XY=false;
       continue; 
