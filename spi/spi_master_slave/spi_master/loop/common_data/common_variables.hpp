@@ -22,11 +22,14 @@
 #define SET_SETPOINT            22
 #define SET_XY                  29
 #define ADC_READ                12
-#define ADC_GET_VALUE  ;
+//#define ADC_GET_VALUE  ;
 //#define SCANNER_RETRACT
 //#define SCANNER_PROTRACT
 #define GET_CURRENTX0Y0          18
 #define SCANNER_RETRACT_PROTRACT 61
+#define SPECTROSOPY_IV           65
+#define SPECTROSOPY_AZ           66
+#define SET_BIAS                 19
 
 extern int16_t ALGCODE;
 
@@ -61,8 +64,8 @@ extern bool ADC_READ_FOREVER;  //AD7606
 extern bool ADC_GET_VALUE;     //AD7606
 //extern bool FREQ_SET;          //AD9833
 //extern bool SCANNING;
-extern bool SPECTROSOPY_IV;
-extern bool SPECTROSOPY_AZ;
+//extern bool SPECTROSOPY_IV;
+//extern bool SPECTROSOPY_AZ;
 extern bool SCAN_CONFIG_UPDATE;
 //extern bool MOVE_TOX0Y0;      // переместиться в начальную точку  скана из начальной точке предыдущего скана
 //extern bool LID_MOVE_TOZ0;    // отвестись в безопасную начальную точку по Z
@@ -80,7 +83,7 @@ extern bool STOP;
 //extern bool SET_PID_GAIN;
 extern bool SET_AMPLMOD_GAIN;
 ///extern bool InitDAC_BIAS_SET_POINT; //DAC8563
-extern bool SET_BIAS;               //DAC8563
+//extern bool SET_BIAS;               //DAC8563
 //extern bool SET_SETPOINT;           //DAC8563
 //extern bool InitDAC_XY;             //DAC8563
 //extern bool SET_XY;                 //DAC8563_SET_VOLTAGE_2

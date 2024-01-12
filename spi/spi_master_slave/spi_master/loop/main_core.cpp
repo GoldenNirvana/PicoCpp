@@ -128,7 +128,26 @@ case SCANNER_RETRACT_PROTRACT:
                 scanner.scanner_retract_protract(vector[1],vector[2]);
                 // vector[2] == 1 ? io_ports[vector[1] - 1].enable() : io_ports[vector[1] - 1].disable();
                 break;
-              }                                                                                                      
+              } 
+ case SPECTROSOPY_IV:
+              {
+                ALGCODE=0;
+                scanner.spectroscopyIV(vector);
+                break;
+              }  
+ case SPECTROSOPY_AZ:
+              {
+                ALGCODE=0;
+                scanner.spectroscopyAZ(vector);
+                break;
+              }  
+case SET_BIAS:
+              {
+                ALGCODE=0;
+                IniSPI(vector[1],vector[2],vector[3],vector[4]);//22, 2, 8, 0, 1, 1, value	
+                set_Bias(vector[5],vector[6]);
+                break;
+              }                                                                                                                                
    }
   }
 
@@ -155,20 +174,6 @@ case SCANNER_RETRACT_PROTRACT:
       continue;
     }
 
-
-    if (SPECTROSOPY_IV)
-    { 
-      SPECTROSOPY_IV=false;
-      scanner.spectroscopyIV(vector);
-      continue;
-    }
-    if (SPECTROSOPY_AZ)
-    {
-      SPECTROSOPY_AZ=false;
-      scanner.spectroscopyAZ(vector);
-      continue;
-    }
-
     if (SET_AMPLMOD_GAIN) // усиление раскачка зонда 
     {
       SET_AMPLMOD_GAIN=false;
@@ -178,13 +183,6 @@ case SCANNER_RETRACT_PROTRACT:
   
  /// MAIN SPI 
  
-    if (SET_BIAS) 
-    {
-      SET_BIAS=false;
-      IniSPI(vector[1],vector[2],vector[3],vector[4]);//22, 2, 8, 0, 1, 1, value	
-      set_Bias(vector[5],vector[6]);
-      continue;
-    }
   
 
     if (AD5664)

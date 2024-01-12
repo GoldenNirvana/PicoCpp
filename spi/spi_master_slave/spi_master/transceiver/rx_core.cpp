@@ -36,9 +36,7 @@ void RX_core::launchOnCore1()
   while (true)
   {
     parse(vector); // парсинг входящих данных из ПК
-    
-    ALGCODE=vector[0];
-
+ 
     switch (vector[0])
     {
       case 1:
@@ -53,7 +51,6 @@ void RX_core::launchOnCore1()
       case 11:
         ADC_RESET = true;
         break;
-
       case 13: 
         if (vector[1]==1)
         {
@@ -78,55 +75,38 @@ void RX_core::launchOnCore1()
   //***************************************    
       case 16: //изменить значение усиления амплитуды раскачки зонда
         SET_AMPLMOD_GAIN=true;
-        break;  
-
-      case 19:
-        SET_BIAS=true;
-        break;    
+        break;   
       case 21:
         AD5664 = true;
         break;
-
       case 24:            
         ADC_GET_VALUE = true;// прочитатать сигналы АЦП      
-        break;
-
+        break
       case 28: // mf  
         TheadDone = true;
         break;
- 
-      case 40:
+      case 40: //изменить значение усиления амплитуды раскачки зонда
         SET_AMPLMOD_GAIN= true;
         break;
-
       case 55:
         SCAN_CONFIG_UPDATE = true;
         break;
-
-      case 65:  // спектроскопия  I-V
-        SPECTROSOPY_IV = true;
-        break;
-      case 66:  // спектроскопия  A-Z
-        SPECTROSOPY_AZ = true;
-        break;  
       case 70:
         STOP=true; //stopAll(); stop algorithm 
         break;
-   
       case 76:// изменение параметров сближения
         APPROACH_CONFIG_UPDATE = true;
-        break;
-   
+        break; 
       case 82:// изменение параметров позиционирования ZYX
         POSXYZ_CONFIG_UPDATE = true;
         break;
- 
       case 90 ... 99:
         LID = true;
         break;
       default:
         activateError();
     }
+    ALGCODE=vector[0]; 
   }
 }
 
