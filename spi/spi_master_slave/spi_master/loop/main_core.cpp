@@ -30,7 +30,7 @@ void MainCore::loop()
     if (MOVE_TOX0Y0) //переместиться в начальную точку  скана из начальной точке предыдущего скана
     {
       MOVE_TOX0Y0 = false;
-      scanner.move_toX0Y0(static_cast<uint16_t>(vector[1]), static_cast<uint16_t>(vector[2]), vector[3]);
+      scanner.move_toX0Y0(vector[1], vector[2], vector[3]);
       continue;
     }
 
@@ -130,13 +130,13 @@ void MainCore::loop()
     if (InitDAC_BIAS_SET_POINT) 
     {
       InitDAC_BIAS_SET_POINT=false; 
-      dac8563_1.initialize(vector[1]);
+      DACSPB_Init(vector[1]);     
       continue;
     }
     if (InitDAC_XY)
     {
       InitDAC_XY=false; 
-      dac8563_2.initialize(vector[1]);
+      DACXY_Init(vector[1]);
       continue;
     }
     if (SET_BIAS) 

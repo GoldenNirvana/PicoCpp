@@ -109,22 +109,22 @@ void IniSPI( uint8_t port ,uint8_t v2 ,uint8_t v3, uint8_t v4 )
  decoder.activePort(port);
  Spi::setProperties(v2, v3, v4);
 }
-void Init_DAC1(uint8_t port)
+void DACSPB_Init(uint8_t port)
 {
   dac8563_1.initialize(port); //code 23
   afc.clear();
-  afc = "debug Init DAC1 " + std::to_string(port);
+  afc = "debug Init DACSPB " + std::to_string(port);
   afc += +"\n";
   std::cout << afc;
   afc.clear();
   sleep_ms(100);
 }
 
-void Init_DAC2(uint8_t port)
+void DACXY_Init(uint8_t port)
 {
   dac8563_2.initialize(port); //code 27
   afc.clear();
-  afc = "debug Init DAC2 " + std::to_string(port);
+  afc = "debug Init DACXY " + std::to_string(port);
   afc += +"\n";
   std::cout << afc;
   afc.clear();
