@@ -13,66 +13,126 @@ void MainCore::loop()
   uint64_t time = 0;
   while (time++ < UINT64_MAX - 1000)
   {
-    //    log(vector, vectorSize);
-    if (APPROACH)   //сближение зонда и образца
+    switch (ALGCODE)
     {
-      blue();
-      scanner.approacphm(vector);
-      green();
-      activateDark();
-      continue;
-    }
-    if (LID_MOVE_UNTIL_STOP)  // пьезодвижитель  позиционирование
-    {
-      scanner.positioningXYZ(vector); 
-      continue;
-    }
-    if (MOVE_TOX0Y0) //переместиться в начальную точку  скана из начальной точке предыдущего скана
-    {
-      MOVE_TOX0Y0 = false;
-      scanner.move_toX0Y0(vector[1], vector[2], vector[3]);
-      continue;
-    }
+ 
+case RESONANCE:
+              {
+               ALGCODE=0;
+               scanner.start_frqscan();
+               break;
+              }
+case APPROACH:{
+               ALGCODE=0;
+               blue();
+               scanner.approacphm(vector);
+               green();
+               activateDark();
+               break;
+              }
+case FREQ_SET:{
+               ALGCODE=0;
+               set_freq((uint32_t) vector[1]);              
+               break;
+              }
+case LID_MOVE_UNTIL_STOP:
+              {
+               ALGCODE=0;
+               scanner.positioningXYZ(vector);               
+               break;
+              }
+case MOVE_TOX0Y0:
+              {
+                ALGCODE=0;
+                scanner.move_toX0Y0(vector[1], vector[2], vector[3]);
+                break; 
+              }     
+case LID_MOVE_TOZ0:
+              {
+                ALGCODE=0;
+                scanner.LID_move_toZ0(vector[1], vector[2], vector[3], vector[4], vector[5]);
+                break; 
+              }            
+case SCANNING:
+              {
+                ALGCODE=0;
+                if (!scanner.getHoppingFlg())  { scanner.start_scan(vector);       }
+                else                           { scanner.start_hopingscan(vector); }
+                break; 
+              }
+case FASTSCANNING:
+              {
+                ALGCODE=0;
+                scanner.start_fastscan(vector);  
+                break; 
+              }   
 
-    if (LID_MOVE_TOZ0) //отвестись в безопасную начальную точку по Z
-    {
-      LID_MOVE_TOZ0 = false;
-      scanner.LID_move_toZ0(vector[1], vector[2], vector[3], vector[4], vector[5]);
-      continue;
-    }
-    if (SCANNING) //сканирование
-    {  
-      if (!scanner.getHoppingFlg())  { scanner.start_scan(vector);       }
-      else                           { scanner.start_hopingscan(vector); }
-      continue;
-    }
-    if (FASTSCANNING)
-    {  
-      FASTSCANNING = false;
-      scanner.start_fastscan(vector);  
-      continue;
-    }
-    if (SET_PID_GAIN)         // установить усиление ПИД
-    {
-      SET_PID_GAIN=false;   
-       /* для отладки
-      afc.clear();
-      afc = "debug PID gain parameters";
-      afc += ',' + std::to_string(vector[1]);
-      afc += +"\n";
-      std::cout << afc;
-      sleep_ms(100);
-     */
-      if (!flgVirtual) set_io_value(vector[1], vector[2]);   
-      continue;
-    }
-    if (SCANNER_RETRACT_PROTRACT) //втянуть-вытянуть сканер
-    {
-      SCANNER_RETRACT_PROTRACT = false;
-      scanner.scanner_retract_protract(vector[1],vector[2]);
-     // vector[2] == 1 ? io_ports[vector[1] - 1].enable() : io_ports[vector[1] - 1].disable();
-      continue;
-    }
+case SET_PID_GAIN:
+              {
+                ALGCODE=0;
+                 if (!flgVirtual) set_io_value(vector[1], vector[2]);     
+                break; 
+              }     
+case InitDAC_BIAS_SET_POINT:
+              {
+                ALGCODE=0;
+                 if (!flgVirtual)  init_DACSPB(vector[1]);       
+                break;         
+              }   
+case InitDAC_XY:
+              {
+                ALGCODE=0; 
+                init_DACXY(vector[1]);
+                break; 
+              }  
+case SET_SETPOINT:
+              {
+                ALGCODE=0;
+                IniSPI(vector[1],vector[2],vector[3],vector[4]);  //22, 2, 8, 0, 1, 0, value	
+                set_SetPoint(vector[5],vector[6]);
+                break; 
+              }     
+case SET_XY: {
+              ALGCODE=0;
+              IniSPI(vector[1],vector[2],vector[3],vector[4]);//22, 3, 8, 0, 1, 1, value	
+              if (vector[5] == 0)
+              {
+               move_scannerX(vector[6]);
+               // dac8563_2.writeA(vector[6]);
+              } 
+              else 
+              if (vector[5] == 1)
+              {
+               move_scannerY(vector[6]);
+               // dac8563_2.writeB(vector[6]);
+              }
+              break;
+             }   
+case ADC_READ:{
+               ALGCODE=0;
+               if (ADC_IS_READY_TO_READ)
+               {
+                scanner.readADC();
+               }
+               break;
+              }    
+case GET_CURRENTX0Y0:
+              {
+                ALGCODE=0;
+                scanner.getX0Y0();
+                break;
+              }   
+case SCANNER_RETRACT_PROTRACT:
+              {
+                ALGCODE=0;
+                scanner.scanner_retract_protract(vector[1],vector[2]);
+                // vector[2] == 1 ? io_ports[vector[1] - 1].enable() : io_ports[vector[1] - 1].disable();
+                break;
+              }                                                                                                      
+   }
+  }
+
+/*
     if (LOOP_FREEZE_UNFREEZE) //заморозить- разморозить ПИД ??????????
     {  
       LOOP_FREEZE_UNFREEZE = false;
@@ -95,11 +155,6 @@ void MainCore::loop()
       continue;
     }
 
-    if (RESONANCE)       //снятие  АЧХ зонда
-    {
-      scanner.start_frqscan();
-      continue;
-    }
 
     if (SPECTROSOPY_IV)
     { 
@@ -113,12 +168,7 @@ void MainCore::loop()
       scanner.spectroscopyAZ(vector);
       continue;
     }
-    if (FREQ_SET) // установка частоты колебаний зонда
-    {
-      FREQ_SET = false;
-      set_freq((uint32_t) vector[1]);
-      continue;
-    }
+
     if (SET_AMPLMOD_GAIN) // усиление раскачка зонда 
     {
       SET_AMPLMOD_GAIN=false;
@@ -127,18 +177,7 @@ void MainCore::loop()
     } 
   
  /// MAIN SPI 
-    if (InitDAC_BIAS_SET_POINT) 
-    {
-      InitDAC_BIAS_SET_POINT=false; 
-      init_DACSPB(vector[1]);     
-      continue;
-    }
-    if (InitDAC_XY)
-    {
-      InitDAC_XY=false; 
-      init_DACXY(vector[1]);
-      continue;
-    }
+ 
     if (SET_BIAS) 
     {
       SET_BIAS=false;
@@ -146,30 +185,8 @@ void MainCore::loop()
       set_Bias(vector[5],vector[6]);
       continue;
     }
-    if (SET_SETPOINT)
-    {
-      SET_SETPOINT=false;
-      IniSPI(vector[1],vector[2],vector[3],vector[4]);  //22, 2, 8, 0, 1, 0, value	
-      set_SetPoint(vector[5],vector[6]);
-      continue;
-    }
-    if (SET_XY)  //управление  сканером X,Y
-    {
-      IniSPI(vector[1],vector[2],vector[3],vector[4]);//22, 3, 8, 0, 1, 1, value	
-      if (vector[5] == 0)
-      {
-        move_scannerX(vector[6]);
-       // dac8563_2.writeA(vector[6]);
-      } 
-      else 
-      if (vector[5] == 1)
-      {
-        move_scannerY(vector[6]);
-       // dac8563_2.writeB(vector[6]);
-      }
-      SET_XY=false;
-      continue; 
-    }
+  
+
     if (AD5664)
     {
       AD5664 = false;
@@ -216,16 +233,7 @@ void MainCore::loop()
       resetPort.disable();
       continue;
     }
-    if (ADC_READ or ADC_READ_FOREVER)   // прочитать АЦП и послать значения на ПК
-    {
-    //  if (flgDebugLevel <= DEBUG_LEVEL)       logger("ReadADC\n");
-      ADC_READ = false;
-      if (ADC_IS_READY_TO_READ)
-      {
-       scanner.readADC();
-      }
-      continue;
-    }
+  
     if (SCANNER_RETRACT)
     {
       scanner.retract();
@@ -238,13 +246,7 @@ void MainCore::loop()
       SCANNER_PROTRACT = false;
       continue;
     }
-    if (GET_CURRENTX0Y0)
-    {
-      scanner.getX0Y0();
-      GET_CURRENTX0Y0 = false;
-      continue;
-    }
-  }
+     */
 }
 
 MainCore::MainCore()

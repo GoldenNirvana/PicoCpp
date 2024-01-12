@@ -36,6 +36,9 @@ void RX_core::launchOnCore1()
   while (true)
   {
     parse(vector); // парсинг входящих данных из ПК
+    
+    ALGCODE=vector[0];
+
     switch (vector[0])
     {
       case 1:
@@ -50,9 +53,7 @@ void RX_core::launchOnCore1()
       case 11:
         ADC_RESET = true;
         break;
-      case 12:
-        ADC_READ = true;
-        break;
+
       case 13: 
         if (vector[1]==1)
         {
@@ -78,69 +79,30 @@ void RX_core::launchOnCore1()
       case 16: //изменить значение усиления амплитуды раскачки зонда
         SET_AMPLMOD_GAIN=true;
         break;  
-    /*  case 17: // изменить значение усиления ПИД
-        SET_PID_GAIN=true; 
-        break;
-    */    
-      case 18: // получить текущее знание координат сканера 
-        GET_CURRENTX0Y0=true; 
-        break; 
+
       case 19:
         SET_BIAS=true;
         break;    
       case 21:
         AD5664 = true;
         break;
-      case 22:
-        SET_SETPOINT=true;// управление опорой и напряжением  
-        break;
-      case 23:
-        InitDAC_BIAS_SET_POINT=true;  //иницирование управлением опорой и напряжением     
-        break;
+
       case 24:            
         ADC_GET_VALUE = true;// прочитатать сигналы АЦП      
         break;
-      case 25:
-        RESONANCE = true;
-        break;
-      case 27:
-        InitDAC_XY=true;; // иницирование  управлением сканера по X,Y 
-        break;
+
       case 28: // mf  
         TheadDone = true;
         break;
-      case 29:
-        SET_XY=true;// управление сканер X,Y  
-        break;
-      case 30:
-        FREQ_SET = true;
-        break;
+ 
       case 40:
         SET_AMPLMOD_GAIN= true;
         break;
-      case 50:
-        SCANNING = true;
-        break;
-      case 51:
-        MOVE_TOX0Y0 = true;
-        break;
-  /*      
-       case 53:
-        SCANNING = true;
-        break;
-  */      
+
       case 55:
         SCAN_CONFIG_UPDATE = true;
         break;
-      case 56:
-        FASTSCANNING =true;
-        break;
-      case 60: // изменить значение усиления ПИД
-        SET_PID_GAIN =true;
-        break;
-      case 61:  // управление ПИД - втянуть-вытянуть
-        SCANNER_RETRACT_PROTRACT = true;
-        break;
+
       case 65:  // спектроскопия  I-V
         SPECTROSOPY_IV = true;
         break;
@@ -150,21 +112,15 @@ void RX_core::launchOnCore1()
       case 70:
         STOP=true; //stopAll(); stop algorithm 
         break;
-      case 75: //сближение зонда и образца
-        APPROACH = true;
-        break;
+   
       case 76:// изменение параметров сближения
         APPROACH_CONFIG_UPDATE = true;
         break;
-      case 80:
-        LID_MOVE_UNTIL_STOP = true; 
-        break;
+   
       case 82:// изменение параметров позиционирования ZYX
         POSXYZ_CONFIG_UPDATE = true;
         break;
-      case 84:
-        LID_MOVE_TOZ0 = true; 
-        break;  
+ 
       case 90 ... 99:
         LID = true;
         break;

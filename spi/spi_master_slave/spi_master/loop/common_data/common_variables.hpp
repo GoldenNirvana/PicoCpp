@@ -8,7 +8,27 @@
 #include "../../physical_devices/scanner.hpp"
 #include "../../devices/DAC8563.hpp"
 
+#define RESONANCE               25
+#define APPROACH                75
+#define FREQ_SET                30
+#define SCANNING                50
+#define FASTSCANNING            56
+#define MOVE_TOX0Y0             51
+#define LID_MOVE_TOZ0           84
+#define LID_MOVE_UNTIL_STOP     80
+#define SET_PID_GAIN            60
+#define InitDAC_BIAS_SET_POINT  23
+#define InitDAC_XY              27
+#define SET_SETPOINT            22
+#define SET_XY                  29
+#define ADC_READ                12
+#define ADC_GET_VALUE  ;
+//#define SCANNER_RETRACT
+//#define SCANNER_PROTRACT
+#define GET_CURRENTX0Y0          18
+#define SCANNER_RETRACT_PROTRACT 61
 
+extern int16_t ALGCODE;
 
 extern uint32_t DEBUG_LEVEL;
 extern Spi spi;
@@ -36,41 +56,41 @@ extern bool AD5664;            //
 
 extern bool ADC_ENABLE_DISABLE;//AD7606
 extern bool ADC_RESET;         //AD7606
-extern bool ADC_READ;          //AD7606
+//extern bool ADC_READ;          //AD7606
 extern bool ADC_READ_FOREVER;  //AD7606
 extern bool ADC_GET_VALUE;     //AD7606
-extern bool FREQ_SET;          //AD9833
-extern bool SCANNING;
+//extern bool FREQ_SET;          //AD9833
+//extern bool SCANNING;
 extern bool SPECTROSOPY_IV;
 extern bool SPECTROSOPY_AZ;
 extern bool SCAN_CONFIG_UPDATE;
-extern bool MOVE_TOX0Y0;      // переместиться в начальную точку  скана из начальной точке предыдущего скана
-extern bool LID_MOVE_TOZ0;    // отвестись в безопасную начальную точку по Z
+//extern bool MOVE_TOX0Y0;      // переместиться в начальную точку  скана из начальной точке предыдущего скана
+//extern bool LID_MOVE_TOZ0;    // отвестись в безопасную начальную точку по Z
 extern bool LID;
-extern bool LID_MOVE_UNTIL_STOP;
+//extern bool LID_MOVE_UNTIL_STOP;
 extern bool SET_IO_VALUE;
-extern bool SCANNER_RETRACT_PROTRACT;    //SET_ONE_IO_VALUE;
-extern bool APPROACH;
+//extern bool SCANNER_RETRACT_PROTRACT;    //SET_ONE_IO_VALUE;
+//extern bool APPROACH;
 extern bool APPROACH_CONFIG_UPDATE;
 extern bool Z_STATE;
 // add MF
 extern bool LOOP_FREEZE_UNFREEZE;
 extern bool STOP;
-extern bool FASTSCANNING;
-extern bool SET_PID_GAIN;
+//extern bool FASTSCANNING;
+//extern bool SET_PID_GAIN;
 extern bool SET_AMPLMOD_GAIN;
-extern bool InitDAC_BIAS_SET_POINT; //DAC8563
+///extern bool InitDAC_BIAS_SET_POINT; //DAC8563
 extern bool SET_BIAS;               //DAC8563
-extern bool SET_SETPOINT;           //DAC8563
-extern bool InitDAC_XY;             //DAC8563
-extern bool SET_XY;                 //DAC8563_SET_VOLTAGE_2
+//extern bool SET_SETPOINT;           //DAC8563
+//extern bool InitDAC_XY;             //DAC8563
+//extern bool SET_XY;                 //DAC8563_SET_VOLTAGE_2
 extern bool PID_TURN_ON;
-extern bool GET_CURRENTX0Y0;
+//extern bool GET_CURRENTX0Y0;
 extern bool SCANNER_RETRACT;
 extern bool SCANNER_PROTRACT;
 extern bool POSXYZ_CONFIG_UPDATE;
 extern bool ADC_IS_READY_TO_READ;
-extern bool RESONANCE;              //AD9833 
+//extern bool RESONANCE;              //AD9833 
 extern bool RESONANCE_STOP; //???
 extern bool TheadDone;   //need dor synchronization with PC 
 extern uint8_t ZPin;

@@ -365,7 +365,7 @@ void Scanner::start_scan(int32_t *vector) //сканирование
 
   blue();
 
-  SCANNING = false;
+  //SCANNING = false;
   switch (conf_.path)
   {
     case 0:
@@ -652,7 +652,7 @@ void Scanner::start_hopingscan(int32_t *vector)
     }
   } 
   blue();
-  SCANNING = false;
+  //SCANNING = false;
   switch (conf_.path)
   {
     case 0:
@@ -871,10 +871,10 @@ void Scanner::start_fastscan(int32_t *vector)
 
     stop_scan();  //возврат в начальную точку скана
 
-    if (conf_.flgOneFrame == 1) { FASTSCANNING = false; };
+    if (conf_.flgOneFrame == 1) { STOP = true; };
   } 
   blue();
-  FASTSCANNING = false;
+  //FASTSCANNING = false;
   STOP=false;
   switch (conf_.path)
   {
@@ -1186,7 +1186,7 @@ void Scanner::positioningXYZ(int32_t *vector)
     count++;
   } //ожидание ответа ПК для синхронизации
   TheadDone = false;
-  LID_MOVE_UNTIL_STOP = false;
+  //LID_MOVE_UNTIL_STOP = false;
   std::cout << "end\n";
   dark();
   //  sleep_ms(100); 
@@ -1572,7 +1572,7 @@ void Scanner::approacphm(int32_t *vector) //uint16_t
   buf_status.push_back(ZValue);
   buf_status.push_back(SignalValue);
   afc.clear();
-  afc ="code75," + std::to_string(APPROACH) + ',' + std::to_string(buf_status[1]) + ',' 
+  afc ="code75," + std::to_string(buf_status[0]) + ',' + std::to_string(buf_status[1]) + ',' 
       +std::to_string(buf_status[2]) + "\n";
   std::cout << afc;
   afc.clear();
@@ -1716,7 +1716,7 @@ void Scanner::approacphm(int32_t *vector) //uint16_t
         std::to_string(buf_status[2]) + "\n";
   std::cout << afc;
   afc.clear();
-  APPROACH = false;
+  //APPROACH = false;
   if (!flgVirtual)
   {
     protract();//вытянуть
@@ -1783,7 +1783,7 @@ void Scanner::start_frqscan()
   } //ожидание ответа ПК для синхронизации
   TheadDone = false;
   std::cout << "end\n";
-  RESONANCE = false;
+ // RESONANCE = false;
   RESONANCE_STOP = false;
 }
 
