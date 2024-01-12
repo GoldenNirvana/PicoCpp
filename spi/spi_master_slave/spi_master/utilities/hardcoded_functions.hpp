@@ -30,6 +30,8 @@ void set_clock_enable();
 
 void set_DACXY(uint8_t channel, uint16_t value); 
 
+void set_DACZ(uint16_t value); 
+
 void stopAll(); //остановка  выполнения алгоритма
 
 uint16_t *repeatTwoTimes();

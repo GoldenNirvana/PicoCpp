@@ -202,7 +202,11 @@ void set_DACXY(uint8_t channel, uint16_t value)
   if (channel == 0)  dac8563_2.writeA(value);
   if (channel == 1)  dac8563_2.writeB(value);
 }
+void set_DACZ(uint16_t value) 
+{
 
+
+}
 void stopAll()
 {
   STOP=false;
