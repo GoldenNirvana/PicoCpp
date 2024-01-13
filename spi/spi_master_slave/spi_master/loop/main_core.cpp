@@ -18,7 +18,7 @@ void MainCore::loop()
 case  ALGNONE:{break;} //????
 case RESONANCE:
               {
-               ALGCODE=0;
+               ALGCODE=ALGNONE;
                scanner.start_frqscan();
                break;
               }
