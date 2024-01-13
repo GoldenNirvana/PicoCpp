@@ -15,7 +15,7 @@ void MainCore::loop()
   {
     switch (ALGCODE)
     {
- 
+case  ALGNONE:{break;} //????
 case RESONANCE:
               {
                ALGCODE=0;
@@ -147,7 +147,8 @@ case SET_BIAS:
                 IniSPI(vector[1],vector[2],vector[3],vector[4]);//22, 2, 8, 0, 1, 1, value	
                 set_Bias(vector[5],vector[6]);
                 break;
-              }                                                                                                                                
+              } 
+default:      {activateError();  break;}                                                                                                                                            
    }
   }
 
@@ -183,8 +184,6 @@ case SET_BIAS:
   
  /// MAIN SPI 
  
-  
-
     if (AD5664)
     {
       AD5664 = false;

@@ -302,9 +302,9 @@ void Scanner::start_scan(int32_t *vector) //сканирование
     afc.clear();
     vector_z.clear();
     other_info.clear();
-    if (SCAN_CONFIG_UPDATE)
+    if (CONFIG_UPDATE)
     {
-      SCAN_CONFIG_UPDATE = false;
+      CONFIG_UPDATE = false;
       conf_.delayF = vector[1];
       conf_.delayB = vector[2];
       set_gainPID(vector[3]);
@@ -599,9 +599,9 @@ void Scanner::start_hopingscan(int32_t *vector)
     afc.clear();
     vector_z.clear();
     other_info.clear();
-    if (SCAN_CONFIG_UPDATE)
+    if (CONFIG_UPDATE)
     {
-      SCAN_CONFIG_UPDATE = false;
+      CONFIG_UPDATE = false;
       conf_.delayF = vector[1];
       conf_.delayB = vector[2];
       set_gainPID(vector[3]);
@@ -652,7 +652,6 @@ void Scanner::start_hopingscan(int32_t *vector)
     }
   } 
   blue();
-  //SCANNING = false;
   switch (conf_.path)
   {
     case 0:
@@ -874,7 +873,6 @@ void Scanner::start_fastscan(int32_t *vector)
     if (conf_.flgOneFrame == 1) { STOP = true; };
   } 
   blue();
-  //FASTSCANNING = false;
   STOP=false;
   switch (conf_.path)
   {
@@ -1020,31 +1018,21 @@ void Scanner::positioningXYZ(int32_t *vector)
   int16_t ln;  
   bool ldir;
   int16_t p,f;
-
-      int16_t data[7];
-      data[0] = vector[1]; //  int lid_name
-      data[1] = vector[2]; //  int f
-      data[2] = vector[3]; //  int p
-      data[3] =abs(vector[4]); //  int n
-      data[4] = vector[5]; //  int dir
-      data[5] = vector[6]; //  int Z gate max
-      data[6] = vector[7]; //  int Z gate min
-
  // SET VALUE FROM RX_CORE
-      lid_name=(uint8_t)data[0]; //  int lid_name
-      f=data[1]; //  int f
-      p=data[2]; //  int p
-      ln=data[3]; //  int n
-      ldir=(bool)data[4]; //  int dir
-      GATE_Z_MAX=data[5]; //  int Z gate max
-      GATE_Z_MIN=data[6]; //  int Z gate min
+        lid_name=(uint8_t)vector[1]; //  int lid_name
+               f=vector[2]; //  int f
+               p=vector[3]; //  int p
+              ln=abs(vector[4]); //  int n
+            ldir=(bool)vector[5]; //  int dir
+      GATE_Z_MAX=vector[6]; //  int Z gate max
+      GATE_Z_MIN=vector[7]; //  int Z gate min
    //   pos_data[7] / //  0= SFM, 1=STM ;SICMAC-2; SICMDC-3;  device type
   //    pos_data[8]/ //  Voltage
       afc.clear();
         afc = "debug parameters pos update";
         for (int j = 0; j <= 6; ++j)
         {
-          afc += ',' + std::to_string(data[j]);
+          afc += ',' + std::to_string(vector[j]);
         }
         afc +="\n";
         std::cout << afc;
@@ -1054,9 +1042,9 @@ void Scanner::positioningXYZ(int32_t *vector)
   {
     while (!STOP) //LID_MOVE_UNTIL_STOP)
     {
-      if (POSXYZ_CONFIG_UPDATE)
+      if (CONFIG_UPDATE)
       {
-        POSXYZ_CONFIG_UPDATE = false;
+        CONFIG_UPDATE = false;
         ln = vector[1]; // with sign
         GATE_Z_MAX = vector[2];
         GATE_Z_MIN = vector[3];
@@ -1097,14 +1085,14 @@ void Scanner::positioningXYZ(int32_t *vector)
     while (!STOP) //(LID_MOVE_UNTIL_STOP)
     {
     //   Z_STATE = true;  // 231215 ????
-      if (POSXYZ_CONFIG_UPDATE)
-      {
+      if (CONFIG_UPDATE)
+      { 
+        CONFIG_UPDATE = false;
         ln = vector[1];
         GATE_Z_MAX = vector[2];
         GATE_Z_MIN = vector[3];
         ldir = 0;
         if (ln > 0) ldir = 1;
-        POSXYZ_CONFIG_UPDATE = false;
         sleep_ms(100);
         afc.clear();
         afc = "debug parameters update";
@@ -1186,7 +1174,6 @@ void Scanner::positioningXYZ(int32_t *vector)
     count++;
   } //ожидание ответа ПК для синхронизации
   TheadDone = false;
-  //LID_MOVE_UNTIL_STOP = false;
   std::cout << "end\n";
   dark();
   //  sleep_ms(100); 
@@ -1234,20 +1221,13 @@ void Scanner::spectroscopyAZ(int32_t *vector) // спектроскопия Ampl
 */
  const int16_t SFM=0;
  const int16_t STM=1;
- int32_t data[6];
-      data[0] = vector[1]; // n точек
-      data[1] = vector[2]; // ZStart
-      data[2] = vector[3]; // ZStep
-      data[3] = vector[4]; // Threshold
-      data[4] = vector[5]; // delay
-      data[5] = vector[6]; // flgmode stm,sfm
       
- int16_t   NPoints=data[0];
- int16_t    ZStart=data[1];
- int16_t     ZStep=data[2];
- int16_t Threshold=data[3];
- int16_t     Delay=data[4];
- int16_t   flgModa=data[5];
+ int16_t   NPoints=(int16_t )vector[1]; // n точек
+ int16_t    ZStart=(int16_t )vector[2]; // ZStart
+ int16_t     ZStep=(int16_t )vector[3]; // ZStep
+ int16_t Threshold=(int16_t )vector[4]; // Threshold
+ int16_t     Delay=(int16_t )vector[5]; // delay
+ int16_t   flgModa=(int16_t )vector[6]; // flgmode stm,sfm;
 
  int16_t ampl;
  int16_t dlt,dacZ,dacZ0;
@@ -1361,28 +1341,20 @@ void Scanner::spectroscopyIV(int32_t *vector)
     int32_t  dacU;
     int32_t  start_step;
     int32_t  step;
-    int32_t data[7];
-      data[0] = vector[1]; // n точек
-      data[1] = vector[2]; // m кривых
-      data[2] = vector[3]; // V начальное значение
-      data[3] = vector[4]; // V шаг
-      data[4] = vector[5]; // задержка в точке измерения
-      data[5] = vector[6]; // прибор
-      data[6] = vector[7]; // V текущее значение напряжения
-   
-    UPoints         = (int16_t) data[0];
-    UCurves         = (int16_t) data[1];
-		UStart	      	=           data[2];    
-		UStep		        =           data[3];    
-  	delay           = (int16_t) data[4]; 
-    flgDev          = (int8_t)  data[5];
-    UBackup         =           data[6]; 
+
+    UPoints         = (int16_t) vector[1]; // n точек
+    UCurves         = (int16_t) vector[2]; // m кривых
+		UStart	      	=           vector[3]; // V начальное значение    
+		UStep		        =           vector[4]; // V шаг 
+  	delay           = (int16_t) vector[5]; // задержка в точке измерения
+    flgDev          = (int8_t)  vector[6]; // прибор
+    UBackup         =           vector[7]; // V текущее значение напряжения 
 //start
   afc.clear();
   afc = "debug I_V parameters";
   for (int j = 0; j <= 6; ++j)
   {
-    afc += ',' + std::to_string(data[j]);
+    afc += ',' + std::to_string(vector[j]);
   }
   afc += +"\n";
   std::cout << afc;
@@ -1501,31 +1473,19 @@ void Scanner::approacphm(int32_t *vector) //uint16_t
   uint16_t INTDELAY, SCANNERDECAY;
   uint8_t  flgDev;
   int32_t  Bias;
-  int32_t data[11];
-      data[0] = vector[1]; //set point
-      data[1] = vector[2]; // max
-      data[2] = vector[3]; // min
-      data[3] = vector[4]; // steps     
-      data[4] = vector[5]; // initdelay
-      data[5] = vector[6]; // gain
-      data[6] = vector[7]; // scannerDelay
-      data[7] = vector[8]; // freq
-      data[8] = vector[9]; // scv
-      data[9] = vector[10]; //  0= SFM, 1=STM ;SICMAC-2; SICMDC-3;  device type
-      data[10]= vector[11]; // Voltage need for STM,SICM
-
+ 
   // SET VALUE FROM RX_CORE
-  SET_POINT      = data[0];
-  GATE_Z_MAX     = data[1];
-  GATE_Z_MIN     = data[2];
-  NSTEPS         = data[3];
-  INTDELAY       = data[4];
-  GAIN           = data[5];
-  SCANNERDECAY   = data[6]; 
-  freq           = data[7];
-  scv            = data[8];
-  flgDev= (uint8_t)data[9]; // 0= SFM, 1=STM ;SICMAC-2; SICMDC-3;  device type
-  Bias           = data[10];         //Voltage for 1,2,3
+  SET_POINT      = vector[1]; // set point
+  GATE_Z_MAX     = vector[2]; // max
+  GATE_Z_MIN     = vector[3]; // min
+  NSTEPS         = vector[4]; // steps 
+  INTDELAY       = vector[5]; // initdelay
+  GAIN           = vector[6]; // gain
+  SCANNERDECAY   = vector[7]; // scannerDelay 
+  freq           = vector[8]; // freq
+  scv            = vector[9]; // scv
+  flgDev         = (uint8_t)vector[10];//  0= SFM, 1=STM ;SICMAC-2; SICMDC-3;  device type
+  Bias           = vector[11];// Voltage need for STM,SICM
  //need to add channel Bias ????
  //need to add channel SetPoint ????
 
@@ -1533,7 +1493,7 @@ void Scanner::approacphm(int32_t *vector) //uint16_t
   afc = "debug approach parameters 1 ";
   for (size_t j = 0; j < 9; j++)     // send info
   {
-    afc += ',' + std::to_string(data[j]);
+    afc += ',' + std::to_string(vector[j]);
   }
   afc += std::to_string(AmplPin) + ',' + std::to_string(ZPin) + "\n";
   std::cout << afc;
@@ -1542,12 +1502,12 @@ void Scanner::approacphm(int32_t *vector) //uint16_t
   set_SetPoint(0,SET_POINT); 
   if (flgDev!=0) set_Bias(1,Bias);  
   set_gainPID(GAIN);
-  
+  /*
   std::vector<int16_t> buf_params;
   buf_params.reserve(7);
 
-  for (int i = 0; i < 7; ++i)  buf_params.push_back(data[i]);
-
+  for (int i = 0; i < 7; ++i)  buf_params.push_back(vector[i]);
+ */
   if (!flgVirtual)
   {
     uint16_t *ptr = getValuesFromAdc(); 
@@ -1595,10 +1555,10 @@ void Scanner::approacphm(int32_t *vector) //uint16_t
       sleep_ms(100);
       break;
     }
-    if (APPROACH_CONFIG_UPDATE)
+    if (CONFIG_UPDATE)
     {
       // log("config updated\n",flgDebugLevel);
-      APPROACH_CONFIG_UPDATE = false;
+      CONFIG_UPDATE = false;
       SET_POINT    = vector[1];
       GATE_Z_MAX   = vector[2];
       GATE_Z_MIN   = vector[3];
@@ -1784,6 +1744,5 @@ void Scanner::start_frqscan()
   TheadDone = false;
   std::cout << "end\n";
  // RESONANCE = false;
-  RESONANCE_STOP = false;
 }
 

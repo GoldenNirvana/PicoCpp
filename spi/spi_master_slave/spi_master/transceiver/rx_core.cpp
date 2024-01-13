@@ -39,6 +39,7 @@ void RX_core::launchOnCore1()
  
     switch (vector[0])
     {
+    ///////////////////////////// ??? 
       case 1:
         AD9833_SENDER = true;
         break;
@@ -48,6 +49,7 @@ void RX_core::launchOnCore1()
       case 6:
         ADC_ENABLE_DISABLE = true;
         break;
+     ///////////////////////////   
       case 11:
         ADC_RESET = true;
         break;
@@ -81,24 +83,24 @@ void RX_core::launchOnCore1()
         break;
       case 24:            
         ADC_GET_VALUE = true;// прочитатать сигналы АЦП      
-        break
+        break;
       case 28: // mf  
         TheadDone = true;
         break;
       case 40: //изменить значение усиления амплитуды раскачки зонда
         SET_AMPLMOD_GAIN= true;
         break;
-      case 55:
-        SCAN_CONFIG_UPDATE = true;
+      case 55: //сканирование
+        CONFIG_UPDATE = true;
         break;
       case 70:
         STOP=true; //stopAll(); stop algorithm 
         break;
       case 76:// изменение параметров сближения
-        APPROACH_CONFIG_UPDATE = true;
+        CONFIG_UPDATE = true;
         break; 
       case 82:// изменение параметров позиционирования ZYX
-        POSXYZ_CONFIG_UPDATE = true;
+        CONFIG_UPDATE = true;
         break;
       case 90 ... 99:
         LID = true;

@@ -228,10 +228,9 @@ void stopAll()
   AD8400_SET_GAIN = false;
   AD8400_SENDER = false;
   AD5664 = false;
-  SCAN_CONFIG_UPDATE = false;
+  CONFIG_UPDATE = false;
   LID = false;
   SET_IO_VALUE = false;
-  RESONANCE_STOP = true;
   afc.clear();
 }
 /*
