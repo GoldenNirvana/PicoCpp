@@ -23,7 +23,7 @@ case RESONANCE:
                break;
               }
 case APPROACH:{
-               ALGCODE=0;
+               ALGCODE=ALGNONE;
                blue();
                scanner.approacphm(vector);
                green();
@@ -31,69 +31,69 @@ case APPROACH:{
                break;
               }
 case FREQ_SET:{
-               ALGCODE=0;
+               ALGCODE=ALGNONE;
                set_freq((uint32_t) vector[1]);              
                break;
               }
 case LID_MOVE_UNTIL_STOP:
               {
-               ALGCODE=0;
+               ALGCODE=ALGNONE;
                scanner.positioningXYZ(vector);               
                break;
               }
 case MOVE_TOX0Y0:
               {
-                ALGCODE=0;
+                ALGCODE=ALGNONE;
                 scanner.move_toX0Y0(vector[1], vector[2], vector[3]);
                 break; 
               }     
 case LID_MOVE_TOZ0:
               {
-                ALGCODE=0;
+                ALGCODE=ALGNONE;
                 scanner.LID_move_toZ0(vector[1], vector[2], vector[3], vector[4], vector[5]);
                 break; 
               }            
 case SCANNING:
               {
-                ALGCODE=0;
+                ALGCODE=ALGNONE;
                 if (!scanner.getHoppingFlg())  { scanner.start_scan(vector);       }
                 else                           { scanner.start_hopingscan(vector); }
                 break; 
               }
 case FASTSCANNING:
               {
-                ALGCODE=0;
+                ALGCODE=ALGNONE;
                 scanner.start_fastscan(vector);  
                 break; 
               }   
 
 case SET_PID_GAIN:
               {
-                ALGCODE=0;
+                ALGCODE=ALGNONE;
                  if (!flgVirtual) set_io_value(vector[1], vector[2]);     
                 break; 
               }     
 case InitDAC_BIAS_SET_POINT:
               {
-                ALGCODE=0;
+                ALGCODE=ALGNONE;
                  if (!flgVirtual)  init_DACSPB(vector[1]);       
                 break;         
               }   
 case InitDAC_XY:
               {
-                ALGCODE=0; 
+                ALGCODE=ALGNONE; 
                 init_DACXY(vector[1]);
                 break; 
               }  
 case SET_SETPOINT:
               {
-                ALGCODE=0;
+                ALGCODE=ALGNONE;
                 IniSPI(vector[1],vector[2],vector[3],vector[4]);  //22, 2, 8, 0, 1, 0, value	
                 set_SetPoint(vector[5],vector[6]);
                 break; 
               }     
 case SET_XY: {
-              ALGCODE=0;
+              ALGCODE=ALGNONE;
               IniSPI(vector[1],vector[2],vector[3],vector[4]);//22, 3, 8, 0, 1, 1, value	
               if (vector[5] == 0)
               {
@@ -109,7 +109,7 @@ case SET_XY: {
               break;
              }   
 case ADC_READ:{
-               ALGCODE=0;
+               ALGCODE=ALGNONE;
                if (ADC_IS_READY_TO_READ)
                {
                 scanner.readADC();
@@ -118,7 +118,7 @@ case ADC_READ:{
               }    
 case GET_CURRENTX0Y0:
               {
-                ALGCODE=0;
+                ALGCODE=ALGNONE;
                 scanner.getX0Y0();
                 break;
               }   
@@ -129,21 +129,21 @@ case SCANNER_RETRACT_PROTRACT:
                 // vector[2] == 1 ? io_ports[vector[1] - 1].enable() : io_ports[vector[1] - 1].disable();
                 break;
               } 
- case SPECTROSOPY_IV:
+case SPECTROSOPY_IV:
               {
-                ALGCODE=0;
+                ALGCODE=ALGNONE;
                 scanner.spectroscopyIV(vector);
                 break;
               }  
- case SPECTROSOPY_AZ:
+case SPECTROSOPY_AZ:
               {
-                ALGCODE=0;
+                ALGCODE=ALGNONE;
                 scanner.spectroscopyAZ(vector);
                 break;
               }  
 case SET_BIAS:
               {
-                ALGCODE=0;
+                ALGCODE=ALGNONE;
                 IniSPI(vector[1],vector[2],vector[3],vector[4]);//22, 2, 8, 0, 1, 1, value	
                 set_Bias(vector[5],vector[6]);
                 break;
