@@ -37,7 +37,8 @@ void RX_core::launchOnCore1()
   {
     parse(vector); // парсинг входящих данных из ПК
     
-    ALGCODE=(int16_t)vector[0]; 
+    if (vector[0]>=0 && vector[0]<100)  {ALGCODE=(int16_t)vector[0]; }
+    else ALGCODE=0;
 
     switch (vector[0])
     {

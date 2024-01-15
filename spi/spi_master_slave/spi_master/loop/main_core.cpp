@@ -15,7 +15,7 @@ void MainCore::loop()
   {
     switch (ALGCODE)
     {
-case  ALGNONE:{break;} //????
+case   ALGNONE:{break;} //????
 case RESONANCE:
               {
                ALGCODE=ALGNONE;
@@ -92,22 +92,22 @@ case SET_SETPOINT:
                 set_SetPoint(vector[5],vector[6]);
                 break; 
               }     
-case SET_XY: {
-              ALGCODE=ALGNONE;
-              IniSPI(vector[1],vector[2],vector[3],vector[4]);//22, 3, 8, 0, 1, 1, value	
-              if (vector[5] == 0)
-              {
-               move_scannerX(vector[6]);
-               // dac8563_2.writeA(vector[6]);
-              } 
-              else 
-              if (vector[5] == 1)
-              {
-               move_scannerY(vector[6]);
+ case SET_XY: {
+               ALGCODE=ALGNONE;
+               IniSPI(vector[1],vector[2],vector[3],vector[4]);//22, 3, 8, 0, 1, 1, value	
+               if (vector[5] == 0)
+               {
+                move_scannerX(vector[6]);
+                // dac8563_2.writeA(vector[6]);
+               } 
+               else 
+               if (vector[5] == 1)
+               {
+                move_scannerY(vector[6]);
                // dac8563_2.writeB(vector[6]);
-              }
-              break;
-             }   
+               }
+               break;
+              }   
 case ADC_READ:{
                ALGCODE=ALGNONE;
                if (ADC_IS_READY_TO_READ)

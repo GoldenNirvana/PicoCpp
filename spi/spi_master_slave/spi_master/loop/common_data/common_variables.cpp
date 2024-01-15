@@ -36,8 +36,9 @@ bool SCANNER_RETRACT = false;
 bool SCANNER_PROTRACT = false;
 bool LOOP_FREEZE_UNFREEZE=false;
 //************************************************
-bool flgVirtual = false; // флаг симуляции работа микроконтроллера
-uint flgDebugLevel = 2; //  уровень отладки
+bool flgVirtual = false;     // флаг симуляции работа микроконтроллера
+uint flgDebugLevel = 2;      //  уровень отладки
+bool    flgUseUART = false;  //использовать UART для передачи данных
 //данные для симуляции 
 int16_t ZValue      = 32767;
 int16_t SignalValue = 32767;

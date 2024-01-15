@@ -41,7 +41,9 @@ private:
   
    void move_to(const Point &point, uint16_t delay);  // переместиться в начальную точку скана текущего скана
 
-  void sendStrdata(std::string const& header, std::vector<int32_t> data);
+  void sendStrdata(std::string const& header,const std::vector<int32_t> &data);
+  void sendStrdata(std::string const& header,const std::vector<uint16_t> &data);
+  void sendStrdata(std::string const& header,int32_t *data, int16_t size);
 
 public:
 
