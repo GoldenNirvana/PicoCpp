@@ -15,7 +15,7 @@ Scanner::~Scanner()
 }
 
 
-void Scanner::sendStrdata(std::string const& header,const std::vector<int32_t> &data)
+void Scanner::sendStrdata()
 {
  std::string afcc;
   afcc.clear();
@@ -28,6 +28,54 @@ void Scanner::sendStrdata(std::string const& header,const std::vector<int32_t> &
   }
   */
   afcc +="/n";
+  std::cout << afcc;
+  afcc.clear();
+  sleep_ms(100);
+}
+void Scanner::sendStrdata(std::string const& header,const std::vector<int32_t> &data)
+{
+  std::string afcc;
+  afcc.clear();
+  afcc ="code25"; 
+   //for (auto & element :data) 
+  for (size_t j = 0; j < data.size(); ++j)
+  {
+ // afc +=',' + std::to_string(element);
+   afcc +=',' + std::to_string(data[j]);
+  }
+  afcc +="\n";
+  std::cout << afcc;
+  afcc.clear();
+  sleep_ms(100);
+}
+void Scanner::sendStrdata(std::string const& header,const std::vector<uint16_t> &data)
+{
+  std::string afcc;
+  afcc.clear();
+  afcc =header;
+   //for (auto & element :data) 
+  for (size_t j = 0; j < data.size(); ++j)
+  {
+ // afc +=',' + std::to_string(element);
+   afcc +=',' + std::to_string(data[j]);
+  }
+  afcc +="\n";
+  std::cout << afcc;
+  afcc.clear();
+  sleep_ms(100);
+}
+void Scanner::sendStrdata(std::string const& header,int32_t *data, int16_t size)
+{
+ std::string afcc;
+  afcc.clear();
+  afcc ="code25";
+   //for (auto & element :data) 
+  for (int j = 0; j < size; ++j)
+  {
+ // afc +=',' + std::to_string(element);
+   afcc +=',' + std::to_string(data[j]);
+  }
+  afcc +="\n";
   std::cout << afcc;
   afcc.clear();
   sleep_ms(100);
@@ -305,8 +353,8 @@ void Scanner::start_scan(int32_t *vector) //сканирование
 
       sleep_us(conf_.delayF);
     }
-    afc.clear();
-    afc = "code50";
+ //   afc.clear();
+  //  afc = "code50";
    // char  codear[6];
   //  int16_t* bufferout=reinterpret_cast<int16_t>(codear);
   // std::vector<uint16_t> vector_a;
@@ -314,14 +362,16 @@ void Scanner::start_scan(int32_t *vector) //сканирование
  //    vector_a.emplace_back(bufferout[0]);
   //       vector_a.emplace_back(bufferout[1]);
   //           vector_a.emplace_back(bufferout[2]);
-    for (size_t m = 0; m < vector_z.size(); m++)     // подготовка результатов
+ 
+ /*   for (size_t m = 0; m < vector_z.size(); m++)     // подготовка результатов
     {
    //   vector_a.emplace_back(vector_z[m]);
       switch (conf_.size)
       {
         case 1:
         {
-          afc += ',' + std::to_string(vector_z[m]);
+         afc += ',' + std::to_string(vector_z[m]);
+        data.em
           break;
         }
         case 2: //z+ signal
@@ -331,7 +381,7 @@ void Scanner::start_scan(int32_t *vector) //сканирование
         }
       }
     };
-
+*/
   // uint8_t*  bytes;
  //    byte* bufferout=reinterpret_cast<byte*>(vector_a);   // cast the bufferout to an byte pointer  
  
@@ -344,11 +394,14 @@ void Scanner::start_scan(int32_t *vector) //сканирование
 // so, you would do this:
 //std::copy( pnIntArray, pnIntArray + 1, vIntVector.begin() );
    
-    afc += "\n";
-    std::cout << afc;   // посылка результатов на ПК
+//    afc += "\n";
+//    std::cout << afc;   // посылка результатов на ПК
   //   uart_write_blocking (uart0,bytes, 2*vector_z.size());
-    sleep_ms(300); //don't delete ! 100; 300 // 231130
-    afc.clear();
+ //   sleep_ms(300); //don't delete ! 100; 300 // 231130
+ //   afc.clear();
+ 
+ sendStrdata("code50",vector_z);
+
     vector_z.clear();
     other_info.clear();
     if (SCAN_CONFIG_UPDATE)
@@ -1789,8 +1842,8 @@ void Scanner::start_frqscan()
   int16_t a = 10000;
   int16_t scan_index = 0;
   int16_t current_freq = 0;
- 
-
+ // sendStrdata();
+ // sleep_ms(202);
   afc.clear();
   afc = "debug frq scan parameters ";
   for (int j = 0; j < 5; ++j)
@@ -1801,36 +1854,44 @@ void Scanner::start_frqscan()
   afc += ',' + std::to_string(flgVirtual) +','+std::to_string(AmplPin) + ',' + std::to_string(ZPin) + "\n";
   std::cout << afc;
   afc.clear();
-   sleep_ms(100);
+  sleep_ms(100);
   current_channel = inBuf[3] - 1;  //ampl=0;
- // std::vector<int32_t> data;
- // std::string header="code25";
-  afc = "code25";
+  //int32_t  data[2*inBuf[0]];
+  std::vector<int32_t> data;
+  std::string header="code25";
+ // afc = "code25";
+ // int16_t icount=0;
   while ((scan_index++ < inBuf[0]))
   {
     if (!flgVirtual)
     {
       set_freq(inBuf[1]);
       sleep_ms(inBuf[4]);
-      afc +=',' + std::to_string(inBuf[1]) + ',' +
-          std::to_string((int16_t) getValuesFromAdc()[current_channel]);//+ ',';
+      //afc +=',' + std::to_string(inBuf[1]) + ',' +
+      //    std::to_string((int16_t) getValuesFromAdc()[current_channel]);//+ ',';
+      data.emplace_back((int32_t)inBuf[1]);
+      data.emplace_back((int32_t)getValuesFromAdc()[current_channel]);  
     }
     else
     {
       current_freq = inBuf[1];
       sleep_ms(inBuf[4]);
       signalvalue = (int16_t) std::round(a * (pow(M_E, -pow((current_freq - res_freq), 2) / 1000000))); //231126
-      afc += ',' + std::to_string(current_freq) + ',' + std::to_string(signalvalue);//+',';
-    //  data.emplace_back((int32_t)inBuf[1]);
-    //  data.emplace_back((int32_t)signalvalue);      
+ //     afc += ',' + std::to_string(current_freq) + ',' + std::to_string(signalvalue);//+',';
+      data.emplace_back((int32_t)inBuf[1]);
+      data.emplace_back((int32_t)signalvalue);      
+    //  data[icount++]=(int32_t)inBuf[1];
+    //  data[icount++]=(int32_t)signalvalue;         
     }
     sleep_ms(10);
     inBuf[1] += inBuf[2];
   }
-  std::cout << afc << '\n';
-  sleep_ms(100);
-  afc.clear();
-// sendStrdata(header,data);
+//  std::cout << afc << '\n';
+//  sleep_ms(100);
+// afc.clear();
+//sendStrdata(header,data,2*inBuf[0]);
+
+  sendStrdata("code25",data);
   current_channel = -1;
   int16_t count = 0;
   while ((!TheadDone) || (count<20) )
