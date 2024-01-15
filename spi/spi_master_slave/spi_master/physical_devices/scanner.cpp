@@ -12,6 +12,23 @@ Scanner::~Scanner()
 {
   move_to({0, 0}, 10);
 }
+
+
+void Scanner::sendStrdata(std::string const& header, std::vector<int32_t> data)
+{
+  afc.clear();
+  afc = header; 
+   //for (auto & element :data) 
+   for (int j = 0; j < data.size(); ++j)
+  {
+ // afc +=',' + std::to_string(element);
+   afc +=',' + std::to_string(data[j]);
+  }
+  afc +="/n";
+  std::cout << afc;
+  afc.clear();
+  sleep_ms(100);
+}
 void Scanner::readADC()
 {
   afc.clear();

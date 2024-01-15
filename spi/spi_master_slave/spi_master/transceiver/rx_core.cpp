@@ -36,7 +36,9 @@ void RX_core::launchOnCore1()
   while (true)
   {
     parse(vector); // парсинг входящих данных из ПК
- 
+    
+    ALGCODE=(int16_t)vector[0]; 
+
     switch (vector[0])
     {
     ///////////////////////////// ??? 
@@ -105,10 +107,7 @@ void RX_core::launchOnCore1()
       case 90 ... 99:
         LID = true;
         break;
-      default:
-        activateError();
-    }
-    ALGCODE=vector[0]; 
+     }
   }
 }
 

@@ -1,6 +1,7 @@
 #ifndef PICO_EXAMPLES_SCANNER_HPP
 #define PICO_EXAMPLES_SCANNER_HPP
 
+#include <string>
 #include <vector>
 #include "../utilities/base_types/Point.hpp"
 
@@ -39,6 +40,8 @@ private:
    void stop_scan();         // возвращение сканера в  начальную точку скана
   
    void move_to(const Point &point, uint16_t delay);  // переместиться в начальную точку скана текущего скана
+
+  void sendStrdata(std::string const& header, std::vector<int32_t> data);
 
 public:
 

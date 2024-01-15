@@ -148,7 +148,7 @@ case SET_BIAS:
                 set_Bias(vector[5],vector[6]);
                 break;
               } 
-default:      {activateError();  break;}                                                                                                                                            
+default:      {/*activateError();*/  break;}                                                                                                                                            
    }
   }
 
