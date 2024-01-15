@@ -2,6 +2,7 @@
 #define PICO_EXAMPLES_SCANNER_HPP
 
 #include <vector>
+#include <string>
 #include "../utilities/base_types/Point.hpp"
 
 struct Config
@@ -35,10 +36,15 @@ class Scanner
 {
 
 private:
+  std::vector<uint16_t> vector_z, other_info,vectorI_V,vectorA_Z;
+  Point pos_, prev_point;
+  Config conf_; 
+
+  void stop_scan();                                   // возвращение сканера в  начальную точку скана
   
-   void stop_scan();         // возвращение сканера в  начальную точку скана
-  
-   void move_to(const Point &point, uint16_t delay);  // переместиться в начальную точку скана текущего скана
+  void move_to(const Point &point, uint16_t delay);  // переместиться в начальную точку скана текущего скана
+
+  void sendStrdata(std::string const& header, std::vector<int32_t> data);
 
 public:
 
@@ -86,11 +92,6 @@ public:
 
   Point getX0Y0();      // получить текущую точку сканера в покое
 
-private:
-
-  std::vector<uint16_t> vector_z, other_info,vectorI_V,vectorA_Z;
-  Point pos_, prev_point;
-  Config conf_;
 };
 
 #endif

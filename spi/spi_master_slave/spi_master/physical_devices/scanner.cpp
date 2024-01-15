@@ -5,12 +5,30 @@
 #include "../utilities/peripheral_functions.hpp"
 #include <cmath>
 
+
 Scanner::Scanner() : pos_({0, 0}), conf_({})
 {}
 
 Scanner::~Scanner()
 {
   move_to({0, 0}, 10);
+}
+
+
+void Scanner::sendStrdata(std::string const& header, std::vector<int32_t> data)
+{
+  afc.clear();
+  afc = header; 
+   //for (auto & element :data) 
+   for (int j = 0; j < data.size(); ++j)
+  {
+ // afc +=',' + std::to_string(element);
+   afc +=',' + std::to_string(data[j]);
+  }
+  afc +="/n";
+  std::cout << afc;
+  afc.clear();
+  sleep_ms(100);
 }
 void Scanner::readADC()
 {
@@ -42,7 +60,14 @@ void Scanner::readADC()
   else
   {
           afc += ',' + std::to_string(ZValue) + ',' + std::to_string(SignalValue) +',' + std::to_string(vector[1])+"\n";   //Z,Signal
-          std::cout << afc;
+         std::cout << afc;
+     /* int16_t data[3];
+      data[0]=ZValue;
+       data[1]=SignalValue;
+        data[2]=vector[1];
+      uint8_t* bufferout=reinterpret_cast<uint8_t*>(data);
+          uart_write_blocking (uart0,bufferout, 6);
+          */
           afc.clear();
           sleep_ms(100);
   }
@@ -280,8 +305,16 @@ void Scanner::start_scan(int32_t *vector) //сканирование
     }
     afc.clear();
     afc = "code50";
+   // char  codear[6];
+  //  int16_t* bufferout=reinterpret_cast<int16_t>(codear);
+  // std::vector<uint16_t> vector_a;
+
+ //    vector_a.emplace_back(bufferout[0]);
+  //       vector_a.emplace_back(bufferout[1]);
+  //           vector_a.emplace_back(bufferout[2]);
     for (size_t m = 0; m < vector_z.size(); m++)     // подготовка результатов
     {
+   //   vector_a.emplace_back(vector_z[m]);
       switch (conf_.size)
       {
         case 1:
@@ -295,9 +328,23 @@ void Scanner::start_scan(int32_t *vector) //сканирование
           break;
         }
       }
-    }
+    };
+
+  // uint8_t*  bytes;
+ //    byte* bufferout=reinterpret_cast<byte*>(vector_a);   // cast the bufferout to an byte pointer  
+ 
+ //  std::copy(vector_z.begin(), vector_z.end(),bytes);
+//    std::memcpy(&vector_z, &bytes[0], 2*vector_z.size());
+
+// basically it works like this:
+//std::copy( vector_z,vector_z + 2*vector_z.size(), bytes );
+
+// so, you would do this:
+//std::copy( pnIntArray, pnIntArray + 1, vIntVector.begin() );
+   
     afc += "\n";
     std::cout << afc;   // посылка результатов на ПК
+  //   uart_write_blocking (uart0,bytes, 2*vector_z.size());
     sleep_ms(300); //don't delete ! 100; 300 // 231130
     afc.clear();
     vector_z.clear();
@@ -1740,6 +1787,8 @@ void Scanner::start_frqscan()
   int16_t a = 10000;
   int16_t scan_index = 0;
   int16_t current_freq = 0;
+ 
+
   afc.clear();
   afc = "debug frq scan parameters ";
   for (int j = 0; j < 5; ++j)
@@ -1747,11 +1796,13 @@ void Scanner::start_frqscan()
     inBuf[j] = vector[1 + j];
     afc += ',' + std::to_string(inBuf[j]);
   }
-  afc += ',' + std::to_string(flgVirtual) + std::to_string(AmplPin) + ',' + std::to_string(ZPin) + "\n";
+  afc += ',' + std::to_string(flgVirtual) +','+std::to_string(AmplPin) + ',' + std::to_string(ZPin) + "\n";
   std::cout << afc;
   afc.clear();
-  sleep_ms(100);
+   sleep_ms(100);
   current_channel = inBuf[3] - 1;  //ampl=0;
+  std::vector<int32_t> data;
+  std::string header="code25";
   afc = "code25";
   while ((scan_index++ < inBuf[0]))
   {
@@ -1761,12 +1812,15 @@ void Scanner::start_frqscan()
       sleep_ms(inBuf[4]);
       afc +=',' + std::to_string(inBuf[1]) + ',' +
           std::to_string((int16_t) getValuesFromAdc()[current_channel]);//+ ',';
-    } else
+    }
+    else
     {
       current_freq = inBuf[1];
       sleep_ms(inBuf[4]);
       signalvalue = (int16_t) std::round(a * (pow(M_E, -pow((current_freq - res_freq), 2) / 1000000))); //231126
       afc += ',' + std::to_string(current_freq) + ',' + std::to_string(signalvalue);//+',';
+      data.emplace_back(inBuf[1]);
+      data.emplace_back(signalvalue);      
     }
     sleep_ms(10);
     inBuf[1] += inBuf[2];
@@ -1774,6 +1828,7 @@ void Scanner::start_frqscan()
   std::cout << afc << '\n';
   sleep_ms(100);
   afc.clear();
+  //sendStrdata(header,data);
   current_channel = -1;
   int16_t count = 0;
   while ((!TheadDone) || (count<20) )

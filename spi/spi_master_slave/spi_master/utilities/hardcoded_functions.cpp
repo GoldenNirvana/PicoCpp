@@ -38,7 +38,7 @@ void setDefaultSettings()
   /// BASIC SETTINGS
 
   uart_init(uart1, 115200);
- // uart_init(uart0, 256000);
+ // uart_init(uart0, 115200);
   gpio_set_function(UART_TX_PIN, GPIO_FUNC_UART);
   gpio_set_function(UART_RX_PIN, GPIO_FUNC_UART);
 
@@ -123,11 +123,13 @@ void init_DACSPB(uint8_t port)
 void init_DACXY(uint8_t port)
 {
   dac8563_2.initialize(port); //code 27
+  /* отладка
   afc.clear();
   afc = "debug Init DACXY " + std::to_string(port);
   afc += +"\n";
   std::cout << afc;
   afc.clear();
+  */
   sleep_ms(100);
 }
 void move_scannerX(int x)
