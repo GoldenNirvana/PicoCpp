@@ -15,19 +15,21 @@ Scanner::~Scanner()
 }
 
 
-void Scanner::sendStrdata(std::string const& header, std::vector<int32_t> data)
+void Scanner::sendStrdata(std::string const& header,const std::vector<int32_t> &data)
 {
-  afc.clear();
-  afc = header; 
+ std::string afcc;
+  afcc.clear();
+  afcc ="debug code25";// header; 
    //for (auto & element :data) 
-   for (int j = 0; j < data.size(); ++j)
+ /*  for (int j = 0; j < data.size(); ++j)
   {
  // afc +=',' + std::to_string(element);
    afc +=',' + std::to_string(data[j]);
   }
-  afc +="/n";
-  std::cout << afc;
-  afc.clear();
+  */
+  afcc +="/n";
+  std::cout << afcc;
+  afcc.clear();
   sleep_ms(100);
 }
 void Scanner::readADC()
@@ -1801,8 +1803,8 @@ void Scanner::start_frqscan()
   afc.clear();
    sleep_ms(100);
   current_channel = inBuf[3] - 1;  //ampl=0;
-  std::vector<int32_t> data;
-  std::string header="code25";
+ // std::vector<int32_t> data;
+ // std::string header="code25";
   afc = "code25";
   while ((scan_index++ < inBuf[0]))
   {
@@ -1819,8 +1821,8 @@ void Scanner::start_frqscan()
       sleep_ms(inBuf[4]);
       signalvalue = (int16_t) std::round(a * (pow(M_E, -pow((current_freq - res_freq), 2) / 1000000))); //231126
       afc += ',' + std::to_string(current_freq) + ',' + std::to_string(signalvalue);//+',';
-      data.emplace_back(inBuf[1]);
-      data.emplace_back(signalvalue);      
+    //  data.emplace_back((int32_t)inBuf[1]);
+    //  data.emplace_back((int32_t)signalvalue);      
     }
     sleep_ms(10);
     inBuf[1] += inBuf[2];
@@ -1828,7 +1830,7 @@ void Scanner::start_frqscan()
   std::cout << afc << '\n';
   sleep_ms(100);
   afc.clear();
-  //sendStrdata(header,data);
+// sendStrdata(header,data);
   current_channel = -1;
   int16_t count = 0;
   while ((!TheadDone) || (count<20) )
