@@ -93,17 +93,13 @@ void RX_core::launchOnCore1()
       case 40: //изменить значение усиления амплитуды раскачки зонда
         SET_AMPLMOD_GAIN= true;
         break;
+      case 82:
+      case 76:
       case 55: //сканирование
         CONFIG_UPDATE = true;
         break;
       case 70:
         STOP=true; //stopAll(); stop algorithm 
-        break;
-      case 76:// изменение параметров сближения
-        CONFIG_UPDATE = true;
-        break; 
-      case 82:// изменение параметров позиционирования ZYX
-        CONFIG_UPDATE = true;
         break;
       case 90 ... 99:
         LID = true;
