@@ -75,8 +75,6 @@ void Scanner::sendStrData(std::string const& header,std::vector<uint16_t> &data,
   data.clear();
 }
 
-
-
 void Scanner::readADC()
 {
   afc.clear();
@@ -99,12 +97,7 @@ void Scanner::readADC()
                  SignalValue = (int16_t) ptr[IPin];
                  break;  
                 } 
-   }       
-      /*
-          afc +=',' + std::to_string(ZValue) + ',' + std::to_string(SignalValue) + ',' + std::to_string(vector[1]) + "\n";
-          std::cout << afc;
-          afc.clear();
-      */    
+   }         
         debugdata.emplace_back(ZValue);
         debugdata.emplace_back(SignalValue);
         debugdata.emplace_back(vector[1]);
@@ -112,11 +105,6 @@ void Scanner::readADC()
   } 
   else
   {
-        /*  afc += ',' + std::to_string(ZValue) + ',' + std::to_string(SignalValue) +',' + std::to_string(vector[1])+"\n";   //Z,Signal
-          std::cout << afc;
-          afc.clear();
-          sleep_ms(100);
-        */
         debugdata.emplace_back(ZValue);
         debugdata.emplace_back(SignalValue);
         debugdata.emplace_back(vector[1]);
@@ -404,8 +392,6 @@ void Scanner::start_scan(int32_t *vector) //сканирование
   } 
 
   blue();
-
-  //SCANNING = false;
   switch (conf_.path)
   {
     case 0:
@@ -537,7 +523,6 @@ void Scanner::start_hopingscan(int32_t *vector)
 
         sleep_us(conf_.delayF);
       }
-
   //******************************************************************************
       if (!flgVirtual)
       {
@@ -545,7 +530,7 @@ void Scanner::start_hopingscan(int32_t *vector)
       }
       sleep_ms(conf_.HopeDelay);
       sleep_us(conf_.pause);    // 50 CONST 50ms wait for start get data
-    //*******************************************************************************
+  //*******************************************************************************
       if (!flgVirtual)
       {
          getValuesFromAdc();
@@ -671,7 +656,7 @@ void Scanner::start_hopingscan(int32_t *vector)
   sleep_ms(200);
   if (!flgVirtual)
   {
-     protract();
+    protract();
   }
   sleep_ms(1000);
    int16_t count = 0;
@@ -813,7 +798,6 @@ void Scanner::start_fastscan(int32_t *vector)
         { pos_fast -= conf_.diskretinstep; }
         sleep_us(conf_.delayB);
       }
-
       if (reststepfast != 0)// добирание остатка
       {
         if (!flgVirtual)
@@ -854,7 +838,6 @@ void Scanner::start_fastscan(int32_t *vector)
     } //i
     sendStrData("code56",vector_data,100);
     stop_scan();  //возврат в начальную точку скана
-
     if (conf_.flgOneFrame == 1) { STOP = true; };
   } 
   blue();
@@ -883,7 +866,6 @@ void Scanner::start_fastscan(int32_t *vector)
     count++;
   } //ожидание ответа ПК для синхронизации
   TheadDone = false;
-
   sendStrData("end");
   activateDark();
 }
@@ -1036,7 +1018,6 @@ void Scanner::positioningXYZ(int32_t *vector)
         linearDriver.activate(lid_name, f, p, std::abs(ln), ldir);
       } else
       {
-
       }
       debugdata.emplace_back(status);
       debugdata.emplace_back(ZValue);
@@ -1114,7 +1095,7 @@ void Scanner::positioningXYZ(int32_t *vector)
       sendStrData("code"+ std::to_string(lid_name) ,debugdata,100);
     }
   }
-  STOP=false;
+   STOP=false;
    debugdata.emplace_back(status);
    debugdata.emplace_back(ZValue);
    debugdata.emplace_back(SignalValue);
@@ -1278,7 +1259,6 @@ void Scanner::spectroscopyAZ(int32_t *vector) // спектроскопия Ampl
     unfreezeLOOP();
     sleep_ms(500);
  //
-
 }
 
 void Scanner::spectroscopyIV(int32_t *vector)
@@ -1454,12 +1434,7 @@ void Scanner::approacphm(int32_t *vector) //uint16_t
   set_SetPoint(0,SET_POINT); 
   if (flgDev!=0) set_Bias(1,Bias);  
   set_gainPID(GAIN);
-  /*
-  std::vector<int16_t> buf_params;
-  buf_params.reserve(7);
 
-  for (int i = 0; i < 7; ++i)  buf_params.push_back(vector[i]);
- */
   if (!flgVirtual)
   {
     uint16_t *ptr = getValuesFromAdc(); 
@@ -1483,14 +1458,7 @@ void Scanner::approacphm(int32_t *vector) //uint16_t
   buf_status.push_back(none);
   buf_status.push_back(ZValue);
   buf_status.push_back(SignalValue);
- /*
-  afc.clear();
-  afc ="code75," + std::to_string(buf_status[0]) + ',' + std::to_string(buf_status[1]) + ',' 
-      +std::to_string(buf_status[2]) + "\n";
-  std::cout << afc;
-  afc.clear();
-  sleep_ms(100);
-  */
+
   debugdata.emplace_back(buf_status[0]);
   debugdata.emplace_back(buf_status[1]);
   debugdata.emplace_back(buf_status[2]);
@@ -1505,14 +1473,6 @@ void Scanner::approacphm(int32_t *vector) //uint16_t
       buf_status[0] = stopdone;
       buf_status[1] = ZValue;
       buf_status[2] = SignalValue;
-      /*
-      sleep_ms(100);  /// need for virtual для разделение afc
-      afc.clear();
-      afc = "stopped\n";
-      std::cout << afc;
-      afc.clear();
-      sleep_ms(100);
-      */
       sendStrData("stopped");
       break;
     }
@@ -1532,18 +1492,6 @@ void Scanner::approacphm(int32_t *vector) //uint16_t
       set_SetPoint(0,SET_POINT); //add 231214 
       set_gainPID(GAIN);
       sleep_ms(100);  // need for virtual для разделение afc
-    /*
-      afc.clear();
-      afc = "debug parameters update";
-      for (int j = 1; j <= 7; ++j)
-      {
-        afc += ',' + std::to_string(vector[j]);
-      }
-      afc += +"\n";
-      std::cout << afc;
-      afc.clear();
-      sleep_ms(100); 
-    */
       for (int j = 1; j <= 7; ++j)
       {
         debugdata.emplace_back(vector[j]);
@@ -1626,13 +1574,6 @@ void Scanner::approacphm(int32_t *vector) //uint16_t
     {
 
     }
-   /*
-    afc.clear();
-    afc = "code75," + std::to_string(buf_status[0]) + ',' + std::to_string(buf_status[1]) + ',' +
-          std::to_string(buf_status[2]) + "\n";
-    std::cout << afc;
-    afc.clear();
-  */
     debugdata.emplace_back(buf_status[0]);
     debugdata.emplace_back(buf_status[1]);
     debugdata.emplace_back(buf_status[2]);
@@ -1645,18 +1586,10 @@ void Scanner::approacphm(int32_t *vector) //uint16_t
       protract(); //вытянуть
     }
   }
-  /* 
-  afc.clear();
-  afc = "code75," + std::to_string(buf_status[0]) + ',' + std::to_string(buf_status[1]) + ',' +
-        std::to_string(buf_status[2]) + "\n";
-  std::cout << afc;
-  afc.clear();
-  */
   debugdata.emplace_back(buf_status[0]);
   debugdata.emplace_back(buf_status[1]);
   debugdata.emplace_back(buf_status[2]);
   sendStrData("code75",debugdata,100);
-  //APPROACH = false;
   if (!flgVirtual)
   {
     protract();//вытянуть
@@ -1680,19 +1613,6 @@ void Scanner::start_frqscan()
   int16_t a = 10000;
   int16_t scan_index = 0;
   int16_t current_freq = 0;
- /*
-  afc.clear();
-  afc = "debug frq scan parameters ";
-  for (int j = 0; j < 5; ++j)
-  {
-    inBuf[j] = vector[1 + j];
-    afc += ',' + std::to_string(inBuf[j]);
-  }
-  afc += ',' + std::to_string(flgVirtual) + std::to_string(AmplPin) + ',' + std::to_string(ZPin) + "\n";
-  std::cout << afc;
-  afc.clear();
-  sleep_ms(100);
-*/
   for (int j = 0; j < 5; ++j)
   {
     inBuf[j] = vector[1 + j];
@@ -1703,7 +1623,7 @@ void Scanner::start_frqscan()
   debugdata.emplace_back(ZPin);
   sendStrData("debug frq scan parameters ",debugdata,100);
   current_channel = inBuf[3] - 1;  //ampl=0;
-//  afc = "code25";
+
   std::vector<int32_t> data;
 
   while ((scan_index++ < inBuf[0]))
@@ -1712,8 +1632,6 @@ void Scanner::start_frqscan()
     {
       set_freq(inBuf[1]);
       sleep_ms(inBuf[4]);
-   //   afc +=',' + std::to_string(inBuf[1]) + ',' +
-  //        std::to_string((int16_t) getValuesFromAdc()[current_channel]);//+ ',';
       data.emplace_back((int32_t)inBuf[1]);
       data.emplace_back((int32_t)getValuesFromAdc()[current_channel]);
     }
@@ -1722,17 +1640,12 @@ void Scanner::start_frqscan()
       current_freq = inBuf[1];
       sleep_ms(inBuf[4]);
       signalvalue = (int16_t) std::round(a * (pow(M_E, -pow((current_freq - res_freq), 2) / 1000000))); //231126
-    //  afc += ',' + std::to_string(current_freq) + ',' + std::to_string(signalvalue);//+',';
       data.emplace_back((int32_t)current_freq);
       data.emplace_back((int32_t)signalvalue);
-
     }
     sleep_ms(10);
     inBuf[1] += inBuf[2];
   }
- // std::cout << afc << '\n';
- // sleep_ms(100);
- // afc.clear();
   sendStrData("code25",data,100);
   data.clear();
   current_channel = -1;
@@ -1744,6 +1657,5 @@ void Scanner::start_frqscan()
   } //ожидание ответа ПК для синхронизации
   TheadDone = false;
   sendStrData("end");
- // RESONANCE = false;
 }
 
