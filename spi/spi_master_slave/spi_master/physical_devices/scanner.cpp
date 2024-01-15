@@ -147,6 +147,17 @@ bool Scanner::getHoppingFlg() //получить флаг установлен �
 void Scanner::start_scan(int32_t *vector) //сканирование
 {
   const int8_t oneline=11;
+ 
+ scan_update({
+              static_cast<uint16_t>(vector[1]), static_cast<uint16_t>(vector[2]),
+              static_cast<uint8_t>(vector[3]),  static_cast<uint8_t>(vector[4]),
+              static_cast<uint16_t>(vector[5]), static_cast<uint16_t>(vector[6]),
+              static_cast<uint16_t>(vector[7]), static_cast<uint16_t>(vector[8]),
+              static_cast<uint8_t>(vector[9]),  static_cast<uint8_t>(vector[10]),
+              static_cast<uint16_t>(vector[11]),static_cast<uint16_t>(vector[12]),
+              static_cast<uint8_t>(vector[13]), static_cast<uint8_t>(vector[14]),
+              static_cast<uint16_t>(vector[15])
+             });
   prev_point = pos_; //запоминание начальной точки скана
   vector_data.clear();
   for (int j = 1; j <= 12; ++j)
@@ -173,16 +184,6 @@ void Scanner::start_scan(int32_t *vector) //сканирование
   uint16_t pos_fast;
   uint16_t pos_slow;
 
- scan_update({
-              static_cast<uint16_t>(vector[1]), static_cast<uint16_t>(vector[2]),
-              static_cast<uint8_t>(vector[3]),  static_cast<uint8_t>(vector[4]),
-              static_cast<uint16_t>(vector[5]), static_cast<uint16_t>(vector[6]),
-              static_cast<uint16_t>(vector[7]), static_cast<uint16_t>(vector[8]),
-              static_cast<uint8_t>(vector[9]),  static_cast<uint8_t>(vector[10]),
-              static_cast<uint16_t>(vector[11]),static_cast<uint16_t>(vector[12]),
-              static_cast<uint8_t>(vector[13]), static_cast<uint8_t>(vector[14]),
-              static_cast<uint16_t>(vector[15])
-             });
 
   stepsx = (uint16_t) conf_.betweenPoints_x / conf_.diskretinstep;
   stepsy = (uint16_t) conf_.betweenPoints_y / conf_.diskretinstep;
@@ -425,6 +426,16 @@ void Scanner::start_scan(int32_t *vector) //сканирование
 void Scanner::start_hopingscan(int32_t *vector)
 {
   const int8_t oneline=11;
+   scan_update({
+               static_cast<uint16_t>(vector[1]), static_cast<uint16_t>(vector[2]),
+               static_cast<uint8_t>(vector[3]),  static_cast<uint8_t>(vector[4]),
+               static_cast<uint16_t>(vector[5]), static_cast<uint16_t>(vector[6]),
+               static_cast<uint16_t>(vector[7]), static_cast<uint16_t>(vector[8]),
+               static_cast<uint8_t>(vector[9]),  static_cast<uint8_t>(vector[10]),
+               static_cast<uint16_t>(vector[11]),static_cast<uint16_t>(vector[12]),
+               static_cast<uint8_t>(vector[13]), static_cast<uint8_t>(vector[14]),
+               static_cast<uint16_t>(vector[15])
+              }); 
   prev_point = pos_; //запоминание начальной точки скана
   vector_data.clear();
   for (int j = 1; j <= 15; ++j)
@@ -440,22 +451,13 @@ void Scanner::start_hopingscan(int32_t *vector)
   uint16_t reststepy;
   uint16_t nfastline, nslowline;
   uint16_t stepslowline, stepfastline;
-  uint8_t portx = 1;
-  uint8_t porty = 2;
-  uint8_t portfast;
-  uint8_t portslow;
+  uint8_t  portx = 1;
+  uint8_t  porty = 2;
+  uint8_t  portfast;
+  uint8_t  portslow;
   uint16_t pos_fast;
   uint16_t pos_slow;
-   scan_update({
-               static_cast<uint16_t>(vector[1]), static_cast<uint16_t>(vector[2]),
-               static_cast<uint8_t>(vector[3]),  static_cast<uint8_t>(vector[4]),
-               static_cast<uint16_t>(vector[5]), static_cast<uint16_t>(vector[6]),
-               static_cast<uint16_t>(vector[7]), static_cast<uint16_t>(vector[8]),
-               static_cast<uint8_t>(vector[9]),  static_cast<uint8_t>(vector[10]),
-               static_cast<uint16_t>(vector[11]),static_cast<uint16_t>(vector[12]),
-               static_cast<uint8_t>(vector[13]), static_cast<uint8_t>(vector[14]),
-               static_cast<uint16_t>(vector[15])
-              });
+
 
   stepsx = (uint16_t) conf_.betweenPoints_x / conf_.diskretinstep;
   stepsy = (uint16_t) conf_.betweenPoints_y / conf_.diskretinstep;
@@ -673,8 +675,18 @@ void Scanner::start_hopingscan(int32_t *vector)
 
 void Scanner::start_fastscan(int32_t *vector)
 {
+  scan_update({
+               static_cast<uint16_t>(vector[1]), static_cast<uint16_t>(vector[2]),
+               static_cast<uint8_t>(vector[3]),  static_cast<uint8_t>(vector[4]),
+               static_cast<uint16_t>(vector[5]), static_cast<uint16_t>(vector[6]),
+               static_cast<uint16_t>(vector[7]), static_cast<uint16_t>(vector[8]),
+               static_cast<uint8_t>(vector[9]),  static_cast<uint8_t>(vector[10]),
+               static_cast<uint16_t>(vector[11]),static_cast<uint16_t>(vector[12]),
+               static_cast<uint8_t>(vector[13])
+              });  
   prev_point = pos_; //запоминание начальной точки скана
   vector_data.clear();
+  
   for (int j = 1; j <= 13; ++j)
   {
     debugdata.emplace_back(vector[j]);
@@ -699,15 +711,6 @@ void Scanner::start_fastscan(int32_t *vector)
   uint16_t pos_fast;
   uint16_t pos_slow;
 
-  scan_update({
-               static_cast<uint16_t>(vector[1]), static_cast<uint16_t>(vector[2]),
-               static_cast<uint8_t>(vector[3]),  static_cast<uint8_t>(vector[4]),
-               static_cast<uint16_t>(vector[5]), static_cast<uint16_t>(vector[6]),
-               static_cast<uint16_t>(vector[7]), static_cast<uint16_t>(vector[8]),
-               static_cast<uint8_t>(vector[9]),  static_cast<uint8_t>(vector[10]),
-               static_cast<uint16_t>(vector[11]),static_cast<uint16_t>(vector[12]),
-               static_cast<uint8_t>(vector[13])
-              }); 
   stepsx    = (uint16_t) conf_.betweenPoints_x / conf_.diskretinstep;
   stepsy    = (uint16_t) conf_.betweenPoints_y / conf_.diskretinstep;
   reststepx = conf_.betweenPoints_x % conf_.diskretinstep;
@@ -1244,7 +1247,7 @@ void Scanner::spectroscopyAZ(int32_t *vector) // спектроскопия Ampl
   dacZ = ZMove( dacZ, dlt, -1, MicrostepDelay );
  
  //send data
-   afc.clear();
+ /*  afc.clear();
    afc="code66";
    for (size_t m = 0; m < vectorA_Z.size(); m++)     // send data scanline
     {
@@ -1255,10 +1258,20 @@ void Scanner::spectroscopyAZ(int32_t *vector) // спектроскопия Ampl
     sleep_ms(200); //don't delete 
     afc.clear(); 
     vectorA_Z.clear();
+  */
+    sendStrData("code66",vectorA_Z);  
  // разморозка состояния pid
     unfreezeLOOP();
     sleep_ms(500);
  //
+    int16_t count = 0;
+  while ((!TheadDone) || (count<20) )
+  {
+    sleep_ms(100);
+    count++;
+  } //ожидание ответа ПК для синхронизации
+  TheadDone = false;
+  sendStrData("end");
 }
 
 void Scanner::spectroscopyIV(int32_t *vector)
@@ -1345,6 +1358,7 @@ void Scanner::spectroscopyIV(int32_t *vector)
       }
 
       sleep_ms(300);
+/*
     afc.clear();
     afc="code65";
    for (size_t m = 0; m < vectorI_V.size(); m++)     // send data scanline
@@ -1356,6 +1370,8 @@ void Scanner::spectroscopyIV(int32_t *vector)
     sleep_ms(200); //don't delete 
     afc.clear(); 
     vectorI_V.clear();
+*/
+    sendStrData("code65",vectorI_V);  
   //move to start point
   }// j Curves
     
@@ -1390,7 +1406,7 @@ void Scanner::spectroscopyIV(int32_t *vector)
     count++;
   } //ожидание ответа ПК для синхронизации
   TheadDone = false;
-  std::cout << "end\n";  
+  sendStrData("end");  
 }
 
 void Scanner::approacphm(int32_t *vector) //uint16_t

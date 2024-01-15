@@ -95,8 +95,9 @@ public:
 
 private:
 
-  std::vector<uint16_t> vector_data,vectorI_V,vectorA_Z;
-  std::vector<int32_t> debugdata; 
+  std::vector<uint16_t> vector_data,vectorA_Z;
+  std::vector<int16_t>  vectorI_V;
+  std::vector<int32_t>  debugdata; 
   Point pos_, prev_point;
   Config conf_;
 };
