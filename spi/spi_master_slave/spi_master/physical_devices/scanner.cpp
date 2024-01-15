@@ -17,7 +17,7 @@ void Scanner::sendStrdata(std::string const& header,const std::vector<int32_t> &
 {
   std::string afcc;
   afcc.clear();
-  afcc ="code25"; 
+  afcc =header; 
    //for (auto & element :data) 
   for (size_t j = 0; j < data.size(); ++j)
   {
@@ -49,7 +49,7 @@ void Scanner::sendStrdata(std::string const& header,int32_t *data, int16_t size)
 {
  std::string afcc;
   afcc.clear();
-  afcc ="code25";
+  afcc =header;
    //for (auto & element :data) 
   for (int j = 0; j < size; ++j)
   {
