@@ -41,13 +41,15 @@ private:
   
    void move_to(const Point &point, uint16_t delay);  // переместиться в начальную точку скана текущего скана
 
-  void sendStrdata(std::string const& header,const std::vector<int32_t> &data);
-  void sendStrdata(std::string const& header,const std::vector<uint16_t> &data);
-  void sendStrdata(std::string const& header,int32_t *data, int16_t size);
+  void sendStrData(std::string const& header,std::vector<int32_t>  &data, const uint16_t delay);
+  void sendStrData(std::string const& header,std::vector<uint16_t> &data, const uint16_t delay);
+  void sendStrData(std::string const& header,std::vector<int16_t>  &data, const uint16_t delay);
+  void sendStrData(std::string const& header,int32_t *data, int16_t size);
+  void sendStrData(std::string const& header);
 
 public:
 
-  Scanner();
+   Scanner();
 
   ~Scanner();
 
@@ -93,7 +95,8 @@ public:
 
 private:
 
-  std::vector<uint16_t> vector_z, other_info,vectorI_V,vectorA_Z;
+  std::vector<uint16_t> vector_data,vectorI_V,vectorA_Z;
+  std::vector<int32_t> debugdata; 
   Point pos_, prev_point;
   Config conf_;
 };

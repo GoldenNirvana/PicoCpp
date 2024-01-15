@@ -12,46 +12,41 @@ Scanner::~Scanner()
 {
   move_to({0, 0}, 10);
 }
-
-void Scanner::sendStrdata(std::string const& header,const std::vector<int32_t> &data)
-{
-  std::string afcc;
-  afcc.clear();
-  afcc =header; 
-   //for (auto & element :data) 
-  for (size_t j = 0; j < data.size(); ++j)
-  {
- // afc +=',' + std::to_string(element);
-   afcc +=',' + std::to_string(data[j]);
-  }
-  afcc +="\n";
-  std::cout << afcc;
-  afcc.clear();
-  sleep_ms(100);
-}
-void Scanner::sendStrdata(std::string const& header,const std::vector<uint16_t> &data)
-{
-  std::string afcc;
-  afcc.clear();
-  afcc =header;
-   //for (auto & element :data) 
-  for (size_t j = 0; j < data.size(); ++j)
-  {
- // afc +=',' + std::to_string(element);
-   afcc +=',' + std::to_string(data[j]);
-  }
-  afcc +="\n";
-  std::cout << afcc;
-  afcc.clear();
-  sleep_ms(100);
-}
-void Scanner::sendStrdata(std::string const& header,int32_t *data, int16_t size)
+void Scanner::sendStrData(std::string const& header)
 {
  std::string afcc;
   afcc.clear();
-  afcc =header;
+  afcc=header; 
+  afcc +="\n";
+  std::cout << afcc;
+  afcc.clear();
+  sleep_ms(100);
+}
+
+void Scanner::sendStrData(std::string const& header, std::vector<int32_t> &data, const uint16_t delay)
+{
+  std::string afcc;
+  afcc.clear();
+  afcc=header; 
    //for (auto & element :data) 
-  for (int j = 0; j < size; ++j)
+  for (size_t j = 0; j < data.size(); ++j)
+  {
+ // afc +=',' + std::to_string(element);
+   afcc +=',' + std::to_string(data[j]);
+   }
+  afcc +="\n";
+  std::cout << afcc;
+  afcc.clear();
+  data.clear();
+  sleep_ms(delay);
+}
+void Scanner::sendStrData(std::string const& header,std::vector<int16_t> &data, const uint16_t delay)
+{
+  std::string afcc;
+  afcc.clear();
+  afcc=header;
+   //for (auto & element :data) 
+  for (size_t j = 0; j < data.size(); ++j)
   {
  // afc +=',' + std::to_string(element);
    afcc +=',' + std::to_string(data[j]);
@@ -59,8 +54,27 @@ void Scanner::sendStrdata(std::string const& header,int32_t *data, int16_t size)
   afcc +="\n";
   std::cout << afcc;
   afcc.clear();
-  sleep_ms(100);
+  sleep_ms(delay);
+  data.clear();
 }
+void Scanner::sendStrData(std::string const& header,std::vector<uint16_t> &data, const uint16_t delay)
+{
+  std::string afcc;
+  afcc.clear();
+  afcc=header;
+   //for (auto & element :data) 
+  for (size_t j = 0; j < data.size(); ++j)
+  {
+ // afc +=',' + std::to_string(element);
+   afcc +=',' + std::to_string(data[j]);
+  }
+  afcc +="\n";
+  std::cout << afcc;
+  afcc.clear();
+  sleep_ms(delay);
+  data.clear();
+}
+
 
 
 void Scanner::readADC()
@@ -86,16 +100,27 @@ void Scanner::readADC()
                  break;  
                 } 
    }       
+      /*
           afc +=',' + std::to_string(ZValue) + ',' + std::to_string(SignalValue) + ',' + std::to_string(vector[1]) + "\n";
           std::cout << afc;
           afc.clear();
+      */    
+        debugdata.emplace_back(ZValue);
+        debugdata.emplace_back(SignalValue);
+        debugdata.emplace_back(vector[1]);
+        sendStrData("code12",debugdata,100);
   } 
   else
   {
-          afc += ',' + std::to_string(ZValue) + ',' + std::to_string(SignalValue) +',' + std::to_string(vector[1])+"\n";   //Z,Signal
+        /*  afc += ',' + std::to_string(ZValue) + ',' + std::to_string(SignalValue) +',' + std::to_string(vector[1])+"\n";   //Z,Signal
           std::cout << afc;
           afc.clear();
           sleep_ms(100);
+        */
+        debugdata.emplace_back(ZValue);
+        debugdata.emplace_back(SignalValue);
+        debugdata.emplace_back(vector[1]);
+        sendStrData("code12",debugdata,100);
   }
 }
 void Scanner::scanner_retract_protract(int port, int flg)
@@ -135,20 +160,15 @@ void Scanner::start_scan(int32_t *vector) //сканирование
 {
   const int8_t oneline=11;
   prev_point = pos_; //запоминание начальной точки скана
-  vector_z.clear();
-  other_info.clear();
-
-  afc.clear();
-  afc = "debug scan parameters";
+  vector_data.clear();
   for (int j = 1; j <= 12; ++j)
   {
-    afc += ',' + std::to_string(vector[j]);
+    debugdata.emplace_back(vector[j]);
   }
-  afc += ',' + std::to_string(pos_.x) + ',' + std::to_string(pos_.y);
-  afc += +"\n";
-  std::cout << afc;
-  afc.clear();
-  sleep_ms(100);
+  debugdata.emplace_back(pos_.x);
+  debugdata.emplace_back(pos_.y);
+
+  sendStrData("debug scan parameters",debugdata,100);
 
   uint16_t stepsx;
   uint16_t stepsy;
@@ -180,14 +200,11 @@ void Scanner::start_scan(int32_t *vector) //сканирование
   stepsy = (uint16_t) conf_.betweenPoints_y / conf_.diskretinstep;
   reststepx = conf_.betweenPoints_x % conf_.diskretinstep;
   reststepy = conf_.betweenPoints_y % conf_.diskretinstep;
-
-  afc.clear();
-  afc = "debug scan parameters stepsxy  ";
-  afc +=std::to_string(stepsx)+','+ std::to_string(stepsy)+','+ std::to_string(reststepx)+','+ std::to_string(reststepy);
-  afc += +"\n";
-  std::cout << afc;
-  afc.clear();
-  sleep_ms(100);
+  debugdata.emplace_back(stepsx);
+  debugdata.emplace_back(stepsy);
+  debugdata.emplace_back(reststepx);
+  debugdata.emplace_back(reststepy);
+  sendStrData("debug scan parameters stepsxy  ",debugdata,100);
 
   switch (conf_.path)
   {
@@ -274,33 +291,33 @@ void Scanner::start_scan(int32_t *vector) //сканирование
       if (!flgVirtual)
       {
         getValuesFromAdc();
-        vector_z.emplace_back((int16_t) spiBuf[ZPin]);  // get Z from adc
+        vector_data.emplace_back((int16_t) spiBuf[ZPin]);  // get Z from adc
         if (conf_.size == 2)
           switch (conf_.method)
           {
             case 3://phase 
             {
-              other_info.emplace_back((int16_t) spiBuf[1]); 
+               vector_data.emplace_back((int16_t) spiBuf[1]); 
               break;
             }
             case 4://ampl
             {
-              other_info.emplace_back((int16_t) spiBuf[AmplPin]); 
+               vector_data.emplace_back((int16_t) spiBuf[AmplPin]); 
               break;
             }
             case 7://current
             {
-              other_info.emplace_back((int16_t) spiBuf[IPin]); 
+               vector_data.emplace_back((int16_t) spiBuf[IPin]); 
               break;
             }
           }
       } else
       {
-       if (conf_.method!=oneline) vector_z.emplace_back(int16_t(10000.0 * (sin(M_PI * j * 0.1) + sin(M_PI * i * 0.1))));  // get Z from adc
-       else  vector_z.emplace_back(int16_t(10000.0 * (sin(M_PI * j * 0.1) + sin(M_PI * 0 * 0.1)))); 
+       if (conf_.method!=oneline) vector_data.emplace_back(int16_t(10000.0 * (sin(M_PI * j * 0.1) + sin(M_PI * i * 0.1))));  // get Z from adc
+       else   vector_data.emplace_back(int16_t(10000.0 * (sin(M_PI * j * 0.1) + sin(M_PI * 0 * 0.1)))); 
         if (conf_.size == 2)  //дополнительный сигнал
         {
-          other_info.emplace_back(int16_t(10000.0 * (sin(M_PI * j * 0.1) + sin(M_PI * i * 0.1))));
+           vector_data.emplace_back(int16_t(10000.0 * (sin(M_PI * j * 0.1) + sin(M_PI * i * 0.1))));
         }
       }
     }
@@ -329,62 +346,31 @@ void Scanner::start_scan(int32_t *vector) //сканирование
 
       sleep_us(conf_.delayF);
     }
-  
-  /*  afc.clear();
-    afc = "code50";
-    for (size_t m = 0; m < vector_z.size(); m++)     // подготовка результатов
-    {
-      switch (conf_.size)
-      {
-        case 1:
-        {
-          afc += ',' + std::to_string(vector_z[m]);
-          break;
-        }
-        case 2: //z+ signal
-        {
-          afc += ',' + std::to_string(vector_z[m]) + ',' + std::to_string(other_info[m]);
-          break;
-        }
-      }
-    }
-    afc += "\n";
-    std::cout << afc;   // посылка результатов на ПК
-    sleep_ms(300); //don't delete ! 100; 300 // 231130
-    afc.clear();
-    */
-    sendStrdata("code50",vector_z);
-    vector_z.clear();
-    other_info.clear();
+ 
+    sendStrData("code50",vector_data,300);
+ 
     if (CONFIG_UPDATE)
     {
       CONFIG_UPDATE = false;
-      conf_.delayF = vector[1];
-      conf_.delayB = vector[2];
+      conf_.delayF  = vector[1];
+      conf_.delayB  = vector[2];
       set_gainPID(vector[3]);
       sleep_ms(100);              
       conf_.diskretinstep = vector[4]; 
-
-      afc.clear();
-      afc = "debug parameters update";
+ 
       for (int j = 1; j <= 3; ++j)
       {
-        afc += ',' + std::to_string(vector[j]);
+        debugdata.emplace_back(vector[j]);
       }
-      afc += +"\n";
-      std::cout << afc;
-      afc.clear();
-      sleep_ms(100);
+      sendStrData( "debug parameters update",debugdata,100);
+  
       //    dark();
     }
     if (STOP)   // stop
     {
       STOP = false;
       sleep_ms(100);
-      afc.clear();
-      afc = "stopped\n";
-      std::cout << afc;
-      sleep_ms(100);
+      sendStrData("stopped");
       break;
     }
     if ((nslowline - 1 - i) > 0)  //если непоследняя линия
@@ -446,7 +432,7 @@ void Scanner::start_scan(int32_t *vector) //сканирование
   } //ожидание ответа ПК для синхронизации
   TheadDone = false;
   green();
-  std::cout << "end\n";
+  sendStrData("end"); 
   activateDark();
 }
 
@@ -454,21 +440,12 @@ void Scanner::start_hopingscan(int32_t *vector)
 {
   const int8_t oneline=11;
   prev_point = pos_; //запоминание начальной точки скана
-  vector_z.clear();
-  other_info.clear();
-
-  afc.clear();
-  afc = "debug scan parameters";
+  vector_data.clear();
   for (int j = 1; j <= 15; ++j)
   {
-    afc += ',' + std::to_string(vector[j]);
+    debugdata.emplace_back(vector[j]);
   }
-  afc += ',' + std::to_string(pos_.x) + ',' + std::to_string(pos_.y);
-  afc += +"\n";
-  std::cout << afc;
-  afc.clear();
-  sleep_ms(100);
-
+  sendStrData("debug scan parameters",debugdata,100);
   uint16_t stepsx;
   uint16_t stepsy;
   uint16_t reststepfast;
@@ -572,33 +549,33 @@ void Scanner::start_hopingscan(int32_t *vector)
       if (!flgVirtual)
       {
          getValuesFromAdc();
-        vector_z.emplace_back((int16_t) spiBuf[ZPin]);     // считать  Z 
+        vector_data.emplace_back((int16_t) spiBuf[ZPin]);     // считать  Z 
         switch (conf_.method)
           //added signal  Const  BackPass=2;    //PM  Const  Phase=3;  Const  UAM=4;   //Force Image
         {
           case 3://phase !!!!
           {
-            other_info.emplace_back((int16_t) spiBuf[1]);
+            vector_data.emplace_back((int16_t) spiBuf[1]);
             break;
           }
           case 4://ampl
           {
-            other_info.emplace_back((int16_t) spiBuf[AmplPin]);
+            vector_data.emplace_back((int16_t) spiBuf[AmplPin]);
             break;
           }
           case 7://current
           {
-            other_info.emplace_back((int16_t) spiBuf[IPin]);
+            vector_data.emplace_back((int16_t) spiBuf[IPin]);
             break;
           }
         }
       } else
       {
-        vector_z.emplace_back(
+        vector_data.emplace_back(
             int16_t(10000.0 * (sin(M_PI * j * 0.1) + sin(M_PI * i * 0.1))));  // get Z from adc
         if (conf_.size == 2)                               // added signal
         {
-          other_info.emplace_back(int16_t(10000.0 * (sin(M_PI * j * 0.1) + sin(M_PI * i * 0.1))));
+          vector_data.emplace_back(int16_t(10000.0 * (sin(M_PI * j * 0.1) + sin(M_PI * i * 0.1))));
         }
       }
     }
@@ -628,31 +605,8 @@ void Scanner::start_hopingscan(int32_t *vector)
 
       sleep_us(conf_.delayF);
     }
+    sendStrData("code50",vector_data,100);
 
-    afc.clear();
-    afc = "code50";
-    for (size_t m = 0; m < vector_z.size(); m++)     
-    {
-      switch (conf_.size)
-      {
-        case 1:
-        {
-          afc += ',' + std::to_string(vector_z[m]);
-          break;
-        }
-        case 2: //z+ signal
-        {
-          afc += ',' + std::to_string(vector_z[m]) + ',' + std::to_string(other_info[m]);
-          break;
-        }
-      }
-    }
-    afc += "\n";
-    std::cout << afc; //посылка данных cканирования на ПК
-    sleep_ms(200); //don't delete ! 100; 300 // 231130
-    afc.clear();
-    vector_z.clear();
-    other_info.clear();
     if (CONFIG_UPDATE)
     {
       CONFIG_UPDATE = false;
@@ -661,25 +615,17 @@ void Scanner::start_hopingscan(int32_t *vector)
       set_gainPID(vector[3]);
       conf_.HopeDelay = vector[4];
       sleep_ms(100);   
-      afc.clear();
-      afc = "debug parameters update";
       for (int j = 1; j <= 4; ++j)
       {
-        afc += ',' + std::to_string(vector[j]);
+        debugdata.emplace_back(vector[j]);
       }
-      afc += +"\n";
-      std::cout << afc;
-      afc.clear();
-      sleep_ms(100);
+      sendStrData("debug parameters update",debugdata,100);
     }
     if (STOP)  // stop
     {
       STOP = false;
       sleep_ms(100);
-      afc.clear();
-      afc = "stopped\n";
-      std::cout << afc;
-      sleep_ms(100);
+      sendStrData("stopped");
       break;
     }
      if ((nslowline - 1 - i) > 0)  //если непоследняя линия
@@ -736,25 +682,22 @@ void Scanner::start_hopingscan(int32_t *vector)
   } //ожидание ответа ПК для синхронизации
   TheadDone = false;
   conf_.flgHoping=0;
-  std::cout << "end\n";
+  sendStrData("end");
   activateDark();
 }
 
 void Scanner::start_fastscan(int32_t *vector)
 {
   prev_point = pos_; //запоминание начальной точки скана
-  vector_z.clear();
-  afc.clear();
-  afc = "debug fastscan parameters";
+  vector_data.clear();
   for (int j = 1; j <= 13; ++j)
   {
-    afc += ',' + std::to_string(vector[j]);
+    debugdata.emplace_back(vector[j]);
   }
-  afc += ',' + std::to_string(pos_.x) + ',' + std::to_string(pos_.y) + ',' + std::to_string(conf_.flgOneFrame);
-  afc += +"\n";
-  std::cout << afc;
-  afc.clear();
-  sleep_ms(100);
+  debugdata.emplace_back(pos_.x);
+  debugdata.emplace_back(pos_.y);
+  debugdata.emplace_back(conf_.flgOneFrame);
+  sendStrData("debug fastscan parameters",debugdata,100);
 
   uint16_t stepsx;
   uint16_t stepsy;
@@ -850,11 +793,11 @@ void Scanner::start_fastscan(int32_t *vector)
         if (!flgVirtual)
         {
           getValuesFromAdc();
-          vector_z.emplace_back((int16_t) spiBuf[ZPin]);  // считать Z из АЦП
+          vector_data.emplace_back((int16_t) spiBuf[ZPin]);  // считать Z из АЦП
         }
         else
         {
-          vector_z.emplace_back(
+          vector_data.emplace_back(
               int16_t(10000.0 * (sin(M_PI * j * 0.1) + sin(M_PI * i * 0.1)))); 
         }
       } //j
@@ -909,19 +852,7 @@ void Scanner::start_fastscan(int32_t *vector)
         }
       }
     } //i
-
-    afc.clear();
-    afc = "code56";
-    for (size_t j = 0; j < vector_z.size(); j++)     
-    {
-      afc += ',' + std::to_string(vector_z[j]);
-    }
-    vector_z.clear();
-    afc += "\n";
-    std::cout << afc;// посылка данных на ПК
-    sleep_ms(100);
-    afc.clear();
-
+    sendStrData("code56",vector_data,100);
     stop_scan();  //возврат в начальную точку скана
 
     if (conf_.flgOneFrame == 1) { STOP = true; };
@@ -952,7 +883,8 @@ void Scanner::start_fastscan(int32_t *vector)
     count++;
   } //ожидание ответа ПК для синхронизации
   TheadDone = false;
-  std::cout << "end\n";
+
+  sendStrData("end");
   activateDark();
 }
 
@@ -969,12 +901,9 @@ void Scanner::scan_update(const Config &config)
 Point Scanner::getX0Y0()
 {
   sleep_ms(200);
-  afc.clear();
-  afc = "code18";
-  afc += ',' + std::to_string(pos_.x) + ',' + std::to_string(pos_.y) + "\n";
-  std::cout << afc;
-  afc.clear();
-  sleep_ms(100);
+  debugdata.emplace_back(pos_.x);
+  debugdata.emplace_back(pos_.y);
+  sendStrData("code18",debugdata,100);
   return pos_;
 }
 
@@ -986,22 +915,18 @@ void Scanner::move_toX0Y0(int x, int y,int delay)
   pointX0Y0.y = (uint16_t) (y);
   delay = (uint16_t) (delay);
   sleep_ms(100);
-  afc.clear();
-  afc = "debug moveto parameters";
-  afc += ',' + std::to_string(pointX0Y0.x) + ',' + std::to_string(pointX0Y0.y) + ',' + std::to_string(delay);
-  afc += ',' + std::to_string(pos_.x) + ',' + std::to_string(pos_.y);
-  afc += +"\n";
-  std::cout << afc;
-  afc.clear();
-  sleep_ms(200);
+  debugdata.emplace_back(pointX0Y0.x);
+  debugdata.emplace_back(pointX0Y0.y);
+  debugdata.emplace_back(delay);
+  debugdata.emplace_back(pos_.x);
+  debugdata.emplace_back(pos_.y);
+
+  sendStrData("debug moveto parameters",debugdata,200);
 
   move_to(pointX0Y0, delay);
+
   sleep_ms(200);
-  afc.clear();
-  afc = "stopped\n";
-  std::cout << afc;
-  afc.clear();
-  sleep_ms(200);
+  sendStrData("stopped");
    int16_t count = 0;
   while ((!TheadDone) || (count<20) )
   {
@@ -1009,7 +934,7 @@ void Scanner::move_toX0Y0(int x, int y,int delay)
     count++;
   } //ожидание ответа ПК для синхронизации
   TheadDone = false;
-  std::cout << "end\n";
+  sendStrData("end");
 }
 
 void Scanner::move_to(const Point &point, uint16_t delay)
@@ -1054,12 +979,9 @@ void Scanner::LID_move_toZ0(int lid_name, int f, int p, int n, int dir)  //от�
   scanner.protract();  //вытянуть сканер
  } 
   sleep_ms(1000);
-  afc.clear();
-  afc = "debug autorising done " + std::to_string(n) + ',' + std::to_string(dir);
-  afc += +"\n";
-  std::cout << afc;
-  afc.clear();
-  sleep_ms(100);
+  debugdata.emplace_back(n);
+  debugdata.emplace_back(dir);
+  sendStrData("debug autorising done ",debugdata,100);
 }
 void Scanner::positioningXYZ(int32_t *vector)
 {
@@ -1082,16 +1004,12 @@ void Scanner::positioningXYZ(int32_t *vector)
       GATE_Z_MIN=vector[7]; //  int Z gate min
    //   pos_data[7] / //  0= SFM, 1=STM ;SICMAC-2; SICMDC-3;  device type
   //    pos_data[8]/ //  Voltage
-      afc.clear();
-        afc = "debug parameters pos update";
         for (int j = 0; j <= 6; ++j)
         {
-          afc += ',' + std::to_string(vector[j]);
+          debugdata.emplace_back(vector[j]);
         }
-        afc +="\n";
-        std::cout << afc;
-        afc.clear();
-        sleep_ms(100);
+        sendStrData("debug parameters pos update",debugdata,100);
+
   if (lid_name == 90 || lid_name == 95) //X,Y
   {
     while (!STOP) //LID_MOVE_UNTIL_STOP)
@@ -1106,16 +1024,11 @@ void Scanner::positioningXYZ(int32_t *vector)
         if (ln > 0) ldir = 1;
         ln = abs(ln);
         sleep_ms(100);
-        afc.clear();
-        afc = "debug parameters update";
         for (int j = 1; j <= 3; ++j)
         {
-          afc += ',' + std::to_string(vector[j]);
+          debugdata.emplace_back(vector[j]);
         }
-        afc += +"\n";
-        std::cout << afc;
-        afc.clear();
-        sleep_ms(100);
+        sendStrData("debug parameters update",debugdata,100);
       }
       status = none;
       if (!flgVirtual) //add mf
@@ -1125,12 +1038,10 @@ void Scanner::positioningXYZ(int32_t *vector)
       {
 
       }
-      afc.clear(); 
-      afc = "code" + std::to_string(lid_name) + ',' + std::to_string(status) + ',' + std::to_string(ZValue) +
-            ',' + std::to_string(SignalValue)+"\n";
-      std::cout << afc;
-      sleep_ms(100); 
-      afc.clear();
+      debugdata.emplace_back(status);
+      debugdata.emplace_back(ZValue);
+      debugdata.emplace_back(SignalValue);
+      sendStrData("code"+ std::to_string(lid_name) ,debugdata,100);
     }
   }
   if (lid_name == 99) //Z
@@ -1148,16 +1059,11 @@ void Scanner::positioningXYZ(int32_t *vector)
         ldir = 0;
         if (ln > 0) ldir = 1;
         sleep_ms(100);
-        afc.clear();
-        afc = "debug parameters update";
-        for (int j = 1; j <= 3; ++j)
-        {
-          afc += ',' + std::to_string(vector[j]);
-        }
-        afc += +"\n";
-        std::cout << afc;
-        afc.clear();
-        sleep_ms(100);
+       for (int j = 1; j <= 3; ++j)
+       {
+         debugdata.emplace_back(vector[j]);
+       }
+       sendStrData("debug parameters update",debugdata,100);
       }
       status = none;
       if (!flgVirtual) 
@@ -1202,25 +1108,19 @@ void Scanner::positioningXYZ(int32_t *vector)
         }
         sleep_ms(100); //need to adjust       
       }
-      afc.clear();
-      afc = "code" + std::to_string(lid_name) + ',' + std::to_string(status) + ',' + std::to_string(ZValue) +
-            ',' + std::to_string(SignalValue) + "\n";
-      std::cout << afc;
-      sleep_ms(200); //need to adjust
-      afc.clear();
+      debugdata.emplace_back(status);
+      debugdata.emplace_back(ZValue);
+      debugdata.emplace_back(SignalValue);
+      sendStrData("code"+ std::to_string(lid_name) ,debugdata,100);
     }
   }
   STOP=false;
-  afc.clear();
-  afc = "code" + std::to_string(lid_name) + ',' + std::to_string(status) + ',' + std::to_string(ZValue) + ',' +
-        std::to_string(SignalValue) + "\n";
-  std::cout << afc;
-  sleep_ms(200); //need to adjust
-  afc.clear();
-  afc = "stopped\n";
-  std::cout << afc;
-  afc.clear();
-  sleep_ms(100);
+   debugdata.emplace_back(status);
+   debugdata.emplace_back(ZValue);
+   debugdata.emplace_back(SignalValue);
+   sendStrData("code"+ std::to_string(lid_name) ,debugdata,100);
+   sleep_ms(100); 
+   sendStrData("stopped");
    int16_t count = 0;
   while ((!TheadDone) || (count<20) )
   {
@@ -1228,9 +1128,8 @@ void Scanner::positioningXYZ(int32_t *vector)
     count++;
   } //ожидание ответа ПК для синхронизации
   TheadDone = false;
-  std::cout << "end\n";
+  sendStrData("end");
   dark();
-  //  sleep_ms(100); 
 }
  static int ZMove( int Z0, int step, int mstep, int delay )   // st1 = +-1
 	{
@@ -1543,16 +1442,15 @@ void Scanner::approacphm(int32_t *vector) //uint16_t
  //need to add channel Bias ????
  //need to add channel SetPoint ????
 
-  afc.clear();
-  afc = "debug approach parameters 1 ";
   for (size_t j = 0; j < 9; j++)     // send info
   {
-    afc += ',' + std::to_string(vector[j]);
-  }
-  afc += std::to_string(AmplPin) + ',' + std::to_string(ZPin) + "\n";
-  std::cout << afc;
-  afc.clear();
-  sleep_ms(200);
+    debugdata.emplace_back(vector[j]);
+  } 
+  debugdata.emplace_back(AmplPin);
+  debugdata.emplace_back(ZPin);
+
+  sendStrData( "debug approach parameters 1 ",debugdata,100);
+
   set_SetPoint(0,SET_POINT); 
   if (flgDev!=0) set_Bias(1,Bias);  
   set_gainPID(GAIN);
@@ -1585,12 +1483,18 @@ void Scanner::approacphm(int32_t *vector) //uint16_t
   buf_status.push_back(none);
   buf_status.push_back(ZValue);
   buf_status.push_back(SignalValue);
+ /*
   afc.clear();
   afc ="code75," + std::to_string(buf_status[0]) + ',' + std::to_string(buf_status[1]) + ',' 
       +std::to_string(buf_status[2]) + "\n";
   std::cout << afc;
   afc.clear();
   sleep_ms(100);
+  */
+  debugdata.emplace_back(buf_status[0]);
+  debugdata.emplace_back(buf_status[1]);
+  debugdata.emplace_back(buf_status[2]);
+  sendStrData( "code75",debugdata,100);
 
   while (true)
   {
@@ -1601,12 +1505,15 @@ void Scanner::approacphm(int32_t *vector) //uint16_t
       buf_status[0] = stopdone;
       buf_status[1] = ZValue;
       buf_status[2] = SignalValue;
+      /*
       sleep_ms(100);  /// need for virtual для разделение afc
       afc.clear();
       afc = "stopped\n";
       std::cout << afc;
       afc.clear();
       sleep_ms(100);
+      */
+      sendStrData("stopped");
       break;
     }
     if (CONFIG_UPDATE)
@@ -1625,6 +1532,7 @@ void Scanner::approacphm(int32_t *vector) //uint16_t
       set_SetPoint(0,SET_POINT); //add 231214 
       set_gainPID(GAIN);
       sleep_ms(100);  // need for virtual для разделение afc
+    /*
       afc.clear();
       afc = "debug parameters update";
       for (int j = 1; j <= 7; ++j)
@@ -1635,6 +1543,12 @@ void Scanner::approacphm(int32_t *vector) //uint16_t
       std::cout << afc;
       afc.clear();
       sleep_ms(100); 
+    */
+      for (int j = 1; j <= 7; ++j)
+      {
+        debugdata.emplace_back(vector[j]);
+      }
+      sendStrData("debug parameters update",debugdata,100);
     }
      sleep_ms(INTDELAY);
     if (!flgVirtual)
@@ -1712,11 +1626,17 @@ void Scanner::approacphm(int32_t *vector) //uint16_t
     {
 
     }
+   /*
     afc.clear();
     afc = "code75," + std::to_string(buf_status[0]) + ',' + std::to_string(buf_status[1]) + ',' +
           std::to_string(buf_status[2]) + "\n";
     std::cout << afc;
     afc.clear();
+  */
+    debugdata.emplace_back(buf_status[0]);
+    debugdata.emplace_back(buf_status[1]);
+    debugdata.emplace_back(buf_status[2]);
+    sendStrData("code75",debugdata,100);
     if (!flgVirtual)
     {
       retract();  //втянуть сканнер
@@ -1725,11 +1645,17 @@ void Scanner::approacphm(int32_t *vector) //uint16_t
       protract(); //вытянуть
     }
   }
+  /* 
   afc.clear();
   afc = "code75," + std::to_string(buf_status[0]) + ',' + std::to_string(buf_status[1]) + ',' +
         std::to_string(buf_status[2]) + "\n";
   std::cout << afc;
   afc.clear();
+  */
+  debugdata.emplace_back(buf_status[0]);
+  debugdata.emplace_back(buf_status[1]);
+  debugdata.emplace_back(buf_status[2]);
+  sendStrData("code75",debugdata,100);
   //APPROACH = false;
   if (!flgVirtual)
   {
@@ -1743,7 +1669,7 @@ void Scanner::approacphm(int32_t *vector) //uint16_t
     count++;
   } //ожидание ответа ПК для синхронизации
   TheadDone = false;
-  std::cout << "end\n";
+  sendStrData("end");
 }
 
 void Scanner::start_frqscan()
@@ -1754,6 +1680,7 @@ void Scanner::start_frqscan()
   int16_t a = 10000;
   int16_t scan_index = 0;
   int16_t current_freq = 0;
+ /*
   afc.clear();
   afc = "debug frq scan parameters ";
   for (int j = 0; j < 5; ++j)
@@ -1765,6 +1692,16 @@ void Scanner::start_frqscan()
   std::cout << afc;
   afc.clear();
   sleep_ms(100);
+*/
+  for (int j = 0; j < 5; ++j)
+  {
+    inBuf[j] = vector[1 + j];
+    debugdata.emplace_back(inBuf[j]);
+  }
+  debugdata.emplace_back(flgVirtual);
+  debugdata.emplace_back(AmplPin);
+  debugdata.emplace_back(ZPin);
+  sendStrData("debug frq scan parameters ",debugdata,100);
   current_channel = inBuf[3] - 1;  //ampl=0;
 //  afc = "code25";
   std::vector<int32_t> data;
@@ -1796,7 +1733,7 @@ void Scanner::start_frqscan()
  // std::cout << afc << '\n';
  // sleep_ms(100);
  // afc.clear();
-  sendStrdata("code25",data);
+  sendStrData("code25",data,100);
   data.clear();
   current_channel = -1;
   int16_t count = 0;
@@ -1806,7 +1743,7 @@ void Scanner::start_frqscan()
     count++;
   } //ожидание ответа ПК для синхронизации
   TheadDone = false;
-  std::cout << "end\n";
+  sendStrData("end");
  // RESONANCE = false;
 }
 
