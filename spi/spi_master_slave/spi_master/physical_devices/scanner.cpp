@@ -1158,7 +1158,7 @@ void Scanner::spectroscopyAZ(int32_t *vector) // спектроскопия Ampl
 */
  const int16_t SFM=0;
  const int16_t STM=1;
-      
+ const int16_t SICMDC=3;      
  int16_t   NPoints=(int16_t )vector[1]; // n точек
  int16_t    ZStart=(int16_t )vector[2]; // ZStart
  int16_t     ZStep=(int16_t )vector[3]; // ZStep
@@ -1166,53 +1166,82 @@ void Scanner::spectroscopyAZ(int32_t *vector) // спектроскопия Ampl
  int16_t     Delay=(int16_t )vector[5]; // delay
  int16_t   flgModa=(int16_t )vector[6]; // flgmode stm,sfm;
 
- int16_t ampl;
+ int16_t SignalValue;
  int16_t dlt,dacZ,dacZ0;
 
  int16_t MicrostepDelay=3;
-  
-  auto ptr = getValuesFromAdc();
-     
-  dacZ0=(int16_t)ptr[ZPin];
-  dacZ=dacZ0;
- //start
-  ampl=0;
- int16_t k=0;
- vectorA_Z.clear();
 
- freezeLOOP();
- sleep_ms(200);      
+  for (int j = 0; j <= 6; ++j)
+  {
+    debugdata.emplace_back(vector[j]);
+  }
+  sendStrData("debug A_Z parameters",debugdata,100);
+
+ // add  turn off   FB     false!!!!!!!!!
+  sleep_ms(300);
+   if (!flgVirtual) 
+   { 
+    auto ptr = getValuesFromAdc();
+    dacZ0=(int16_t)ptr[ZPin];
+    dacZ=dacZ0;
+   }
+   else
+   {
+    dacZ0=(int16_t)1000;
+    dacZ=dacZ0;
+   }
+ //start
+  SignalValue=0;
+  int16_t k=0;
+  vectorA_Z.clear();
+
+ if(!flgVirtual)  freezeLOOP();
+  sleep_ms(200);      
+ 
  dacZ = ZMove( dacZ, (-ZStart), 1, MicrostepDelay );
         
  for(int16_t i=0; i<NPoints; i++)     //сближение
   {
-      sleep_ms(Delay);  //ms  add 30/05/22
-      auto ptr = getValuesFromAdc();   
+    sleep_ms(Delay);  //ms  add 30/05/22
+   if (!flgVirtual) 
+   {   auto ptr = getValuesFromAdc();   
         switch (flgModa)
-   {
-    case SFM:  { ampl=(int16_t)ptr[AmplPin]; break;}  
-    case STM:  { ampl=(int16_t)ptr[IPin];    break;}  
+    {
+     case SFM:     { SignalValue=(int16_t)ptr[AmplPin]; break;}  
+     case STM:
+     case SICMDC:  { SignalValue=(int16_t)ptr[IPin];    break;}  
+    }
    }
-     vectorA_Z.emplace_back(ampl);
+   else
+   {
+           switch (flgModa)
+    {
+     case SFM:     { SignalValue=-(dacZ-dacZ0)*100; break;}  
+     case STM:
+     case SICMDC:  { SignalValue=-(dacZ-dacZ0)*100; break;}  
+    } 
+
+   }
+     vectorA_Z.emplace_back(SignalValue);
      vectorA_Z.emplace_back(-(dacZ-dacZ0));
      vectorA_Z.emplace_back(1);
 
    if (flgModa==STM) //i  sfm    error corrected 14/09/21
    {
-    if (ampl<0) ampl=-ampl;
+    if (SignalValue<0) SignalValue=-SignalValue;
     int imax=Threshold;
     if (imax<0) imax=-imax;
-    if ((ampl<imax) &(i!=NPoints-1))
+    if ((SignalValue<imax) &(i!=NPoints-1))
      {
-         dacZ = ZMove( dacZ, (ZStep >> 16), -1, MicrostepDelay);
+         dacZ = ZMove( dacZ, (ZStep), -1, MicrostepDelay);
      }
      else break;
    };
    if (flgModa==SFM) //sfm  error corrected 14/09/21
    {
-    if ((ampl>Threshold) &(i!=NPoints-1))
+    if ((SignalValue>Threshold) &(i!=NPoints-1))
     {
-       dacZ = ZMove( dacZ, (ZStep >> 16), -1, MicrostepDelay);
+       dacZ = ZMove( dacZ, (ZStep), -1, MicrostepDelay);
     }
     else break;
    }
@@ -1225,14 +1254,26 @@ void Scanner::spectroscopyAZ(int32_t *vector) // спектроскопия Ampl
   {
     sleep_ms(Delay); //add 30/05/22
 
-     auto ptr = getValuesFromAdc();
-     
-        switch (flgModa)
+   if (!flgVirtual)
    {
-    case SFM:  { ampl=(int16_t)ptr[AmplPin]; break;}  
-    case STM:  { ampl=(int16_t)ptr[IPin]; break;}  
+      auto ptr = getValuesFromAdc();
+        switch (flgModa)
+    {
+     case SFM:    { SignalValue=(int16_t)ptr[AmplPin]; break;}  
+     case STM: 
+     case SICMDC: { SignalValue=(int16_t)ptr[IPin]; break;}  
+    }
    }
-     vectorA_Z.emplace_back(ampl);
+   else
+   {
+      switch (flgModa)
+    {
+     case SFM:    { SignalValue=-(dacZ-dacZ0)*100; break;}  
+     case STM: 
+     case SICMDC: { SignalValue=-(dacZ-dacZ0)*100; break;}  
+    }
+   }
+     vectorA_Z.emplace_back(SignalValue);
      vectorA_Z.emplace_back(-(dacZ-dacZ0));
      vectorA_Z.emplace_back(-1);
      dacZ = ZMove( dacZ, (ZStep >> 16), +1, MicrostepDelay);
@@ -1261,7 +1302,7 @@ void Scanner::spectroscopyAZ(int32_t *vector) // спектроскопия Ampl
   */
     sendStrData("code66",vectorA_Z,100);  
  // разморозка состояния pid
-    unfreezeLOOP();
+    if(!flgVirtual)   unfreezeLOOP();
     sleep_ms(500);
  //
     int16_t count = 0;
