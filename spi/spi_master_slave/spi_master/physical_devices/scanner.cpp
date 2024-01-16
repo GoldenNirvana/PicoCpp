@@ -1259,7 +1259,7 @@ void Scanner::spectroscopyAZ(int32_t *vector) // спектроскопия Ampl
     afc.clear(); 
     vectorA_Z.clear();
   */
-    sendStrData("code66",vectorA_Z);  
+    sendStrData("code66",vectorA_Z,100);  
  // разморозка состояния pid
     unfreezeLOOP();
     sleep_ms(500);
@@ -1296,16 +1296,11 @@ void Scanner::spectroscopyIV(int32_t *vector)
     flgDev          = (int8_t)  vector[6]; // прибор
     UBackup         =           vector[7]; // V текущее значение напряжения 
 //start
-  afc.clear();
-  afc = "debug I_V parameters";
-  for (int j = 0; j <= 6; ++j)
+ for (int j = 0; j <= 6; ++j)
   {
-    afc += ',' + std::to_string(vector[j]);
+    debugdata.emplace_back(vector[j]);
   }
-  afc += +"\n";
-  std::cout << afc;
-  afc.clear();
-  sleep_ms(100);
+  sendStrData("debug I_V parameters",debugdata,100);
  // add  turn off   FB     false!!!!!!!!!
   sleep_ms(300);
  // установка начального значения напряжения
@@ -1356,22 +1351,8 @@ void Scanner::spectroscopyIV(int32_t *vector)
        }
        dacU+=UStep;
       }
-
       sleep_ms(300);
-/*
-    afc.clear();
-    afc="code65";
-   for (size_t m = 0; m < vectorI_V.size(); m++)     // send data scanline
-    {
-      afc += ',' + std::to_string(vectorI_V[m]);
-    }
-    afc += "\n";
-    std::cout << afc;
-    sleep_ms(200); //don't delete 
-    afc.clear(); 
-    vectorI_V.clear();
-*/
-    sendStrData("code65",vectorI_V);  
+      sendStrData("code65",vectorI_V,100);  
   //move to start point
   }// j Curves
     
@@ -1389,14 +1370,14 @@ void Scanner::spectroscopyIV(int32_t *vector)
   nstep=dlt/start_step;
  for (kk=0; kk<nstep; kk++)
  {
-   set_Bias(1,dacU);  
+   if (!flgVirtual) set_Bias(1,dacU);  
    sleep_ms(10);
    dacU+=step;
  }
     dacU+=rest;
-    set_Bias(1,dacU);  
+   if (!flgVirtual) set_Bias(1,dacU);  
     sleep_ms(10);
-    set_Bias(1,UBackup);  
+   if (!flgVirtual) set_Bias(1,UBackup);  
     sleep_ms(10);
 //  add  turn on  FB   !!!!!!!!!!!!!!!
    int16_t count = 0;
