@@ -57,6 +57,24 @@ void Scanner::sendStrData(std::string const& header,std::vector<int16_t> &data, 
   sleep_ms(delay);
   data.clear();
 }
+
+void Scanner::sendStrData(std::string const& header,std::vector<int16_t> &data, const uint16_t delay, const bool flg)
+{
+  std::string afcc;
+  afcc.clear();
+  afcc=header;
+   //for (auto & element :data) 
+  for (size_t j = 0; j < data.size(); ++j)
+  {
+ // afc +=',' + std::to_string(element);
+   afcc +=',' + std::to_string(data[j]);
+  }
+  afcc +="\n";
+  std::cout << afcc;
+  afcc.clear();
+  sleep_ms(delay);
+  if (flg) data.clear();
+}
 void Scanner::sendStrData(std::string const& header,std::vector<uint16_t> &data, const uint16_t delay)
 {
   std::string afcc;
@@ -1481,11 +1499,12 @@ void Scanner::approacphm(int32_t *vector) //uint16_t
   buf_status.push_back(none);
   buf_status.push_back(ZValue);
   buf_status.push_back(SignalValue);
-
+/*
   debugdata.emplace_back(buf_status[0]);
   debugdata.emplace_back(buf_status[1]);
   debugdata.emplace_back(buf_status[2]);
-  sendStrData( "code75",debugdata,100);
+*/  
+  sendStrData( "code75",buf_status,100,false);
 
   while (true)
   {
@@ -1497,6 +1516,7 @@ void Scanner::approacphm(int32_t *vector) //uint16_t
       buf_status[1] = ZValue;
       buf_status[2] = SignalValue;
       sendStrData("stopped");
+      sleep_ms(200);
       break;
     }
     if (CONFIG_UPDATE)
@@ -1597,10 +1617,13 @@ void Scanner::approacphm(int32_t *vector) //uint16_t
     {
 
     }
+    /*
     debugdata.emplace_back(buf_status[0]);
     debugdata.emplace_back(buf_status[1]);
     debugdata.emplace_back(buf_status[2]);
     sendStrData("code75",debugdata,100);
+    */
+    sendStrData( "code75",buf_status,100,false);
     if (!flgVirtual)
     {
       retract();  //втянуть сканнер
@@ -1609,10 +1632,13 @@ void Scanner::approacphm(int32_t *vector) //uint16_t
       protract(); //вытянуть
     }
   }
+  /*
   debugdata.emplace_back(buf_status[0]);
   debugdata.emplace_back(buf_status[1]);
   debugdata.emplace_back(buf_status[2]);
   sendStrData("code75",debugdata,100);
+*/
+  sendStrData( "code75",buf_status,100,false);
   if (!flgVirtual)
   {
     protract();//вытянуть
