@@ -135,10 +135,10 @@ case SPECTROSOPY_IV:
                 scanner.spectroscopyIV(vector);
                 break;
               }  
-case SPECTROSOPY_AZ:
+case SPECTROSOPY_AIZ:
               {
                 ALGCODE=ALGNONE;
-                scanner.spectroscopyAZ(vector);
+                scanner.spectroscopyAIZ(vector);
                 break;
               }  
 case SET_BIAS:

@@ -1141,7 +1141,7 @@ void Scanner::positioningXYZ(int32_t *vector)
 	  }
 	  return(Zt);
 	}
-void Scanner::spectroscopyAZ(int32_t *vector) // спектроскопия Ampl-Z
+void Scanner::spectroscopyAIZ(int32_t *vector) // спектроскопия Ampl-Z
 {
 /*
    params[0]:=(SpectrParams.Npoints);
@@ -1175,7 +1175,7 @@ void Scanner::spectroscopyAZ(int32_t *vector) // спектроскопия Ampl
   {
     debugdata.emplace_back(vector[j]);
   }
-  sendStrData("debug A_Z parameters",debugdata,100);
+  sendStrData("debug AI_Z parameters",debugdata,100);
 
  // add  turn off   FB     false!!!!!!!!!
   sleep_ms(300);
@@ -1187,7 +1187,7 @@ void Scanner::spectroscopyAZ(int32_t *vector) // спектроскопия Ampl
    }
    else
    {
-    dacZ0=(int16_t)1000;
+    dacZ0=(int16_t)100;
     dacZ=dacZ0;
    }
  //start
@@ -1202,7 +1202,7 @@ void Scanner::spectroscopyAZ(int32_t *vector) // спектроскопия Ampl
         
  for(int16_t i=0; i<NPoints; i++)     //сближение
   {
-    sleep_ms(Delay);  //ms  add 30/05/22
+    sleep_ms(Delay);  
    if (!flgVirtual) 
    {   auto ptr = getValuesFromAdc();   
         switch (flgModa)
@@ -1216,17 +1216,17 @@ void Scanner::spectroscopyAZ(int32_t *vector) // спектроскопия Ampl
    {
            switch (flgModa)
     {
-     case SFM:     { SignalValue=-(dacZ-dacZ0)*100; break;}  
+     case SFM:     { SignalValue=(dacZ-dacZ0)*10; break;}  
      case STM:
-     case SICMDC:  { SignalValue=-(dacZ-dacZ0)*100; break;}  
+     case SICMDC:  { SignalValue=(dacZ-dacZ0)*10; break;}  
     } 
 
    }
      vectorA_Z.emplace_back(SignalValue);
      vectorA_Z.emplace_back(-(dacZ-dacZ0));
      vectorA_Z.emplace_back(1);
-
-   if (flgModa==STM) //i  sfm    error corrected 14/09/21
+     k+=3;       	
+   if ((flgModa==STM) || (flgModa==SICMDC)) // i sfm error corrected 14/09/21
    {
     if (SignalValue<0) SignalValue=-SignalValue;
     int imax=Threshold;
@@ -1249,10 +1249,9 @@ void Scanner::spectroscopyAZ(int32_t *vector) // спектроскопия Ampl
     NPoints= k / 3;
     sleep_ms(300);
 
- // off = NPoints;
   for(int16_t i=NPoints; i>=1; i--)
   {
-    sleep_ms(Delay); //add 30/05/22
+    sleep_ms(Delay); 
 
    if (!flgVirtual)
    {
@@ -1268,15 +1267,15 @@ void Scanner::spectroscopyAZ(int32_t *vector) // спектроскопия Ampl
    {
       switch (flgModa)
     {
-     case SFM:    { SignalValue=-(dacZ-dacZ0)*100; break;}  
+     case SFM:    { SignalValue=(dacZ-dacZ0)*11; break;}  
      case STM: 
-     case SICMDC: { SignalValue=-(dacZ-dacZ0)*100; break;}  
+     case SICMDC: { SignalValue=(dacZ-dacZ0)*11; break;}  
     }
    }
      vectorA_Z.emplace_back(SignalValue);
      vectorA_Z.emplace_back(-(dacZ-dacZ0));
      vectorA_Z.emplace_back(-1);
-     dacZ = ZMove( dacZ, (ZStep >> 16), +1, MicrostepDelay);
+     dacZ = ZMove( dacZ, ZStep, +1, MicrostepDelay);
   }
 
  //move to start point
@@ -1286,21 +1285,8 @@ void Scanner::spectroscopyAZ(int32_t *vector) // спектроскопия Ampl
   else {dlt = -dacZ+dacZ0;}
 
   dacZ = ZMove( dacZ, dlt, -1, MicrostepDelay );
- 
- //send data
- /*  afc.clear();
-   afc="code66";
-   for (size_t m = 0; m < vectorA_Z.size(); m++)     // send data scanline
-    {
-      afc += ',' + std::to_string(vectorA_Z[m]);
-    }
-    afc += "\n";
-    std::cout << afc;
-    sleep_ms(200); //don't delete 
-    afc.clear(); 
-    vectorA_Z.clear();
-  */
-    sendStrData("code66",vectorA_Z,100);  
+
+   sendStrData("code66",vectorA_Z,100);  
  // разморозка состояния pid
     if(!flgVirtual)   unfreezeLOOP();
     sleep_ms(500);
@@ -1395,8 +1381,7 @@ void Scanner::spectroscopyIV(int32_t *vector)
       sleep_ms(300);
       sendStrData("code65",vectorI_V,100);  
   //move to start point
-  }// j Curves
-    
+  }// j Curves  
     //возврат к исходному напряжению
      dacU-=UStep;
      step=-start_step;
@@ -1527,7 +1512,7 @@ void Scanner::approacphm(int32_t *vector) //uint16_t
       SCANNERDECAY = vector[7];
      
       if (flgDev!=0) set_Bias(1,Bias);  
-      set_SetPoint(0,SET_POINT); //add 231214 
+      set_SetPoint(0,SET_POINT); 
       set_gainPID(GAIN);
       sleep_ms(100);  // need for virtual для разделение afc
       for (int j = 1; j <= 7; ++j)
@@ -1660,7 +1645,7 @@ void Scanner::start_frqscan()
   debugdata.emplace_back(AmplPin);
   debugdata.emplace_back(ZPin);
   sendStrData("debug frq scan parameters ",debugdata,100);
-  current_channel = inBuf[3] - 1;  //ampl=0;
+  current_channel = inBuf[3] - 1;  
 
   std::vector<int32_t> data;
 

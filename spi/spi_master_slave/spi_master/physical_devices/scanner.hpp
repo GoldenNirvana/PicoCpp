@@ -67,7 +67,7 @@ public:
 
   void spectroscopyIV(int32_t *vector); // спектроскопия I-V
 
-  void spectroscopyAZ(int32_t *vector); // спектроскопия Ampl-Z
+  void spectroscopyAIZ(int32_t *vector); // спектроскопия Ampl-Z
 
   void scan_update(const Config &config);  // обновить параметры скaнирования
 
@@ -95,7 +95,8 @@ public:
 
 private:
 
-  std::vector<uint16_t> vector_data,vectorA_Z;
+  std::vector<uint16_t> vector_data;
+  std::vector<int32_t>  vectorA_Z;
   std::vector<int16_t>  vectorI_V;
   std::vector<int32_t>  debugdata; 
   Point pos_, prev_point;

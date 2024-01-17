@@ -28,7 +28,7 @@
 #define GET_CURRENTX0Y0          18
 #define SCANNER_RETRACT_PROTRACT 61
 #define SPECTROSOPY_IV           65
-#define SPECTROSOPY_AZ           66
+#define SPECTROSOPY_AIZ          66
 #define SET_BIAS                 19
 #define ALGNONE                  0
 
