@@ -162,7 +162,7 @@ bool Scanner::getHoppingFlg() //получить флаг установлен �
   return (bool)conf_.flgHoping;
 }
 
-void Scanner::start_scan(int32_t *vector) //сканирование
+void Scanner::start_scan(std::vector<int32_t> &vector) //сканирование
 {
   const int8_t oneline=11;
  
@@ -441,7 +441,7 @@ void Scanner::start_scan(int32_t *vector) //сканирование
   activateDark();
 }
 
-void Scanner::start_hopingscan(int32_t *vector)
+void Scanner::start_hopingscan(std::vector<int32_t> &vector)
 {
   const int8_t oneline=11;
    scan_update({
@@ -691,7 +691,7 @@ void Scanner::start_hopingscan(int32_t *vector)
   activateDark();
 }
 
-void Scanner::start_fastscan(int32_t *vector)
+void Scanner::start_fastscan(std::vector<int32_t> &vector)
 {
   scan_update({
                static_cast<uint16_t>(vector[1]), static_cast<uint16_t>(vector[2]),
@@ -986,7 +986,7 @@ void Scanner::LID_move_toZ0(int lid_name, int f, int p, int n, int dir)  //от�
   debugdata.emplace_back(dir);
   sendStrData("debug autorising done ",debugdata,100);
 }
-void Scanner::positioningXYZ(int32_t *vector)
+void Scanner::positioningXYZ(std::vector<int32_t> &vector)
 {
   uint8_t lid_name;
   uint16_t GATE_Z_MAX, GATE_Z_MIN;
@@ -1159,7 +1159,7 @@ void Scanner::positioningXYZ(int32_t *vector)
 	  }
 	  return(Zt);
 	}
-void Scanner::spectroscopyAIZ(int32_t *vector) // спектроскопия Ampl-Z
+void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектроскопия Ampl-Z
 {
 /*
    params[0]:=(SpectrParams.Npoints);
@@ -1319,7 +1319,7 @@ void Scanner::spectroscopyAIZ(int32_t *vector) // спектроскопия Amp
   sendStrData("end");
 }
 
-void Scanner::spectroscopyIV(int32_t *vector)
+void Scanner::spectroscopyIV(std::vector<int32_t> &vector)
 {
     int i,j;
 		int32_t  UBackup;
@@ -1434,7 +1434,7 @@ void Scanner::spectroscopyIV(int32_t *vector)
   sendStrData("end");  
 }
 
-void Scanner::approacphm(int32_t *vector) //uint16_t
+void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
 {
   const int none = 30;
   const int ok = 3;

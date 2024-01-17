@@ -44,8 +44,9 @@ extern DAC8563 dac8563_2;  // DAC X,Y
 
 extern std::string afc;
 extern uint16_t spiBuf[8];
-extern int32_t vector[16];
-extern int vectorSize;
+//extern int32_t vector[16];
+extern std::vector<int32_t> vector;
+extern int32_t vectorSize;
 
 //extern bool DAC8563_SET_VOLTAGE_1;
 //extern bool DAC8563_SET_VOLTAGE_2;

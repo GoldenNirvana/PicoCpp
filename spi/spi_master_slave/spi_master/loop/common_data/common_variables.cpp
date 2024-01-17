@@ -9,8 +9,10 @@ DAC8563 dac8563_1(1); // DAC BIAS,SetPoint
 DAC8563 dac8563_2(2); // DAC X,Y
 //#warning REMOVE STATIC !!! side effects???
 uint16_t spiBuf[8];
-int32_t  vector[16];  //datain
-int vectorSize;
+//int32_t  vector[16];  //datain
+std::vector<int32_t> vector;
+
+int32_t vectorSize;
 
 int16_t ALGCODE=0;
 

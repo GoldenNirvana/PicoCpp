@@ -54,21 +54,21 @@ public:
 
   ~Scanner();
 
-  void start_scan(int32_t *vector);
+  void start_scan(std::vector<int32_t> &vector);
 
-  void start_hopingscan(int32_t *vector);  //сканирование прыжками
+  void start_hopingscan(std::vector<int32_t> &vector);  //сканирование прыжками
 
-  void start_fastscan(int32_t *vector);    // быстрое сканирование и вывод скана целиком, а не по линиям
+  void start_fastscan(std::vector<int32_t> &vector);    // быстрое сканирование и вывод скана целиком, а не по линиям
 
-  void approacphm(int32_t *vector);  // захват взаимодействия с контролем ворот
+  void approacphm(std::vector<int32_t> &vector);  // захват взаимодействия с контролем ворот
 
-  void positioningXYZ(int32_t *vector); // abs(n) перемещение по  X,Y и Z (с контроллем ворот)
+  void positioningXYZ(std::vector<int32_t> &vector); // abs(n) перемещение по  X,Y и Z (с контроллем ворот)
 
   void start_frqscan(); //поиск резонанса датчика
 
-  void spectroscopyIV(int32_t *vector); // спектроскопия I-V
+  void spectroscopyIV(std::vector<int32_t> &vector); // спектроскопия I-V
 
-  void spectroscopyAIZ(int32_t *vector); // спектроскопия Ampl-Z
+  void spectroscopyAIZ(std::vector<int32_t> &vector); // спектроскопия Ampl-Z
 
   void scan_update(const Config &config);  // обновить параметры скaнирования
 

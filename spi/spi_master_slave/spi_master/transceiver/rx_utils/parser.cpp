@@ -1,6 +1,7 @@
 #include "parser.hpp"
 #include <cstdlib>
 #include <cstring>
+#include <vector>
 
 Parser::Parser(char *data, char newDiv)
 {
@@ -64,20 +65,21 @@ bool Parser::equals(int num, const char *comp)
   return !strcmp(str[num], comp);
 }
 
-int Parser::parseInts(int32_t *data)
+int32_t Parser::parseInts(std::vector<int32_t> &data)
 {
   int count = 0;
   char *offset = buf;
   while (true)
   {
-    data[count++] = atoi(offset);
+  //  data[count++] = atoi(offset);
+    data.emplace_back((int32_t)atoi(offset));
     offset = strchr(offset, div);
     if (offset)
     { offset++; }
     else
     { break; }
   }
-  return count;
+  return data.size();
 }
 
 char *Parser::operator[](uint16_t idx)
