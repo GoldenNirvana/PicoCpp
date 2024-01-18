@@ -32,7 +32,7 @@ case APPROACH:{
               }
 case FREQ_SET:{
                ALGCODE=ALGNONE;
-               set_freq((uint32_t) vector[1]);              
+               set_Freq((uint32_t) vector[1]);              
                break;
               }
 case LID_MOVE_UNTIL_STOP:

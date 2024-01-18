@@ -69,7 +69,7 @@ void setDefaultSettings()
   io_ports.push_back(io3_1);
   //io_ports.push_back(io3_2);
 }
-void set_freq(uint32_t freq)
+void set_Freq(uint32_t freq)
 {
   int64_t flag_freq = 1 << 14;
   int64_t scale = 1 << 28;
@@ -121,7 +121,7 @@ void init_DACSPB(uint8_t port)
 }
 void init_DACZ(uint8_t port)
 {
-  dac8563_3.initialize(port); //code 23
+  dac8563_3.initialize(port); //code 26
   afc.clear();
   afc = "debug Init DACZ " + std::to_string(port);
   afc += +"\n";
@@ -191,7 +191,7 @@ void set_SetPoint(int8_t chanel, int32_t SetPoint)
   sleep_ms(100);
   */
 }
-void set_gain(int gain, int p)
+void set_Gain(int gain, int p)
 {
   uint8_t intBuf[1];
   decoder.activePort(p);
@@ -199,7 +199,7 @@ void set_gain(int gain, int p)
   intBuf[0] = gain;
   spi_write_blocking(spi_default, intBuf, 3);
 }
-void set_gainPID(int gain)
+void set_GainPID(int gain)
 {
    set_io_value(2, gain); 
 }

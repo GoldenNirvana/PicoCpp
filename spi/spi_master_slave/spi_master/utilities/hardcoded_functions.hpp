@@ -8,7 +8,7 @@ void setDefaultSettings();
 
 void set_io_value(int, int);
 
-void set_freq(uint32_t freq); //установка заданной частоты генератора
+void set_Freq(uint32_t freq); //установка заданной частоты генератора
 
 void IniSPI(uint8_t port ,uint8_t v2 ,uint8_t v3, uint8_t v4); //инициирование SPI
 
@@ -24,9 +24,9 @@ void set_SetPoint(int8_t chanel,int32_t SetPoint);//установка зада�
 
 void get_result_from_adc();       // чтение АЦП
 
-void set_gain(int gain, int p = 2); // установить усиления 
+void set_Gain(int gain, int p = 2); // установить усиления 
 
-void set_gainPID(int gain);          //установить усиления ПИД
+void set_GainPID(int gain);          //установить усиления ПИД
 
 void set_clock_enable();
 

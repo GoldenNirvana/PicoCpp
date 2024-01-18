@@ -361,7 +361,7 @@ void Scanner::start_scan(int32_t *vector) //сканирование
       CONFIG_UPDATE = false;
       conf_.delayF  = vector[1];
       conf_.delayB  = vector[2];
-      set_gainPID(vector[3]);
+      set_GainPID(vector[3]);
       sleep_ms(100);              
       conf_.diskretinstep = vector[4]; 
  
@@ -617,7 +617,7 @@ void Scanner::start_hopingscan(int32_t *vector)
       CONFIG_UPDATE = false;
       conf_.delayF = vector[1];
       conf_.delayB = vector[2];
-      set_gainPID(vector[3]);
+      set_GainPID(vector[3]);
       conf_.HopeDelay = vector[4];
       sleep_ms(100);   
       for (int j = 1; j <= 4; ++j)
@@ -1474,7 +1474,7 @@ void Scanner::approacphm(int32_t *vector) //uint16_t
 
   set_SetPoint(0,SET_POINT); 
   if (flgDev!=0) set_Bias(1,Bias);  
-  set_gainPID(GAIN);
+  set_GainPID(GAIN);
 
   if (!flgVirtual)
   {
@@ -1533,7 +1533,7 @@ void Scanner::approacphm(int32_t *vector) //uint16_t
      
       if (flgDev!=0) set_Bias(1,Bias);  
       set_SetPoint(0,SET_POINT); 
-      set_gainPID(GAIN);
+      set_GainPID(GAIN);
       sleep_ms(100);  // need for virtual для разделение afc
       for (int j = 1; j <= 7; ++j)
       {
@@ -1679,7 +1679,7 @@ void Scanner::start_frqscan()
   {
     if (!flgVirtual)
     {
-      set_freq(inBuf[1]);
+      set_Freq(inBuf[1]);
       sleep_ms(inBuf[4]);
       data.emplace_back((int32_t)inBuf[1]);
       data.emplace_back((int32_t)getValuesFromAdc()[current_channel]);
