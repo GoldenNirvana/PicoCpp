@@ -119,6 +119,16 @@ void init_DACSPB(uint8_t port)
   afc.clear();
   sleep_ms(100);
 }
+void init_DACZ(uint8_t port)
+{
+  dac8563_3.initialize(port); //code 23
+  afc.clear();
+  afc = "debug Init DACZ " + std::to_string(port);
+  afc += +"\n";
+  std::cout << afc;
+  afc.clear();
+  sleep_ms(100);
+}
 
 void init_DACXY(uint8_t port)
 {
@@ -210,10 +220,26 @@ void set_DACXY(uint8_t channel, uint16_t value)
   if (channel == 0)  dac8563_2.writeA(value);
   if (channel == 1)  dac8563_2.writeB(value);
 }
-void set_DACZ(uint16_t value) 
+void set_DACZ(uint8_t channel, uint16_t value) 
 {
-
-
+//  code  27, 2, 8, 0, 1, 0, value
+   if (channel == 0)
+   {
+     dac8563_3.writeA(value);
+   }
+   else 
+   if (channel == 1)
+   {
+     dac8563_3.writeB(value);
+    }	
+  /* отладка
+  afc.clear();
+  afc = "debugSetPoint " + std::to_string(channel) + ',' + std::to_string(valuet);
+  afc += +"\n";
+  std::cout << afc;
+  afc.clear();
+  sleep_ms(100);
+  */
 }
 void stopAll()
 {

@@ -41,7 +41,7 @@ extern Decoder decoder;
 extern Scanner scanner;
 extern DAC8563 dac8563_1;  // DAC BIas,SetPoint
 extern DAC8563 dac8563_2;  // DAC X,Y
-
+extern DAC8563 dac8563_3;  // DAC Z
 extern std::string afc;
 extern uint16_t spiBuf[8];
 extern int32_t vector[16];

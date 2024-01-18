@@ -7,6 +7,7 @@ Decoder decoder(4, 5, 6);
 Scanner scanner;
 DAC8563 dac8563_1(1); // DAC BIAS,SetPoint
 DAC8563 dac8563_2(2); // DAC X,Y
+DAC8563 dac8563_3(1); // DAC Z
 //#warning REMOVE STATIC !!! side effects???
 uint16_t spiBuf[8];
 int32_t  vector[16];  //datain

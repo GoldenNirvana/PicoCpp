@@ -84,7 +84,7 @@ void RX_core::launchOnCore1()
       case 24:            
         ADC_GET_VALUE = true;// прочитатать сигналы АЦП      
         break;
-      case 28: // mf  
+      case 33: // mf  
         TheadDone = true;
         break;
       case 40: //изменить значение усиления амплитуды раскачки зонда

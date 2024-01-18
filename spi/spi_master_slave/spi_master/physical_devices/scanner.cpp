@@ -1133,7 +1133,7 @@ void Scanner::positioningXYZ(int32_t *vector)
   sendStrData("end");
   dark();
 }
- static int ZMove( int Z0, int step, int mstep, int delay )   // st1 = +-1
+ int Scanner::ZMove(int16_t Z0, int16_t step, int16_t mstep, int16_t delay )   // st1 = +-1
 	{
 	  int16_t Zt;
     int16_t max  =  32767;
@@ -1155,7 +1155,7 @@ void Scanner::positioningXYZ(int32_t *vector)
             }
             for(int16_t k=0; k < delay; k++) { }// задержка в каждом дискрете
 
-        //    Simple.cellWrite(M_scan_Z_offset, Zt); ///?????????????????????????
+           set_DACZ(0,Zt); ///?????????????????????????
 	  }
 	  return(Zt);
 	}
