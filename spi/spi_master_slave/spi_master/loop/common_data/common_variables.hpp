@@ -17,10 +17,12 @@
 #define LID_MOVE_TOZ0           84 // отвестись в безопасную начальную точку по Z
 #define LID_MOVE_UNTIL_STOP     80
 #define SET_PID_GAIN            60
-#define InitDAC_BIAS_SET_POINT  23  //DAC8563
-#define InitDAC_XY              27  //DAC8563
-#define SET_SETPOINT            22  //DAC8563
+#define InitDAC_BIAS_SET_POINT  23  //DAC8563_1
+#define InitDAC_XY              27  //DAC8563_2
+#define InitDAC_Z               26  //DAC8563_3
+#define SET_SETPOINT            22  //DAC8563_1
 #define SET_XY                  29  //DAC8563_SET_VOLTAGE_2
+#define SET_Z                   29  //DAC8563_SET_VOLTAGE_2
 #define ADC_READ                12  //AD7606
 //#define ADC_GET_VALUE  ;
 //#define SCANNER_RETRACT
