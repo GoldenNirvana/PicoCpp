@@ -85,6 +85,12 @@ case InitDAC_XY:
                 init_DACXY(vector[1]);
                 break; 
               }  
+case InitDAC_Z:
+              {
+                ALGCODE=ALGNONE; 
+                init_DACZ(vector[1]);
+                break; 
+              }               
 case SET_SETPOINT:
               {
                 ALGCODE=ALGNONE;
