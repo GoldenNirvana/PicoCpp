@@ -74,10 +74,8 @@ int32_t Parser::parseInts(std::vector<int32_t> &data)
   //  data[count++] = atoi(offset);
     data.emplace_back((int32_t)atoi(offset));
     offset = strchr(offset, div);
-    if (offset)
-    { offset++; }
-    else
-    { break; }
+    if (offset)   { offset++; }
+    else          { break;    }
   }
   return data.size();
 }

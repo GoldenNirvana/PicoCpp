@@ -37,9 +37,9 @@ class Scanner
 
 private:
   
-   void stop_scan();         // возвращение сканера в  начальную точку скана
+  void stop_scan();         // возвращение сканера в  начальную точку скана
   
-   void move_to(const Point &point, uint16_t delay);  // переместиться в начальную точку скана текущего скана
+  void move_to(const Point &point, uint16_t delay);  // переместиться в начальную точку скана текущего скана
 
   void sendStrData(std::string const& header,std::vector<int32_t>  &data, const uint16_t delay);
   void sendStrData(std::string const& header,std::vector<uint16_t> &data, const uint16_t delay);
@@ -56,23 +56,23 @@ public:
 
   void start_scan(std::vector<int32_t> &vector);
 
-  void start_hopingscan(std::vector<int32_t> &vector);  //сканирование прыжками
+  void start_hopingscan(std::vector<int32_t> &vector); //сканирование прыжками
 
-  void start_fastscan(std::vector<int32_t> &vector);    // быстрое сканирование и вывод скана целиком, а не по линиям
+  void start_fastscan(std::vector<int32_t> &vector);  // быстрое сканирование и вывод скана целиком, а не по линиям
 
-  void approacphm(std::vector<int32_t> &vector);  // захват взаимодействия с контролем ворот
+  void approacphm(std::vector<int32_t> &vector);      // захват взаимодействия с контролем ворот
 
-  void positioningXYZ(std::vector<int32_t> &vector); // abs(n) перемещение по  X,Y и Z (с контроллем ворот)
+  void positioningXYZ(std::vector<int32_t> &vector);  // abs(n) перемещение по  X,Y и Z (с контролем ворот)
 
-  void start_frqscan(); //поиск резонанса датчика
+  void start_frqscan();                               //поиск резонанса датчика
 
-  void spectroscopyIV(std::vector<int32_t> &vector); // спектроскопия I-V
+  void spectroscopyIV(std::vector<int32_t> &vector);  // спектроскопия I-V
 
   void spectroscopyAIZ(std::vector<int32_t> &vector); // спектроскопия Ampl-Z
 
-  void scan_update(const Config &config);  // обновить параметры скaнирования
+  void scan_update(const Config &config);             // обновить параметры скaнирования
 
-  void move_toX0Y0(int x, int y, int delay); //переместиться в начальную точку скана из начальной точке предыдущего скана
+  void move_toX0Y0(int x, int y, int delay);          //переместиться в начальную точку скана из начальной точке предыдущего скана
 
   void LID_move_toZ0(int lid_name, int f, int p, int n, int dir);// отвестись в безопасную начальную точку по Z при старте и выходе из программы
   

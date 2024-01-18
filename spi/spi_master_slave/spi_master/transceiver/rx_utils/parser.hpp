@@ -31,8 +31,8 @@ public:
   char **str = NULL;
 
   char *operator[](uint16_t idx);
-
   char div;
+  
 private:
 };
 

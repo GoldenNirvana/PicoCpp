@@ -43,6 +43,7 @@ extern DAC8563 dac8563_1;  // DAC BIas,SetPoint
 extern DAC8563 dac8563_2;  // DAC X,Y
 
 extern std::string afc;
+
 extern uint16_t spiBuf[8];
 //extern int32_t vector[16];
 extern std::vector<int32_t> vector;
@@ -58,7 +59,7 @@ extern bool AD9833_SENDER;
 extern bool AD8400_SENDER;
 extern bool AD8400_SET_GAIN;   // AD8400
 extern bool AD5664;            //
-
+extern bool INIT_ADC;
 extern bool ADC_ENABLE_DISABLE;//AD7606
 extern bool ADC_RESET;         //AD7606     
 extern bool ADC_READ_FOREVER;  //AD7606
