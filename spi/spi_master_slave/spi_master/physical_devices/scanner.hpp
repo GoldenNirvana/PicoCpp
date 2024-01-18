@@ -47,6 +47,7 @@ private:
   void sendStrData(std::string const& header,std::vector<int16_t>  &data, const uint16_t delay,const bool flg); //flg clear data
   void sendStrData(std::string const& header,int32_t *data, int16_t size);
   void sendStrData(std::string const& header);
+  int  ZMove( int Z0, int step, int mstep, int delay );   // st1 = +-1
 
 public:
 

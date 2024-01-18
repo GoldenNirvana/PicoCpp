@@ -1133,7 +1133,8 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
   sendStrData("end");
   dark();
 }
- static int ZMove( int Z0, int step, int mstep, int delay )   // st1 = +-1
+
+ int Scanner::ZMove( int Z0, int step, int mstep, int delay )   // st1 = +-1
 	{
 	  int16_t Zt;
     int16_t max  =  32767;
@@ -1155,10 +1156,11 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
             }
             for(int16_t k=0; k < delay; k++) { }// задержка в каждом дискрете
 
-        //    Simple.cellWrite(M_scan_Z_offset, Zt); ///?????????????????????????
+          if (!flgVirtual)   set_DACZ(0,Zt); ///?????????????????????????
 	  }
 	  return(Zt);
 	}
+
 void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектроскопия Ampl-Z
 {
 /*
@@ -1249,15 +1251,15 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
     if (SignalValue<0) SignalValue=-SignalValue;
     int imax=Threshold;
     if (imax<0) imax=-imax;
-    if ((SignalValue<imax) &(i!=NPoints-1))
+    if ((SignalValue<imax) && (i!=NPoints-1))
      {
-         dacZ = ZMove( dacZ, (ZStep), -1, MicrostepDelay);
+       dacZ = ZMove( dacZ, (ZStep), -1, MicrostepDelay);
      }
      else break;
    };
    if (flgModa==SFM) //sfm  error corrected 14/09/21
    {
-    if ((SignalValue>Threshold) &(i!=NPoints-1))
+    if ((SignalValue>Threshold) && (i!=NPoints-1))
     {
        dacZ = ZMove( dacZ, (ZStep), -1, MicrostepDelay);
     }

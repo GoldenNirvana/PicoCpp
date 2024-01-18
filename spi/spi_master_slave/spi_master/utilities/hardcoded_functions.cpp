@@ -109,11 +109,21 @@ void IniSPI( uint8_t port ,uint8_t v2 ,uint8_t v3, uint8_t v4 )
  decoder.activePort(port);
  Spi::setProperties(v2, v3, v4);
 }
-void init_DACSPB(uint8_t port)
+void init_DACSPB(uint8_t port) //  4 для подставки
 {
   dac8563_1.initialize(port); //code 23
   afc.clear();
   afc = "debug Init DACSPB " + std::to_string(port);
+  afc += +"\n";
+  std::cout << afc;
+  afc.clear();
+  sleep_ms(100);
+}
+void init_DACZ(uint8_t port) //  4 для подставки
+{
+  dac8563_3.initialize(port); //code 23
+  afc.clear();
+  afc = "debug Init DACZ " + std::to_string(port);
   afc += +"\n";
   std::cout << afc;
   afc.clear();
@@ -139,15 +149,15 @@ void move_scannerY(int y)
  dac8563_2.writeB(y);
 
 }
-void set_Bias(int8_t chanel,int32_t Bias)
+void set_Bias(int8_t channel,int32_t Bias)
 {
 //   code  22 , 2, 8, 0, 1, 1, value 
-    if (chanel == 0)
+    if (channel == 0)
       {
         dac8563_1.writeA(Bias);
       }
       else 
-      if (chanel == 1)
+      if (channel == 1)
       {
         dac8563_1.writeB(Bias);
       }	
@@ -161,14 +171,14 @@ void set_Bias(int8_t chanel,int32_t Bias)
   */
 }
 
-void set_SetPoint(int8_t chanel, int32_t SetPoint)
+void set_SetPoint(int8_t channel, int32_t SetPoint)
 {//  code  22, 2, 8, 0, 1, 0, value
-   if (chanel == 0)
+   if (channel == 0)
    {
      dac8563_1.writeA(SetPoint);
    }
    else 
-   if (chanel == 1)
+   if (channel == 1)
    {
      dac8563_1.writeB(SetPoint);
     }	
@@ -210,9 +220,17 @@ void set_DACXY(uint8_t channel, uint16_t value)
   if (channel == 0)  dac8563_2.writeA(value);
   if (channel == 1)  dac8563_2.writeB(value);
 }
-void set_DACZ(uint16_t value) 
+void set_DACZ(uint8_t channel,uint16_t value)  //channel=0
 {
-
+  if (channel == 0)
+   {
+     dac8563_3.writeA(value);
+   }
+   else 
+   if (channel == 1)
+   {
+     dac8563_3.writeB(value);
+    }	
 
 }
 void stopAll()
