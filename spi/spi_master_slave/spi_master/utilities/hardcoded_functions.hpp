@@ -24,9 +24,9 @@ void set_SetPoint(int8_t chanel,int32_t SetPoint);//установка зада�
 
 void get_result_from_adc();       // чтение АЦП
 
-void set_gain(int gain, int p = 2); // установить усиления 
+void set_Gain(int gain, int p = 2); // установить усиления 
 
-void set_gainPID(int gain);          //установить усиления ПИД
+void set_GainPID(int gain);          //установить усиления ПИД
 
 void set_clock_enable();
 

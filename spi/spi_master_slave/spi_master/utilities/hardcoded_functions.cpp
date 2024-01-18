@@ -191,7 +191,7 @@ void set_SetPoint(int8_t channel, int32_t SetPoint)
   sleep_ms(100);
   */
 }
-void set_gain(int gain, int p)
+void set_Gain(int gain, int p)
 {
   uint8_t intBuf[1];
   decoder.activePort(p);
@@ -199,7 +199,7 @@ void set_gain(int gain, int p)
   intBuf[0] = gain;
   spi_write_blocking(spi_default, intBuf, 3);
 }
-void set_gainPID(int gain)
+void set_GainPID(int gain)
 {
    set_io_value(2, gain); 
 }
