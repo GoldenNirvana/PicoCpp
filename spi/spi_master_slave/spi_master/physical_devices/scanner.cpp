@@ -95,8 +95,6 @@ void Scanner::sendStrData(std::string const& header,std::vector<uint16_t> &data,
 
 void Scanner::readADC()
 {
-  afc.clear();
-  afc = "code12";
   if (!flgVirtual)
   {
    auto ptr = getValuesFromAdc();
