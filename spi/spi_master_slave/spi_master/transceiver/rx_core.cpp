@@ -67,40 +67,38 @@ void RX_core::launchOnCore1()
            IPin=2;
         }
        break;
-   //*************************************** 
-      case 14: //флаг симуляции работы микрокотроллера      
-        flgVirtual =(bool)vector[1];
-        break;
-      case 15: // флаг вывода отладочной инофрмации debug level =2;  =3 запрет вывода!
-        flgDebugLevel =vector[1];
-        break;
-  //***************************************    
-      case 16: //изменить значение усиления амплитуды раскачки зонда
-        SET_AMPLMOD_GAIN=true;
-        break;   
       case 21:
         AD5664 = true;
         break;
-      case 24:            
+  //*************************************** 
+      case VirtualCmd : //флаг симуляции работы микрокотроллера      
+        flgVirtual =(bool)vector[1];
+        break;
+      case DebugLevelCmd: // флаг вывода отладочной инофрмации debug level =2;  =3 запрет вывода!
+        flgDebugLevel =vector[1];
+        break;
+  //***************************************      
+
+      case ADC_GET_VALUECmd:            
         ADC_GET_VALUE = true;// прочитатать сигналы АЦП      
         break;
-      case 33: // mf  
+      case TheadDoneCmd: // mf  
         TheadDone = true;
         break;
-      case 40: //изменить значение усиления амплитуды раскачки зонда
+      case SET_AMPLMOD_GAINCmd: //изменить значение усиления амплитуды раскачки зонда
         SET_AMPLMOD_GAIN= true;
         break;
-      case 82:
-      case 76:
-      case 55: //сканирование
+      case CONFIG_UPDATECmd: //сканирование
         CONFIG_UPDATE = true;
         break;
-      case 70:
+      case STOPCmd:
         STOP=true; //stopAll(); stop algorithm 
         break;
+   /*
       case 90 ... 99:
         LID = true;
         break;
+   */     
       default: 
       {
        if (vector[0]>=0 && vector[0]<100)  {ALGCODE=(int16_t)vector[0]; }
