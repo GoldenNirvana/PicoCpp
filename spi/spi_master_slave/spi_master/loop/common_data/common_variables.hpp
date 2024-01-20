@@ -8,27 +8,24 @@
 #include "../../physical_devices/scanner.hpp"
 #include "../../devices/DAC8563.hpp"
 
-#define ADC_READ                 12  //AD7606 timer
-#define VirtualCmd               14
-#define DebugLevelCmd            15
+#define RESONANCE               25  //AD9833 
+#define APPROACH                75
+#define FREQ_SET                30 //AD9833
+#define SCANNING                50
+#define FASTSCANNING            56
+#define MOVE_TOX0Y0             51 //переместиться в начальную точку  скана из начальной точке предыдущего скана
+#define LID_MOVE_TOZ0           84 // отвестись в безопасную начальную точку по Z
+#define LID_MOVE_UNTIL_STOP     80
+#define SET_PID_GAIN            60
+#define InitDAC_BIAS_SET_POINT  23  //DAC8563
+#define InitDAC_XY              27  //DAC8563
+#define SET_SETPOINT            22  //DAC8563
+#define SET_XY                  29  //DAC8563_SET_VOLTAGE_2
+#define ADC_READ                12  //AD7606
+//#define ADC_GET_VALUE  ;
+//#define SCANNER_RETRACT
+//#define SCANNER_PROTRACT
 #define GET_CURRENTX0Y0          18
-#define SET_BIAS                 19
-#define SET_SETPOINT             22  //DAC8563_1
-#define InitDAC_BIAS_SET_POINT   23  //DAC8563_1 
-#define ADC_GET_VALUECmd         24
-#define RESONANCE                25  //AD9833 
-#define InitDAC_Z                26  //DAC8563_3
-#define InitDAC_XY               27  //DAC8563_2
-#define SET_Z                    28  //DAC8563_3
-#define SET_XY                   29  //DAC8563_SET_VOLTAGE_2
-#define FREQ_SET                 30  //AD9833
-#define TheadDoneCmd             33
-#define SET_AMPLMOD_GAINCmd      40
-#define SCANNING                 50
-#define MOVE_TOX0Y0              51  //переместиться в начальную точку  скана из начальной точке предыдущего скана
-#define CONFIG_UPDATECmd         55
-#define FASTSCANNING             56
-#define SET_PID_GAIN             60
 #define SCANNER_RETRACT_PROTRACT 61
 #define SPECTROSOPY_IV           65
 #define SPECTROSOPY_AIZ          66
@@ -53,9 +50,11 @@ extern DAC8563 dac8563_1;  // DAC BIas,SetPoint
 extern DAC8563 dac8563_2;  // DAC X,Y
 extern DAC8563 dac8563_3;  // DAC Z
 extern std::string afc;
+
 extern uint16_t spiBuf[8];
-extern int32_t vector[16];
-extern int vectorSize;
+//extern int32_t vector[16];
+extern std::vector<int32_t> vector;
+extern int32_t vectorSize;
 
 //extern bool DAC8563_SET_VOLTAGE_1;
 //extern bool DAC8563_SET_VOLTAGE_2;
@@ -67,7 +66,7 @@ extern bool AD9833_SENDER;
 extern bool AD8400_SENDER;
 extern bool AD8400_SET_GAIN;   // AD8400
 extern bool AD5664;            //
-
+extern bool INIT_ADC;
 extern bool ADC_ENABLE_DISABLE;//AD7606
 extern bool ADC_RESET;         //AD7606     
 extern bool ADC_READ_FOREVER;  //AD7606

@@ -36,7 +36,8 @@ void RX_core::launchOnCore1()
   while (true)
   {
     parse(vector); // парсинг входящих данных из ПК 
-
+   if (vector.size()>0) 
+   { 
     switch (vector[0])
     {
     ///////////////////////////// ??? 
@@ -67,28 +68,32 @@ void RX_core::launchOnCore1()
            IPin=2;
         }
        break;
-      case 21:
-        AD5664 = true;
-        break;
-  //*************************************** 
-      case VirtualCmd : //флаг симуляции работы микрокотроллера      
+   //*************************************** 
+      case 14: //флаг симуляции работы микрокотроллера      
         flgVirtual =(bool)vector[1];
         break;
       case DebugLevelCmd: // флаг вывода отладочной инофрмации debug level =2;  =3 запрет вывода!
         flgDebugLevel =vector[1];
         break;
-  //***************************************      
-
-      case ADC_GET_VALUECmd:            
+  //***************************************    
+      case 16: //изменить значение усиления амплитуды раскачки зонда
+        SET_AMPLMOD_GAIN=true;
+        break;   
+      case 21:
+        AD5664 = true;
+        break;
+      case 24:            
         ADC_GET_VALUE = true;// прочитатать сигналы АЦП      
         break;
-      case TheadDoneCmd: // mf  
+      case 28: // mf  
         TheadDone = true;
         break;
-      case SET_AMPLMOD_GAINCmd: //изменить значение усиления амплитуды раскачки зонда
+      case 40: //изменить значение усиления амплитуды раскачки зонда
         SET_AMPLMOD_GAIN= true;
         break;
-      case CONFIG_UPDATECmd: //сканирование
+      case 82:
+      case 76:
+      case 55: //сканирование
         CONFIG_UPDATE = true;
         break;
       case STOPCmd:
@@ -105,6 +110,7 @@ void RX_core::launchOnCore1()
                                        else ALGCODE=0;
       }  
      }
+   }
   }
 }
 
@@ -144,7 +150,7 @@ void RX_core::serialPrintBuffer(const uint8_t *const buf, int len)
   std::cout << "\n";
  }
 }
-
+/*
 void RX_core::parse(int32_t *vec)
 {
   std::string s;
@@ -157,6 +163,14 @@ void RX_core::parse(int32_t *vec)
   }
   vectorSize = parser.parseInts(vec);
 }
-
-
+*/
+void RX_core::parse(std::vector<int32_t> &vec)
+{
+  std::string s;
+  getline(std::cin, s);
+  // todo mb add const_cast
+  Parser parser(s.data(), ',');
+  vec.clear();
+  vectorSize = parser.parseInts(vec);
+}
 

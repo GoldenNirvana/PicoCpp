@@ -16,8 +16,6 @@ void init_DACSPB(uint8_t port); //инициирование ЦАП1  SetPoint,B
 
 void init_DACXY(uint8_t port); //инициирование ЦАП2  XY
 
-void init_DACZ(uint8_t port); //инициирование ЦАП3  Z
-
 void set_Bias(int8_t chanel,int32_t Bias); //установка заданного значения напряжения
 
 void set_SetPoint(int8_t chanel,int32_t SetPoint);//установка заданной опроры для ПИД

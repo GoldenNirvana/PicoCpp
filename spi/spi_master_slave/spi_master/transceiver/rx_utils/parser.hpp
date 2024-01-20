@@ -4,6 +4,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <vector>
 
 class Parser
 {
@@ -24,14 +25,14 @@ public:
 
   bool equals(int num, const char *comp);
 
-  int parseInts(int32_t *data);
+  int32_t parseInts(std::vector<int32_t> &data);
 
   char *buf = NULL;
   char **str = NULL;
 
   char *operator[](uint16_t idx);
-
   char div;
+  
 private:
 };
 
