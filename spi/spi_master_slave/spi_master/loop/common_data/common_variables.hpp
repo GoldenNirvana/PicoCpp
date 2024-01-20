@@ -8,10 +8,12 @@
 #include "../../physical_devices/scanner.hpp"
 #include "../../devices/DAC8563.hpp"
 #define VirtualCmd              14
-#define DebugLevel              15
+#define DebugLevelCmd           15
 #define RESONANCE               25  //AD9833 
+#define TheadDoneCmd            28
 #define APPROACH                75
 #define FREQ_SET                30 //AD9833
+
 #define SCANNING                50
 #define FASTSCANNING            56
 #define MOVE_TOX0Y0             51 //переместиться в начальную точку  скана из начальной точке предыдущего скана
@@ -29,6 +31,7 @@
 //#define SCANNER_RETRACT
 //#define SCANNER_PROTRACT
 #define GET_CURRENTX0Y0          18
+#define CONFIG_UPDATECmd         55
 #define SCANNER_RETRACT_PROTRACT 61
 #define SPECTROSOPY_IV           65
 #define SPECTROSOPY_AIZ          66
@@ -76,9 +79,11 @@ extern bool ADC_READ_FOREVER;  //AD7606
 extern bool ADC_GET_VALUE;     //AD7606
 extern bool LID;
 extern bool SET_IO_VALUE;
-
+extern bool ADC_IS_READY_TO_READ;
+extern bool CONFIG_UPDATE;
 extern bool Z_STATE;
-
+extern bool    TheadDone;
+extern bool    STOP;
 extern uint8_t ZPin;
 extern uint8_t AmplPin; //amplitude
 extern uint8_t IPin;    //current
@@ -88,9 +93,8 @@ extern int16_t SignalValue; //for simulation
 extern int16_t ZMaxValue;
 extern bool    flgUseUART;  // 
 extern bool    flgVirtual;
-extern uint8_t    flgDebugLevel;
-extern bool    TheadDone;
-extern bool    STOP;
+extern uint8_t flgDebugLevel;
+
 //
 extern volatile int32_t current_channel;
 extern critical_section_t criticalSection;

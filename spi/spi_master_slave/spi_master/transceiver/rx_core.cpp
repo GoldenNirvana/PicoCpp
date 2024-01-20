@@ -85,9 +85,6 @@ void RX_core::launchOnCore1()
       case TheadDoneCmd: // mf  
         TheadDone = true;
         break;
-      case SET_AMPLMOD_GAINCmd: //изменить значение усиления амплитуды раскачки зонда
-        SET_AMPLMOD_GAIN= true;
-        break;
       case CONFIG_UPDATECmd: //сканирование
         CONFIG_UPDATE = true;
         break;
