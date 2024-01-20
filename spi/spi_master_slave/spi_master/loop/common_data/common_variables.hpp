@@ -88,7 +88,7 @@ extern int16_t SignalValue; //for simulation
 extern int16_t ZMaxValue;
 extern bool    flgUseUART;  // 
 extern bool    flgVirtual;
-extern uint8    flgDebugLevel;
+extern uint8_t    flgDebugLevel;
 extern bool    TheadDone;
 extern bool    STOP;
 //

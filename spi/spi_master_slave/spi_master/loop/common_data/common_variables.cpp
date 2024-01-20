@@ -5,14 +5,18 @@ Spi spi;
 LinearDriver linearDriver;
 Decoder decoder(4, 5, 6);
 Scanner scanner;
-DAC8563 dac8563_1(1); // DAC BIAS,SetPoint
-DAC8563 dac8563_2(2); // DAC X,Y
-//#warning REMOVE STATIC !!! side effects???
-uint16_t spiBuf[8];
+
 //int32_t  vector[16];  //datain
 std::vector<int32_t> vector;
 
 int32_t vectorSize;
+
+DAC8563 dac8563_1(1); // DAC BIAS,SetPoint
+DAC8563 dac8563_2(2); // DAC X,Y
+DAC8563 dac8563_3(1); // DAC Z
+//#warning REMOVE STATIC !!! side effects???
+uint16_t spiBuf[8];
+
 
 int16_t ALGCODE=0;
 
@@ -22,27 +26,29 @@ bool AD8400_SENDER = false;
 bool AD8400_SET_GAIN = false;
 bool AD5664 = false;
 bool SET_IO_VALUE = false;
-bool INIT_ADC     =false;
+bool INIT_ADC;
 bool ADC_ENABLE_DISABLE = false;
 bool ADC_RESET = false;
 bool ADC_READ_FOREVER = false;
 bool ADC_GET_VALUE = false;
 bool CONFIG_UPDATE = false;
 bool LID = false;
+bool POSXYZ_CONFIG_UPDATE = false;
+bool APPROACH_CONFIG_UPDATE = false;
+bool SET_AMPLMOD_GAIN = false; // усиление модуляции зонда
 bool PID_TURN_ON = false;
 bool SCANNER_RETRACT = false;
 bool SCANNER_PROTRACT = false;
 bool LOOP_FREEZE_UNFREEZE=false;
-bool TheadDone = false;
 //************************************************
 bool    flgVirtual = false;     // флаг симуляции работа микроконтроллера
-uint8   flgDebugLevel = 2;      //  уровень отладки
+uint8_t   flgDebugLevel = 2;      //  уровень отладки
 bool    flgUseUART = false;  //использовать UART для передачи данных
 //данные для симуляции 
 int16_t ZValue      = 32767;
 int16_t SignalValue = 32767;
 int16_t ZMaxValue   = 32767;
-
+bool TheadDone = false;
 uint8_t ZPin    = 0; // Z
 uint8_t AmplPin = 1; // амплитуда
 uint8_t IPin    = 2; // ток  
@@ -50,8 +56,7 @@ uint8_t IPin    = 2; // ток
 //uint32_t DEBUG_LEVEL = 2;
 bool Z_STATE = false; //???
 bool ADC_IS_READY_TO_READ = true;
-
-
+bool RESONANCE_STOP = false;
 volatile int32_t current_channel = 0;
 
 critical_section_t criticalSection;
