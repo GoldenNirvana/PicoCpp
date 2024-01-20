@@ -79,7 +79,7 @@ case InitDAC_BIAS_SET_POINT:
                  if (!flgVirtual)  init_DACSPB(vector[1]);       
                 break;         
               }   
-case InitDACZ:
+case InitDAC_Z:
               {
                 ALGCODE=ALGNONE;
                  if (!flgVirtual)  init_DACZ(vector[1]);       
@@ -91,12 +91,7 @@ case InitDAC_XY:
                 init_DACXY(vector[1]);
                 break; 
               }  
-case InitDAC_Z:
-              {
-                ALGCODE=ALGNONE; 
-                init_DACZ(vector[1]);
-                break; 
-              }               
+              
 case SET_SETPOINT:
               {
                 ALGCODE=ALGNONE;

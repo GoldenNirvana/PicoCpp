@@ -69,7 +69,7 @@ void RX_core::launchOnCore1()
         }
        break;
    //*************************************** 
-      case 14: //флаг симуляции работы микрокотроллера      
+      case VirtualCmd: //флаг симуляции работы микрокотроллера      
         flgVirtual =(bool)vector[1];
         break;
       case DebugLevelCmd: // флаг вывода отладочной инофрмации debug level =2;  =3 запрет вывода!
