@@ -130,6 +130,17 @@ void init_DACXY(uint8_t port)
   afc.clear();
   sleep_ms(100);
 }
+
+void init_DACZ(uint8_t port)
+{
+  dac8563_2.initialize(port); //code 27
+  afc.clear();
+  afc = "debug Init DACZ " + std::to_string(port);
+  afc += +"\n";
+  std::cout << afc;
+  afc.clear();
+  sleep_ms(100);
+}
 void move_scannerX(int x)
 {
  dac8563_2.writeA(x);
@@ -218,20 +229,6 @@ void set_DACZ(uint16_t value)
 void stopAll()
 {
   STOP=false;
-  AD9833_SENDER = false;
-  AD8400_SENDER = false;
-  ADC_ENABLE_DISABLE = false;
-  ADC_RESET = false;
-  ADC_READ_FOREVER = false;
-  ADC_GET_VALUE = false;
-  ADC_IS_READY_TO_READ = true;
-  AD8400_SET_GAIN = false;
-  AD8400_SENDER = false;
-  AD5664 = false;
-  CONFIG_UPDATE = false;
-  LID = false;
-  SET_IO_VALUE = false;
-  afc.clear();
 }
 /*
 uint16_t *getValuesFromAdc()

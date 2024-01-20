@@ -33,11 +33,10 @@ void RX_core::comReceiveISR(uint a, uint32_t b)
 }
 void RX_core::launchOnCore1()
 {
-  while (true)
+   while (true)
   {
     parse(vector); // парсинг входящих данных из ПК 
-   if (vector.size()>0) 
-   { 
+
     switch (vector[0])
     {
     ///////////////////////////// ??? 
@@ -68,32 +67,28 @@ void RX_core::launchOnCore1()
            IPin=2;
         }
        break;
-   //*************************************** 
-      case VirtualCmd: //флаг симуляции работы микрокотроллера      
+      case 21:
+        AD5664 = true;
+        break;
+  //*************************************** 
+      case VirtualCmd : //флаг симуляции работы микрокотроллера      
         flgVirtual =(bool)vector[1];
         break;
       case DebugLevelCmd: // флаг вывода отладочной инофрмации debug level =2;  =3 запрет вывода!
         flgDebugLevel =vector[1];
         break;
-  //***************************************    
-      case 16: //изменить значение усиления амплитуды раскачки зонда
-        SET_AMPLMOD_GAIN=true;
-        break;   
-      case 21:
-        AD5664 = true;
-        break;
-      case 24:            
+  //***************************************      
+
+      case ADC_GET_VALUECmd:            
         ADC_GET_VALUE = true;// прочитатать сигналы АЦП      
         break;
-      case 28: // mf  
+      case TheadDoneCmd: // mf  
         TheadDone = true;
         break;
-      case 40: //изменить значение усиления амплитуды раскачки зонда
+      case SET_AMPLMOD_GAINCmd: //изменить значение усиления амплитуды раскачки зонда
         SET_AMPLMOD_GAIN= true;
         break;
-      case 82:
-      case 76:
-      case 55: //сканирование
+      case CONFIG_UPDATECmd: //сканирование
         CONFIG_UPDATE = true;
         break;
       case STOPCmd:
@@ -110,9 +105,9 @@ void RX_core::launchOnCore1()
                                        else ALGCODE=0;
       }  
      }
-   }
   }
 }
+
 
 void RX_core::serialPrintBuffer(const uint16_t *const buf, int len)
 {

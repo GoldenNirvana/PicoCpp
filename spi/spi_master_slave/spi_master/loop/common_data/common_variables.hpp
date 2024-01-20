@@ -74,33 +74,23 @@ extern bool ADC_ENABLE_DISABLE;//AD7606
 extern bool ADC_RESET;         //AD7606     
 extern bool ADC_READ_FOREVER;  //AD7606
 extern bool ADC_GET_VALUE;     //AD7606
-extern bool SCAN_CONFIG_UPDATE;
 extern bool LID;
 extern bool SET_IO_VALUE;
-extern bool CONFIG_UPDATE;
-extern bool APPROACH_CONFIG_UPDATE;
+
 extern bool Z_STATE;
-// add MF
-extern bool LOOP_FREEZE_UNFREEZE;
-extern bool STOP;
-extern bool SET_AMPLMOD_GAIN;
-extern bool PID_TURN_ON;
-extern bool SCANNER_RETRACT;
-extern bool SCANNER_PROTRACT;
-extern bool POSXYZ_CONFIG_UPDATE;
-extern bool ADC_IS_READY_TO_READ;
-extern bool RESONANCE_STOP; //???
-extern bool TheadDone;   //need dor synchronization with PC 
+
 extern uint8_t ZPin;
 extern uint8_t AmplPin; //amplitude
 extern uint8_t IPin;    //current
 
 extern int16_t ZValue; //for simulation
 extern int16_t SignalValue; //for simulation
-extern bool    flgVirtual;  // Virtual device for debuging and simulation
-extern uint    flgDebugLevel; //  leveldebug
 extern int16_t ZMaxValue;
 extern bool    flgUseUART;  // 
+extern bool    flgVirtual;
+extern uint8    flgDebugLevel;
+extern bool    TheadDone;
+extern bool    STOP;
 //
 extern volatile int32_t current_channel;
 extern critical_section_t criticalSection;
