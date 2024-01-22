@@ -72,9 +72,14 @@ case FASTSCANNING:
 case SET_PID_GAIN:
               {
                 ALGCODE=ALGNONE;
-                 if (!flgVirtual) set_io_value(vector[1], vector[2]);     
+                 if (!flgVirtual)  set_io_value(vector[1], vector[2]);     
                 break; 
-              }     
+              }  
+case SET_AMPLMOD_GAIN:
+              {
+                 ALGCODE=ALGNONE;
+                 if (!flgVirtual)  set_GainApmlMod(vector[1],vector[5]); //port ,value
+              }   
 case InitDAC_BIAS_SET_POINT:
               {
                 ALGCODE=ALGNONE;
