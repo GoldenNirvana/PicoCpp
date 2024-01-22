@@ -75,7 +75,7 @@ case SET_PID_GAIN:
                  if (!flgVirtual)  set_io_value(vector[1], vector[2]);     
                 break; 
               }  
-case SET_AMPLMOD_GAIN:
+case SET_AMPLMOD_GAIN: // усиление раскачка зонда 
               {
                  ALGCODE=ALGNONE;
                  if (!flgVirtual)  set_GainApmlMod(vector[1],vector[5]); //port ,value

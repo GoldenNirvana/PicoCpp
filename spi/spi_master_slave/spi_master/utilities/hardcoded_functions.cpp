@@ -20,13 +20,15 @@ void set_io_value(int port, int value)
     std::string binary = std::bitset<2>(value).to_string();
     binary[1] == '1' ? io1_0.enable() : io1_0.disable();
     binary[0] == '1' ? io1_1.enable() : io1_1.disable();
-  } else if (port == 2) //gain
+  } 
+  else if (port == 2) //gain
   {
     std::string binary = std::bitset<3>(value).to_string();
     binary[2] == '1' ? io2_0.enable() : io2_0.disable();
     binary[1] == '1' ? io2_1.enable() : io2_1.disable();
     binary[0] == '1' ? io2_2.enable() : io2_2.disable();
-  } else if (port == 3)
+  }
+  else if (port == 3)
   {
     std::string binary = std::bitset<2>(value).to_string();
     binary[1] == '1' ? io3_0.enable() : io3_0.disable();
