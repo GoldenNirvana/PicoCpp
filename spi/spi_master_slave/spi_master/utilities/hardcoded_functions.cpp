@@ -104,7 +104,7 @@ void get_result_from_adc()
   conv.enable();
 }
 
-void IniSPI( uint8_t port ,uint8_t v2 ,uint8_t v3, uint8_t v4 )
+void init_SPI( uint8_t port ,uint8_t v2 ,uint8_t v3, uint8_t v4 )
 {
  decoder.activePort(port);
  Spi::setProperties(v2, v3, v4);

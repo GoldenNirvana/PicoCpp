@@ -8,7 +8,7 @@ void setDefaultSettings();
 
 void set_Freq(uint32_t freq); //установка заданной частоты генератора
 
-void IniSPI(uint8_t port ,uint8_t v2 ,uint8_t v3, uint8_t v4); //инициирование SPI
+void init_SPI(uint8_t port ,uint8_t v2 ,uint8_t v3, uint8_t v4); //инициирование SPI
 
 void init_DACSPB(uint8_t port); //инициирование ЦАП1  SetPoint,BIAS
 
