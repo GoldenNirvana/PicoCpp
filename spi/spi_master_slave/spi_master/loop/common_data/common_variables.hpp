@@ -28,11 +28,13 @@
 #define MOVE_TOX0Y0              51  //переместиться в начальную точку  скана из начальной точке предыдущего скана
 #define CONFIG_UPDATECmd         55
 #define FASTSCANNING             56
+#define SENDDATALIN              57
 #define SET_PID_GAIN             60
 #define SCANNER_RETRACT_PROTRACT 61
 #define SPECTROSOPY_IV           65
 #define SPECTROSOPY_AIZ          66
 #define STOPCmd                  70
+#define DRAWDONECmd              71
 #define APPROACH                 75
 #define LID_MOVE_UNTIL_STOP      80
 #define LID_MOVE_TOZ0            84 // отвестись в безопасную начальную точку по Z
@@ -87,6 +89,7 @@ extern bool SCANNER_RETRACT;
 extern bool SCANNER_PROTRACT;
 extern bool ADC_IS_READY_TO_READ;
 extern bool TheadDone;   //need dor synchronization with PC 
+extern bool DrawDone;
 extern uint8_t ZPin;
 extern uint8_t AmplPin; //amplitude
 extern uint8_t IPin;    //current

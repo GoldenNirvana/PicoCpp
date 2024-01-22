@@ -43,6 +43,7 @@ private:
 
   void sendStrData(std::string const& header,std::vector<int32_t>  &data, const uint16_t delay);
   void sendStrData(std::string const& header,std::vector<uint16_t> &data, const uint16_t delay);
+  void sendStrData(std::string const& header,std::vector<uint16_t> &data, const uint16_t delay,const bool flg);
   void sendStrData(std::string const& header,std::vector<int16_t>  &data, const uint16_t delay);
   void sendStrData(std::string const& header,std::vector<int16_t>  &data, const uint16_t delay,const bool flg); //flg clear data
   void sendStrData(std::string const& header,int32_t *data, int16_t size);
@@ -77,6 +78,8 @@ public:
   void LID_move_toZ0(int lid_name, int f, int p, int n, int dir);// отвестись в безопасную начальную точку по Z при старте и выходе из программы
   
   void readADC();
+
+  void readDATALin();
   
   void scanner_retract_protract(int port, int flg);
   
@@ -97,6 +100,8 @@ public:
 private:
 
   std::vector<uint16_t> vector_data;
+  std::vector<uint16_t> data_LinX;
+  std::vector<uint16_t> data_LinY;
   std::vector<int32_t>  vectorA_Z;
   std::vector<int16_t>  vectorI_V;
   std::vector<int32_t>  debugdata; 

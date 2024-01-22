@@ -93,6 +93,24 @@ void Scanner::sendStrData(std::string const& header,std::vector<uint16_t> &data,
   data.clear();
 }
 
+void Scanner::readDATALin()
+{
+  data_LinX.clear();
+  data_LinY.clear();
+  size_t szx=vector[1]; //nx
+  size_t szy=vector[2]; //ny
+  for (size_t j = 1; j <szx; ++j)
+  {
+   data_LinX[j-1]=vector[j];
+  }
+  for (size_t j = 1; j <szy; ++j)
+  {
+   data_LinY[j-1]=vector[j+szx-1];
+  }
+  sendStrData("code57",data_LinX,200,false);
+  sendStrData("code57",data_LinY,100,false);
+}
+  
 void Scanner::readADC()
 {
   if (!flgVirtual)
@@ -351,8 +369,14 @@ void Scanner::start_scan(std::vector<int32_t> &vector) //сканировани�
 
       sleep_us(conf_.delayF);
     }
- 
-    sendStrData("code50",vector_data,300);
+    int16_t count0 = 0;
+    while ((!DrawDone) || (count0<20) )
+    {
+     sleep_ms(20);
+     count0++;
+    } //ожидание ответа ПК для синхронизации
+    DrawDone = false;
+    sendStrData("code50",vector_data,50); //100
  
     if (CONFIG_UPDATE)
     {

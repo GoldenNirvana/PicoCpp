@@ -85,6 +85,9 @@ void RX_core::launchOnCore1()
       case TheadDoneCmd: // mf  
         TheadDone = true;
         break;
+      case DRAWDONECmd: // mf  
+        DrawDone = true;
+        break;
       case CONFIG_UPDATECmd: //сканирование
         CONFIG_UPDATE = true;
         break;

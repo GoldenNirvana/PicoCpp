@@ -56,8 +56,10 @@ case LID_MOVE_TOZ0:
 case SCANNING:
               {
                 ALGCODE=ALGNONE;
+                DrawDone=true;
                 if (!scanner.getHoppingFlg())  { scanner.start_scan(vector);       }
                 else                           { scanner.start_hopingscan(vector); }
+                DrawDone=true;
                 break; 
               }
 case FASTSCANNING:

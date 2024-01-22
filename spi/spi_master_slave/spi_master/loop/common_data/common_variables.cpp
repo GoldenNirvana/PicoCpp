@@ -37,6 +37,8 @@ bool SCANNER_RETRACT = false;
 bool SCANNER_PROTRACT = false;
 bool LOOP_FREEZE_UNFREEZE=false;
 bool TheadDone = false;
+bool DrawDone=true;
+
 //************************************************
 bool    flgVirtual = false;     // флаг симуляции работа микроконтроллера
 uint8_t flgDebugLevel = 2;      //  уровень отладки
