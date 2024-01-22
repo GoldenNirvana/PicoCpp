@@ -18,10 +18,12 @@ struct Config
   uint8_t  size;             // size=1  -Z; size=2 - Z,Амплитуда             9
   uint8_t  Ti;               // усиление ПИД                                10
   uint16_t diskretinstep;    // размер шага в дискретах                     11
-  uint16_t pause;            // время ожидания в точке измерения  мксек     12
-  uint8_t  flgOneFrame;      // быстрое сканирование один кадр=1            13
-  uint8_t  flgHoping;        // сканирование прыжками                       14
-  uint16_t HopeDelay;        // задержка в точке измерения при прыжках      15
+  uint16_t pause;            // время ожидания в точке измерения  мксек     12  
+  uint8_t  flgLin;           // флаг линеализации                           13   
+  int16_t  lineshift;        //сдвиг линии -учет неортогональности сканнера 14
+  uint8_t  flgOneFrame;      // быстрое сканирование один кадр=1            15
+  uint8_t  flgHoping;        // сканирование прыжками                       16
+  uint16_t HopeDelay;        // задержка в точке измерения при прыжках      17
 };
 
 
@@ -56,6 +58,8 @@ public:
   ~Scanner();
 
   void start_scan(std::vector<int32_t> &vector);
+  
+  void start_scanlin(std::vector<int32_t> &vector);
 
   void start_hopingscan(std::vector<int32_t> &vector); //сканирование прыжками
 
