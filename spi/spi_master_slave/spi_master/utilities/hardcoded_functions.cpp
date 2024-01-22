@@ -192,7 +192,7 @@ void set_SetPoint(int8_t channel, int32_t SetPoint)
   sleep_ms(100);
   */
 }
-void set_GainApmlMod(int port, int gain)
+void set_GainApmlMod(int8_t port, int16_t gain)
 {
   uint8_t intBuf[1];
   decoder.activePort(port);
