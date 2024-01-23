@@ -45,7 +45,6 @@
 #define ALGNONE                  0
 
 extern int16_t ALGCODE;
-
 extern uint32_t DEBUG_LEVEL;
 extern Spi spi;
 extern LinearDriver linearDriver;

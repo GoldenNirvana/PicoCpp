@@ -195,7 +195,7 @@ void Scanner::start_scan(std::vector<int32_t> &vector) //сканировани�
              });
   prev_point = pos_; //запоминание начальной точки скана
   vector_data.clear();
-  for (int j = 1; j <= 12; ++j)
+  for (int j = 1; j <= 17; ++j)
   {
     debugdata.emplace_back(vector[j]);
   }
@@ -229,7 +229,7 @@ void Scanner::start_scan(std::vector<int32_t> &vector) //сканировани�
   debugdata.emplace_back(reststepx);
   debugdata.emplace_back(reststepy);
   sendStrData("debug scan parameters stepsxy  ",debugdata,100);
-
+   DrawDone=true;
   switch (conf_.path)
   {
     case 0://X+
@@ -403,7 +403,7 @@ void Scanner::start_scan(std::vector<int32_t> &vector) //сканировани�
      count0++;
     } //ожидание ответа ПК для синхронизации
     DrawDone = false;
-    sendStrData("code50",vector_data,40); //100
+    sendStrData("code50",vector_data,60); //100
  
     if (CONFIG_UPDATE)
     {
@@ -970,7 +970,14 @@ void Scanner::start_hopingscan(std::vector<int32_t> &vector)
 
       sleep_us(conf_.delayF);
     }
-    sendStrData("code50",vector_data,100);
+     int16_t count0 = 0;
+    while ((!DrawDone) || (count0<20) )
+    {
+     sleep_ms(10);
+     count0++;
+    } //ожидание ответа ПК для синхронизации
+    DrawDone = false;
+    sendStrData("code50",vector_data,60);
 
     if (CONFIG_UPDATE)
     {
@@ -2057,7 +2064,7 @@ void Scanner::start_frqscan()
     inBuf[1] += inBuf[2];
   }
   sendStrData("code25",data,100);
-  data.clear();
+  //data.clear();
   current_channel = -1;
   int16_t count = 0;
   while ((!TheadDone) || (count<20) )
