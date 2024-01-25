@@ -80,6 +80,7 @@ case SENDDATALIN:
               {
                 ALGCODE=ALGNONE;
                 scanner.readDATALin();
+                break;
               }              
 case FASTSCANNING:
               {

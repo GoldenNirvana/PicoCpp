@@ -122,11 +122,11 @@ void Scanner::readDATALin()
   {
    data_LinX.emplace_back(vector[j+3]);
   }
+  sendStrData("debug linx ",data_LinX,200,false);
   for (size_t j = 0; j <szy; ++j)
   {
    data_LinY.emplace_back(vector[j+3+szx]);
-  }
-  sendStrData("debug linx ",data_LinX,200,false);
+  } 
   sendStrData("debug liny ",data_LinY,100,false);
 }
   
