@@ -98,7 +98,9 @@ public:
   void unfreezeLOOP();  // разморизить ПИД
 
   bool getHoppingFlg(); // получить флаг сканирования прыжками
-
+ 
+  bool getLinearFlg();  // сканирование с линеализацией
+  
   Point getX0Y0();      // получить текущую точку сканера в покое
 
 private:

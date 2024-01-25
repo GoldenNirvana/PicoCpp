@@ -92,23 +92,42 @@ void Scanner::sendStrData(std::string const& header,std::vector<uint16_t> &data,
   sleep_ms(delay);
   data.clear();
 }
-
+void Scanner::sendStrData(std::string const& header,std::vector<uint16_t> &data, const uint16_t delay, const bool flg)
+{
+  std::string afcc;
+  afcc.clear();
+  afcc=header;
+   //for (auto & element :data) 
+  for (size_t j = 0; j < data.size(); ++j)
+  {
+ // afc +=',' + std::to_string(element);
+   afcc +=',' + std::to_string(data[j]);
+  }
+  afcc +="\n";
+  std::cout << afcc;
+  afcc.clear();
+  sleep_ms(delay);
+  if (flg) data.clear();
+}
 void Scanner::readDATALin()
 {
   data_LinX.clear();
   data_LinY.clear();
   size_t szx=vector[1]; //nx
   size_t szy=vector[2]; //ny
-  for (size_t j = 1; j <szx; ++j)
+  debugdata.emplace_back(szx);
+  debugdata.emplace_back(szy);
+  sendStrData("debug linxny",debugdata,100);
+  for (size_t j = 0; j <szx; ++j)
   {
-   data_LinX[j-1]=vector[j];
+   data_LinX.emplace_back(vector[j+3]);
   }
-  for (size_t j = 1; j <szy; ++j)
+  for (size_t j = 0; j <szy; ++j)
   {
-   data_LinY[j-1]=vector[j+szx-1];
+   data_LinY.emplace_back(vector[j+3+szx]);
   }
-  sendStrData("code57",data_LinX,200,false);
-  sendStrData("code57",data_LinY,100,false);
+  sendStrData("debug linx ",data_LinX,200,false);
+  sendStrData("debug liny ",data_LinY,100,false);
 }
   
 void Scanner::readADC()
@@ -175,13 +194,17 @@ void Scanner::unfreezeLOOP()  // разморозить ПИД
 
 bool Scanner::getHoppingFlg() //получить флаг установлен ли флаг сканирования прыжками
 {
+
   return (bool)conf_.flgHoping;
 }
-
+bool Scanner::getLinearFlg()
+{
+  return (bool)conf_.flgLin;
+}
 void Scanner::start_scan(std::vector<int32_t> &vector) //сканирование
 {
   const int8_t oneline=11;
- 
+ /*
  scan_update({
               static_cast<uint16_t>(vector[1]), static_cast<uint16_t>(vector[2]),
               static_cast<uint8_t>(vector[3]),  static_cast<uint8_t>(vector[4]),
@@ -193,6 +216,31 @@ void Scanner::start_scan(std::vector<int32_t> &vector) //сканировани�
               static_cast<uint8_t>(vector[15]), static_cast<uint8_t>(vector[16]),
               static_cast<uint16_t>(vector[17])
              });
+             */
+/*
+struct Config
+{
+  uint16_t nPoints_x;        // точек по оси  X                              1
+  uint16_t nPoints_y;        // точек по оси  Y                              2 
+  uint8_t  path;             // сканирование  0 - по оси X, 1 - по оси Y     3
+  uint8_t  method;           // что измерять Topo=0,Phase=1, Ampl=2...       4
+  uint16_t delayF;           // задержка при сканировании вперёд             5
+  uint16_t delayB;           // задержка при сканировании назад              6
+  uint16_t betweenPoints_x;  // расстояние между точками по X в дискретах    7 
+  uint16_t betweenPoints_y;  // расстояние между точками по Y в дискретах    8 
+  uint8_t  size;             // size=1  -Z; size=2 - Z,Амплитуда             9
+  uint8_t  Ti;               // усиление ПИД                                10
+  uint16_t diskretinstep;    // размер шага в дискретах                     11
+  uint16_t pause;            // время ожидания в точке измерения  мксек     12  
+  uint8_t  flgLin;           // флаг линеализации                           13   
+  int16_t  lineshift;        //сдвиг линии -учет неортогональности сканнера 14
+  uint8_t  flgOneFrame;      // быстрое сканирование один кадр=1            15
+  uint8_t  flgHoping;        // сканирование прыжками                       16
+  uint16_t HopeDelay;        // задержка в точке измерения при прыжках      17
+};
+
+
+*/
   prev_point = pos_; //запоминание начальной точки скана
   vector_data.clear();
   for (int j = 1; j <= 17; ++j)
@@ -211,7 +259,7 @@ void Scanner::start_scan(std::vector<int32_t> &vector) //сканировани�
   uint16_t reststepx;
   uint16_t reststepy;
   uint16_t nfastline, nslowline;
-  uint16_t stepslowline, stepfastline;
+  uint16_t stepsslowline, stepsfastline;
   uint8_t  portx = 1;
   uint8_t  porty = 2;
   uint8_t  portfast;
@@ -240,8 +288,8 @@ void Scanner::start_scan(std::vector<int32_t> &vector) //сканировани�
       pos_slow = pos_.y;
       nfastline = conf_.nPoints_x;
       nslowline = conf_.nPoints_y;
-      stepslowline = stepsy;
-      stepfastline = stepsx;
+      stepsslowline = stepsy;
+      stepsfastline = stepsx;
       reststepfast = reststepx;
       reststepslow = reststepy;
       break;
@@ -254,8 +302,8 @@ void Scanner::start_scan(std::vector<int32_t> &vector) //сканировани�
       pos_slow = pos_.x;
       nfastline = conf_.nPoints_y;
       nslowline = conf_.nPoints_x;
-      stepslowline = stepsx;
-      stepfastline = stepsy;
+      stepsslowline = stepsx;
+      stepsfastline = stepsy;
       reststepfast = reststepy;
       reststepslow = reststepx;
       break;
@@ -271,16 +319,16 @@ void Scanner::start_scan(std::vector<int32_t> &vector) //сканировани�
     {
       case 0://X+
       {
-        stepslowline = stepsy;
-        stepfastline = stepsx;
+        stepsslowline = stepsy;
+        stepsfastline = stepsx;
         reststepfast = reststepx;
         reststepslow = reststepy;
         break;
       }
       case 1: //Y+
       {
-        stepslowline = stepsx;
-        stepfastline = stepsy;
+        stepsslowline = stepsx;
+        stepsfastline = stepsy;
         reststepfast = reststepy;
         reststepslow = reststepx;
         break;
@@ -288,7 +336,7 @@ void Scanner::start_scan(std::vector<int32_t> &vector) //сканировани�
     }
     for (uint32_t j = 0; j < nfastline; ++j)
     {
-      for (uint32_t k = 0; k < stepfastline; ++k)  
+      for (uint32_t k = 0; k < stepsfastline; ++k)  
       {
         if (!flgVirtual)
         {
@@ -337,8 +385,12 @@ void Scanner::start_scan(std::vector<int32_t> &vector) //сканировани�
           }
       } else
       {
-       if (conf_.method!=oneline) vector_data.emplace_back(int16_t(10000.0 * (sin(M_PI * j * 0.1) + sin(M_PI * i * 0.1))));  // get Z from adc
-       else   vector_data.emplace_back(int16_t(10000.0 * (sin(M_PI * j * 0.1) + sin(M_PI * 0 * 0.1)))); 
+   //    if (conf_.method!=oneline) vector_data.emplace_back(int16_t(10000.0 * (sin(M_PI * j * 0.1) + sin(M_PI * i * 0.1))));  // get Z from adc
+   //    else   vector_data.emplace_back(int16_t(10000.0 * (sin(M_PI * j * 0.1) + sin(M_PI * 0 * 0.1)))); 
+       double_t w;
+       w= 10*M_PI/(nfastline);   
+       if (conf_.method!=oneline) vector_data.emplace_back(int16_t(10000.0 * (sin(w*j) + sin(w* i ))));  // get Z from adc
+       else   vector_data.emplace_back(int16_t(10000.0 * (sin(w * j)))); 
         if (conf_.size == 2)  //дополнительный сигнал
         {
            vector_data.emplace_back(int16_t(10000.0 * (sin(M_PI * j * 0.1) + sin(M_PI * i * 0.1))));
@@ -355,16 +407,16 @@ void Scanner::start_scan(std::vector<int32_t> &vector) //сканировани�
     {
       case 0://X+
       {
-        stepslowline = stepsy;
-        stepfastline = stepsx;
+        stepsslowline = stepsy;
+        stepsfastline = stepsx;
         reststepfast = reststepx;
         reststepslow = reststepy;
         break;
       }
       case 1: //Y+
       {
-        stepslowline = stepsx;
-        stepfastline = stepsy;
+        stepsslowline = stepsx;
+        stepsfastline = stepsy;
         reststepfast = reststepy;
         reststepslow = reststepx;
         break;
@@ -372,7 +424,7 @@ void Scanner::start_scan(std::vector<int32_t> &vector) //сканировани�
     }
  /////////////////////////////////////////////   
    // for (uint32_t l = 0; l < stepfastline * nfastline; ++l) //com 240122   move  back
-    for (uint32_t l = 0; l < stepfastline; ++l) // move  back
+    for (uint32_t l = 0; l < stepsfastline; ++l) // move  back
     {
       if (!flgVirtual)
       {
@@ -433,7 +485,7 @@ void Scanner::start_scan(std::vector<int32_t> &vector) //сканировани�
     {
       if (conf_.method != oneline) //не сканирование по одной линии
       {
-        for (uint32_t n = 0; n < stepslowline; ++n) // переход на следующую линию
+        for (uint32_t n = 0; n < stepsslowline; ++n) // переход на следующую линию
         {
           if (!flgVirtual)
           {
@@ -492,7 +544,7 @@ void Scanner::start_scan(std::vector<int32_t> &vector) //сканировани�
 void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирование
 {
   const int8_t oneline=11;
- 
+/* 
  scan_update({
               static_cast<uint16_t>(vector[1]), static_cast<uint16_t>(vector[2]),
               static_cast<uint8_t>(vector[3]),  static_cast<uint8_t>(vector[4]),
@@ -504,16 +556,21 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
               static_cast<uint8_t>(vector[15]), static_cast<uint8_t>(vector[16]),
               static_cast<uint16_t>(vector[17])
             });
+            */
   prev_point = pos_; //запоминание начальной точки скана
   vector_data.clear();
-  for (int j = 1; j <= 12; ++j)
+  for (int j = 1; j <= 17; ++j)
   {
     debugdata.emplace_back(vector[j]);
   }
   debugdata.emplace_back(pos_.x);
   debugdata.emplace_back(pos_.y);
 
-  sendStrData("debug scan parameters",debugdata,100);
+  sendStrData("debug scan lin parameters",debugdata,200);
+
+ // sendStrData("debug linx ",data_LinX,200,false);
+
+ // sendStrData("debug liny ",data_LinY,200,false);
 
   uint16_t stepsx;
   uint16_t stepsy;
@@ -522,7 +579,7 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
   uint16_t reststepx;
   uint16_t reststepy;
   uint16_t nfastline, nslowline;
-  uint16_t stepslowline, stepfastline;
+  uint16_t stepsslowline, stepsfastline;
   uint8_t  portx = 1;
   uint8_t  porty = 2;
   uint8_t  portfast;
@@ -530,7 +587,7 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
   uint16_t pos_fast;
   uint16_t pos_slow;
 
-/*
+
   stepsx = (uint16_t) conf_.betweenPoints_x / conf_.diskretinstep;
   stepsy = (uint16_t) conf_.betweenPoints_y / conf_.diskretinstep;
   reststepx = conf_.betweenPoints_x % conf_.diskretinstep;
@@ -539,6 +596,7 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
   debugdata.emplace_back(stepsy);
   debugdata.emplace_back(reststepx);
   debugdata.emplace_back(reststepy);
+
   sendStrData("debug scan parameters stepsxy  ",debugdata,100);
 
   switch (conf_.path)
@@ -551,8 +609,8 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
       pos_slow = pos_.y;
       nfastline = conf_.nPoints_x;
       nslowline = conf_.nPoints_y;
-      stepslowline = stepsy;
-      stepfastline = stepsx;
+      stepsslowline = stepsy;
+      stepsfastline = stepsx;
       reststepfast = reststepx;
       reststepslow = reststepy;
       break;
@@ -565,14 +623,14 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
       pos_slow = pos_.x;
       nfastline = conf_.nPoints_y;
       nslowline = conf_.nPoints_x;
-      stepslowline = stepsx;
-      stepfastline = stepsy;
+      stepsslowline = stepsx;
+      stepsfastline = stepsy;
       reststepfast = reststepy;
       reststepslow = reststepx;
       break;
     }
   }
-  */
+
   for (size_t i = 0; i < nslowline; ++i)
   {
     for (uint32_t j = 0; j < nfastline; ++j)
@@ -585,22 +643,22 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
     {
       case 0://X+
       {
-        stepslowline = stepsy;
-        stepfastline = stepsx;
+        stepsslowline = stepsy;
+        stepsfastline = stepsx;
         reststepfast = reststepx;
         reststepslow = reststepy;
         break;
       }
       case 1: //Y+
       {
-        stepslowline = stepsx;
-        stepfastline = stepsy;
+        stepsslowline = stepsx;
+        stepsfastline = stepsy;
         reststepfast = reststepy;
         reststepslow = reststepx;
         break;
       }
     }
-     for (uint32_t k = 0; k < stepfastline; ++k)  
+     for (uint32_t k = 0; k < stepsfastline; ++k)  
       {
         if (!flgVirtual)
         {
@@ -649,8 +707,13 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
           }
       } else
       {
-       if (conf_.method!=oneline) vector_data.emplace_back(int16_t(10000.0 * (sin(M_PI * j * 0.1) + sin(M_PI * i * 0.1))));  // get Z from adc
-       else   vector_data.emplace_back(int16_t(10000.0 * (sin(M_PI * j * 0.1) + sin(M_PI * 0 * 0.1)))); 
+   //    if (conf_.method!=oneline) vector_data.emplace_back(int16_t(10000.0 * (sin(M_PI * j * 0.1) + sin(M_PI * i * 0.1))));  // get Z from adc
+   //    else   vector_data.emplace_back(int16_t(10000.0 * (sin(M_PI * j * 0.1) + sin(M_PI * 0 * 0.1)))); 
+         double_t w;
+       w= 10*M_PI/(nfastline);   
+       if (conf_.method!=oneline) vector_data.emplace_back(int16_t(10000.0 * (sin(w*j) + sin(w* i ))));  // get Z from adc
+       else   vector_data.emplace_back(int16_t(10000.0 * (sin(w * j)))); 
+  
         if (conf_.size == 2)  //дополнительный сигнал
         {
            vector_data.emplace_back(int16_t(10000.0 * (sin(M_PI * j * 0.1) + sin(M_PI * i * 0.1))));
@@ -667,16 +730,16 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
     {
       case 0://X+
       {
-        stepslowline = stepsy;
-        stepfastline = stepsx;
+        stepsslowline = stepsy;
+        stepsfastline = stepsx;
         reststepfast = reststepx;
         reststepslow = reststepy;
         break;
       }
       case 1: //Y+
       {
-        stepslowline = stepsx;
-        stepfastline = stepsy;
+        stepsslowline = stepsx;
+        stepsfastline = stepsy;
         reststepfast = reststepy;
         reststepslow = reststepx;
         break;
@@ -684,7 +747,7 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
     }
  /////////////////////////////////////////////   
    // for (uint32_t l = 0; l < stepfastline * nfastline; ++l) //com 240122   move  back
-    for (uint32_t l = 0; l < stepfastline; ++l) // move  back
+    for (uint32_t l = 0; l < stepsfastline; ++l) // move  back
     {
       if (!flgVirtual)
       {
@@ -745,7 +808,7 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
     {
       if (conf_.method != oneline) //не сканирование по одной линии
       {
-        for (uint32_t n = 0; n < stepslowline; ++n) // переход на следующую линию
+        for (uint32_t n = 0; n < stepsslowline; ++n) // переход на следующую линию
         {
           if (!flgVirtual)
           {
@@ -804,7 +867,7 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
 void Scanner::start_hopingscan(std::vector<int32_t> &vector)
 {
   const int8_t oneline=11;
-   scan_update({
+ /*  scan_update({
                static_cast<uint16_t>(vector[1]), static_cast<uint16_t>(vector[2]),
                static_cast<uint8_t>(vector[3]),  static_cast<uint8_t>(vector[4]),
                static_cast<uint16_t>(vector[5]), static_cast<uint16_t>(vector[6]),
@@ -814,6 +877,7 @@ void Scanner::start_hopingscan(std::vector<int32_t> &vector)
                static_cast<uint8_t>(vector[13]), static_cast<int16_t>(vector[14]),  //add 240122            
                static_cast<uint8_t>(vector[15]), static_cast<uint8_t>(vector[16]),
                static_cast<uint16_t>(vector[17])              }); 
+               */
   prev_point = pos_; //запоминание начальной точки скана
   vector_data.clear();
   for (int j = 1; j <= 15; ++j)
@@ -828,7 +892,7 @@ void Scanner::start_hopingscan(std::vector<int32_t> &vector)
   uint16_t reststepx;
   uint16_t reststepy;
   uint16_t nfastline, nslowline;
-  uint16_t stepslowline, stepfastline;
+  uint16_t stepsslowline, stepsfastline;
   uint8_t  portx = 1;
   uint8_t  porty = 2;
   uint8_t  portfast;
@@ -852,8 +916,8 @@ void Scanner::start_hopingscan(std::vector<int32_t> &vector)
       pos_slow = pos_.y;
       nfastline = conf_.nPoints_x;
       nslowline = conf_.nPoints_y;
-      stepslowline = stepsy;
-      stepfastline = stepsx;
+      stepsslowline = stepsy;
+      stepsfastline = stepsx;
       reststepfast = reststepx;
       reststepslow = reststepy;
       break;
@@ -866,8 +930,8 @@ void Scanner::start_hopingscan(std::vector<int32_t> &vector)
       pos_slow = pos_.x;
       nfastline = conf_.nPoints_y;
       nslowline = conf_.nPoints_x;
-      stepslowline = stepsx;
-      stepfastline = stepsy;
+      stepsslowline = stepsx;
+      stepsfastline = stepsy;
       reststepfast = reststepy;
       reststepslow = reststepx;
       break;
@@ -882,7 +946,7 @@ void Scanner::start_hopingscan(std::vector<int32_t> &vector)
          retract();
       }   
       sleep_us(50);
-      for (uint32_t k = 0; k < stepfastline; ++k) 
+      for (uint32_t k = 0; k < stepsfastline; ++k) 
       {
         if (!flgVirtual)
         {
@@ -936,9 +1000,12 @@ void Scanner::start_hopingscan(std::vector<int32_t> &vector)
         }
       } else
       {
-        vector_data.emplace_back(
-            int16_t(10000.0 * (sin(M_PI * j * 0.1) + sin(M_PI * i * 0.1))));  // get Z from adc
-        if (conf_.size == 2)                               // added signal
+    //    vector_data.emplace_back(
+    //        int16_t(10000.0 * (sin(M_PI * j * 0.1) + sin(M_PI * i * 0.1))));  // get Z from adc
+        double_t w;
+       w= 10*M_PI/(nfastline);   
+       vector_data.emplace_back(int16_t(10000.0 * (sin(w*j) + sin(w* i ))));  // get Z from adc
+     if (conf_.size == 2)                               // added signal
         {
           vector_data.emplace_back(int16_t(10000.0 * (sin(M_PI * j * 0.1) + sin(M_PI * i * 0.1))));
         }
@@ -952,11 +1019,11 @@ void Scanner::start_hopingscan(std::vector<int32_t> &vector)
 
     if (!flgVirtual)
     {
-      pos_fast -= conf_.diskretinstep * stepfastline * nfastline;
+      pos_fast -= conf_.diskretinstep * stepsfastline * nfastline;
       set_DACXY(portfast, pos_fast);
     }
     else
-    { pos_fast -= conf_.diskretinstep * stepfastline * nfastline; }
+    { pos_fast -= conf_.diskretinstep * stepsfastline * nfastline; }
     sleep_us(conf_.delayB);
 
     if (reststepfast != 0)
@@ -1005,10 +1072,10 @@ void Scanner::start_hopingscan(std::vector<int32_t> &vector)
      if (conf_.method !=oneline) //не сканирование по одной линии
      {  if (!flgVirtual)
       {
-        pos_slow += conf_.diskretinstep * stepslowline;
+        pos_slow += conf_.diskretinstep * stepsslowline;
         set_DACXY(portslow, pos_slow);
       } else
-      { pos_slow += conf_.diskretinstep * stepslowline; }
+      { pos_slow += conf_.diskretinstep * stepsslowline; }
       sleep_us(conf_.delayF);
       if (reststepslow != 0)
       {
@@ -1067,12 +1134,16 @@ void Scanner::start_fastscan(std::vector<int32_t> &vector)
                static_cast<uint16_t>(vector[7]), static_cast<uint16_t>(vector[8]),
                static_cast<uint8_t>(vector[9]),  static_cast<uint8_t>(vector[10]),
                static_cast<uint16_t>(vector[11]),static_cast<uint16_t>(vector[12]),
-               static_cast<uint8_t>(vector[13])
-              });  
+               static_cast<uint8_t>(vector[13]), static_cast<int16_t>(vector[14]),  //add 240122            
+               static_cast<uint8_t>(vector[15]), static_cast<uint8_t>(vector[16]),
+               static_cast<uint16_t>(vector[17])
+              }
+             );  
+
   prev_point = pos_; //запоминание начальной точки скана
   vector_data.clear();
   
-  for (int j = 1; j <= 13; ++j)
+  for (int j = 1; j <= 17; ++j)
   {
     debugdata.emplace_back(vector[j]);
   }

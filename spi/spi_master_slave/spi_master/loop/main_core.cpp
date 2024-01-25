@@ -57,11 +57,30 @@ case SCANNING:
               {
                 ALGCODE=ALGNONE;
                 DrawDone=true;
-                if (!scanner.getHoppingFlg())  { scanner.start_scan(vector);       }
+                scanner.scan_update({
+                             static_cast<uint16_t>(vector[1]), static_cast<uint16_t>(vector[2]),
+                             static_cast<uint8_t>(vector[3]),  static_cast<uint8_t>(vector[4]),
+                             static_cast<uint16_t>(vector[5]), static_cast<uint16_t>(vector[6]),
+                             static_cast<uint16_t>(vector[7]), static_cast<uint16_t>(vector[8]),
+                             static_cast<uint8_t>(vector[9]),  static_cast<uint8_t>(vector[10]),
+                             static_cast<uint16_t>(vector[11]),static_cast<uint16_t>(vector[12]),
+                             static_cast<uint8_t>(vector[13]), static_cast<int16_t>(vector[14]),  //add 240122            
+                             static_cast<uint8_t>(vector[15]), static_cast<uint8_t>(vector[16]),
+                             static_cast<uint16_t>(vector[17])
+                           });
+                if (!scanner.getHoppingFlg())  {
+                                                 if (!scanner.getLinearFlg()) { scanner.start_scan(vector);   }
+                                                 else                         { scanner.start_scanlin(vector);}    
+                                               }
                 else                           { scanner.start_hopingscan(vector); }
                 DrawDone=true;
                 break; 
               }
+case SENDDATALIN:
+              {
+                ALGCODE=ALGNONE;
+                scanner.readDATALin();
+              }              
 case FASTSCANNING:
               {
                 ALGCODE=ALGNONE;
