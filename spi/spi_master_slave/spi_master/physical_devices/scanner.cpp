@@ -33,7 +33,7 @@ void Scanner::sendStrData(std::string const& header, std::vector<int32_t> &data,
   {
  // afc +=',' + std::to_string(element);
    afcc +=',' + std::to_string(data[j]);
-   }
+  }
   afcc +="\n";
   std::cout << afcc;
   afcc.clear();
@@ -117,17 +117,17 @@ void Scanner::readDATALin()
   size_t szy=vector[2]; //ny
   debugdata.emplace_back(szx);
   debugdata.emplace_back(szy);
-  sendStrData("debug linxny",debugdata,100);
+  sendStrData("debug linxny ",debugdata,400);
   for (size_t j = 0; j <szx; ++j)
   {
-   data_LinX.emplace_back(vector[j+3]);
+   data_LinX.emplace_back((uint16_t)vector[j+3]);
   }
-  sendStrData("debug linx ",data_LinX,200,false);
+//  sendStrData("debug linx ",data_LinX,400,false);
   for (size_t j = 0; j <szy; ++j)
   {
-   data_LinY.emplace_back(vector[j+3+szx]);
+   data_LinY.emplace_back((uint16_t)vector[j+3+szx]);
   } 
-  sendStrData("debug liny ",data_LinY,100,false);
+//  sendStrData("debug liny ",data_LinY,400,false);
 }
   
 void Scanner::readADC()
@@ -587,18 +587,6 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
   uint16_t pos_fast;
   uint16_t pos_slow;
 
-
-  stepsx = (uint16_t) conf_.betweenPoints_x / conf_.diskretinstep;
-  stepsy = (uint16_t) conf_.betweenPoints_y / conf_.diskretinstep;
-  reststepx = conf_.betweenPoints_x % conf_.diskretinstep;
-  reststepy = conf_.betweenPoints_y % conf_.diskretinstep;
-  debugdata.emplace_back(stepsx);
-  debugdata.emplace_back(stepsy);
-  debugdata.emplace_back(reststepx);
-  debugdata.emplace_back(reststepy);
-
-  sendStrData("debug scan parameters stepsxy  ",debugdata,100);
-
   switch (conf_.path)
   {
     case 0://X+
@@ -609,10 +597,6 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
       pos_slow = pos_.y;
       nfastline = conf_.nPoints_x;
       nslowline = conf_.nPoints_y;
-      stepsslowline = stepsy;
-      stepsfastline = stepsx;
-      reststepfast = reststepx;
-      reststepslow = reststepy;
       break;
     }
     case 1: //Y+
@@ -623,10 +607,6 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
       pos_slow = pos_.x;
       nfastline = conf_.nPoints_y;
       nslowline = conf_.nPoints_x;
-      stepsslowline = stepsx;
-      stepsfastline = stepsy;
-      reststepfast = reststepy;
-      reststepslow = reststepx;
       break;
     }
   }
@@ -710,9 +690,12 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
    //    if (conf_.method!=oneline) vector_data.emplace_back(int16_t(10000.0 * (sin(M_PI * j * 0.1) + sin(M_PI * i * 0.1))));  // get Z from adc
    //    else   vector_data.emplace_back(int16_t(10000.0 * (sin(M_PI * j * 0.1) + sin(M_PI * 0 * 0.1)))); 
          double_t w;
-       w= 10*M_PI/(nfastline);   
-       if (conf_.method!=oneline) vector_data.emplace_back(int16_t(10000.0 * (sin(w*j) + sin(w* i ))));  // get Z from adc
-       else   vector_data.emplace_back(int16_t(10000.0 * (sin(w * j)))); 
+         w= 10*M_PI/(nfastline);   
+         if (conf_.method!=oneline) vector_data.emplace_back(int16_t(10000.0 * (sin(w*j) + sin(w* i ))));  // get Z from adc
+     
+    //  w= 10*M_PI/(nfastline*);   
+    //   if (conf_.method!=oneline) vector_data.emplace_back(int16_t(10000.0 * (sin(w*j) + sin(w* i ))));  // get Z from adc
+   //    else   vector_data.emplace_back(int16_t(10000.0 * (sin(w * j)))); 
   
         if (conf_.size == 2)  //дополнительный сигнал
         {
