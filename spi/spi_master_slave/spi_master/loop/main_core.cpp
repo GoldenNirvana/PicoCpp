@@ -69,10 +69,13 @@ case SCANNING:
                              static_cast<uint16_t>(vector[17])
                            });
                 if (!scanner.getHoppingFlg())  {
-                                                 if (!scanner.getLinearFlg()) { scanner.start_scan(vector);   }
-                                                 else                         { scanner.start_scanlin(vector);}    
+                                                 if (!scanner.getLinearFlg()) {scanner.start_scan(vector);   }
+                                                 else                         {scanner.start_scanlin(vector);}    
                                                }
-                else                           { scanner.start_hopingscan(vector); }
+                else                           {
+                                                 if (!scanner.getLinearFlg()) {scanner.start_hopingscan(vector);   }
+                                                 else                         {scanner.start_hopingscanlin(vector);}
+                                               }
                 DrawDone=true;
                 break; 
               }

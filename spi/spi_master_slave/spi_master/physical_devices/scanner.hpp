@@ -62,6 +62,8 @@ public:
   void start_scanlin(std::vector<int32_t> &vector);
 
   void start_hopingscan(std::vector<int32_t> &vector); //сканирование прыжками
+  
+  void start_hopingscanlin(std::vector<int32_t> &vector); //сканирование прыжками
 
   void start_fastscan(std::vector<int32_t> &vector);  // быстрое сканирование и вывод скана целиком, а не по линиям
 
