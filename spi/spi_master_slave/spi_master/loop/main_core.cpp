@@ -101,7 +101,8 @@ case SET_PID_GAIN:
 case SET_AMPLMOD_GAIN: // усиление раскачка зонда 
               {
                  ALGCODE=ALGNONE;
-                 if (!flgVirtual)  set_GainApmlMod(vector[1],vector[5]); //port ,value
+                 if (!flgVirtual)  set_GainApmlMod(vector[1],(uint8_t)vector[5]); //port ,value
+                 break;
               }   
 case InitDAC_BIAS_SET_POINT:
               {

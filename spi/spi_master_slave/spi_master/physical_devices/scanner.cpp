@@ -1059,9 +1059,9 @@ void Scanner::start_hopingscan(std::vector<int32_t> &vector)
       break;
     }
      if ((nslowline - 1 - i) > 0)  //если непоследняя линия
-    {
-     if (conf_.method !=oneline) //не сканирование по одной линии
      {
+      if (conf_.method !=oneline) //не сканирование по одной линии
+      {
         for (uint32_t n = 0; n < stepsslowline; ++n) // переход на следующую линию
         {
           if (!flgVirtual)
@@ -1083,7 +1083,7 @@ void Scanner::start_hopingscan(std::vector<int32_t> &vector)
           sleep_us(conf_.delayF);
         }
       }
-    }
+     }
   } 
   blue();
   switch (conf_.path)

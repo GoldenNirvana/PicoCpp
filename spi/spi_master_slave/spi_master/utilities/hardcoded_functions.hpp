@@ -20,7 +20,7 @@ void set_Bias(int8_t chanel,int32_t Bias); //установка заданног
 
 void set_SetPoint(int8_t chanel,int32_t SetPoint);//установка заданной опроры для ПИД
 
-void set_GainApmlMod( int8_t port,int16_t gain); // установить усиления 
+void set_GainApmlMod( int8_t port,uint8_t gain); // установить усиления 
 
 void set_GainPID(int gain);          //установить усиления ПИД
 

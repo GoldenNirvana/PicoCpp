@@ -194,13 +194,17 @@ void set_SetPoint(int8_t channel, int32_t SetPoint)
   sleep_ms(100);
   */
 }
-void set_GainApmlMod(int8_t port, int16_t gain)
+void set_GainApmlMod(int8_t port, uint8_t gain)
 {
-  uint8_t intBuf[1];
+  uint8_t intBuf[1]; //1
   decoder.activePort(port);
   Spi::setProperties(8, 0, 0);
-  intBuf[0] = gain;
-  spi_write_blocking(spi_default, intBuf, 3);
+  intBuf[0] = 0;
+ //  intBuf[1] = 0; intBuf[2] = 0; intBuf[3] = 0; intBuf[4] = 0; intBuf[5] = 0; intBuf[6] = 0;
+  spi_write_blocking(spi_default, intBuf, 1); //3
+  intBuf[0] = (uint8_t)gain;
+  spi_write_blocking(spi_default, intBuf, 1); //3
+  decoder.activePort(7);
 }
 void set_GainPID(int gain)
 {
