@@ -111,6 +111,7 @@ void init_SPI( uint8_t port ,uint8_t v2 ,uint8_t v3, uint8_t v4 )
  decoder.activePort(port);
  Spi::setProperties(v2, v3, v4);
 }
+
 void init_DACSPB(uint8_t port) //  4 для подставки
 {
   dac8563_1.initialize(port); //code 23
@@ -196,14 +197,13 @@ void set_SetPoint(int8_t channel, int32_t SetPoint)
 }
 void set_GainApmlMod(int8_t port, uint8_t gain)
 {
-  uint8_t intBuf[1]; //1
+  uint8_t intBuf[1]; 
   decoder.activePort(port);
   Spi::setProperties(8, 0, 0);
   intBuf[0] = 0;
- //  intBuf[1] = 0; intBuf[2] = 0; intBuf[3] = 0; intBuf[4] = 0; intBuf[5] = 0; intBuf[6] = 0;
-  spi_write_blocking(spi_default, intBuf, 1); //3
+  spi_write_blocking(spi_default, intBuf, 1); 
   intBuf[0] = (uint8_t)gain;
-  spi_write_blocking(spi_default, intBuf, 1); //3
+  spi_write_blocking(spi_default, intBuf, 1); 
   decoder.activePort(7);
 }
 void set_GainPID(int gain)
@@ -223,15 +223,18 @@ void set_DACXY(uint8_t channel, uint16_t value)
   dac8563_2.setSpiProps();
 //  AD56X4Class::setChannel(AD56X4_SETMODE_INPUT, channel, value);
 //  AD56X4Class::updateChannel(channel);
-  channel--;
+  channel--; //???
   if (channel == 0)  dac8563_2.writeA(value);
   if (channel == 1)  dac8563_2.writeB(value);
 }
-void set_DACZ(uint16_t value) 
+void set_DACZ(uint8_t channel,uint16_t value) 
 {
-
-
+  dac8563_3.setSpiProps();
+  channel--; //???
+  if (channel == 0)  dac8563_3.writeA(value);
+  if (channel == 1)  dac8563_3.writeB(value);
 }
+
 void stopAll()
 {
   STOP=false;

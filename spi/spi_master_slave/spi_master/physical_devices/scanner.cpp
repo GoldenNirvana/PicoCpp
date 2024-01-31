@@ -182,14 +182,16 @@ void Scanner::LOOP_freeze_unfreeze(int port, int flg) // port virtual
 {
  flg == 1 ? io_ports[port - 1].enable() : io_ports[port - 1].disable();
 }
-void Scanner::freezeLOOP()    // заморозить ПИД
+void Scanner::freezeLOOP(uint16_t delay)    // заморозить ПИД
 {
   io3_0.enable(); //???
+  sleep_ms(delay);
 }
 
-void Scanner::unfreezeLOOP()  // разморозить ПИД
+void Scanner::unfreezeLOOP(uint16_t delay)  // разморозить ПИД
 {
   io3_0.disable();  //??
+  sleep_ms(delay);
 }
 
 bool Scanner::getHoppingFlg() //получить флаг установлен ли флаг сканирования прыжками
@@ -1889,7 +1891,9 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
              else  Zt=(Zt+mstep);
             }
             for(int16_t k=0; k < delay; k++) { }// задержка в каждом дискрете
-        //    Simple.cellWrite(M_scan_Z_offset, Zt); ///?????????????????????????
+//////////////////////////////////////////////
+            set_DACZ(1,Zt);  // 1 logical - physical - 0
+/////////////////////////////////////////////            
 	  }
 	  return(Zt);
 	}
@@ -1929,8 +1933,7 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
     debugdata.emplace_back(vector[j]);
   }
   sendStrData("debug AI_Z parameters",debugdata,100);
- // add  turn off   FB     false!!!!!!!!!
-  sleep_ms(300);
+ 
    if (!flgVirtual) 
    { 
     auto ptr = getValuesFromAdc();
@@ -1946,8 +1949,9 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
   SignalValue=0;
   int16_t k=0;
   vectorA_Z.clear();
-
- if(!flgVirtual)  freezeLOOP();
+////////////////////////////////////////
+ if(!flgVirtual)  freezeLOOP(200);
+ //////////////////////////////////////
   sleep_ms(200);      
  
  dacZ = ZMove( dacZ, (-ZStart), 1, MicrostepDelay );
@@ -1985,7 +1989,7 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
     if (imax<0) imax=-imax;
     if ((SignalValue<imax) && (i!=NPoints-1))
      {
-       dacZ = ZMove( dacZ, (ZStep), -1, MicrostepDelay);
+       dacZ = ZMove( dacZ, ZStep, -1, MicrostepDelay);
      }
      else break;
    };
@@ -1993,7 +1997,7 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
    {
     if ((SignalValue>Threshold) && (i!=NPoints-1))
     {
-       dacZ = ZMove( dacZ, (ZStep), -1, MicrostepDelay);
+       dacZ = ZMove( dacZ, ZStep, -1, MicrostepDelay);
     }
     else break;
    }
@@ -2037,10 +2041,11 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
   dacZ = ZMove( dacZ, dlt, -1, MicrostepDelay );
 
    sendStrData("code66",vectorA_Z,100);  
+ /////////////////////////////////////////  
  // разморозка состояния pid
-    if(!flgVirtual)   unfreezeLOOP();
-    sleep_ms(500);
- //
+    if(!flgVirtual)   unfreezeLOOP(500);
+    //sleep_ms(500);
+ //////////////////////////////////////////
     int16_t count = 0;
   while ((!TheadDone) || (count<20) )//ожидание ответа ПК для синхронизации
   {
@@ -2078,7 +2083,9 @@ void Scanner::spectroscopyIV(std::vector<int32_t> &vector)
     debugdata.emplace_back(vector[j]);
   }
   sendStrData("debug I_V parameters",debugdata,100);
- // add  turn off   FB     false!!!!!!!!!
+///////////////////////////////////////////////////  
+  if(!flgVirtual)  freezeLOOP(200);
+////////////////////////////////////////////////////
   sleep_ms(300);
  // установка начального значения напряжения
       int16_t kk;
@@ -2154,7 +2161,9 @@ void Scanner::spectroscopyIV(std::vector<int32_t> &vector)
     sleep_ms(10);
    if (!flgVirtual) set_Bias(1,UBackup);  
     sleep_ms(10);
-//  add  turn on  FB   !!!!!!!!!!!!!!!
+///////////////////////////////////////////////
+   if(!flgVirtual)  unfreezeLOOP(500);
+/////////////////////////////////////////////  
    int16_t count = 0;
   while ((!TheadDone) || (count<20) )//ожидание ответа ПК для синхронизации
   {
@@ -2236,6 +2245,7 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
   debugdata.emplace_back(buf_status[2]);
 */  
   sendStrData( "code75",buf_status,100,false);
+  // freeze LOOP
   while (true)
   {
     buf_status[0] = none;
@@ -2368,6 +2378,7 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
   sendStrData("code75",debugdata,100);
 */
   sendStrData( "code75",buf_status,100,false);
+  //unfreeze loop!!!!!!!!!!!!!!
   if (!flgVirtual)
   {
     protract();//вытянуть

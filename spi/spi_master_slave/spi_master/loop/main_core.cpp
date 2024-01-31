@@ -95,7 +95,7 @@ case FASTSCANNING:
 case SET_PID_GAIN:
               {
                 ALGCODE=ALGNONE;
-                 if (!flgVirtual)  set_io_value(vector[1], vector[2]);     
+                if (!flgVirtual)  set_io_value(vector[1], vector[2]);     
                 break; 
               }  
 case SET_AMPLMOD_GAIN: // усиление раскачка зонда 
@@ -107,13 +107,13 @@ case SET_AMPLMOD_GAIN: // усиление раскачка зонда
 case InitDAC_BIAS_SET_POINT:
               {
                 ALGCODE=ALGNONE;
-                 if (!flgVirtual)  init_DACSPB(vector[1]);       
+                if (!flgVirtual)  init_DACSPB(vector[1]);       
                 break;         
               }   
 case InitDAC_Z:
               {
                 ALGCODE=ALGNONE;
-                 if (!flgVirtual)  init_DACZ(vector[1]);       
+                if (!flgVirtual)  init_DACZ(vector[1]);       
                 break;         
               }   
 case InitDAC_XY:
@@ -213,12 +213,6 @@ default:      {/*activateError();*/  break;}
       continue;
     }
 
-    if (SET_AMPLMOD_GAIN) // усиление раскачка зонда 
-    {
-      SET_AMPLMOD_GAIN=false;
-      set_gain(vector[1]);
-      continue;
-    } 
   
  /// MAIN SPI 
  

@@ -1,3 +1,6 @@
-231229
-APPPROACH  - INT16_T->IINT32_T ?
-исправлена индикация Z при подводе
+//240131
+MicroController read data from PC to  vector<int32_t>
+loop() if -> switch
+some bool flags -> constants
+
+

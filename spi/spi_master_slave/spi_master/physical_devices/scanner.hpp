@@ -95,9 +95,9 @@ public:
  
   void LOOP_freeze_unfreeze(int port, int flg);  
  
-  void freezeLOOP();    // заморизить ПИД
+  void freezeLOOP(uint16_t delay);    // заморизить ПИД
 
-  void unfreezeLOOP();  // разморизить ПИД
+  void unfreezeLOOP(uint16_t delay);  // разморизить ПИД
 
   bool getHoppingFlg(); // получить флаг сканирования прыжками
  
