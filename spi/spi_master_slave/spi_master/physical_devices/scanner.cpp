@@ -2384,7 +2384,7 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
     protract();//вытянуть
     sleep_ms(INTDELAY);
   }
-   sendStrData("stopped");
+ //  sendStrData("stopped");
   int16_t count = 0;
   while ((!TheadDone) || (count<20) )//ожидание ответа ПК для синхронизации
   {
