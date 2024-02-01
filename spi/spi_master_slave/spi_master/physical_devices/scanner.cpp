@@ -2239,7 +2239,7 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
   buf_status.push_back(none);
   buf_status.push_back(ZValue);
   buf_status.push_back(SignalValue);
-/*
+/*    
   debugdata.emplace_back(buf_status[0]);
   debugdata.emplace_back(buf_status[1]);
   debugdata.emplace_back(buf_status[2]);
@@ -2247,7 +2247,8 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
   sendStrData( "code75",buf_status,100,false);
 
   while (true)
-  {
+  { 
+    sleep_ms(INTDELAY);
     buf_status[0] = none;
     if (STOP)
     {
@@ -2281,7 +2282,7 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
       }
       sendStrData("debug parameters update",debugdata,100);
     }
-     sleep_ms(INTDELAY);
+ 
     if (!flgVirtual)
     {
       auto ptr = getValuesFromAdc();
