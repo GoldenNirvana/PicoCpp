@@ -61,7 +61,7 @@ void DAC8563::initialize(int port)  //DAC
   } else if (mode == 2)
   {
     DAC_WR_REG(CMD_GAIN, DATA_GAIN_B1_A1);            // set multiplier TODO DAC 1 [-10..0]V
-               // set multiplier TODO DAC 1 [-10..0]V
+   // set multiplier TODO DAC 1 [-10..0]V
   }
   DAC_WR_REG(CMD_LDAC_DIS, DATA_LDAC_DIS);          // update the caches
 }
