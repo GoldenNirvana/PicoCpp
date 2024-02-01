@@ -146,7 +146,8 @@ case SET_SETPOINT:
                }
                break;
               }   
-case ADC_READ:{
+case ADC_READCmd:
+              {
                ALGCODE=ALGNONE;
                if (ADC_IS_READY_TO_READ)
                {
@@ -163,8 +164,9 @@ case GET_CURRENTX0Y0:
 case SCANNER_RETRACT_PROTRACT:
               {
                 ALGCODE=0;
-                scanner.scanner_retract_protract(vector[1],vector[2]);
-                // vector[2] == 1 ? io_ports[vector[1] - 1].enable() : io_ports[vector[1] - 1].disable();
+                scanner.scanner_retract_protract(vector[1],vector[2]); //int port=5 , int flg
+
+                // vector[2] == 1 ? io_ports[vector[1]].enable() : io_ports[vector[1]].disable();
                 break;
               } 
 case SPECTROSOPY_IV:

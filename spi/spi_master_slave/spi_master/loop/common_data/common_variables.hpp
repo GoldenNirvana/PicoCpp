@@ -8,7 +8,8 @@
 #include "../../physical_devices/scanner.hpp"
 #include "../../devices/DAC8563.hpp"
 
-#define ADC_READ                 12  //AD7606 timer
+#define ALGNONE                  0
+#define ADC_READCmd              12  //AD7606 timer
 #define VirtualCmd               14
 #define DebugLevelCmd            15
 #define GET_CURRENTX0Y0          18
@@ -42,7 +43,7 @@
 //#define ADC_GET_VALUE  ;
 //#define SCANNER_RETRACT
 //#define SCANNER_PROTRACT
-#define ALGNONE                  0
+
 
 extern int16_t ALGCODE;
 extern uint32_t DEBUG_LEVEL;
@@ -53,16 +54,11 @@ extern Scanner scanner;
 extern DAC8563 dac8563_1;  // DAC BIas,SetPoint
 extern DAC8563 dac8563_2;  // DAC X,Y
 extern DAC8563 dac8563_3;  // DAC Z
+
 extern std::string afc;
 extern uint16_t spiBuf[8];
 extern std::vector<int32_t> vector;
 extern int32_t vectorSize;
-
-//extern bool DAC8563_SET_VOLTAGE_1;
-//extern bool DAC8563_SET_VOLTAGE_2;
-//extern bool DAC8563_INIT_1;
-//extern bool DAC8563_INIT_2;
-
 
 extern bool AD9833_SENDER;
 extern bool AD8400_SENDER;
@@ -87,6 +83,7 @@ extern bool PID_TURN_ON;
 extern bool SCANNER_RETRACT;
 extern bool SCANNER_PROTRACT;
 extern bool ADC_IS_READY_TO_READ;
+// service flags
 extern bool TheadDone;   //need dor synchronization with PC 
 extern bool DrawDone;
 extern uint8_t ZPin;
@@ -114,8 +111,8 @@ extern OutputPort io1_1;
 extern OutputPort io2_0;
 extern OutputPort io2_1;
 extern OutputPort io2_2;
-extern OutputPort io3_0;
-extern OutputPort io3_1;
+extern OutputPort io3_0;  //заморозить ?
+extern OutputPort io3_1;  //втянуть вытянуть?
 extern std::vector<OutputPort> io_ports;
 
 #endif //PICO_EXAMPLES_COMMON_VARIABLES_HPP

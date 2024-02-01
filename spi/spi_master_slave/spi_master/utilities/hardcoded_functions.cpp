@@ -77,7 +77,7 @@ void set_Freq(uint32_t freq)
   int64_t scale = 1 << 28;
   int64_t n_reg = int64_t(freq * scale / 25.0e6);
   int64_t n_low = n_reg & 0x3fff;
-  int64_t n_hi = (n_reg >> 14) & 0x3fff;
+  int64_t n_hi  = (n_reg >> 14) & 0x3fff;
 
   uint8_t buf[6];
 

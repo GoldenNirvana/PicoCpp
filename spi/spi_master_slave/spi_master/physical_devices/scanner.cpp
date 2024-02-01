@@ -166,12 +166,12 @@ void Scanner::readADC()
 }
 void Scanner::scanner_retract_protract(int port, int flg)
  {
-  flg == 1 ? io_ports[port - 1].enable() : io_ports[port - 1].disable(); 
+  flg == 1 ? io_ports[port].enable() : io_ports[port].disable(); 
  } 
 
 void Scanner::retract() //втянуть
 {
-  io3_1.enable();
+  io3_1.enable();  //  6 элемент массива портов ???
 }
 
 void Scanner::protract() //вытянуть
@@ -180,11 +180,12 @@ void Scanner::protract() //вытянуть
 }
 void Scanner::LOOP_freeze_unfreeze(int port, int flg) // port virtual
 {
- flg == 1 ? io_ports[port - 1].enable() : io_ports[port - 1].disable();
+//flg == 1 ? io_ports[port - 1].enable() : io_ports[port - 1].disable();
+ flg == 1 ? io_ports[port].enable() : io_ports[port].disable();
 }
 void Scanner::freezeLOOP(uint16_t delay)    // заморозить ПИД
 {
-  io3_0.enable(); //???
+  io3_0.enable(); // 5 элемент массива портов ???
   sleep_ms(delay);
 }
 
