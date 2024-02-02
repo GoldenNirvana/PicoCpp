@@ -185,7 +185,7 @@ void set_SetPoint(int8_t channel, int32_t SetPoint)
    if (channel == 1)
    {
      dac8563_1.writeB(SetPoint);
-    }	
+   }	
   /* отладка
   afc.clear();
   afc = "debugSetPoint " + std::to_string(chanel) + ',' + std::to_string(SetPoint);
@@ -206,10 +206,12 @@ void set_GainApmlMod(int8_t port, uint8_t gain)
   spi_write_blocking(spi_default, intBuf, 1); 
   decoder.activePort(7);
 }
+
 void set_GainPID(int gain)
 {
    set_io_value(2, gain); 
 }
+
 void set_clock_enable()
 {
   uint8_t intBuf[1];

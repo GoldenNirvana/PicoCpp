@@ -106,13 +106,15 @@ extern OutputPort dec;
 extern OutputPort resetPort;
 extern OutputPort ledPort;
 extern OutputPort rdbLed;
-extern OutputPort io1_0;
+
+extern OutputPort io1_0;   //channel -pins
 extern OutputPort io1_1;
 extern OutputPort io2_0;
 extern OutputPort io2_1;
 extern OutputPort io2_2;
-extern OutputPort io3_0;  //заморозить ?
-extern OutputPort io3_1;  //втянуть вытянуть?
+extern OutputPort io3_0;  //заморозить-разморозить ?
+extern OutputPort io3_1;  //втянуть- вытянуть?
+
 extern std::vector<OutputPort> io_ports;
 
 #endif //PICO_EXAMPLES_COMMON_VARIABLES_HPP

@@ -164,7 +164,7 @@ void Scanner::readADC()
         sendStrData("code12",debugdata,100);
   }
 }
-void Scanner::scanner_retract_protract(int port, int flg)
+void Scanner::scanner_retract_protract(int port, int flg) // port  6
  {
   flg == 1 ? io_ports[port].enable() : io_ports[port].disable(); 
  } 
@@ -178,7 +178,7 @@ void Scanner::protract() //вытянуть
 {
   io3_1.disable();
 }
-void Scanner::LOOP_freeze_unfreeze(int port, int flg) // port virtual
+void Scanner::LOOP_freeze_unfreeze(int port, int flg) // port virtual 5
 {
 //flg == 1 ? io_ports[port - 1].enable() : io_ports[port - 1].disable();
  flg == 1 ? io_ports[port].enable() : io_ports[port].disable();
@@ -191,13 +191,12 @@ void Scanner::freezeLOOP(uint16_t delay)    // заморозить ПИД
 
 void Scanner::unfreezeLOOP(uint16_t delay)  // разморозить ПИД
 {
-  io3_0.disable();  //??
+  io3_0.disable();  // 5 элемент массива портов ???
   sleep_ms(delay);
 }
 
 bool Scanner::getHoppingFlg() //получить флаг установлен ли флаг сканирования прыжками
 {
-
   return (bool)conf_.flgHoping;
 }
 bool Scanner::getLinearFlg()
@@ -2240,15 +2239,16 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
   buf_status.push_back(none);
   buf_status.push_back(ZValue);
   buf_status.push_back(SignalValue);
-/*
+/*    
   debugdata.emplace_back(buf_status[0]);
   debugdata.emplace_back(buf_status[1]);
   debugdata.emplace_back(buf_status[2]);
 */  
   sendStrData( "code75",buf_status,100,false);
-  // freeze LOOP
+
   while (true)
-  {
+  { 
+    sleep_ms(INTDELAY);
     buf_status[0] = none;
     if (STOP)
     {
@@ -2282,7 +2282,7 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
       }
       sendStrData("debug parameters update",debugdata,100);
     }
-     sleep_ms(INTDELAY);
+ 
     if (!flgVirtual)
     {
       auto ptr = getValuesFromAdc();
@@ -2379,12 +2379,13 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
   sendStrData("code75",debugdata,100);
 */
   sendStrData( "code75",buf_status,100,false);
-  //unfreeze loop!!!!!!!!!!!!!!
+
   if (!flgVirtual)
   {
     protract();//вытянуть
     sleep_ms(INTDELAY);
   }
+ //  sendStrData("stopped");
   int16_t count = 0;
   while ((!TheadDone) || (count<20) )//ожидание ответа ПК для синхронизации
   {
