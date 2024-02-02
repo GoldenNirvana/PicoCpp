@@ -554,11 +554,11 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
   debugdata.emplace_back(pos_.x);
   debugdata.emplace_back(pos_.y);
 
-  sendStrData("debug scan lin parameters",debugdata,200);
+  sendStrData("debug scan lin parameters",debugdata,200);//200
 
- // sendStrData("debug linx ",data_LinX,200,false);
+  //sendStrData("debug linx ",data_LinX,100,false);
 
- // sendStrData("debug liny ",data_LinY,200,false);
+ // sendStrData("debug liny ",data_LinY,100,false);
 
   uint16_t stepsx;
   uint16_t stepsy;
