@@ -20,7 +20,7 @@ void Scanner::sendStrData(std::string const& header)
   afcc +="\n";
   std::cout << afcc;
   afcc.clear();
-  sleep_ms(100);
+ // sleep_ms(100);
 }
 
 void Scanner::sendStrData(std::string const& header, std::vector<int32_t> &data, const uint16_t delay)
@@ -38,7 +38,7 @@ void Scanner::sendStrData(std::string const& header, std::vector<int32_t> &data,
   std::cout << afcc;
   afcc.clear();
   data.clear();
-  sleep_ms(delay);
+//  sleep_ms(delay);
 }
 void Scanner::sendStrData(std::string const& header,std::vector<int16_t> &data, const uint16_t delay)
 {
@@ -54,7 +54,7 @@ void Scanner::sendStrData(std::string const& header,std::vector<int16_t> &data, 
   afcc +="\n";
   std::cout << afcc;
   afcc.clear();
-  sleep_ms(delay);
+ // sleep_ms(delay);
   data.clear();
 }
 
@@ -72,7 +72,7 @@ void Scanner::sendStrData(std::string const& header,std::vector<int16_t> &data, 
   afcc +="\n";
   std::cout << afcc;
   afcc.clear();
-  sleep_ms(delay);
+ // sleep_ms(delay);
   if (flg) data.clear();
 }
 void Scanner::sendStrData(std::string const& header,std::vector<uint16_t> &data, const uint16_t delay)
@@ -89,7 +89,7 @@ void Scanner::sendStrData(std::string const& header,std::vector<uint16_t> &data,
   afcc +="\n";
   std::cout << afcc;
   afcc.clear();
-  sleep_ms(delay);
+///  sleep_ms(delay);
   data.clear();
 }
 void Scanner::sendStrData(std::string const& header,std::vector<uint16_t> &data, const uint16_t delay, const bool flg)
@@ -106,7 +106,7 @@ void Scanner::sendStrData(std::string const& header,std::vector<uint16_t> &data,
   afcc +="\n";
   std::cout << afcc;
   afcc.clear();
-  sleep_ms(delay);
+ // sleep_ms(delay);
   if (flg) data.clear();
 }
 void Scanner::readDATALin()
@@ -555,9 +555,9 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
 
   sendStrData("debug scan lin parameters",debugdata,200);//200
 
-  //sendStrData("debug linx ",data_LinX,100,false);
+  sendStrData("debug linx ",data_LinX,100,false);
 
- // sendStrData("debug liny ",data_LinY,100,false);
+  sendStrData("debug liny ",data_LinY,100,false);
 
   uint16_t stepsx;
   uint16_t stepsy;
@@ -1056,7 +1056,7 @@ void Scanner::start_hopingscan(std::vector<int32_t> &vector)
     if (STOP)  // stop
     {
       STOP = false;
-      sleep_ms(100);
+     // sleep_ms(100); //24/02/02
       sendStrData("stopped");
       break;
     }
@@ -1349,7 +1349,7 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
     if (STOP)  // stop
     {
       STOP = false;
-      sleep_ms(100);
+ //     sleep_ms(100);  //24/02/02
       sendStrData("stopped");
       break;
     }
@@ -1598,6 +1598,7 @@ void Scanner::start_fastscan(std::vector<int32_t> &vector)
         }
       }
     } //i
+    sendStrData("debug end fastscan");
     sendStrData("code56",vector_data,100);
     stop_scan();  //возврат в начальную точку скана
     if (conf_.flgOneFrame == 1) { STOP = true; };
@@ -1859,7 +1860,7 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
    debugdata.emplace_back(ZValue);
    debugdata.emplace_back(SignalValue);
    sendStrData("code"+ std::to_string(lid_name) ,debugdata,100);
-   sleep_ms(100); 
+ //  sleep_ms(100); //24/02/02
    sendStrData("stopped");
    int16_t count = 0;
   while ((!TheadDone) || (count<20) )//ожидание ответа ПК для синхронизации
@@ -2239,11 +2240,7 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
   buf_status.push_back(none);
   buf_status.push_back(ZValue);
   buf_status.push_back(SignalValue);
-/*    
-  debugdata.emplace_back(buf_status[0]);
-  debugdata.emplace_back(buf_status[1]);
-  debugdata.emplace_back(buf_status[2]);
-*/  
+
   sendStrData( "code75",buf_status,100,false);
 
   while (true)
@@ -2257,7 +2254,7 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
       buf_status[1] = ZValue;
       buf_status[2] = SignalValue;
       sendStrData("stopped");
-      sleep_ms(200);
+    //  sleep_ms(200); //24/02/02
       break;
     }
     if (CONFIG_UPDATE)
@@ -2357,12 +2354,6 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
     {
 
     }
-    /*
-    debugdata.emplace_back(buf_status[0]);
-    debugdata.emplace_back(buf_status[1]);
-    debugdata.emplace_back(buf_status[2]);
-    sendStrData("code75",debugdata,100);
-    */
     sendStrData( "code75",buf_status,100,false);
     if (!flgVirtual)
     {
@@ -2372,14 +2363,7 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
       protract(); //вытянуть
     }
   }
-  /*
-  debugdata.emplace_back(buf_status[0]);
-  debugdata.emplace_back(buf_status[1]);
-  debugdata.emplace_back(buf_status[2]);
-  sendStrData("code75",debugdata,100);
-*/
   sendStrData( "code75",buf_status,100,false);
-
   if (!flgVirtual)
   {
     protract();//вытянуть
