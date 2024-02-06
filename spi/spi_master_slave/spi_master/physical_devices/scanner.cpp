@@ -2151,23 +2151,32 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
   const int touch = 2;
   const int stopdone = 1;
   uint16_t ZMaxValue = 32767;
+ /*
   int16_t  SET_POINT, GATE_Z_MAX, GATE_Z_MIN;
   int32_t  freq, scv;//
   int16_t  GAIN, NSTEPS;
   int16_t INTDELAY, SCANNERDECAY;
   int16_t  flgDev;
   int16_t  Bias;
- 
+*/
+
+  int16_t SET_POINT;
+  int16_t GATE_Z_MAX, GATE_Z_MIN;
+  int16_t  freq, scv;//
+  int16_t  GAIN, NSTEPS;
+  uint16_t INTDELAY, SCANNERDECAY;
+  uint8_t  flgDev;
+  int32_t  Bias;
   // SET VALUE FROM RX_CORE
   SET_POINT      =(int16_t) vector[1]; // set point
   GATE_Z_MAX     =(int16_t) vector[2]; // max
   GATE_Z_MIN     =(int16_t) vector[3]; // min
   NSTEPS         =(int16_t) vector[4]; // steps 
-  INTDELAY       =(int16_t) vector[5]; // initdelay
-  GAIN           =(int16_t) vector[6]; // gain
-  SCANNERDECAY   =(int16_t) vector[7]; // scannerDelay 
-  freq           = vector[8]; // freq
-  scv            = vector[9]; // scv
+  INTDELAY       =(uint16_t) vector[5]; // initdelay
+  GAIN           =(int16_t)  vector[6]; // gain
+  SCANNERDECAY   =(uint16_t) vector[7]; // scannerDelay 
+  freq           = (int16_t)vector[8]; // freq
+  scv            = (int16_t)vector[9]; // scv
   flgDev         = (int16_t)vector[10];//  0= SFM, 1=STM ;SICMAC-2; SICMDC-3;  device type
   Bias           = (int16_t)vector[11];// Voltage need for STM,SICM
  //need to add channel Bias ????
