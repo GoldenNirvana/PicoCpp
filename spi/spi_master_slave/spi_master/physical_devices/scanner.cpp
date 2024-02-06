@@ -2027,7 +2027,7 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
 void Scanner::spectroscopyIV(std::vector<int32_t> &vector)
 {
     int i,j;
-		int32_t  UBackup;
+		int16_t  UBackup;
     int16_t  delay;
     int16_t  UPoints;
     int16_t  UCurves;
@@ -2045,7 +2045,7 @@ void Scanner::spectroscopyIV(std::vector<int32_t> &vector)
 		UStep		        =           vector[4]; // V шаг 
   	delay           = (int16_t) vector[5]; // задержка в точке измерения
     flgDev          = (int8_t)  vector[6]; // прибор
-    UBackup         =           vector[7]; // V текущее значение напряжения 
+    UBackup         = (int16_t) vector[7]; // V текущее значение напряжения 
 //start
  for (int j = 0; j <= 6; ++j)
   {
@@ -2151,36 +2151,36 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
   const int touch = 2;
   const int stopdone = 1;
   uint16_t ZMaxValue = 32767;
-  uint16_t SET_POINT, GATE_Z_MAX, GATE_Z_MIN;
-  int16_t  freq, scv;//
+  int16_t  SET_POINT, GATE_Z_MAX, GATE_Z_MIN;
+  int32_t  freq, scv;//
   int16_t  GAIN, NSTEPS;
-  uint16_t INTDELAY, SCANNERDECAY;
-  uint8_t  flgDev;
-  int32_t  Bias;
+  int16_t INTDELAY, SCANNERDECAY;
+  int16_t  flgDev;
+  int16_t  Bias;
  
   // SET VALUE FROM RX_CORE
-  SET_POINT      = vector[1]; // set point
-  GATE_Z_MAX     = vector[2]; // max
-  GATE_Z_MIN     = vector[3]; // min
-  NSTEPS         = vector[4]; // steps 
-  INTDELAY       = vector[5]; // initdelay
-  GAIN           = vector[6]; // gain
-  SCANNERDECAY   = vector[7]; // scannerDelay 
+  SET_POINT      =(int16_t) vector[1]; // set point
+  GATE_Z_MAX     =(int16_t) vector[2]; // max
+  GATE_Z_MIN     =(int16_t) vector[3]; // min
+  NSTEPS         =(int16_t) vector[4]; // steps 
+  INTDELAY       =(int16_t) vector[5]; // initdelay
+  GAIN           =(int16_t) vector[6]; // gain
+  SCANNERDECAY   =(int16_t) vector[7]; // scannerDelay 
   freq           = vector[8]; // freq
   scv            = vector[9]; // scv
-  flgDev         = (uint8_t)vector[10];//  0= SFM, 1=STM ;SICMAC-2; SICMDC-3;  device type
-  Bias           = vector[11];// Voltage need for STM,SICM
+  flgDev         = (int16_t)vector[10];//  0= SFM, 1=STM ;SICMAC-2; SICMDC-3;  device type
+  Bias           = (int16_t)vector[11];// Voltage need for STM,SICM
  //need to add channel Bias ????
  //need to add channel SetPoint ????
 
-  for (size_t j = 0; j < 9; j++)     // send info
+  for (size_t j = 0; j < 12; j++)     // send info
   {
     debugdata.emplace_back(vector[j]);
   } 
-  debugdata.emplace_back(AmplPin);
-  debugdata.emplace_back(ZPin);
+  //debugdata.emplace_back(AmplPin);
+  //debugdata.emplace_back(ZPin);
 
-  sendStrData( "debug approach parameters 1 ",debugdata,100,true);
+  sendStrData( "debug approach parameters 1 ",debugdata,300,true);
 
   set_SetPoint(0,SET_POINT); 
   if (flgDev!=0) set_Bias(1,Bias);  
@@ -2246,7 +2246,7 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
       {
         debugdata.emplace_back(vector[j]);
       }
-      sendStrData("debug parameters update",debugdata,100,true);
+      sendStrData("debug parameters update",debugdata,200,true);
     }
  
     if (!flgVirtual)
