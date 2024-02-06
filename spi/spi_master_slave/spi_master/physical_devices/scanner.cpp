@@ -2037,6 +2037,7 @@ void Scanner::spectroscopyIV(std::vector<int32_t> &vector)
     int32_t  dacU;
     int32_t  start_step;
     int32_t  step;
+   // int32_t  ShiftDAC=32767;
 
     UPoints         = (int16_t) vector[1]; // n точек
     UCurves         = (int16_t) vector[2]; // m кривых
@@ -2059,7 +2060,8 @@ void Scanner::spectroscopyIV(std::vector<int32_t> &vector)
       int16_t kk;
       int32_t dlt;
       start_step=100;
-      dacU=UBackup;
+      dacU=UBackup;//+ShiftDAC; //240206
+      UStart=UStart;//+ShiftDAC;
       step=-start_step;
      int16_t nstep;
      int16_t rest;
@@ -2127,7 +2129,7 @@ void Scanner::spectroscopyIV(std::vector<int32_t> &vector)
     dacU+=rest;
    if (!flgVirtual) set_Bias(1,dacU);  
     sleep_ms(10);
-   if (!flgVirtual) set_Bias(1,UBackup);  
+   if (!flgVirtual) set_Bias(1,UBackup);  //240206
     sleep_ms(10);
 ///////////////////////////////////////////////
    if(!flgVirtual)  unfreezeLOOP(500);
