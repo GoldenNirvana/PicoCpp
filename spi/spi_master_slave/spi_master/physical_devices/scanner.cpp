@@ -522,9 +522,9 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
 
   sendStrData("debug scan lin parameters",debugdata,200,true);//200
 
-  sendStrData("debug linx ",data_LinX,100,false);
+  //sendStrData("debug linx ",data_LinX,100,false);
 
-  sendStrData("debug liny ",data_LinY,100,false);
+  //sendStrData("debug liny ",data_LinY,100,false);
 
   uint16_t stepsx;
   uint16_t stepsy;
@@ -1672,7 +1672,8 @@ void Scanner::move_to(const Point &point, uint16_t delay)
       set_DACXY(2, --pos_.y);
       sleep_us(delay);
     }
-  } else
+  }
+  else
   {
     pos_.x = point.x;
     pos_.y = point.y;
@@ -1715,7 +1716,7 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
       GATE_Z_MIN=vector[7]; //  int Z gate min
    //   pos_data[7] / //  0= SFM, 1=STM ;SICMAC-2; SICMDC-3;  device type
   //    pos_data[8]/ //  Voltage
-   for (int j = 0; j <= 6; ++j)
+   for (int j = 0; j <= 7; ++j)
    {
      debugdata.emplace_back(vector[j]);
     }
@@ -1827,7 +1828,6 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
    debugdata.emplace_back(ZValue);
    debugdata.emplace_back(SignalValue);
    sendStrData("code"+ std::to_string(lid_name) ,debugdata,100,true);
- //  sleep_ms(100); //24/02/02
    sendStrData("stopped");
    int16_t count = 0;
   while ((!TheadDone) || (count<20) )//ожидание ответа ПК для синхронизации
@@ -1980,7 +1980,7 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
    if (!flgVirtual)
    {
       auto ptr = getValuesFromAdc();
-        switch (flgModa)
+      switch (flgModa)
     {
      case SFM:    { SignalValue=(int16_t)ptr[AmplPin]; break;}  
      case STM: 
@@ -2037,7 +2037,6 @@ void Scanner::spectroscopyIV(std::vector<int32_t> &vector)
     int32_t  dacU;
     int32_t  start_step;
     int32_t  step;
-   // int32_t  ShiftDAC=32767;
 
     UPoints         = (int16_t) vector[1]; // n точек
     UCurves         = (int16_t) vector[2]; // m кривых
@@ -2059,12 +2058,13 @@ void Scanner::spectroscopyIV(std::vector<int32_t> &vector)
  // установка начального значения напряжения
       int16_t kk;
       int32_t dlt;
+      int16_t nstep;
+      int16_t rest;    
       start_step=100;
       dacU=UBackup;//+ShiftDAC; //240206
       UStart=UStart;//+ShiftDAC;
       step=-start_step;
-     int16_t nstep;
-     int16_t rest;
+
 //  снятие ВАХ
  for (j=0; j<UCurves; j++)
  {
@@ -2087,7 +2087,6 @@ void Scanner::spectroscopyIV(std::vector<int32_t> &vector)
        dacU+=rest;
       if (!flgVirtual)set_Bias(1,dacU);         
       sleep_ms(10);  
-  
       for(i=0; i<UPoints; i++)
       {
        if (!flgVirtual) {set_Bias(1,dacU); }
@@ -2113,23 +2112,23 @@ void Scanner::spectroscopyIV(std::vector<int32_t> &vector)
      dacU-=UStep;
      step=-start_step;
      dlt=(dacU-UBackup);
-     if (dlt<0)
-     {
-        step=start_step;
-	      dlt=-dlt;
-     }     
+   if (dlt<0)
+   {
+     step=start_step;
+	   dlt=-dlt;
+   }     
   rest=dlt%start_step ;
   nstep=dlt/start_step;
- for (kk=0; kk<nstep; kk++)
- {
+  for (kk=0; kk<nstep; kk++)
+  {
    if (!flgVirtual) set_Bias(1,dacU);  
    sleep_ms(10);
    dacU+=step;
- }
+  }
     dacU+=rest;
-   if (!flgVirtual) set_Bias(1,dacU);  
+  if (!flgVirtual) set_Bias(1,dacU);  
     sleep_ms(10);
-   if (!flgVirtual) set_Bias(1,UBackup);  //240206
+  if (!flgVirtual) set_Bias(1,UBackup);  //240206
     sleep_ms(10);
 ///////////////////////////////////////////////
    if(!flgVirtual)  unfreezeLOOP(500);
@@ -2151,34 +2150,26 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
   const int touch = 2;
   const int stopdone = 1;
   uint16_t ZMaxValue = 32767;
- /*
-  int16_t  SET_POINT, GATE_Z_MAX, GATE_Z_MIN;
-  int32_t  freq, scv;//
-  int16_t  GAIN, NSTEPS;
-  int16_t INTDELAY, SCANNERDECAY;
-  int16_t  flgDev;
-  int16_t  Bias;
-*/
 
-  int16_t SET_POINT;
-  int16_t GATE_Z_MAX, GATE_Z_MIN;
+  int16_t  SET_POINT;
+  int16_t  GATE_Z_MAX, GATE_Z_MIN;
   int16_t  freq, scv;//
   int16_t  GAIN, NSTEPS;
   uint16_t INTDELAY, SCANNERDECAY;
-  uint8_t  flgDev;
+  int16_t  flgDev;
   int32_t  Bias;
   // SET VALUE FROM RX_CORE
   SET_POINT      =(int16_t) vector[1]; // set point
   GATE_Z_MAX     =(int16_t) vector[2]; // max
   GATE_Z_MIN     =(int16_t) vector[3]; // min
   NSTEPS         =(int16_t) vector[4]; // steps 
-  INTDELAY       =(uint16_t) vector[5]; // initdelay
-  GAIN           =(int16_t)  vector[6]; // gain
-  SCANNERDECAY   =(uint16_t) vector[7]; // scannerDelay 
-  freq           = (int16_t)vector[8]; // freq
-  scv            = (int16_t)vector[9]; // scv
-  flgDev         = (int16_t)vector[10];//  0= SFM, 1=STM ;SICMAC-2; SICMDC-3;  device type
-  Bias           = (int16_t)vector[11];// Voltage need for STM,SICM
+  INTDELAY       =(uint16_t)vector[5]; // initdelay
+  GAIN           =(int16_t) vector[6]; // gain
+  SCANNERDECAY   =(uint16_t)vector[7]; // scannerDelay 
+  freq           =(int16_t) vector[8]; // freq
+  scv            =(int16_t) vector[9]; // scv
+  flgDev         =(int16_t) vector[10];//  0= SFM, 1=STM ;SICMAC-2; SICMDC-3;  device type
+  Bias           =(int16_t) vector[11];// Voltage need for STM,SICM
  //need to add channel Bias ????
  //need to add channel SetPoint ????
 
@@ -2186,11 +2177,7 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
   {
     debugdata.emplace_back(vector[j]);
   } 
-  //debugdata.emplace_back(AmplPin);
-  //debugdata.emplace_back(ZPin);
-
   sendStrData( "debug approach parameters 1 ",debugdata,100,true);
-
   set_SetPoint(0,SET_POINT); 
   if (flgDev!=0) set_Bias(1,Bias);  
   set_GainPID(GAIN);
@@ -2324,8 +2311,7 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
           }
           sleep_ms(10);
         }
-        if (buf_status[0] == 3)
-        { break; }
+        if (buf_status[0] == 3)  { break; }
       }
     } //NSTEPS>0
     if (NSTEPS < 0)
@@ -2400,7 +2386,6 @@ void Scanner::start_frqscan()
     inBuf[1] += inBuf[2];
   }
   sendStrData("code25",data,100,true);
-  //data.clear();
   current_channel = -1;
   int16_t count = 0;
   while ((!TheadDone) || (count<20) )//ожидание ответа ПК для синхронизации
