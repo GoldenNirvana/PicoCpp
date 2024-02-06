@@ -2173,14 +2173,14 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
  //need to add channel Bias ????
  //need to add channel SetPoint ????
 
-  for (size_t j = 0; j < 9; j++)     // send info
+  for (size_t j = 0; j < 11; j++)     // send info
   {
     debugdata.emplace_back(vector[j]);
   } 
-  debugdata.emplace_back(AmplPin);
-  debugdata.emplace_back(ZPin);
+ // debugdata.emplace_back(AmplPin);
+ // debugdata.emplace_back(ZPin);
 
-  sendStrData( "debug approach parameters 1 ",debugdata,100,true);
+  sendStrData( "debug approach parameters 1 ",debugdata,200,true);
 
   set_SetPoint(0,SET_POINT); 
   if (flgDev!=0) set_Bias(1,Bias);  
