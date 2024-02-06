@@ -47,6 +47,8 @@ bool    flgUseUART = false;     // использовать UART для пере
 int16_t ZValue      = 32767;
 int16_t SignalValue = 32767;
 int16_t ZMaxValue   = 32767;
+int16_t ShiftDac    = 32767;
+
 
 uint8_t ZPin    = 0; // Z
 uint8_t AmplPin = 1; // амплитуда

@@ -158,33 +158,33 @@ void set_Bias(int8_t channel,int32_t Bias)
 //   code  22 , 2, 8, 0, 1, 1, value 
     if (channel == 0)
       {
-        dac8563_1.writeA(Bias);
+        dac8563_1.writeA(Bias+ShiftDac);
       }
       else 
       if (channel == 1)
       {
-        dac8563_1.writeB(Bias);
+        dac8563_1.writeB(Bias+ShiftDac);
       }	
- /*  отладка
-   afc.clear();
-  afc = "debug Bias " + std::to_string(chanel) + ',' + std::to_string(Bias);
+ //  отладка
+  /* afc.clear();
+  afc = "debug Bias " + std::to_string(channel) + ',' + std::to_string(Bias);
   afc += +"\n";
   std::cout << afc;
   afc.clear();
   sleep_ms(100);
-  */
+ */
 }
 
 void set_SetPoint(int8_t channel, int32_t SetPoint)
 {//  code  22, 2, 8, 0, 1, 0, value
    if (channel == 0)
    {
-     dac8563_1.writeA(SetPoint);
+     dac8563_1.writeA(SetPoint+ShiftDac);
    }
    else 
    if (channel == 1)
    {
-     dac8563_1.writeB(SetPoint);
+     dac8563_1.writeB(SetPoint+ShiftDac);
    }	
   /* отладка
   afc.clear();
@@ -233,8 +233,8 @@ void set_DACZ(uint8_t channel,uint16_t value)
 {
   dac8563_3.setSpiProps();
   channel--; //???
-  if (channel == 0)  dac8563_3.writeA(value);
-  if (channel == 1)  dac8563_3.writeB(value);
+  if (channel == 0)  dac8563_3.writeA(value+ShiftDac);
+  if (channel == 1)  dac8563_3.writeB(value+ShiftDac);
 }
 
 void stopAll()
