@@ -140,6 +140,11 @@ void Scanner::retract() //втянуть
 {
   io3_1.enable();  //  6 элемент массива портов ???
 }
+void Scanner::retract(uint16_t HeightJump) //втянуть на H
+{
+ freezeLOOP(100);
+ set_DACZ(0,HeightJump); 
+}
 
 void Scanner::protract() //вытянуть
 {
@@ -214,8 +219,8 @@ struct Config
   uint16_t reststepy;
   uint16_t nfastline, nslowline;
   uint16_t stepsslowline, stepsfastline;
-  uint8_t  portx = 1;
-  uint8_t  porty = 2;
+  uint8_t  portx =0;// 1;
+  uint8_t  porty =1;// 2;
   uint8_t  portfast;
   uint8_t  portslow;
   uint16_t pos_fast;
@@ -534,8 +539,8 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
   uint16_t reststepy;
   uint16_t nfastline, nslowline;
   uint16_t stepsslowline, stepsfastline;
-  uint8_t  portx = 1;
-  uint8_t  porty = 2;
+  uint8_t  portx = 0;//1;
+  uint8_t  porty = 1;//2;
   uint8_t  portfast;
   uint8_t  portslow;
   uint16_t pos_fast;
@@ -810,7 +815,7 @@ void Scanner::start_hopingscan(std::vector<int32_t> &vector)
   const int8_t oneline=11;
   prev_point = pos_; //запоминание начальной точки скана
   vector_data.clear();
-  for (int j = 1; j <= 15; ++j)
+  for (int j = 1; j <= 18; ++j)
   {
     debugdata.emplace_back(vector[j]);
   }
@@ -823,12 +828,16 @@ void Scanner::start_hopingscan(std::vector<int32_t> &vector)
   uint16_t reststepy;
   uint16_t nfastline, nslowline;
   uint16_t stepsslowline, stepsfastline;
-  uint8_t  portx = 1;
-  uint8_t  porty = 2;
+  uint8_t  portx =0;// 1;
+  uint8_t  porty =1;// 2;
   uint8_t  portfast;
   uint8_t  portslow;
   uint16_t pos_fast;
   uint16_t pos_slow;
+  uint16_t ZJump;
+  bool  flgMaxJump;
+  
+  flgMaxJump=(conf_.HopeZ==0);
 
   switch (conf_.path)
   {
@@ -882,7 +891,8 @@ void Scanner::start_hopingscan(std::vector<int32_t> &vector)
     {
       if (!flgVirtual)
       {
-         retract();
+        if (flgMaxJump)  retract();
+        else retract(ZJump) ;
       }   
       sleep_us(50);
       for (uint32_t k = 0; k < stepsfastline; ++k) 
@@ -952,7 +962,8 @@ void Scanner::start_hopingscan(std::vector<int32_t> &vector)
     }
      if (!flgVirtual)
      {
-         retract();
+        if (flgMaxJump)  retract();
+        else retract(ZJump) ;
      } 
     sleep_us(50);
     if (!flgVirtual)
@@ -984,13 +995,15 @@ void Scanner::start_hopingscan(std::vector<int32_t> &vector)
 
     if (CONFIG_UPDATE)
     {
-      CONFIG_UPDATE = false;
-      conf_.delayF = vector[1];
-      conf_.delayB = vector[2];
+      CONFIG_UPDATE   = false;
+      conf_.delayF    = vector[1];
+      conf_.delayB    = vector[2];
       set_GainPID(vector[3]);
       conf_.HopeDelay = vector[4];
+      conf_.HopeZ     = vector[5];
+      flgMaxJump=(conf_.HopeZ==0);
       sleep_ms(100);   
-      for (int j = 1; j <= 4; ++j)
+      for (int j = 1; j <= 5; ++j)
       {
         debugdata.emplace_back(vector[j]);
       }
@@ -1093,7 +1106,7 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
   const int8_t oneline=11;
   prev_point = pos_; //запоминание начальной точки скана
   vector_data.clear();
-  for (int j = 1; j <= 15; ++j)
+  for (int j = 1; j <= 18; ++j)
   {
     debugdata.emplace_back(vector[j]);
   }
@@ -1106,13 +1119,15 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
   uint16_t reststepy;
   uint16_t nfastline, nslowline;
   uint16_t stepsslowline, stepsfastline;
-  uint8_t  portx = 1;
-  uint8_t  porty = 2;
+  uint8_t  portx = 0;// 1;
+  uint8_t  porty = 1;// 2;
   uint8_t  portfast;
   uint8_t  portslow;
   uint16_t pos_fast;
   uint16_t pos_slow;
-
+  uint16_t ZJump;
+  bool  flgMaxJump;
+  flgMaxJump=(conf_.HopeZ==0);
   stepsx = (uint16_t) conf_.betweenPoints_x / conf_.diskretinstep;
   stepsy = (uint16_t) conf_.betweenPoints_y / conf_.diskretinstep;
   reststepx = conf_.betweenPoints_x % conf_.diskretinstep;
@@ -1174,7 +1189,8 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
      }
       if (!flgVirtual)
       {
-        retract();
+        if (flgMaxJump)  retract();
+        else retract(ZJump) ;
       }   
       sleep_us(50);
       for (uint32_t k = 0; k < stepsfastline; ++k) 
@@ -1244,7 +1260,8 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
     }
      if (!flgVirtual)
      {
-         retract();
+        if (flgMaxJump)  retract();
+        else retract(ZJump) ;
      } 
     sleep_us(50);
 // move back
@@ -1301,13 +1318,15 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
 
     if (CONFIG_UPDATE)
     {
-      CONFIG_UPDATE = false;
-      conf_.delayF = vector[1];
-      conf_.delayB = vector[2];
+      CONFIG_UPDATE   = false;
+      conf_.delayF    = vector[1];
+      conf_.delayB    = vector[2];
       set_GainPID(vector[3]);
       conf_.HopeDelay = vector[4];
+      conf_.HopeZ     = vector[5];
+      flgMaxJump=(conf_.HopeZ==0);
       sleep_ms(100);   
-      for (int j = 1; j <= 4; ++j)
+      for (int j = 1; j <= 5; ++j)
       {
         debugdata.emplace_back(vector[j]);
       }
@@ -1436,8 +1455,8 @@ void Scanner::start_fastscan(std::vector<int32_t> &vector)
   uint16_t reststepy;
   uint16_t nfastline, nslowline;
   uint16_t stepslowline, stepfastline;
-  uint8_t  portx = 1;
-  uint8_t  porty = 2;
+  uint8_t  portx = 0;//1;
+  uint8_t  porty = 1;//2;
   uint8_t  portfast;
   uint8_t  portslow;
   uint16_t pos_fast;
@@ -1685,10 +1704,10 @@ void Scanner::LID_move_toZ0(int lid_name, int f, int p, int n, int dir)  //от�
 {
  if (!flgVirtual)
  {
-  scanner.retract();  //втянуть сканер
+  retract();  //втянуть сканер
   sleep_ms(50);
   if (!flgVirtual) linearDriver.activate(lid_name, f, p, std::abs(n), dir);
-  scanner.protract();  //вытянуть сканер
+  protract();  //вытянуть сканер
  } 
   sleep_ms(1000);
   debugdata.emplace_back(n);
@@ -1860,7 +1879,7 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
             }
             for(int16_t k=0; k < delay; k++) { }// задержка в каждом дискрете
 //////////////////////////////////////////////
-        if (!flgVirtual)    set_DACZ(1,Zt);  // 1 logical - physical - 0
+        if (!flgVirtual)    set_DACZ(0,Zt);  // - physical - 0
 /////////////////////////////////////////////            
 	  }
 	  return(Zt);

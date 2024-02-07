@@ -24,6 +24,8 @@ struct Config
   uint8_t  flgOneFrame;      // быстрое сканирование один кадр=1            15
   uint8_t  flgHoping;        // сканирование прыжками                       16
   uint16_t HopeDelay;        // задержка в точке измерения при прыжках      17
+  uint16_t HopeZ;            // прыжок по Z,если=0,то прыжок по максимуму   18
+
 };
 
 
@@ -87,6 +89,8 @@ public:
   void scanner_retract_protract(int port, int flg);
   
   void retract();       // втянуть сканер
+
+  void retract(uint16_t HeightJump); //втянуть на H
 
   void protract();      // втянуть сканер
  

@@ -228,14 +228,14 @@ void set_DACXY(uint8_t channel, uint16_t value)
   dac8563_2.setSpiProps();
 //  AD56X4Class::setChannel(AD56X4_SETMODE_INPUT, channel, value);
 //  AD56X4Class::updateChannel(channel);
-  channel--; //???
+ // channel--; //???
   if (channel == 0)  dac8563_2.writeA(value);
   if (channel == 1)  dac8563_2.writeB(value);
 }
 void set_DACZ(uint8_t channel,uint16_t value) 
 {
   dac8563_3.setSpiProps();
-  channel--; //???
+// channel--; //???
   if (channel == 0)  dac8563_3.writeA(value+ShiftDac);
   if (channel == 1)  dac8563_3.writeB(value+ShiftDac);
 }

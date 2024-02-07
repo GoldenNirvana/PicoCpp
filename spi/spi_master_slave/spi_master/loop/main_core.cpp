@@ -66,7 +66,7 @@ case SCANNING:
                              static_cast<uint16_t>(vector[11]),static_cast<uint16_t>(vector[12]),
                              static_cast<uint8_t>(vector[13]), static_cast<int16_t>(vector[14]),  //add 240122            
                              static_cast<uint8_t>(vector[15]), static_cast<uint8_t>(vector[16]),
-                             static_cast<uint16_t>(vector[17])
+                             static_cast<uint16_t>(vector[17]),static_cast<uint16_t>(vector[18])
                            });
                 if (!scanner.getHoppingFlg())  {
                                                  if (!scanner.getLinearFlg()) {scanner.start_scan(vector);   }
