@@ -156,7 +156,8 @@ void move_scannerY(int y)
 void set_Bias(int8_t channel,int32_t Bias)
 {
 //   code  22 , 2, 8, 0, 1, 1, value 
-    if (channel == 0)
+  if (!flgVirtual)
+  {  if (channel == 0)
       {
         dac8563_1.writeA(Bias+ShiftDac);
       }
@@ -165,19 +166,21 @@ void set_Bias(int8_t channel,int32_t Bias)
       {
         dac8563_1.writeB(Bias+ShiftDac);
       }	
+  }   
  //  отладка
-  /* afc.clear();
+  afc.clear();
   afc = "debug Bias " + std::to_string(channel) + ',' + std::to_string(Bias);
   afc += +"\n";
   std::cout << afc;
   afc.clear();
   sleep_ms(100);
- */
 }
 
 void set_SetPoint(int8_t channel, int32_t SetPoint)
 {//  code  22, 2, 8, 0, 1, 0, value
-   if (channel == 0)
+  if (!flgVirtual)
+  {
+    if (channel == 0)
    {
      dac8563_1.writeA(SetPoint+ShiftDac);
    }
@@ -186,14 +189,14 @@ void set_SetPoint(int8_t channel, int32_t SetPoint)
    {
      dac8563_1.writeB(SetPoint+ShiftDac);
    }	
-  /* отладка
+  } 
+  //* отладка
   afc.clear();
-  afc = "debugSetPoint " + std::to_string(chanel) + ',' + std::to_string(SetPoint);
+  afc = "debugSetPoint " + std::to_string(channel) + ',' + std::to_string(SetPoint);
   afc += +"\n";
   std::cout << afc;
   afc.clear();
   sleep_ms(100);
-  */
 }
 void set_GainApmlMod(int8_t port, uint8_t gain)
 {
