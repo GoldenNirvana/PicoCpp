@@ -189,13 +189,14 @@ void set_SetPoint(int8_t channel, int32_t SetPoint)
    {
      dac8563_1.writeB(SetPoint+ShiftDac);
    }	
-  /* отладка
+  } 
+  // отладка
   afc.clear();
-  afc = "debugSetPoint " + std::to_string(chanel) + ',' + std::to_string(SetPoint);
+  afc = "debugSetPoint " + std::to_string(channel) + ',' + std::to_string(SetPoint);
   afc += +"\n";
   std::cout << afc;
   afc.clear();
-  sleep_ms(100);
+  sleep_ms(100); 
 }
 void set_GainApmlMod(int8_t port, uint8_t gain)
 {
@@ -255,8 +256,8 @@ uint16_t *getValuesFromAdc()
   }
   return spiBuf;
 }
-*/
 
+*/
 uint16_t *getValuesFromAdc()
 {
   repeatTwoTimes();
