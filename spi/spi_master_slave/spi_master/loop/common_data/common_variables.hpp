@@ -96,6 +96,7 @@ extern bool    flgVirtual;  // Virtual device for debuging and simulation
 extern uint8_t flgDebugLevel; //  leveldebug
 extern int16_t ZMaxValue;
 extern bool    flgUseUART;  // 
+extern int16_t ShiftDac;
 //
 extern volatile int32_t current_channel;
 extern critical_section_t criticalSection;

@@ -20,10 +20,10 @@ void Scanner::sendStrData(std::string const& header)
   afcc +="\n";
   std::cout << afcc;
   afcc.clear();
-  sleep_ms(100);
+ // sleep_ms(100);
 }
 
-void Scanner::sendStrData(std::string const& header, std::vector<int32_t> &data, const uint16_t delay)
+void Scanner::sendStrData(std::string const& header, std::vector<int32_t> &data, const uint16_t delay,const bool flg)
 {
   std::string afcc;
   afcc.clear();
@@ -37,25 +37,8 @@ void Scanner::sendStrData(std::string const& header, std::vector<int32_t> &data,
   afcc +="\n";
   std::cout << afcc;
   afcc.clear();
-  data.clear();
+  if (flg) data.clear();
   sleep_ms(delay);
-}
-void Scanner::sendStrData(std::string const& header,std::vector<int16_t> &data, const uint16_t delay)
-{
-  std::string afcc;
-  afcc.clear();
-  afcc=header;
-   //for (auto & element :data) 
-  for (size_t j = 0; j < data.size(); ++j)
-  {
- // afc +=',' + std::to_string(element);
-   afcc +=',' + std::to_string(data[j]);
-  }
-  afcc +="\n";
-  std::cout << afcc;
-  afcc.clear();
-  sleep_ms(delay);
-  data.clear();
 }
 
 void Scanner::sendStrData(std::string const& header,std::vector<int16_t> &data, const uint16_t delay, const bool flg)
@@ -75,23 +58,7 @@ void Scanner::sendStrData(std::string const& header,std::vector<int16_t> &data, 
   sleep_ms(delay);
   if (flg) data.clear();
 }
-void Scanner::sendStrData(std::string const& header,std::vector<uint16_t> &data, const uint16_t delay)
-{
-  std::string afcc;
-  afcc.clear();
-  afcc=header;
-   //for (auto & element :data) 
-  for (size_t j = 0; j < data.size(); ++j)
-  {
- // afc +=',' + std::to_string(element);
-   afcc +=',' + std::to_string(data[j]);
-  }
-  afcc +="\n";
-  std::cout << afcc;
-  afcc.clear();
-  sleep_ms(delay);
-  data.clear();
-}
+
 void Scanner::sendStrData(std::string const& header,std::vector<uint16_t> &data, const uint16_t delay, const bool flg)
 {
   std::string afcc;
@@ -117,7 +84,7 @@ void Scanner::readDATALin()
   size_t szy=vector[2]; //ny
   debugdata.emplace_back(szx);
   debugdata.emplace_back(szy);
-  sendStrData("debug linxny ",debugdata,400);
+  sendStrData("debug linxny ",debugdata,400,true);
   for (size_t j = 0; j <szx; ++j)
   {
    data_LinX.emplace_back((uint16_t)vector[j+3]);
@@ -154,14 +121,14 @@ void Scanner::readADC()
         debugdata.emplace_back(ZValue);
         debugdata.emplace_back(SignalValue);
         debugdata.emplace_back(vector[1]);
-        sendStrData("code12",debugdata,100);
+        sendStrData("code12",debugdata,100,true);
   } 
   else
   {
         debugdata.emplace_back(ZValue);
         debugdata.emplace_back(SignalValue);
         debugdata.emplace_back(vector[1]);
-        sendStrData("code12",debugdata,100);
+        sendStrData("code12",debugdata,100,true);
   }
 }
 void Scanner::scanner_retract_protract(int port, int flg) // port  6
@@ -237,7 +204,7 @@ struct Config
   debugdata.emplace_back(pos_.x);
   debugdata.emplace_back(pos_.y);
 
-  sendStrData("debug scan parameters",debugdata,100);
+  sendStrData("debug scan parameters",debugdata,100,true);
 
   uint16_t stepsx;
   uint16_t stepsy;
@@ -435,7 +402,7 @@ struct Config
      count0++;
     } 
     DrawDone = false;
-    sendStrData("code50",vector_data,60); //100
+    sendStrData("code50",vector_data,60,true); //100
  
     if (CONFIG_UPDATE)
     {
@@ -450,7 +417,7 @@ struct Config
       {
         debugdata.emplace_back(vector[j]);
       }
-      sendStrData( "debug parameters update",debugdata,100);
+      sendStrData( "debug parameters update",debugdata,100,true);
      stepsx = (uint16_t) conf_.betweenPoints_x / conf_.diskretinstep;
      stepsy = (uint16_t) conf_.betweenPoints_y / conf_.diskretinstep;
      reststepx = conf_.betweenPoints_x % conf_.diskretinstep;
@@ -553,11 +520,11 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
   debugdata.emplace_back(pos_.x);
   debugdata.emplace_back(pos_.y);
 
-  sendStrData("debug scan lin parameters",debugdata,200);//200
+  sendStrData("debug scan lin parameters",debugdata,200,true);//200
 
   //sendStrData("debug linx ",data_LinX,100,false);
 
- // sendStrData("debug liny ",data_LinY,100,false);
+  //sendStrData("debug liny ",data_LinY,100,false);
 
   uint16_t stepsx;
   uint16_t stepsy;
@@ -738,7 +705,7 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
      count0++;
     } 
     DrawDone = false;
-    sendStrData("code50",vector_data,40); //100
+    sendStrData("code50",vector_data,40,true); //100
      if (CONFIG_UPDATE)
     {
       CONFIG_UPDATE = false;
@@ -751,7 +718,7 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
       {
         debugdata.emplace_back(vector[j]);
       }
-      sendStrData( "debug parameters update",debugdata,100);
+      sendStrData( "debug parameters update",debugdata,100,true);
       //    dark();
     }
     if (STOP)   // stop
@@ -847,7 +814,7 @@ void Scanner::start_hopingscan(std::vector<int32_t> &vector)
   {
     debugdata.emplace_back(vector[j]);
   }
-  sendStrData("debug scan parameters",debugdata,100);
+  sendStrData("debug scan parameters",debugdata,100,true);
   uint16_t stepsx;
   uint16_t stepsy;
   uint16_t reststepfast;
@@ -1013,7 +980,7 @@ void Scanner::start_hopingscan(std::vector<int32_t> &vector)
      count0++;
     } 
     DrawDone = false;
-    sendStrData("code50",vector_data,60);
+    sendStrData("code50",vector_data,60,true);
 
     if (CONFIG_UPDATE)
     {
@@ -1027,7 +994,7 @@ void Scanner::start_hopingscan(std::vector<int32_t> &vector)
       {
         debugdata.emplace_back(vector[j]);
       }
-      sendStrData("debug parameters update",debugdata,100);
+      sendStrData("debug parameters update",debugdata,100,true);
   
       stepsx = (uint16_t) conf_.betweenPoints_x / conf_.diskretinstep;
       stepsy = (uint16_t) conf_.betweenPoints_y / conf_.diskretinstep;
@@ -1056,7 +1023,7 @@ void Scanner::start_hopingscan(std::vector<int32_t> &vector)
     if (STOP)  // stop
     {
       STOP = false;
-      sleep_ms(100);
+     // sleep_ms(100); //24/02/02
       sendStrData("stopped");
       break;
     }
@@ -1130,7 +1097,7 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
   {
     debugdata.emplace_back(vector[j]);
   }
-  sendStrData("debug scan parameters",debugdata,100);
+  sendStrData("debug scan parameters",debugdata,100,true);
   uint16_t stepsx;
   uint16_t stepsy;
   uint16_t reststepfast;
@@ -1330,7 +1297,7 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
       count0++;
      } 
      DrawDone = false;
-     sendStrData("code50",vector_data,60);
+     sendStrData("code50",vector_data,60,true);
 
     if (CONFIG_UPDATE)
     {
@@ -1344,12 +1311,12 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
       {
         debugdata.emplace_back(vector[j]);
       }
-      sendStrData("debug parameters update",debugdata,100);
+      sendStrData("debug parameters update",debugdata,100,true);
     }
     if (STOP)  // stop
     {
       STOP = false;
-      sleep_ms(100);
+ //     sleep_ms(100);  //24/02/02
       sendStrData("stopped");
       break;
     }
@@ -1459,7 +1426,7 @@ void Scanner::start_fastscan(std::vector<int32_t> &vector)
   debugdata.emplace_back(pos_.x);
   debugdata.emplace_back(pos_.y);
   debugdata.emplace_back(conf_.flgOneFrame);
-  sendStrData("debug fastscan parameters",debugdata,100);
+  sendStrData("debug fastscan parameters",debugdata,100,true);
 
   uint16_t stepsx;
   uint16_t stepsy;
@@ -1598,7 +1565,8 @@ void Scanner::start_fastscan(std::vector<int32_t> &vector)
         }
       }
     } //i
-    sendStrData("code56",vector_data,100);
+    sendStrData("debug end fastscan");
+    sendStrData("code56",vector_data,100,true);
     stop_scan();  //возврат в начальную точку скана
     if (conf_.flgOneFrame == 1) { STOP = true; };
   } 
@@ -1647,7 +1615,7 @@ Point Scanner::getX0Y0()
   sleep_ms(200);
   debugdata.emplace_back(pos_.x);
   debugdata.emplace_back(pos_.y);
-  sendStrData("code18",debugdata,100);
+  sendStrData("code18",debugdata,100,true);
   return pos_;
 }
 
@@ -1664,7 +1632,7 @@ void Scanner::move_toX0Y0(int x, int y,int delay)
   debugdata.emplace_back(delay);
   debugdata.emplace_back(pos_.x);
   debugdata.emplace_back(pos_.y);
-  sendStrData("debug moveto parameters",debugdata,200);
+  sendStrData("debug moveto parameters",debugdata,200,true);
 
   move_to(pointX0Y0, delay);
 
@@ -1704,7 +1672,8 @@ void Scanner::move_to(const Point &point, uint16_t delay)
       set_DACXY(2, --pos_.y);
       sleep_us(delay);
     }
-  } else
+  }
+  else
   {
     pos_.x = point.x;
     pos_.y = point.y;
@@ -1724,7 +1693,7 @@ void Scanner::LID_move_toZ0(int lid_name, int f, int p, int n, int dir)  //от�
   sleep_ms(1000);
   debugdata.emplace_back(n);
   debugdata.emplace_back(dir);
-  sendStrData("debug autorising done ",debugdata,100);
+  sendStrData("debug autorising done ",debugdata,100,true);
 }
 void Scanner::positioningXYZ(std::vector<int32_t> &vector)
 {
@@ -1747,11 +1716,11 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
       GATE_Z_MIN=vector[7]; //  int Z gate min
    //   pos_data[7] / //  0= SFM, 1=STM ;SICMAC-2; SICMDC-3;  device type
   //    pos_data[8]/ //  Voltage
-   for (int j = 0; j <= 6; ++j)
+   for (int j = 0; j <= 7; ++j)
    {
      debugdata.emplace_back(vector[j]);
     }
-   sendStrData("debug parameters pos update",debugdata,100);
+   sendStrData("debug parameters pos update",debugdata,100,true);
 
   if (lid_name == 90 || lid_name == 95) //X,Y
   {
@@ -1771,7 +1740,7 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
         {
           debugdata.emplace_back(vector[j]);
         }
-        sendStrData("debug parameters update",debugdata,100);
+        sendStrData("debug parameters update",debugdata,100,true);
       }
       status = none;
       if (!flgVirtual) //add mf
@@ -1782,7 +1751,7 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
       debugdata.emplace_back(status);
       debugdata.emplace_back(ZValue);
       debugdata.emplace_back(SignalValue);
-      sendStrData("code"+ std::to_string(lid_name) ,debugdata,100);
+      sendStrData("code"+ std::to_string(lid_name) ,debugdata,100,true);
     }
   }
   if (lid_name == 99) //Z
@@ -1804,7 +1773,7 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
        {
          debugdata.emplace_back(vector[j]);
        }
-       sendStrData("debug parameters update",debugdata,100);
+       sendStrData("debug parameters update",debugdata,100,true);
       }
       status = none;
       if (!flgVirtual) 
@@ -1851,15 +1820,14 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
       debugdata.emplace_back(status);
       debugdata.emplace_back(ZValue);
       debugdata.emplace_back(SignalValue);
-      sendStrData("code"+ std::to_string(lid_name) ,debugdata,100);
+      sendStrData("code"+ std::to_string(lid_name) ,debugdata,100,true);
     }
   }
    STOP=false;
    debugdata.emplace_back(status);
    debugdata.emplace_back(ZValue);
    debugdata.emplace_back(SignalValue);
-   sendStrData("code"+ std::to_string(lid_name) ,debugdata,100);
-   sleep_ms(100); 
+   sendStrData("code"+ std::to_string(lid_name) ,debugdata,100,true);
    sendStrData("stopped");
    int16_t count = 0;
   while ((!TheadDone) || (count<20) )//ожидание ответа ПК для синхронизации
@@ -1892,7 +1860,7 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
             }
             for(int16_t k=0; k < delay; k++) { }// задержка в каждом дискрете
 //////////////////////////////////////////////
-            set_DACZ(1,Zt);  // 1 logical - physical - 0
+        if (!flgVirtual)    set_DACZ(1,Zt);  // 1 logical - physical - 0
 /////////////////////////////////////////////            
 	  }
 	  return(Zt);
@@ -1932,7 +1900,7 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
   {
     debugdata.emplace_back(vector[j]);
   }
-  sendStrData("debug AI_Z parameters",debugdata,100);
+  sendStrData("debug AI_Z parameters",debugdata,100,true);
  
    if (!flgVirtual) 
    { 
@@ -2012,7 +1980,7 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
    if (!flgVirtual)
    {
       auto ptr = getValuesFromAdc();
-        switch (flgModa)
+      switch (flgModa)
     {
      case SFM:    { SignalValue=(int16_t)ptr[AmplPin]; break;}  
      case STM: 
@@ -2040,7 +2008,7 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
 
   dacZ = ZMove( dacZ, dlt, -1, MicrostepDelay );
 
-   sendStrData("code66",vectorA_Z,100);  
+   sendStrData("code66",vectorA_Z,100,true);  
  /////////////////////////////////////////  
  // разморозка состояния pid
     if(!flgVirtual)   unfreezeLOOP(500);
@@ -2059,7 +2027,7 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
 void Scanner::spectroscopyIV(std::vector<int32_t> &vector)
 {
     int i,j;
-		int32_t  UBackup;
+		int16_t  UBackup;
     int16_t  delay;
     int16_t  UPoints;
     int16_t  UCurves;
@@ -2076,13 +2044,13 @@ void Scanner::spectroscopyIV(std::vector<int32_t> &vector)
 		UStep		        =           vector[4]; // V шаг 
   	delay           = (int16_t) vector[5]; // задержка в точке измерения
     flgDev          = (int8_t)  vector[6]; // прибор
-    UBackup         =           vector[7]; // V текущее значение напряжения 
+    UBackup         = (int16_t) vector[7]; // V текущее значение напряжения 
 //start
  for (int j = 0; j <= 6; ++j)
   {
     debugdata.emplace_back(vector[j]);
   }
-  sendStrData("debug I_V parameters",debugdata,100);
+  sendStrData("debug I_V parameters",debugdata,100,true);
 ///////////////////////////////////////////////////  
   if(!flgVirtual)  freezeLOOP(200);
 ////////////////////////////////////////////////////
@@ -2090,11 +2058,13 @@ void Scanner::spectroscopyIV(std::vector<int32_t> &vector)
  // установка начального значения напряжения
       int16_t kk;
       int32_t dlt;
+      int16_t nstep;
+      int16_t rest;    
       start_step=100;
-      dacU=UBackup;
+      dacU=UBackup;//+ShiftDAC; //240206
+      UStart=UStart;//+ShiftDAC;
       step=-start_step;
-     int16_t nstep;
-     int16_t rest;
+
 //  снятие ВАХ
  for (j=0; j<UCurves; j++)
  {
@@ -2117,7 +2087,6 @@ void Scanner::spectroscopyIV(std::vector<int32_t> &vector)
        dacU+=rest;
       if (!flgVirtual)set_Bias(1,dacU);         
       sleep_ms(10);  
-  
       for(i=0; i<UPoints; i++)
       {
        if (!flgVirtual) {set_Bias(1,dacU); }
@@ -2136,30 +2105,30 @@ void Scanner::spectroscopyIV(std::vector<int32_t> &vector)
        dacU+=UStep;
       }
       sleep_ms(300);
-      sendStrData("code65",vectorI_V,100);  
+      sendStrData("code65",vectorI_V,100,true);  
   //move to start point
   }// j Curves  
     //возврат к исходному напряжению
      dacU-=UStep;
      step=-start_step;
      dlt=(dacU-UBackup);
-     if (dlt<0)
-     {
-        step=start_step;
-	      dlt=-dlt;
-     }     
+   if (dlt<0)
+   {
+     step=start_step;
+	   dlt=-dlt;
+   }     
   rest=dlt%start_step ;
   nstep=dlt/start_step;
- for (kk=0; kk<nstep; kk++)
- {
+  for (kk=0; kk<nstep; kk++)
+  {
    if (!flgVirtual) set_Bias(1,dacU);  
    sleep_ms(10);
    dacU+=step;
- }
+  }
     dacU+=rest;
-   if (!flgVirtual) set_Bias(1,dacU);  
+  if (!flgVirtual) set_Bias(1,dacU);  
     sleep_ms(10);
-   if (!flgVirtual) set_Bias(1,UBackup);  
+  if (!flgVirtual) set_Bias(1,UBackup);  //240206
     sleep_ms(10);
 ///////////////////////////////////////////////
    if(!flgVirtual)  unfreezeLOOP(500);
@@ -2181,37 +2150,34 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
   const int touch = 2;
   const int stopdone = 1;
   uint16_t ZMaxValue = 32767;
-  uint16_t SET_POINT, GATE_Z_MAX, GATE_Z_MIN;
+
+  int16_t  SET_POINT;
+  int16_t  GATE_Z_MAX, GATE_Z_MIN;
   int16_t  freq, scv;//
   int16_t  GAIN, NSTEPS;
   uint16_t INTDELAY, SCANNERDECAY;
-  uint8_t  flgDev;
+  int16_t  flgDev;
   int32_t  Bias;
- 
   // SET VALUE FROM RX_CORE
-  SET_POINT      = vector[1]; // set point
-  GATE_Z_MAX     = vector[2]; // max
-  GATE_Z_MIN     = vector[3]; // min
-  NSTEPS         = vector[4]; // steps 
-  INTDELAY       = vector[5]; // initdelay
-  GAIN           = vector[6]; // gain
-  SCANNERDECAY   = vector[7]; // scannerDelay 
-  freq           = vector[8]; // freq
-  scv            = vector[9]; // scv
-  flgDev         = (uint8_t)vector[10];//  0= SFM, 1=STM ;SICMAC-2; SICMDC-3;  device type
-  Bias           = vector[11];// Voltage need for STM,SICM
+  SET_POINT      =(int16_t) vector[1]; // set point
+  GATE_Z_MAX     =(int16_t) vector[2]; // max
+  GATE_Z_MIN     =(int16_t) vector[3]; // min
+  NSTEPS         =(int16_t) vector[4]; // steps 
+  INTDELAY       =(uint16_t)vector[5]; // initdelay
+  GAIN           =(int16_t) vector[6]; // gain
+  SCANNERDECAY   =(uint16_t)vector[7]; // scannerDelay 
+  freq           =(int16_t) vector[8]; // freq
+  scv            =(int16_t) vector[9]; // scv
+  flgDev         =(int16_t) vector[10];//  0= SFM, 1=STM ;SICMAC-2; SICMDC-3;  device type
+  Bias           =(int16_t) vector[11];// Voltage need for STM,SICM
  //need to add channel Bias ????
  //need to add channel SetPoint ????
 
-  for (size_t j = 0; j < 9; j++)     // send info
+  for (size_t j = 0; j < 12; j++)     // send info
   {
     debugdata.emplace_back(vector[j]);
   } 
-  debugdata.emplace_back(AmplPin);
-  debugdata.emplace_back(ZPin);
-
-  sendStrData( "debug approach parameters 1 ",debugdata,100);
-
+  sendStrData( "debug approach parameters 1 ",debugdata,100,true);
   set_SetPoint(0,SET_POINT); 
   if (flgDev!=0) set_Bias(1,Bias);  
   set_GainPID(GAIN);
@@ -2239,11 +2205,7 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
   buf_status.push_back(none);
   buf_status.push_back(ZValue);
   buf_status.push_back(SignalValue);
-/*    
-  debugdata.emplace_back(buf_status[0]);
-  debugdata.emplace_back(buf_status[1]);
-  debugdata.emplace_back(buf_status[2]);
-*/  
+
   sendStrData( "code75",buf_status,100,false);
 
   while (true)
@@ -2257,7 +2219,7 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
       buf_status[1] = ZValue;
       buf_status[2] = SignalValue;
       sendStrData("stopped");
-      sleep_ms(200);
+    //  sleep_ms(200); //24/02/02
       break;
     }
     if (CONFIG_UPDATE)
@@ -2280,7 +2242,7 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
       {
         debugdata.emplace_back(vector[j]);
       }
-      sendStrData("debug parameters update",debugdata,100);
+      sendStrData("debug parameters update",debugdata,200,true);
     }
  
     if (!flgVirtual)
@@ -2349,20 +2311,13 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
           }
           sleep_ms(10);
         }
-        if (buf_status[0] == 3)
-        { break; }
+        if (buf_status[0] == 3)  { break; }
       }
     } //NSTEPS>0
     if (NSTEPS < 0)
     {
 
     }
-    /*
-    debugdata.emplace_back(buf_status[0]);
-    debugdata.emplace_back(buf_status[1]);
-    debugdata.emplace_back(buf_status[2]);
-    sendStrData("code75",debugdata,100);
-    */
     sendStrData( "code75",buf_status,100,false);
     if (!flgVirtual)
     {
@@ -2372,14 +2327,7 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
       protract(); //вытянуть
     }
   }
-  /*
-  debugdata.emplace_back(buf_status[0]);
-  debugdata.emplace_back(buf_status[1]);
-  debugdata.emplace_back(buf_status[2]);
-  sendStrData("code75",debugdata,100);
-*/
   sendStrData( "code75",buf_status,100,false);
-
   if (!flgVirtual)
   {
     protract();//вытянуть
@@ -2412,7 +2360,7 @@ void Scanner::start_frqscan()
   debugdata.emplace_back(flgVirtual);
   debugdata.emplace_back(AmplPin);
   debugdata.emplace_back(ZPin);
-  sendStrData("debug frq scan parameters ",debugdata,100);
+  sendStrData("debug frq scan parameters ",debugdata,100,true);
   current_channel = inBuf[3] - 1;  
 
   std::vector<int32_t> data;
@@ -2437,8 +2385,7 @@ void Scanner::start_frqscan()
     sleep_ms(10);
     inBuf[1] += inBuf[2];
   }
-  sendStrData("code25",data,100);
-  //data.clear();
+  sendStrData("code25",data,100,true);
   current_channel = -1;
   int16_t count = 0;
   while ((!TheadDone) || (count<20) )//ожидание ответа ПК для синхронизации

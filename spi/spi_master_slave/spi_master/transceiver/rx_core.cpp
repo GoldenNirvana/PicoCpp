@@ -88,11 +88,11 @@ void RX_core::launchOnCore1()
       case DRAWDONECmd: // mf  
         DrawDone = true;
         break;
-      case CONFIG_UPDATECmd: //сканирование
+      case CONFIG_UPDATECmd: //обновление параметров текущего активного алгоритма
         CONFIG_UPDATE = true;
         break;
       case STOPCmd:
-        STOP=true; //stopAll(); stop algorithm 
+        STOP=true; //stopAll(); stop the active algorithm 
         break;
    /*
       case 90 ... 99:

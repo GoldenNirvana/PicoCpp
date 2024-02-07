@@ -1,6 +1,6 @@
 #include "common_variables.hpp"
 
-std::string afc;  //dataout 
+std::string afc;  //dataout string
 Spi spi;
 LinearDriver linearDriver;
 Decoder decoder(4, 5, 6);
@@ -18,9 +18,9 @@ DAC8563 dac8563_3(1); // DAC Z
 uint16_t spiBuf[8];
 
 
-int16_t ALGCODE=0;
+int16_t ALGCODE=0;   
 
-bool STOP = false;   // stop algorithms
+bool STOP = false;   // cmd stop algorithms
 bool AD9833_SENDER = false;
 bool AD8400_SENDER = false;
 bool AD8400_SET_GAIN = false;
@@ -41,12 +41,14 @@ bool DrawDone=true;
 
 //************************************************
 bool    flgVirtual = false;     // флаг симуляции работа микроконтроллера
-uint8_t flgDebugLevel = 2;      //  уровень отладки
-bool    flgUseUART = false;  //использовать UART для передачи данных
+uint8_t flgDebugLevel = 2;      // уровень отладки
+bool    flgUseUART = false;     // использовать UART для передачи данных
 //данные для симуляции 
 int16_t ZValue      = 32767;
 int16_t SignalValue = 32767;
 int16_t ZMaxValue   = 32767;
+int16_t ShiftDac    = 32767;
+
 
 uint8_t ZPin    = 0; // Z
 uint8_t AmplPin = 1; // амплитуда

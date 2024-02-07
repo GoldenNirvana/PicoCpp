@@ -122,7 +122,13 @@ case InitDAC_XY:
                 init_DACXY(vector[1]);
                 break; 
               }  
-              
+case SET_BIAS:
+              {
+                ALGCODE=ALGNONE;
+                init_SPI(vector[1],vector[2],vector[3],vector[4]);//22, 2, 8, 0, 1, 1, value	
+                set_Bias(vector[5],vector[6]);
+                break;
+              }               
 case SET_SETPOINT:
               {
                 ALGCODE=ALGNONE;
@@ -181,13 +187,7 @@ case SPECTROSOPY_AIZ:
                 scanner.spectroscopyAIZ(vector);
                 break;
               }  
-case SET_BIAS:
-              {
-                ALGCODE=ALGNONE;
-                init_SPI(vector[1],vector[2],vector[3],vector[4]);//22, 2, 8, 0, 1, 1, value	
-                set_Bias(vector[5],vector[6]);
-                break;
-              } 
+
 default:      {/*activateError();*/  break;}                                                                                                                                            
    }
   }
