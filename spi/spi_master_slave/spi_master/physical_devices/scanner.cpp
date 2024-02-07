@@ -336,7 +336,8 @@ struct Config
               break;
             }
           }
-      } else
+      }
+      else
       {
    //    if (conf_.method!=oneline) vector_data.emplace_back(int16_t(10000.0 * (sin(M_PI * j * 0.1) + sin(M_PI * i * 0.1))));  // get Z from adc
    //    else   vector_data.emplace_back(int16_t(10000.0 * (sin(M_PI * j * 0.1) + sin(M_PI * 0 * 0.1)))); 
@@ -714,8 +715,8 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
      if (CONFIG_UPDATE)
     {
       CONFIG_UPDATE = false;
-      conf_.delayF  = vector[1];
-      conf_.delayB  = vector[2];
+      conf_.delayF        = vector[1];
+      conf_.delayB        = vector[2];
       set_GainPID(vector[3]);
       sleep_ms(100);              
       conf_.diskretinstep = vector[4]; 
@@ -750,7 +751,7 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
         }
         case 1: //Y+
         {
-         stepsx = (uint16_t) data_LinX[i] / conf_.diskretinstep;
+         stepsx    = (uint16_t) data_LinX[i] / conf_.diskretinstep;
          reststepx = (uint16_t) data_LinX[i] % conf_.diskretinstep;
          stepsslowline = stepsx;
          reststepslow = reststepx;
@@ -843,20 +844,20 @@ void Scanner::start_hopingscan(std::vector<int32_t> &vector)
   {
     case 0://X+
     {
-      portfast = portx;
-      portslow = porty;
-      pos_fast = pos_.x;
-      pos_slow = pos_.y;
+      portfast  = portx;
+      portslow  = porty;
+      pos_fast  = pos_.x;
+      pos_slow  = pos_.y;
       nfastline = conf_.nPoints_x;
       nslowline = conf_.nPoints_y;
       break;
     }
     case 1: //Y+
     {
-      portfast = porty;
-      portslow = portx;
-      pos_fast = pos_.y;
-      pos_slow = pos_.x;
+      portfast  = porty;
+      portslow  = portx;
+      pos_fast  = pos_.y;
+      pos_slow  = pos_.x;
       nfastline = conf_.nPoints_y;
       nslowline = conf_.nPoints_x;
       break;
@@ -874,16 +875,16 @@ void Scanner::start_hopingscan(std::vector<int32_t> &vector)
       {
         stepsslowline = stepsy;
         stepsfastline = stepsx;
-        reststepfast = reststepx;
-        reststepslow = reststepy;
+        reststepfast  = reststepx;
+        reststepslow  = reststepy;
         break;
       }
       case 1: //Y+
       {
         stepsslowline = stepsx;
         stepsfastline = stepsy;
-        reststepfast = reststepy;
-        reststepslow = reststepx;
+        reststepfast  = reststepy;
+        reststepslow  = reststepx;
         break;
       }
     }  
@@ -1940,7 +1941,7 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
  if(!flgVirtual)  freezeLOOP(200);
  //////////////////////////////////////
   sleep_ms(200);      
- 
+  
  dacZ = ZMove( dacZ, (-ZStart), 1, MicrostepDelay );
         
  for(int16_t i=0; i<NPoints; i++)     //сближение
