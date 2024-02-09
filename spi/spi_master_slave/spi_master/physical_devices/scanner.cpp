@@ -816,11 +816,11 @@ void Scanner::start_hopingscan(std::vector<int32_t> &vector)
   const int8_t oneline=11;
   prev_point = pos_; //запоминание начальной точки скана
   vector_data.clear();
-  for (int j = 1; j <= 18; ++j)
+  for (int j = 1; j <= 23; ++j)
   {
     debugdata.emplace_back(vector[j]);
   }
-  sendStrData("debug scan parameters",debugdata,100,true);
+  sendStrData("debug hoping scan parameters",debugdata,100,true);
   uint16_t stepsx;
   uint16_t stepsy;
   uint16_t reststepfast;
@@ -836,9 +836,19 @@ void Scanner::start_hopingscan(std::vector<int32_t> &vector)
   uint16_t pos_fast;
   uint16_t pos_slow;
   uint16_t ZJump;
+  int16_t  ISatCur;
+  int16_t  ISatCurPrev;
+
   bool  flgMaxJump;
   
   flgMaxJump=(conf_.HopeZ==0);
+
+    //std::random_device rd;
+    // Create a Mersenne Twister pseudo-random number generator
+    //std::mt19937 gen(rd());
+    
+    // Create a uniform distribution from 1 to 100
+    std::uniform_int_distribution<int> dis(1, 100);
 
   switch (conf_.path)
   {
@@ -863,6 +873,15 @@ void Scanner::start_hopingscan(std::vector<int32_t> &vector)
       break;
     }
   }
+      if (!flgVirtual)
+      {
+        getValuesFromAdc();
+        ISatCurPrev=(int16_t) spiBuf[IPin];
+      }
+      else
+      {
+        ISatCurPrev=(int16_t)round(conf_.SetPoint);
+      }
   for (uint32_t i = 0; i < nslowline; ++i)
   { 
     stepsx = (uint16_t) conf_.betweenPoints_x / conf_.diskretinstep;
@@ -944,7 +963,7 @@ void Scanner::start_hopingscan(std::vector<int32_t> &vector)
           case 7://current
           {
             vector_data.emplace_back((int16_t) spiBuf[IPin]);
-            break;
+             break;
           }
         }
       }
@@ -960,51 +979,91 @@ void Scanner::start_hopingscan(std::vector<int32_t> &vector)
           vector_data.emplace_back(int16_t(10000.0 * (sin(M_PI * j * 0.1) + sin(M_PI * i * 0.1))));
         }
       }
-    }
-     if (!flgVirtual)
-     {
-        if (flgMaxJump)  retract();
-        else retract(ZJump) ;
-     } 
-    sleep_us(50);
-    if (!flgVirtual)
-    {
-      pos_fast -= conf_.diskretinstep * stepsfastline * nfastline;
-      set_DACXY(portfast, pos_fast);
-    }
-    else
-    { pos_fast -= conf_.diskretinstep * stepsfastline * nfastline; }
-    sleep_us(conf_.delayB);
-    if (reststepfast != 0)
-    {
+    } //fast line
       if (!flgVirtual)
       {
+        if (flgMaxJump)  retract();
+        else retract(ZJump) ;
+      } 
+      sleep_us(50);
+    //move to the start line point
+      if (!flgVirtual)
+      {
+       pos_fast -= conf_.diskretinstep * stepsfastline * nfastline;
+       set_DACXY(portfast, pos_fast);
+      }
+      else
+      { pos_fast -= conf_.diskretinstep * stepsfastline * nfastline; }
+      sleep_us(conf_.delayB);
+      if (reststepfast != 0)
+      {
+       if (!flgVirtual)
+       {
         pos_fast -= reststepfast;
         set_DACXY(portfast, pos_fast);
+       }
+       else { pos_fast -= reststepfast; }
+       sleep_us(conf_.delayF);
       }
-      else { pos_fast -= reststepfast; }
-      sleep_us(conf_.delayF);
-    }
-     int16_t count0 = 0;
+      int16_t count0 = 0;
     while ((!DrawDone) || (count0<20))//ожидание ответа ПК для синхронизации
     {
      sleep_ms(10);
      count0++;
     } 
     DrawDone = false;
-    sendStrData("code50",vector_data,60,true);
+      if (!flgVirtual)
+      {
+        getValuesFromAdc();
+        ISatCur=(int16_t) spiBuf[IPin];
+        vector_data.emplace_back(ISatCur);
+      }
+      else
+      {
+       uint16_t random_num =i;   
+       ISatCur=ISatCur-100*random_num;
+       vector_data.emplace_back(ISatCur);
+      }
+// auto correction setpoint for sicm
+     if (conf_.flgAutoUpdateSP) 
+     {
+       if (conf_.flgAutoUpdateSPDelta) 
+       {
+         if (abs((ISatCurPrev-ISatCur)/ISatCurPrev)>0.01*conf_.ThresholdAutoUpdate) 
+         {
+          conf_.SetPoint=round(ISatCur*conf_.KoeffCorrectISat*0.01 );
+          ISatCurPrev=ISatCur;
+          set_SetPoint(0,conf_.SetPoint);
+          sleep_ms(conf_.HopeDelay);
+         }
+       }
+       else
+       { 
+        conf_.SetPoint=round(ISatCur*conf_.KoeffCorrectISat*0.01 );
+        set_SetPoint(0,conf_.SetPoint);
+        ISatCurPrev=ISatCur;
+        sleep_ms(conf_.HopeDelay);
+       }
+     }
+     
+     vector_data.emplace_back(round(conf_.SetPoint));
+     sendStrData("code50",vector_data,60,true); //send data
 
     if (CONFIG_UPDATE)
     {
-      CONFIG_UPDATE   = false;
-      conf_.delayF    = vector[1];
-      conf_.delayB    = vector[2];
+      CONFIG_UPDATE              = false;
+      conf_.delayF               = vector[1];
+      conf_.delayB               = vector[2];
       set_GainPID(vector[3]);
-      conf_.HopeDelay = vector[4];
-      conf_.HopeZ     = vector[5];
+      conf_.HopeDelay            = vector[4];
+      conf_.HopeZ                = vector[5];
+      conf_.flgAutoUpdateSP      = vector[6];; // автообновление опоры на каждой линии                     19
+      conf_.flgAutoUpdateSPDelta = vector[7];; // обновление опоры , если изменение тока превысило порог 20
+      conf_.ThresholdAutoUpdate  = vector[8];; // изменения опоры, если изменение тока превысило порог     21
+      conf_.KoeffCorrectISat     = vector[9];  // опора  %  от тока насыщения        
       flgMaxJump=(conf_.HopeZ==0);
       sleep_ms(100);   
-      for (int j = 1; j <= 5; ++j)
+      for (int j = 1; j <= 9; ++j)
       {
         debugdata.emplace_back(vector[j]);
       }
@@ -1041,7 +1100,8 @@ void Scanner::start_hopingscan(std::vector<int32_t> &vector)
       sendStrData("stopped");
       break;
     }
-     if ((nslowline - 1 - i) > 0)  //если непоследняя линия
+    //next line
+     if ((nslowline - 1 - i) > 0)  //если не последняя линия
      {
       if (conf_.method !=oneline) //не сканирование по одной линии
       {
@@ -1107,11 +1167,11 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
   const int8_t oneline=11;
   prev_point = pos_; //запоминание начальной точки скана
   vector_data.clear();
-  for (int j = 1; j <= 18; ++j)
+  for (int j = 1; j <= 23; ++j)
   {
     debugdata.emplace_back(vector[j]);
   }
-  sendStrData("debug scan parameters",debugdata,100,true);
+  sendStrData("debug hoping scan parameters",debugdata,100,true);
   uint16_t stepsx;
   uint16_t stepsy;
   uint16_t reststepfast;
@@ -1128,6 +1188,9 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
   uint16_t pos_slow;
   uint16_t ZJump;
   bool  flgMaxJump;
+  int16_t  ISatCur;
+  int16_t  ISatCurPrev;
+
   flgMaxJump=(conf_.HopeZ==0);
   stepsx = (uint16_t) conf_.betweenPoints_x / conf_.diskretinstep;
   stepsy = (uint16_t) conf_.betweenPoints_y / conf_.diskretinstep;
@@ -1165,6 +1228,17 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
       break;
     }
   }
+
+  if (!flgVirtual)
+     {
+        getValuesFromAdc();
+        ISatCurPrev=(int16_t) spiBuf[IPin];
+     }
+     else
+     {
+        ISatCurPrev=(int16_t)round(conf_.SetPoint);
+     }
+
   for (uint32_t i = 0; i < nslowline; ++i)
   { 
    for (uint32_t j = 0; j < nfastline; ++j)
@@ -1315,19 +1389,58 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
       count0++;
      } 
      DrawDone = false;
+     if (!flgVirtual)
+     {
+        getValuesFromAdc();
+        ISatCur=(int16_t) spiBuf[IPin];
+        vector_data.emplace_back(ISatCur);
+     }
+     else
+     {
+       uint16_t random_num =i;   
+       ISatCur=ISatCur-100*random_num;
+       vector_data.emplace_back(ISatCur);
+     }
+// auto correction setpoint for sicm
+     if (conf_.flgAutoUpdateSP) 
+     {
+       if (conf_.flgAutoUpdateSPDelta) 
+       {
+         if (abs((ISatCurPrev-ISatCur)/ISatCurPrev)>0.01*conf_.ThresholdAutoUpdate) 
+         {
+          conf_.SetPoint=round(ISatCur*conf_.KoeffCorrectISat*0.01 );
+          ISatCurPrev=ISatCur;
+          set_SetPoint(0,conf_.SetPoint);
+          sleep_ms(conf_.HopeDelay);
+         }
+       }
+       else
+       { 
+        conf_.SetPoint=round(ISatCur*conf_.KoeffCorrectISat*0.01 );
+        set_SetPoint(0,conf_.SetPoint);
+        ISatCurPrev=ISatCur;
+        sleep_ms(conf_.HopeDelay);
+       }
+     }    
+     vector_data.emplace_back(round(conf_.SetPoint));
+     
      sendStrData("code50",vector_data,60,true);
 
     if (CONFIG_UPDATE)
     {
-      CONFIG_UPDATE   = false;
-      conf_.delayF    = vector[1];
-      conf_.delayB    = vector[2];
+      CONFIG_UPDATE              = false;
+      conf_.delayF               = vector[1];
+      conf_.delayB               = vector[2];
       set_GainPID(vector[3]);
-      conf_.HopeDelay = vector[4];
-      conf_.HopeZ     = vector[5];
+      conf_.HopeDelay            = vector[4];
+      conf_.HopeZ                = vector[5];
+      conf_.flgAutoUpdateSP      = vector[6];; // автообновление опоры на каждой линии                     19
+      conf_.flgAutoUpdateSPDelta = vector[7];; // обновление опоры , если изменение тока превысило порог 20
+      conf_.ThresholdAutoUpdate  = vector[8];; // изменения опоры, если изменение тока превысило порог     21
+      conf_.KoeffCorrectISat     = vector[9];  // опора  %  от тока насыщения        
       flgMaxJump=(conf_.HopeZ==0);
       sleep_ms(100);   
-      for (int j = 1; j <= 5; ++j)
+      for (int j = 1; j <= 9; ++j)
       {
         debugdata.emplace_back(vector[j]);
       }

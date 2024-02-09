@@ -3,30 +3,36 @@
 
 #include <string>
 #include <vector>
+#include <random>
 #include "../utilities/base_types/Point.hpp"
 
 struct Config
 {
-  uint16_t nPoints_x;        // точек по оси  X                              1
-  uint16_t nPoints_y;        // точек по оси  Y                              2 
-  uint8_t  path;             // сканирование  0 - по оси X, 1 - по оси Y     3
-  uint8_t  method;           // что измерять Topo=0,Phase=1, Ampl=2...       4
-  uint16_t delayF;           // задержка при сканировании вперёд             5
-  uint16_t delayB;           // задержка при сканировании назад              6
-  uint16_t betweenPoints_x;  // расстояние между точками по X в дискретах    7 
-  uint16_t betweenPoints_y;  // расстояние между точками по Y в дискретах    8 
-  uint8_t  size;             // size=1  -Z; size=2 - Z,Амплитуда             9
-  uint8_t  Ti;               // усиление ПИД                                10
-  uint16_t diskretinstep;    // размер шага в дискретах                     11
-  uint16_t pause;            // время ожидания в точке измерения  мксек     12  
-  uint8_t  flgLin;           // флаг линеализации                           13   
-  int16_t  lineshift;        //сдвиг линии -учет неортогональности сканнера 14
-  uint8_t  flgOneFrame;      // быстрое сканирование один кадр=1            15
-  uint8_t  flgHoping;        // сканирование прыжками                       16
-  uint16_t HopeDelay;        // задержка в точке измерения при прыжках      17
-  uint16_t HopeZ;            // прыжок по Z,если=0,то прыжок по максимуму   18
-
+  uint16_t nPoints_x;        // точек по оси  X                                            1
+  uint16_t nPoints_y;        // точек по оси  Y                                            2 
+  uint8_t  path;             // сканирование  0 - по оси X, 1 - по оси Y                   3
+  uint8_t  method;           // что измерять Topo=0,Phase=1, Ampl=2...                     4
+  uint16_t delayF;           // задержка при сканировании вперёд                           5
+  uint16_t delayB;           // задержка при сканировании назад                            6
+  uint16_t betweenPoints_x;  // расстояние между точками по X в дискретах                  7 
+  uint16_t betweenPoints_y;  // расстояние между точками по Y в дискретах                  8 
+  uint8_t  size;             // size=1  -Z; size=2 - Z,Амплитуда                           9
+  uint8_t  Ti;               // усиление ПИД                                              10
+  uint16_t diskretinstep;    // размер шага в дискретах                                   11
+  uint16_t pause;            // время ожидания в точке измерения  мксек                   12  
+  uint8_t  flgLin;           // флаг линеализации                                         13   
+  int16_t  lineshift;        //сдвиг линии -учет неортогональности сканнера               14
+  uint8_t  flgOneFrame;      // быстрое сканирование один кадр=1                          15
+  uint8_t  flgHoping;        // сканирование прыжками                                     16
+  uint16_t HopeDelay;        // задержка в точке измерения при прыжках                    17
+  uint16_t HopeZ;            // прыжок по Z,если=0,то прыжок по максимуму                 18
+  uint8_t  flgAutoUpdateSP;   // автообновление опоры на каждой линии                     19
+  uint8_t  flgAutoUpdateSPDelta;// обновление опоры , если изменение тока превысило порог 20
+  uint16_t ThresholdAutoUpdate;//изменения опоры, если изменение тока превысило порог     21
+  uint16_t KoeffCorrectISat;    // опора  %  от тока насыщения                            22
+  int16_t  SetPoint;            // опора  ток                                             23
 };
+
 
 
 struct ConfigCurrent
