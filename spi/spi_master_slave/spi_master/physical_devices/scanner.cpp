@@ -131,14 +131,21 @@ void Scanner::readADC()
         sendStrData("code12",debugdata,100,true);
   }
 }
-void Scanner::scanner_retract_protract(int port, int flg) // port  6
+void Scanner::scanner_retract_protract(int port, int flg) // port  6  1- втянуть,  0-вытянуть
  {
-  flg == 1 ? io_ports[port].enable() : io_ports[port].disable(); 
+  flg == 1 ? io_ports[port].enable() : io_ports[port].disable();
+  afc.clear();
+  if (flg == 1) { afc = "debug scanner retract " + std::to_string(port);}
+  else          { afc = "debug scanner protract" + std::to_string(port);}
+  afc += +"\n";
+  std::cout << afc;
+  afc.clear();
+  sleep_ms(100); 
  } 
 
 void Scanner::retract() //втянуть
 {
-  io3_1.enable();  //  6 элемент массива портов ???
+  io3_1.enable();  //  port 6   элемент массива портов 
 }
 void Scanner::retract(uint16_t HeightJump) //втянуть на H
 {
@@ -148,7 +155,7 @@ void Scanner::retract(uint16_t HeightJump) //втянуть на H
 
 void Scanner::protract() //вытянуть
 {
-  io3_1.disable();
+  io3_1.disable();  //port 6
 }
 void Scanner::LOOP_freeze_unfreeze(int port, int flg) // port virtual 5
 {
@@ -980,13 +987,14 @@ void Scanner::start_hopingscan(std::vector<int32_t> &vector)
         }
       }
     } //fast line
-      if (!flgVirtual)
+     
+      //move to the start line point   
+       if (!flgVirtual)
       {
         if (flgMaxJump)  retract();
-        else retract(ZJump) ;
       } 
       sleep_us(50);
-    //move to the start line point
+
       if (!flgVirtual)
       {
        pos_fast -= conf_.diskretinstep * stepsfastline * nfastline;
@@ -1049,6 +1057,12 @@ void Scanner::start_hopingscan(std::vector<int32_t> &vector)
      vector_data.emplace_back(round(conf_.SetPoint));
      sendStrData("code50",vector_data,60,true); //send data
 
+    if (STOP)  // stop
+    {
+      STOP = false;
+      sendStrData("stopped");
+      break;
+    }
     if (CONFIG_UPDATE)
     {
       CONFIG_UPDATE              = false;
@@ -1093,13 +1107,7 @@ void Scanner::start_hopingscan(std::vector<int32_t> &vector)
       }
      }
     }
-    if (STOP)  // stop
-    {
-      STOP = false;
-     // sleep_ms(100); //24/02/02
-      sendStrData("stopped");
-      break;
-    }
+ 
     //next line
      if ((nslowline - 1 - i) > 0)  //если не последняя линия
      {
@@ -1128,6 +1136,8 @@ void Scanner::start_hopingscan(std::vector<int32_t> &vector)
       }
      }
   } 
+
+  //end scanning 
   blue();
   switch (conf_.path)
   {
@@ -1336,7 +1346,7 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
      if (!flgVirtual)
      {
         if (flgMaxJump)  retract();
-        else retract(ZJump) ;
+        //else retract(ZJump) ;
      } 
     sleep_us(50);
 // move back
@@ -2117,7 +2127,7 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
     {
      case SFM:    { SignalValue=(int16_t)ptr[AmplPin]; break;}  
      case STM: 
-     case SICMDC: { SignalValue=(int16_t)ptr[IPin]; break;}  
+     case SICMDC: { SignalValue=(int16_t)ptr[IPin];    break;}  
     }
    }
    else

@@ -59,8 +59,10 @@ void setDefaultSettings()
   resetPort.disable();
   gpio_pull_down(resetPort.getPort());
   ledPort.enable();
-  io3_1.disable();
-
+  //io3_1.disable(); 
+  set_GainPID(7);  //установить минимальное усиление 240209
+  io3_1.enable();  //втянуть   240209
+ 
   // init io_ports, mb  delete
   io_ports.push_back(io1_0);
   io_ports.push_back(io1_1);
@@ -69,6 +71,9 @@ void setDefaultSettings()
   io_ports.push_back(io2_2);
   io_ports.push_back(io3_0);
   io_ports.push_back(io3_1);
+
+
+
   //io_ports.push_back(io3_2);
 }
 void set_Freq(uint32_t freq)

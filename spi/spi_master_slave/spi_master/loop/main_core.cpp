@@ -175,8 +175,7 @@ case GET_CURRENTX0Y0:
 case SCANNER_RETRACT_PROTRACT:
               {
                 ALGCODE=0;
-                scanner.scanner_retract_protract(vector[1],vector[2]); //int port=5 , int flg
-
+                scanner.scanner_retract_protract(vector[1],vector[2]); //int port=6 , int flg
                 // vector[2] == 1 ? io_ports[vector[1]].enable() : io_ports[vector[1]].disable();
                 break;
               } 

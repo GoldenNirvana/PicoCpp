@@ -66,7 +66,7 @@ OutputPort dec(10);
 OutputPort resetPort(17); // FIXME TEMP
 OutputPort ledPort(PICO_DEFAULT_LED_PIN);
 OutputPort rdbLed(23);
-OutputPort io1_0(11);
+OutputPort io1_0(11); 
 OutputPort io1_1(12);
 OutputPort io2_0(13);
 OutputPort io2_1(14);
