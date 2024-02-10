@@ -1990,21 +1990,17 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
 	  Zt = Z0;
 	  for (int16_t j=0; j< step; j++)
 	  {
-            Zt=Zt;
-            if (mstep>0)
-            {
-             if (Zt==max-mstep) { Zt=(max-mstep);}
-             else  Zt=(Zt+mstep);
-            }
-            else
-            {
-             if (Zt==min-mstep)  { Zt=(min-mstep);}
-             else  Zt=(Zt+mstep);
-            }
-            for(int16_t k=0; k < delay; k++) { }// задержка в каждом дискрете
-//////////////////////////////////////////////
-        if (!flgVirtual)    set_DACZ(0,Zt);  // - physical - 0
-/////////////////////////////////////////////            
+      if (mstep>0)  //втягивание
+      {
+        if (Zt<mstep)      { Zt=mstep;}
+      }
+      else
+      {
+        if (Zt>=max+mstep) { Zt=max;}
+      } 
+       Zt=Zt-mstep;
+      if (!flgVirtual) set_DACZ(0,Zt);    // - physical - 0
+      for(int16_t k=0; k < delay; k++) { }// задержка в каждом дискрете
 	  }
 	  return(Zt);
 	}
@@ -2024,6 +2020,9 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
    params[5]:=(integer(flgmode));
  //  params[6]:=(apiType(round(SpectrParams.BiasV*TransformUnit.BiasV_d))); // add 22/10/25
 */
+
+//  Z<=0 сканнер втянут
+//  32767 - вытянут
  const int16_t SFM=0;
  const int16_t STM=1;
  const int16_t SICMDC=3;      
@@ -2053,7 +2052,7 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
    }
    else
    {
-    dacZ0=(int16_t)100;
+    dacZ0=(int16_t)26000;
     dacZ=dacZ0;
    }
  //start
@@ -2065,7 +2064,7 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
  //////////////////////////////////////
   sleep_ms(200);      
   
- dacZ = ZMove( dacZ, (-ZStart), 1, MicrostepDelay );
+ dacZ = ZMove( dacZ, (-ZStart), 1, MicrostepDelay ); // отвод в начальную точку - втягивание
         
  for(int16_t i=0; i<NPoints; i++)     //сближение
   {
@@ -2083,28 +2082,33 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
    {
            switch (flgModa)
     {
-     case SFM:     { SignalValue=(dacZ-dacZ0)*10; break;}  
+     case SFM:     { SignalValue=dacZ+ZStep*10; break;}  
      case STM:
-     case SICMDC:  { SignalValue=(dacZ-dacZ0)*10; break;}  
+     case SICMDC:  { SignalValue=dacZ+ZStep*10; break;}  
     } 
 
    }
      vectorA_Z.emplace_back(SignalValue);
-     vectorA_Z.emplace_back(-(dacZ-dacZ0));
+     vectorA_Z.emplace_back(dacZ-dacZ0);
      vectorA_Z.emplace_back(1);
      k+=3;       	
-   if ((flgModa==STM) || (flgModa==SICMDC)) // i sfm error corrected 14/09/21
+   if (flgModa==STM) 
    {
-    if (SignalValue<0) SignalValue=-SignalValue;
-    int imax=Threshold;
-    if (imax<0) imax=-imax;
-    if ((SignalValue<imax) && (i!=NPoints-1))
+    if ((abs(SignalValue)<abs(Threshold)) && (i!=NPoints-1))
      {
        dacZ = ZMove( dacZ, ZStep, -1, MicrostepDelay);
      }
      else break;
    };
-   if (flgModa==SFM) //sfm  error corrected 14/09/21
+   if  (flgModa==SICMDC) 
+   {
+     if (abs(SignalValue)>abs(Threshold) && (i!=NPoints-1))
+     {
+       dacZ = ZMove( dacZ, ZStep, -1, MicrostepDelay);
+     }
+     else break;
+   };
+   if (flgModa==SFM) 
    {
     if ((SignalValue>Threshold) && (i!=NPoints-1))
     {
@@ -2134,13 +2138,13 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
    {
       switch (flgModa)
     {
-     case SFM:    { SignalValue=(dacZ-dacZ0)*11; break;}  
+     case SFM:    { SignalValue=dacZ-ZStep*11; break;}  
      case STM: 
-     case SICMDC: { SignalValue=(dacZ-dacZ0)*11; break;}  
+     case SICMDC: { SignalValue=dacZ-ZStep*11; break;}  
     }
    }
      vectorA_Z.emplace_back(SignalValue);
-     vectorA_Z.emplace_back(-(dacZ-dacZ0));
+     vectorA_Z.emplace_back(dacZ-dacZ0);
      vectorA_Z.emplace_back(-1);
      dacZ = ZMove( dacZ, ZStep, +1, MicrostepDelay);
   }
