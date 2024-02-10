@@ -323,7 +323,7 @@ struct Config
       if (!flgVirtual)
       {
         getValuesFromAdc();
-        vector_data.emplace_back((int16_t) spiBuf[ZPin]);  // get Z from adc
+        vector_data.emplace_back(ZMaxValue-(int16_t) spiBuf[ZPin]);  // get Z from adc
         if (conf_.size == 2)
           switch (conf_.method)
           {
@@ -626,7 +626,7 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
       if (!flgVirtual)
       {
         getValuesFromAdc();
-        vector_data.emplace_back((int16_t) spiBuf[ZPin]);  // get Z from adc
+        vector_data.emplace_back(ZMaxValue-(int16_t) spiBuf[ZPin]);  // get Z from adc
         if (conf_.size == 2)
           switch (conf_.method)
           {
@@ -953,7 +953,7 @@ void Scanner::start_hopingscan(std::vector<int32_t> &vector)
       if (!flgVirtual)
       {
          getValuesFromAdc();
-        vector_data.emplace_back((int16_t) spiBuf[ZPin]);     // считать  Z 
+        vector_data.emplace_back(ZMaxValue-(int16_t) spiBuf[ZPin]);     // считать  Z 
         switch (conf_.method)
           //added signal  Const  BackPass=2;    //PM  Const  Phase=3;  Const  UAM=4;   //Force Image
         {
@@ -1310,7 +1310,7 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
       if (!flgVirtual)
       {
          getValuesFromAdc();
-        vector_data.emplace_back((int16_t) spiBuf[ZPin]);     // считать  Z 
+        vector_data.emplace_back(ZMaxValue-(int16_t) spiBuf[ZPin]);     // считать  Z 
         switch (conf_.method)
           //added signal  Const  BackPass=2;    //PM  Const  Phase=3;  Const  UAM=4;   //Force Image
         {
@@ -1655,7 +1655,7 @@ void Scanner::start_fastscan(std::vector<int32_t> &vector)
         if (!flgVirtual)
         {
           getValuesFromAdc();
-          vector_data.emplace_back((int16_t) spiBuf[ZPin]);  // считать Z из АЦП
+          vector_data.emplace_back(ZMaxValue-(int16_t) spiBuf[ZPin]);  // считать Z из АЦП
         }
         else
         {
