@@ -1982,23 +1982,34 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
   sendStrData("end");
   dark();
 }
- static int ZMove( int Z0, int step, int mstep, int delay )   // st1 = +-1
+ static int ZMove( int Z0, int steps, int stepsize, int delay )   // stepsize=+-1  sign  -> dir 
 	{
 	  int16_t Zt;
     int16_t max  =  32767;
     int16_t min  = -32768;
 	  Zt = Z0;
-	  for (int16_t j=0; j< step; j++)
+	  for (int16_t j=0; j< steps; j++)
 	  {
-      if (mstep>0)  //втягивание
+   /*   if (stepsize>0)  //втягивание
       {
-        if (Zt<mstep)      { Zt=mstep;}
+        if (Zt<stepsize)      { Zt=stepsize;}
       }
       else
       {
-        if (Zt>=max+mstep) { Zt=max;}
+        if (Zt>=max+stepsize) { Zt=max;}
       } 
-       Zt=Zt-mstep;
+       Zt=Zt-stepsize;
+   */  
+
+      if (stepsize>0)  //вытягивание 
+      {
+        if (Zt>=max-stepsize) { Zt=max;}
+      }
+      else
+      {
+        if (Zt<=abs(stepsize))      { Zt=0;}
+      } 
+       Zt=Zt+stepsize;  
       if (!flgVirtual) set_DACZ(0,Zt);    // - physical - 0
       for(int16_t k=0; k < delay; k++) { }// задержка в каждом дискрете
 	  }
@@ -2064,7 +2075,7 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
  //////////////////////////////////////
   sleep_ms(200);      
   
- dacZ = ZMove( dacZ, (-ZStart), 1, MicrostepDelay ); // отвод в начальную точку - втягивание
+ dacZ = ZMove( dacZ, abs(ZStart), -1, MicrostepDelay ); // отвод в начальную точку - втягивание
         
  for(int16_t i=0; i<NPoints; i++)     //сближение
   {
@@ -2082,45 +2093,43 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
    {
            switch (flgModa)
     {
-     case SFM:     { SignalValue=dacZ+ZStep*10; break;}  
-     case STM:
-     case SICMDC:  { SignalValue=dacZ+ZStep*10; break;}  
+     case SFM:     { SignalValue=ZMaxValue-dacZ; break;}  
+     case STM:     { SignalValue=dacZ+100;       break;} 
+     case SICMDC:  { SignalValue=ZMaxValue-dacZ; break;}  
     } 
 
    }
-     vectorA_Z.emplace_back(SignalValue);
+     vectorA_Z.emplace_back(SignalValue); 
      vectorA_Z.emplace_back(dacZ-dacZ0);
      vectorA_Z.emplace_back(1);
      k+=3;       	
    if (flgModa==STM) 
    {
-    if ((abs(SignalValue)<abs(Threshold)) && (i!=NPoints-1))
+    if ((abs(SignalValue)>abs(Threshold)) and (i<=(NPoints-1)))
      {
-       dacZ = ZMove( dacZ, ZStep, -1, MicrostepDelay);
+       break;
      }
-     else break;
    };
    if  (flgModa==SICMDC) 
    {
-     if (abs(SignalValue)>abs(Threshold) && (i!=NPoints-1))
+     if (abs(SignalValue)<abs(Threshold) and (i<=(NPoints-1)))
      {
-       dacZ = ZMove( dacZ, ZStep, -1, MicrostepDelay);
+      break; 
      }
-     else break;
    };
    if (flgModa==SFM) 
    {
-    if ((SignalValue>Threshold) && (i!=NPoints-1))
-    {
-       dacZ = ZMove( dacZ, ZStep, -1, MicrostepDelay);
-    }
-    else break;
+     if ((SignalValue<Threshold) and (i<=(NPoints-1)))
+     {
+      break;
+     }
    }
+   dacZ = ZMove( dacZ, ZStep, 1, MicrostepDelay);
  }  // for    i
     NPoints= k / 3;
     sleep_ms(300);
 
-  for(int16_t i=NPoints; i>=1; i--)
+  for(int16_t i=NPoints; i>=1; i--)  // отвод
   {
     sleep_ms(Delay); 
 
@@ -2138,22 +2147,22 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
    {
       switch (flgModa)
     {
-     case SFM:    { SignalValue=dacZ-ZStep*11; break;}  
-     case STM: 
-     case SICMDC: { SignalValue=dacZ-ZStep*11; break;}  
+     case SFM:    { SignalValue=ZMaxValue-dacZ+100; break;}  
+     case STM:    { SignalValue=dacZ+100;           break;} 
+     case SICMDC: { SignalValue=ZMaxValue-dacZ+100; break;}  
     }
    }
      vectorA_Z.emplace_back(SignalValue);
      vectorA_Z.emplace_back(dacZ-dacZ0);
      vectorA_Z.emplace_back(-1);
-     dacZ = ZMove( dacZ, ZStep, +1, MicrostepDelay);
+     dacZ = ZMove( dacZ, ZStep, -1, MicrostepDelay);
   }
  //move to start point
   sleep_ms(300);
   if (dacZ-dacZ0 > 0) {dlt = dacZ-dacZ0;}
   else {dlt = -dacZ+dacZ0;}
 
-  dacZ = ZMove( dacZ, dlt, -1, MicrostepDelay );
+  dacZ = ZMove( dacZ, dlt, 1, MicrostepDelay );
 
    sendStrData("code66",vectorA_Z,100,true);  
  /////////////////////////////////////////  
