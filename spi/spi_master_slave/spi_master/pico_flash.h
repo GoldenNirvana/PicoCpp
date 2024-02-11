@@ -2,42 +2,41 @@
 
 #include <cstdlib>
 #include <cstdint>
-
-#define RESET   "\033[0m"
-#define RED     "\033[31m"      /* Red */
-#define GREEN   "\033[32m"      /* Green */
-#define YELLOW  "\033[33m"      /* Yellow */
-#define CYAN    "\033[36m"      /* Cyan */
+#include <iostream>
+#include <pico/time.h>
+#include "hardware/flash.h"
+#include "hardware/sync.h"
 
 #ifndef PICOFLASH_H
 #define PICOFLASH_H
 
-/**
- * @brief Reads number of blocks from Pico Flash
- *
- * @param FLASH_TARGET_OFFSET Flash Offset Location used for read/write
- * @param len Length of number of locations to read from Flash
- * @return
- */
-uint32_t *pico_flash_read(long int FLASH_TARGET_OFFSET, size_t len);
+#define FLASH_TARGET_OFFSET_0 (1792 * 1024)
+#define FLASH_TARGET_OFFSET_1 (1792 * 1024 + 4096 * 1)
+#define FLASH_TARGET_OFFSET_2 (1792 * 1024 + 4096 * 2)
+#define FLASH_TARGET_OFFSET_3 (1792 * 1024 + 4096 * 3)
+#define FLASH_TARGET_OFFSET_4 (1792 * 1024 + 4096 * 4)
+#define FLASH_TARGET_OFFSET_5 (1792 * 1024 + 4096 * 5)
+#define FLASH_TARGET_OFFSET_6 (1792 * 1024 + 4096 * 6)
+#define FLASH_TARGET_OFFSET_7 (1792 * 1024 + 4096 * 7)
+#define FLASH_TARGET_OFFSET_8 (1792 * 1024 + 4096 * 8)
+#define FLASH_TARGET_OFFSET_9 (1792 * 1024 + 4096 * 9)
 
-/**
- * @brief Writes data to specified Pico Flash Address
- *
- * @param FLASH_TARGET_OFFSET Flash Offset Location used for read/write
- * @param flash_data The array of data that will be stored in Flash 
- * @param num Number of data points to be stored
- * @return
- */
-int pico_flash_write(long int FLASH_TARGET_OFFSET, const uint32_t *flash_data, size_t num);
 
-/**
- * @brief Erases the entire specified Flash Page
- *
- * @param FLASH_TARGET_OFFSET Flash Offset Location used for read/write
- * @return
- */
-void pico_flash_erase(long int FLASH_TARGET_OFFSET);
+template<class T>
+T pico_flash_read(long int FLASH_TARGET_OFFSET)
+{
+  T *flash_target_contents = (T *) (XIP_BASE + FLASH_TARGET_OFFSET);
+  return *flash_target_contents;
+}
 
+template<class T>
+int pico_flash_write(long int FLASH_TARGET_OFFSET, T *flash_data)
+{
+  uint32_t interrupts = save_and_disable_interrupts();
+  flash_range_erase(FLASH_TARGET_OFFSET, FLASH_SECTOR_SIZE);
+  flash_range_program(FLASH_TARGET_OFFSET, (uint8_t *) flash_data, FLASH_PAGE_SIZE);
+  restore_interrupts(interrupts);
+  return interrupts;
+}
 
 #endif // PICOFLASH_H

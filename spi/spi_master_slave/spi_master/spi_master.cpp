@@ -4,10 +4,6 @@
 #include "utilities/peripheral_functions.hpp"
 #include "pico_flash.h"
 
-// 224 * 8 * 1024
-#define FLASH_TARGET_OFFSET (1792*1024)
-#define FLASH_TARGET_OFFSET_SECOND (1792*1024)
-
 uint32_t DEBUG_LEVEL = 2;
 
 int start_app()
@@ -24,32 +20,45 @@ int start_app()
   return 0;
 }
 
+struct Data_example
+{
+  int16_t a;
+  int16_t b;
+  int16_t c;
+  int16_t d;
+};
+
+
 int test_flash()
 {
-  uint32_t counter0 = 5;                                                                      //++ Declaration of Variables to be stored
-  uint32_t counter1 = 105;
-  uint32_t counter2 = 1005;
 
-  uint32_t flash_data[256];
-  //++ Declaring an array of size 256 to store the variables
-  flash_data[0] = counter0;                                                                   //++ Storing variables on respective array indexes
-  flash_data[1] = counter1;
-  flash_data[2] = counter2;
+  // Запись
+  // Любая структура размером меньше 256 байт: sizeof(data) <= 256!!!
+  Data_example data{};
+  data.a = 8213;
+  data.b = 551;
+  data.c = 4;
+  data.d = 7499;
+  // При записи передать страницу (FLASH_TARGET_OFFSET_0 - FLASH_TARGET_OFFSET_9) на которую будет записана data
+  // WARNING !!! После завершнения функции программа завершается. Ищу как поправить.
+  pico_flash_write<Data_example>(FLASH_TARGET_OFFSET_8, &data);
 
-  pico_flash_read(FLASH_TARGET_OFFSET, 3);                                                    //++ Flash operation to read 3 Flash Addresses before erasing and storing new data
+  // Чтение
+  // Считывание с указанной страницы
+  data = pico_flash_read<Data_example>(FLASH_TARGET_OFFSET_8);
+  std::cout << data.a << '\n';
+  std::cout << data.b << '\n';
+  std::cout << data.c << '\n';
+  std::cout << data.d << '\n';
 
-  pico_flash_erase(FLASH_TARGET_OFFSET);                                                      //++ Flash operation to erase entire flash page ( 256 locations together )
-
-  pico_flash_read(FLASH_TARGET_OFFSET, 3);                                                    //++ Flash operation to read 3 Flash Addresses after erasing entire page
-
-  pico_flash_write(FLASH_TARGET_OFFSET, flash_data, 3);                                       //++ Flash operation to write the 3 Flash Address with the array containg the variables
+  std::cout << "\n All done..............\n";
+  return 0;
 }
 
 int main()
 {
-  stdio_init_all();                                                                           //++ Initialize rp2040
-  sleep_ms(10000);                                                                            //++ Wait for 15 secs
-
+  stdio_init_all();
+  sleep_ms(3000);
   std::cout << "\n System Starting..............\n";
   return test_flash();
 //  return start_app();

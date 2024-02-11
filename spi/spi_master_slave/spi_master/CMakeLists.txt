@@ -1,3 +1,5 @@
+#add_link_options("-fexceptions")
+
 add_executable(spi_master spi_master.cpp transceiver/rx_utils/parser.hpp utilities/base_types/Spi.cpp
         utilities/base_types/Spi.hpp utilities/base_types/Decoder.cpp utilities/base_types/Decoder.hpp
         transceiver/rx_core.hpp transceiver/rx_core.cpp
@@ -13,10 +15,12 @@ add_executable(spi_master spi_master.cpp transceiver/rx_utils/parser.hpp utiliti
         utilities/hardcoded_functions.cpp utilities/base_types/core_config.hpp
         utilities/base_types/core_config.hpp
         devices/DAC8563.cpp devices/DAC8563.hpp utilities/debug_logger.hpp utilities/debug_logger.cpp
-        pico_flash.h pico_flash.cpp)
+        pico_flash.h
+)
 # Pull in basic dependencies
 target_link_libraries(spi_master pico_stdlib hardware_spi hardware_gpio pico_multicore pico_mem_ops hardware_pio hardware_dma)
 #target_link_libraries(spi_master pico_stdlib hardware_spi)
+#target_link_options(spi_master PUBLIC "-fexceptions")
 
 pico_enable_stdio_usb(spi_master 1)
 pico_enable_stdio_uart(spi_master 1)
@@ -25,6 +29,7 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O2")
 #set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -Werror")
 #add_compile_options(-Werror)
 #set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O3")
+#target_compile_options(spi_master PRIVATE -fexceptions)
 
 # create map/bin/hex file etc.
 pico_add_extra_outputs(spi_master)
