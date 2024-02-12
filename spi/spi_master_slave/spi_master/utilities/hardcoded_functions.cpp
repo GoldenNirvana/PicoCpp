@@ -131,8 +131,12 @@ void init_DACSPB(uint8_t port) //  4 для подставки
 void init_DACXY(uint8_t port)
 {
   dac8563_2.initialize(port); //code 27
+
+  dac8563_2.setSpiProps();
+  dac8563_2.writeA(0);
+  dac8563_2.writeB(0);
   afc.clear();
-  afc = "debug Init DACXY " + std::to_string(port);
+  afc = "debug Init DACXY 0,0 port=" + std::to_string(port);
   afc += +"\n";
   std::cout << afc;
   afc.clear();
@@ -144,7 +148,7 @@ void init_DACZ(uint8_t port)
   dac8563_3.initialize(port); //code 27
   set_DACZ(0,0); 
   afc.clear();
-  afc = "debug Init DACZ " + std::to_string(port);
+  afc = "debug Init DACZ 0 port=" + std::to_string(port);
   afc += +"\n";
   std::cout << afc;
   afc.clear();
