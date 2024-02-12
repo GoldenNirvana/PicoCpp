@@ -140,6 +140,11 @@ case SET_SETPOINT:
                 init_SPI(vector[1],vector[2],vector[3],vector[4]);  //22, 2, 8, 0, 1, 0, value	
                 set_SetPoint(vector[5],vector[6]);
                 break; 
+              }   
+  case SET_Z: { 
+                ALGCODE=ALGNONE;
+                set_DACZ(0,vector[1]);
+                break;
               }     
  case SET_XY: {
                ALGCODE=ALGNONE;

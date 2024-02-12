@@ -26,7 +26,7 @@ void set_GainPID(int gain);          //установить усиления П�
 
 void set_DACXY(uint8_t channel, uint16_t value); 
 
-void set_DACZ(uint8_t channel,uint16_t value); 
+void set_DACZ(uint8_t channel,int16_t value); 
 
 void stopAll(); //остановка  выполнения алгоритма
 

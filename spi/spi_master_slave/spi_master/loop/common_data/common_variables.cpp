@@ -44,10 +44,10 @@ bool    flgVirtual = false;     // флаг симуляции работа ми
 uint8_t flgDebugLevel = 2;      // уровень отладки
 bool    flgUseUART = false;     // использовать UART для передачи данных
 //данные для симуляции 
-int16_t ZValue      = 32767;
-int16_t SignalValue = 32767;
-int16_t ZMaxValue   = 32767;
-int16_t ShiftDac    = 32767;
+int16_t ZValue      = maxint16_t;
+int16_t SignalValue = maxint16_t;
+int16_t ZMaxValue   = maxint16_t;
+int32_t ShiftDac    = 32768;
 
 
 uint8_t ZPin    = 0; // Z
@@ -57,7 +57,7 @@ uint8_t IPin    = 2; // ток
 //uint32_t DEBUG_LEVEL = 2;
 bool Z_STATE = false; //???
 bool ADC_IS_READY_TO_READ = true;
-volatile int32_t current_channel = 0;
+//volatile int32_t current_channel = 0;
 
 critical_section_t criticalSection;
 InputPort  busy(16); // FIXME TEMP!!!

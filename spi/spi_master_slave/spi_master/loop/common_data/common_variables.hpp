@@ -7,8 +7,14 @@
 #include "../../physical_devices/LinearDriver.hpp"
 #include "../../physical_devices/scanner.hpp"
 #include "../../devices/DAC8563.hpp"
+//device
+#define SFM                      0
+#define STM                      1
+#define SICMDC                   3  
+#define maxint16_t               32767
+#define minint16_t              -32768
 
-#define ALGNONE                  0
+#define ALGNONE                   0
 #define ADC_READCmd              12  //AD7606 timer
 #define VirtualCmd               14
 #define DebugLevelCmd            15
@@ -44,10 +50,9 @@
 //#define SCANNER_RETRACT
 //#define SCANNER_PROTRACT
 
-
-extern int16_t ALGCODE;
+extern int16_t  ALGCODE;
 extern uint32_t DEBUG_LEVEL;
-extern Spi spi;
+extern Spi      spi;
 extern LinearDriver linearDriver;
 extern Decoder decoder;
 extern Scanner scanner;
@@ -73,12 +78,10 @@ extern bool ADC_GET_VALUE;     //AD7606
 extern bool LID;
 extern bool SET_IO_VALUE;
 extern bool CONFIG_UPDATE;
-
 extern bool Z_STATE;
 // add MF
 extern bool LOOP_FREEZE_UNFREEZE;
 extern bool STOP;
-
 extern bool PID_TURN_ON;
 extern bool SCANNER_RETRACT;
 extern bool SCANNER_PROTRACT;
@@ -96,9 +99,9 @@ extern bool    flgVirtual;  // Virtual device for debuging and simulation
 extern uint8_t flgDebugLevel; //  leveldebug
 extern int16_t ZMaxValue;
 extern bool    flgUseUART;  // 
-extern int16_t ShiftDac;
+extern int32_t ShiftDac;
 //
-extern volatile int32_t current_channel;
+//extern volatile int32_t current_channel;
 extern critical_section_t criticalSection;
 
 extern InputPort  busy;

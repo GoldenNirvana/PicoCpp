@@ -106,13 +106,13 @@ void Scanner::readADC()
    ZValue = (int16_t) ptr[ZPin];
       switch (vector[1]) //прибор
    {
-          case 0: //SFM
+        case SFM: //SFM
                 {
                  SignalValue = (int16_t) ptr[AmplPin];
                  break;  
                 } 
-          case 1://STM
-          case 3://SICMDC  
+        case STM://STM
+     case SICMDC://SICMDC  
                 {
                  SignalValue = (int16_t) ptr[IPin];
                  break;  
@@ -150,7 +150,7 @@ void Scanner::retract() //втянуть
 void Scanner::retract(uint16_t HeightJump) //втянуть на H
 {
  freezeLOOP(100);
- set_DACZ(0,HeightJump); 
+ set_DACZ(0,-HeightJump); 
 }
 
 void Scanner::protract() //вытянуть
@@ -1982,40 +1982,48 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
   sendStrData("end");
   dark();
 }
- static int ZMove( int Z0, int steps, int stepsize, int delay )   // stepsize=+-1  sign  -> dir 
+/*
+ static int16_t ZMove( int16_t Z0, int16_t steps, int16_t stepsize, uint16_t delay )   // stepsize=+-1  sign  -> dir 
 	{
 	  int16_t Zt;
-    int16_t max  =  32767;
-    int16_t min  = -32768;
-	  Zt = Z0;
+	  Zt =Z0;
 	  for (int16_t j=0; j< steps; j++)
 	  {
-   /*   if (stepsize>0)  //втягивание
-      {
-        if (Zt<stepsize)      { Zt=stepsize;}
-      }
-      else
-      {
-        if (Zt>=max+stepsize) { Zt=max;}
-      } 
-       Zt=Zt-stepsize;
-   */  
-
       if (stepsize>0)  //вытягивание 
       {
-        if (Zt>=max-stepsize) { Zt=max;}
+        if (Zt>=(maxint16_t-stepsize)) { Zt=maxint16_t;}
       }
       else
       {
-        if (Zt<=abs(stepsize))      { Zt=0;}
+        if (Zt<=(minint16_t-stepsize)) { Zt=minint16_t;}
       } 
        Zt=Zt+stepsize;  
       if (!flgVirtual) set_DACZ(0,Zt);    // - physical - 0
       for(int16_t k=0; k < delay; k++) { }// задержка в каждом дискрете
 	  }
-	  return(Zt);
+    return(Zt);
 	}
-
+*/
+static int16_t ZMove( int16_t Z0, int16_t steps, int16_t stepsize, uint16_t delay )   // stepsize=+-1  sign  -> dir 
+	{
+	  int16_t Zt;
+	  Zt =Z0;
+	  for (int16_t j=0; j< steps; j++)
+	  {
+      if (stepsize>0)  //вытягивание 
+      {
+        if (Zt>=(maxint16_t-stepsize)) { Zt=maxint16_t;}
+      }
+      else
+      {
+        if (Zt<=(minint16_t-stepsize)) { Zt=minint16_t;}
+      } 
+       Zt=Zt+stepsize;  
+      if (!flgVirtual) set_DACZ(0,Zt);    // - physical - 0
+      for(int16_t k=0; k < delay; k++) { }// задержка в каждом дискрете
+	  }
+    return(Zt);
+	}
 void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектроскопия Ampl-Z
 {
 /*
@@ -2034,9 +2042,9 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
 
 //  Z<=0 сканнер втянут
 //  32767 - вытянут
- const int16_t SFM=0;
- const int16_t STM=1;
- const int16_t SICMDC=3;      
+// const int16_t SFM=0;
+// const int16_t STM=1;
+// const int16_t SICMDC=3;      
  int16_t   NPoints=(int16_t )vector[1]; // n точек
  int16_t    ZStart=(int16_t )vector[2]; // ZStart
  int16_t     ZStep=(int16_t )vector[3]; // ZStep
@@ -2045,7 +2053,7 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
  int16_t   flgModa=(int16_t )vector[6]; // flgmode stm,sfm;
 
  int16_t SignalValue;
- int16_t dlt,dacZ,dacZ0;
+ int16_t dlt,dacZ,dacZ0, deltaZ;
 
  int16_t MicrostepDelay=3;
 
@@ -2075,8 +2083,8 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
  //////////////////////////////////////
   sleep_ms(200);      
   
- dacZ = ZMove( dacZ, abs(ZStart), -1, MicrostepDelay ); // отвод в начальную точку - втягивание
-        
+  deltaZ = ZMove(0, abs(ZStart), 1, MicrostepDelay ); // отвод в начальную точку - втягивание
+  dacZ=dacZ-deltaZ;      
  for(int16_t i=0; i<NPoints; i++)     //сближение
   {
     sleep_ms(Delay);  
@@ -2110,21 +2118,15 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
        break;
      }
    };
-   if  (flgModa==SICMDC) 
+   if  ((flgModa==SICMDC) || (flgModa==SFM) )
    {
      if (abs(SignalValue)<abs(Threshold) and (i<=(NPoints-1)))
      {
       break; 
      }
    };
-   if (flgModa==SFM) 
-   {
-     if ((SignalValue<Threshold) and (i<=(NPoints-1)))
-     {
-      break;
-     }
-   }
-   dacZ = ZMove( dacZ, ZStep, 1, MicrostepDelay);
+    deltaZ = ZMove(deltaZ, ZStep, -1, MicrostepDelay);
+    dacZ=dacZ+deltaZ;
  }  // for    i
     NPoints= k / 3;
     sleep_ms(300);
@@ -2155,16 +2157,17 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
      vectorA_Z.emplace_back(SignalValue);
      vectorA_Z.emplace_back(dacZ-dacZ0);
      vectorA_Z.emplace_back(-1);
-     dacZ = ZMove( dacZ, ZStep, -1, MicrostepDelay);
+     deltaZ = ZMove( deltaZ, ZStep, 1, MicrostepDelay);
+     dacZ=dacZ-deltaZ;
   }
  //move to start point
   sleep_ms(300);
   if (dacZ-dacZ0 > 0) {dlt = dacZ-dacZ0;}
   else {dlt = -dacZ+dacZ0;}
 
-  dacZ = ZMove( dacZ, dlt, 1, MicrostepDelay );
-
-   sendStrData("code66",vectorA_Z,100,true);  
+  deltaZ = ZMove(deltaZ, dlt, -1, MicrostepDelay );
+  dacZ=dacZ+deltaZ;
+  sendStrData("code66",vectorA_Z,100,true);  
  /////////////////////////////////////////  
  // разморозка состояния pid
     if(!flgVirtual)   unfreezeLOOP(500);
@@ -2335,7 +2338,7 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
   } 
   sendStrData( "debug approach parameters 1 ",debugdata,100,true);
   set_SetPoint(0,SET_POINT); 
-  if (flgDev!=0) set_Bias(1,Bias);  
+  if (flgDev!=SFM) set_Bias(1,Bias);  
   set_GainPID(GAIN);
 
   if (!flgVirtual)
@@ -2344,13 +2347,13 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
     ZValue = (int16_t) ptr[ZPin];
     switch (flgDev)
    {
-     case 0: 
+      case SFM: 
      {
       SignalValue = (int16_t) ptr[AmplPin];
       break;  
      } 
-   case 1:
-   case 3:  
+      case STM:
+   case SICMDC:  
      {
       SignalValue = (int16_t) ptr[IPin];
       break;  
@@ -2390,7 +2393,7 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
       GAIN         = vector[6];
       SCANNERDECAY = vector[7];
      
-      if (flgDev!=0) set_Bias(1,Bias);  
+     // if (flgDev!=SFM) set_Bias(1,Bias);  240211
       set_SetPoint(0,SET_POINT); 
       set_GainPID(GAIN);
       sleep_ms(100);  // need for virtual для разделение afc
@@ -2407,13 +2410,13 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
       ZValue = (int16_t) ptr[ZPin];
      switch (flgDev)
      {
-      case 0: 
+      case SFM: 
       {
        SignalValue = (int16_t) ptr[AmplPin];
        break;  
       } 
-      case 1:
-      case 3:  
+         case STM:
+      case SICMDC:  
       {
        SignalValue = (int16_t) ptr[IPin];
       break;  
@@ -2432,7 +2435,7 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
       else
       {
         if ((ZMaxValue - ZValue) > 0) { ZValue += 500; }
-                                 else { ZValue = ZMaxValue; }
+                                 else { ZValue = maxint16_t; }
       }
       buf_status[1] = ZValue;
       buf_status[2] = SignalValue;
@@ -2508,6 +2511,7 @@ void Scanner::start_frqscan()
   int16_t a = 10000;
   int16_t scan_index = 0;
   int16_t current_freq = 0;
+  int32_t current_channel;
   for (int j = 0; j < 5; ++j)
   {
     inBuf[j] = vector[1 + j];
@@ -2517,6 +2521,7 @@ void Scanner::start_frqscan()
   debugdata.emplace_back(AmplPin);
   debugdata.emplace_back(ZPin);
   sendStrData("debug frq scan parameters ",debugdata,100,true);
+  
   current_channel = inBuf[3] - 1;  
 
   std::vector<int32_t> data;
@@ -2542,7 +2547,7 @@ void Scanner::start_frqscan()
     inBuf[1] += inBuf[2];
   }
   sendStrData("code25",data,100,true);
-  current_channel = -1;
+  //current_channel = -1;
   int16_t count = 0;
   while ((!TheadDone) || (count<20) )//ожидание ответа ПК для синхронизации
   {
