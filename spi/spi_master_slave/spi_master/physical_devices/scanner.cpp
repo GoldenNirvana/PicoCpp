@@ -2046,8 +2046,8 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
 // const int16_t STM=1;
 // const int16_t SICMDC=3;      
  int16_t   NPoints=(int16_t )vector[1]; // n точек
- int16_t    ZStart=(int16_t )vector[2]; // ZStart
- int16_t     ZStep=(int16_t )vector[3]; // ZStep
+ int16_t    ZStart=(int16_t )vector[2]; // отход на  abs(ZStart)
+ int16_t     ZStep=(int16_t )vector[3]; // ZStep>0
  int16_t Threshold=(int16_t )vector[4]; // Threshold
  int16_t     Delay=(int16_t )vector[5]; // delay
  int16_t   flgModa=(int16_t )vector[6]; // flgmode stm,sfm;
