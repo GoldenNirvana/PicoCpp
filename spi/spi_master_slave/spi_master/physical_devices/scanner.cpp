@@ -147,7 +147,7 @@ void Scanner::retract() //втянуть
 {
   io3_1.enable();  //  port 6   элемент массива портов 
 }
-void Scanner::retract(uint16_t HeightJump) //втянуть на H
+void Scanner::retract(int16_t HeightJump) //втянуть на H
 {
  freezeLOOP(100);
  set_DACZ(0,-HeightJump); 
@@ -156,6 +156,11 @@ void Scanner::retract(uint16_t HeightJump) //втянуть на H
 void Scanner::protract() //вытянуть
 {
   io3_1.disable();  //port 6
+}
+void Scanner::protract(uint16_t delay) //вытянуть
+{
+  set_DACZ(0,0); 
+  unfreezeLOOP(delay);
 }
 void Scanner::LOOP_freeze_unfreeze(int port, int flg) // port virtual 5
 {
@@ -842,13 +847,15 @@ void Scanner::start_hopingscan(std::vector<int32_t> &vector)
   uint8_t  portslow;
   uint16_t pos_fast;
   uint16_t pos_slow;
-  uint16_t ZJump;
+  int16_t  ZJump;
   int16_t  ISatCur;
   int16_t  ISatCurPrev;
 
   bool  flgMaxJump;
   
   flgMaxJump=(conf_.HopeZ==0);
+
+  ZJump=-conf_.HopeZ;
 
     //std::random_device rd;
     // Create a Mersenne Twister pseudo-random number generator
@@ -919,7 +926,7 @@ void Scanner::start_hopingscan(std::vector<int32_t> &vector)
       if (!flgVirtual)
       {
         if (flgMaxJump)  retract();
-        else retract(ZJump) ;
+        else             retract(ZJump);
       }   
       sleep_us(50);
       for (uint32_t k = 0; k < stepsfastline; ++k) 
@@ -945,7 +952,8 @@ void Scanner::start_hopingscan(std::vector<int32_t> &vector)
   //******************************************************************************
       if (!flgVirtual)
       {
-        protract();
+        if (flgMaxJump) protract();
+        else            protract(0);
       }
       sleep_ms(conf_.HopeDelay);
       sleep_us(conf_.pause);    // 50 CONST 50ms wait for start get data
@@ -991,7 +999,7 @@ void Scanner::start_hopingscan(std::vector<int32_t> &vector)
       //move to the start line point   
        if (!flgVirtual)
       {
-        if (flgMaxJump)  retract();
+        retract();
       } 
       sleep_us(50);
 
@@ -1275,7 +1283,7 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
       if (!flgVirtual)
       {
         if (flgMaxJump)  retract();
-        else retract(ZJump) ;
+        else        retract(ZJump);
       }   
       sleep_us(50);
       for (uint32_t k = 0; k < stepsfastline; ++k) 
@@ -1302,7 +1310,8 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
   //******************************************************************************
       if (!flgVirtual)
       {
-          protract();
+         if (flgMaxJump) protract();
+        else             protract(0);
       }
       sleep_ms(conf_.HopeDelay);
       sleep_us(conf_.pause);    // 50 CONST 50ms wait for start get data
@@ -1343,13 +1352,13 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
         }
       }
     }
-     if (!flgVirtual)
+ // move back   
+    if (!flgVirtual)
      {
-        if (flgMaxJump)  retract();
-        //else retract(ZJump) ;
+         retract();
      } 
     sleep_us(50);
-// move back
+
     switch (conf_.path)
     {
       case 0://X+

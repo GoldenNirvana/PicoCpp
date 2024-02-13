@@ -25,7 +25,7 @@ struct Config
   uint8_t  flgOneFrame;      // быстрое сканирование один кадр=1                          15
   uint8_t  flgHoping;        // сканирование прыжками                                     16
   uint16_t HopeDelay;        // задержка в точке измерения при прыжках                    17
-  uint16_t HopeZ;            // прыжок по Z,если=0,то прыжок по максимуму                 18
+  uint16_t  HopeZ;            // прыжок по Z,если=0,то прыжок по максимуму                 18
   uint8_t  flgAutoUpdateSP;   // автообновление опоры на каждой линии                     19
   uint8_t  flgAutoUpdateSPDelta;// обновление опоры , если изменение тока превысило порог 20
   uint16_t ThresholdAutoUpdate;//изменения опоры, если изменение тока превысило порог     21
@@ -96,9 +96,11 @@ public:
   
   void retract();       // втянуть сканер
 
-  void retract(uint16_t HeightJump); //втянуть на H
+  void retract(int16_t HeightJump); //втянуть на H
 
   void protract();      // втянуть сканер
+ 
+  void protract(uint16_t delay); //разморозить ПИД 
  
   void LOOP_freeze_unfreeze(int port, int flg);  
  
