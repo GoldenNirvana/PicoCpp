@@ -2053,7 +2053,7 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
  int16_t   flgModa=(int16_t )vector[6]; // flgmode stm,sfm;
 
  int16_t SignalValue;
- int16_t dlt,dacZ,dacZ0, deltaZ;
+ int16_t dir,dlt,deltaZ;
 
  int16_t MicrostepDelay=3;
 
@@ -2062,7 +2062,7 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
     debugdata.emplace_back(vector[j]);
   }
   sendStrData("debug AI_Z parameters",debugdata,100,true);
- 
+ /*
    if (!flgVirtual) 
    { 
     auto ptr = getValuesFromAdc();
@@ -2074,6 +2074,7 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
     dacZ0=(int16_t)26000;
     dacZ=dacZ0;
    }
+   */
  //start
   SignalValue=0;
   int16_t k=0;
@@ -2084,7 +2085,7 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
   sleep_ms(200);      
   
   deltaZ = ZMove(0, abs(ZStart), 1, MicrostepDelay ); // отвод в начальную точку - втягивание
-  dacZ=dacZ-deltaZ;      
+    
  for(int16_t i=0; i<NPoints; i++)     //сближение
   {
     sleep_ms(Delay);  
@@ -2101,14 +2102,14 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
    {
            switch (flgModa)
     {
-     case SFM:     { SignalValue=ZMaxValue-dacZ; break;}  
-     case STM:     { SignalValue=dacZ+100;       break;} 
-     case SICMDC:  { SignalValue=ZMaxValue-dacZ; break;}  
+     case SFM:     { SignalValue=-deltaZ;/*ZMaxValue-dacZ;*/ break;}  
+     case STM:   
+     case SICMDC:  { SignalValue=-deltaZ;/*ZMaxValue-dacZ*/ break;}  
     } 
 
    }
      vectorA_Z.emplace_back(SignalValue); 
-     vectorA_Z.emplace_back(dacZ-dacZ0);
+     vectorA_Z.emplace_back(-deltaZ);
      vectorA_Z.emplace_back(1);
      k+=3;       	
    if (flgModa==STM) 
@@ -2126,7 +2127,6 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
      }
    };
     deltaZ = ZMove(deltaZ, ZStep, -1, MicrostepDelay);
-    dacZ=dacZ+deltaZ;
  }  // for    i
     NPoints= k / 3;
     sleep_ms(300);
@@ -2149,29 +2149,29 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
    {
       switch (flgModa)
     {
-     case SFM:    { SignalValue=ZMaxValue-dacZ+100; break;}  
-     case STM:    { SignalValue=dacZ+100;           break;} 
-     case SICMDC: { SignalValue=ZMaxValue-dacZ+100; break;}  
+     case SFM:    { SignalValue=-deltaZ+100; break;}  
+     case STM:    
+     case SICMDC: { SignalValue=-deltaZ+100; break;}  
     }
    }
      vectorA_Z.emplace_back(SignalValue);
-     vectorA_Z.emplace_back(dacZ-dacZ0);
+     vectorA_Z.emplace_back(-deltaZ);
      vectorA_Z.emplace_back(-1);
      deltaZ = ZMove( deltaZ, ZStep, 1, MicrostepDelay);
-     dacZ=dacZ-deltaZ;
   }
  //move to start point
   sleep_ms(300);
-  if (dacZ-dacZ0 > 0) {dlt = dacZ-dacZ0;}
-  else {dlt = -dacZ+dacZ0;}
-
-  deltaZ = ZMove(deltaZ, dlt, -1, MicrostepDelay );
-  dacZ=dacZ+deltaZ;
+  dlt=abs(deltaZ);
+  if (deltaZ>0) dir=-1;
+  else          dir=1;
+  deltaZ = ZMove(deltaZ, dlt, dir, MicrostepDelay );
   sendStrData("code66",vectorA_Z,100,true);  
  /////////////////////////////////////////  
  // разморозка состояния pid
-    if(!flgVirtual)   unfreezeLOOP(500);
-    //sleep_ms(500);
+    if(!flgVirtual) 
+    {
+     unfreezeLOOP(500); 
+    }
  //////////////////////////////////////////
     int16_t count = 0;
   while ((!TheadDone) || (count<20) )//ожидание ответа ПК для синхронизации
