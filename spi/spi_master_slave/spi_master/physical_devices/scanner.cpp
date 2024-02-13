@@ -2287,6 +2287,7 @@ void Scanner::spectroscopyIV(std::vector<int32_t> &vector)
     dacU+=rest;
   if (!flgVirtual) set_Bias(1,dacU);  
     sleep_ms(10);
+  
   if (!flgVirtual) set_Bias(1,UBackup);  //240206
     sleep_ms(10);
 ///////////////////////////////////////////////
