@@ -149,18 +149,20 @@ void Scanner::retract() //втянуть
 }
 void Scanner::retract(int16_t HeightJump) //втянуть на H
 {
- freezeLOOP(100);
- set_DACZ(0,-HeightJump); 
+ //freezeLOOP(100); 
+ retract(); 
+ set_DACZ(0,-abs(HeightJump)); 
 }
 
 void Scanner::protract() //вытянуть
 {
   io3_1.disable();  //port 6
 }
-void Scanner::protract(uint16_t delay) //вытянуть
+void Scanner::protract(uint16_t delay,int16_t HeightJump) //вытянуть
 {
-  set_DACZ(0,0); 
-  unfreezeLOOP(delay);
+  unfreezeLOOP(delay); 
+  //set_DACZ(0,0); 
+   ZMove(abs(HeightJump),abs(HeightJump),-1, 0);
 }
 void Scanner::LOOP_freeze_unfreeze(int port, int flg) // port virtual 5
 {
@@ -885,6 +887,7 @@ struct Config
   uint16_t pos_slow;
   int16_t  ZJump;
   int16_t  ISatCur;
+  int16_t  ZCur;
   int16_t  ISatCurPrev;
 
   bool  flgMaxJump;
@@ -927,11 +930,15 @@ struct Config
       {
         getValuesFromAdc();
         ISatCurPrev=(int16_t) spiBuf[IPin];
+        ZCur=(int16_t) spiBuf[ZPin];
       }
       else
       {
         ISatCurPrev=(int16_t)round(conf_.SetPoint);
       }
+  // retract();
+   //set_DACZ(0,ZCur-abs(ZJump)); 
+
   for (uint32_t i = 0; i < nslowline; ++i)
   { 
     stepsx = (uint16_t) conf_.betweenPoints_x / conf_.diskretinstep;
@@ -962,7 +969,7 @@ struct Config
       if (!flgVirtual)
       {
         if (flgMaxJump)  retract();      //втянуться на max
-        else             retract(ZJump); //втянуться на ZJump
+        else             retract(ZCur-abs(ZJump)); //втянуться на ZJump
       }   
       sleep_us(50);
       for (uint32_t k = 0; k < stepsfastline; ++k) 
@@ -989,7 +996,7 @@ struct Config
       if (!flgVirtual)
       {
         if (flgMaxJump) protract();  //вытянуться
-        else            protract(0); //вытянуться на ZJump
+        else            protract(); // protract(0,-ZJump); //вытянуться на ZJump
       }
       sleep_ms(conf_.HopeDelay);
       sleep_us(conf_.pause);    // CONST 50ms wait for start get data
@@ -997,7 +1004,8 @@ struct Config
       if (!flgVirtual)
       {
          getValuesFromAdc();
-        vector_data.emplace_back(ZMaxValue-(int16_t) spiBuf[ZPin]);     // считать  Z invert
+        vector_data.emplace_back(ZMaxValue-(int16_t) spiBuf[ZPin]);     // считать  Z invertCur=
+        ZCur=(int16_t) spiBuf[ZPin];
         switch (conf_.method)
           //added signal  Const  BackPass=2;    //PM  Const  Phase=3;  Const  UAM=4;   //Force Image
         {
@@ -1036,6 +1044,7 @@ struct Config
        if (!flgVirtual)
       {
         retract(); //втянуться на макс
+        set_DACZ(0,0);
       } 
       sleep_us(50);
 // move backward 
@@ -1122,6 +1131,7 @@ struct Config
       flgMaxJump=(conf_.HopeZ==0);
        ZJump=-conf_.HopeZ;
       sleep_ms(100);   
+
       for (int j = 1; j <= 9; ++j)
       {
         debugdata.emplace_back(vector[j]);
@@ -1180,6 +1190,21 @@ struct Config
         }
       }
      }
+     if (!flgVirtual)
+      {
+        protract();  //вытянуться
+      }
+      sleep_ms(400);
+      sleep_us(conf_.pause);  
+     if (!flgVirtual)
+      {
+        getValuesFromAdc();
+        ZCur=(int16_t) spiBuf[ZPin];
+      }
+      else
+      {
+        ZCur=(int16_t)round(conf_.SetPoint);
+      }
   } 
 
   //end scanning 
@@ -1204,6 +1229,7 @@ struct Config
   if (!flgVirtual)
   {
     protract();
+    set_DACZ(0,0);
   }
   sleep_ms(1000);
   int16_t count = 0;
@@ -1350,7 +1376,7 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
       if (!flgVirtual)
       {
          if (flgMaxJump) protract();
-        else             protract(0);
+        else             protract(0,-ZJump);
       }
       sleep_ms(conf_.HopeDelay);
       sleep_us(conf_.pause);    // 50 CONST 50ms wait for start get data
@@ -2053,13 +2079,17 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
     return(Zt);
 	}
 */
-static int16_t ZMove( int16_t Z0, int16_t steps, int16_t stepsize, uint16_t delay )   // stepsize=+-1  sign  -> dir 
+ int16_t  Scanner::ZMove( int16_t Z0, int16_t steps, int16_t stepsize, uint16_t delay )   // stepsize=+-1  sign  -> dir 
 	{
 	  int16_t Zt;
 	  Zt =Z0;
-	  for (int16_t j=0; j< steps; j++)
+    uint16_t nsteps;
+    uint16_t nreststeps;
+    nsteps=(uint16_t)abs(steps/stepsize);
+    nreststeps=(uint16_t)abs(steps % stepsize);
+	  for (int16_t j=0; j< nsteps; j++)
 	  {
-      if (stepsize>0)  //вытягивание 
+      if (stepsize>0)  //втягивание 
       {
         if (Zt>=(maxint16_t-stepsize)) { Zt=maxint16_t;}
       }
@@ -2071,6 +2101,17 @@ static int16_t ZMove( int16_t Z0, int16_t steps, int16_t stepsize, uint16_t dela
       if (!flgVirtual) set_DACZ(0,Zt);    // - physical - 0
       for(int16_t k=0; k < delay; k++) { }// задержка в каждом дискрете
 	  }
+/*
+     if (stepsize>0)  //втягивание 
+      {
+        if (Zt>=(maxint16_t-stepsize)) { Zt=maxint16_t;}
+      }
+      else
+      {
+        if (Zt<=(minint16_t-stepsize)) { Zt=minint16_t;}
+      } 
+       Zt=Zt+nreststeps;
+   */    
     return(Zt);
 	}
 void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектроскопия Ampl-Z

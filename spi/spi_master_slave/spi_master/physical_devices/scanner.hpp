@@ -80,6 +80,8 @@ public:
 
   void spectroscopyIV(std::vector<int32_t> &vector);  // спектроскопия I-V
 
+  int16_t ZMove( int16_t Z0, int16_t steps, int16_t stepsize, uint16_t delay );   // stepsize=+-1  sign  -> dir 
+
   void spectroscopyAIZ(std::vector<int32_t> &vector); // спектроскопия Ampl-Z
 
   void scan_update(const Config &config);             // обновить параметры скaнирования
@@ -100,7 +102,7 @@ public:
 
   void protract();      // втянуть сканер
  
-  void protract(uint16_t delay); //разморозить ПИД 
+  void protract(uint16_t delay,int16_t HeightJump); //разморозить ПИД 
  
   void LOOP_freeze_unfreeze(int port, int flg);  
  
