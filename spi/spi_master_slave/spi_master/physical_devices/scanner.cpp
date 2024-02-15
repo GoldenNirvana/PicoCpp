@@ -210,6 +210,14 @@ struct Config
   uint8_t  flgOneFrame;      // быстрое сканирование один кадр=1            15
   uint8_t  flgHoping;        // сканирование прыжками                       16
   uint16_t HopeDelay;        // задержка в точке измерения при прыжках      17
+  
+  not use!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  uint16_t HopeZ;            // прыжок по Z,если=0,то прыжок по максимуму                 18
+  uint8_t  flgAutoUpdateSP;   // автообновление опоры на каждой линии                     19
+  uint8_t  flgAutoUpdateSPDelta;// обновление опоры , если изменение тока превысило порог 20
+  uint16_t ThresholdAutoUpdate; //изменения опоры, если изменение тока превысило порог    21
+  uint16_t KoeffCorrectISat;    // опора  %  от тока насыщения                            22
+  int16_t  SetPoint;            // опора  ток      
 };
 */
   prev_point = pos_; //запоминание начальной точки скана
@@ -825,6 +833,34 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
 }
 void Scanner::start_hopingscan(std::vector<int32_t> &vector)
 {
+  /*
+struct Config
+{
+  uint16_t nPoints_x;        // точек по оси  X                              1
+  uint16_t nPoints_y;        // точек по оси  Y                              2 
+  uint8_t  path;             // сканирование  0 - по оси X, 1 - по оси Y     3
+  uint8_t  method;           // что измерять Topo=0,Phase=1, Ampl=2...       4
+  uint16_t delayF;           // задержка при сканировании вперёд             5
+  uint16_t delayB;           // задержка при сканировании назад              6
+  uint16_t betweenPoints_x;  // расстояние между точками по X в дискретах    7 
+  uint16_t betweenPoints_y;  // расстояние между точками по Y в дискретах    8 
+  uint8_t  size;             // size=1  -Z; size=2 - Z,Амплитуда             9
+  uint8_t  Ti;               // усиление ПИД                                10
+  uint16_t diskretinstep;    // размер шага в дискретах                     11
+  uint16_t pause;            // время ожидания в точке измерения  мксек     12  
+  uint8_t  flgLin;           // флаг линеализации                           13   
+  int16_t  lineshift;        //сдвиг линии -учет неортогональности сканнера 14
+  uint8_t  flgOneFrame;      // быстрое сканирование один кадр=1            15
+  uint8_t  flgHoping;        // сканирование прыжками                       16
+  uint16_t HopeDelay;        // задержка в точке измерения при прыжках      17
+  uint16_t HopeZ;            // прыжок по Z,если=0,то прыжок по максимуму                 18
+  uint8_t  flgAutoUpdateSP;   // автообновление опоры на каждой линии                     19
+  uint8_t  flgAutoUpdateSPDelta;// обновление опоры , если изменение тока превысило порог 20
+  uint16_t ThresholdAutoUpdate; //изменения опоры, если изменение тока превысило порог    21
+  uint16_t KoeffCorrectISat;    // опора  %  от тока насыщения                            22
+  int16_t  SetPoint;            // опора  ток      
+};
+*/
   const int8_t oneline=11;
   prev_point = pos_; //запоминание начальной точки скана
   vector_data.clear();
@@ -925,8 +961,8 @@ void Scanner::start_hopingscan(std::vector<int32_t> &vector)
     {
       if (!flgVirtual)
       {
-        if (flgMaxJump)  retract();
-        else             retract(ZJump);
+        if (flgMaxJump)  retract();      //втянуться на max
+        else             retract(ZJump); //втянуться на ZJump
       }   
       sleep_us(50);
       for (uint32_t k = 0; k < stepsfastline; ++k) 
@@ -952,16 +988,16 @@ void Scanner::start_hopingscan(std::vector<int32_t> &vector)
   //******************************************************************************
       if (!flgVirtual)
       {
-        if (flgMaxJump) protract();
-        else            protract(0);
+        if (flgMaxJump) protract();  //вытянуться
+        else            protract(0); //вытянуться на ZJump
       }
       sleep_ms(conf_.HopeDelay);
-      sleep_us(conf_.pause);    // 50 CONST 50ms wait for start get data
+      sleep_us(conf_.pause);    // CONST 50ms wait for start get data
   //*******************************************************************************
       if (!flgVirtual)
       {
          getValuesFromAdc();
-        vector_data.emplace_back(ZMaxValue-(int16_t) spiBuf[ZPin]);     // считать  Z 
+        vector_data.emplace_back(ZMaxValue-(int16_t) spiBuf[ZPin]);     // считать  Z invert
         switch (conf_.method)
           //added signal  Const  BackPass=2;    //PM  Const  Phase=3;  Const  UAM=4;   //Force Image
         {
@@ -999,10 +1035,10 @@ void Scanner::start_hopingscan(std::vector<int32_t> &vector)
       //move to the start line point   
        if (!flgVirtual)
       {
-        retract();
+        retract(); //втянуться на макс
       } 
       sleep_us(50);
-
+// move backward 
       if (!flgVirtual)
       {
        pos_fast -= conf_.diskretinstep * stepsfastline * nfastline;
@@ -1028,7 +1064,7 @@ void Scanner::start_hopingscan(std::vector<int32_t> &vector)
      count0++;
     } 
     DrawDone = false;
-      if (!flgVirtual)
+      if (!flgVirtual)  //read  Saturation Current
       {
         getValuesFromAdc();
         ISatCur=(int16_t) spiBuf[IPin];
@@ -1084,6 +1120,7 @@ void Scanner::start_hopingscan(std::vector<int32_t> &vector)
       conf_.ThresholdAutoUpdate  = vector[8];; // изменения опоры, если изменение тока превысило порог     21
       conf_.KoeffCorrectISat     = vector[9];  // опора  %  от тока насыщения        
       flgMaxJump=(conf_.HopeZ==0);
+       ZJump=-conf_.HopeZ;
       sleep_ms(100);   
       for (int j = 1; j <= 9; ++j)
       {
@@ -1204,12 +1241,14 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
   uint8_t  portslow;
   uint16_t pos_fast;
   uint16_t pos_slow;
-  uint16_t ZJump;
-  bool  flgMaxJump;
+  int16_t  ZJump;
+  bool     flgMaxJump;
   int16_t  ISatCur;
   int16_t  ISatCurPrev;
 
   flgMaxJump=(conf_.HopeZ==0);
+  ZJump=-conf_.HopeZ;
+
   stepsx = (uint16_t) conf_.betweenPoints_x / conf_.diskretinstep;
   stepsy = (uint16_t) conf_.betweenPoints_y / conf_.diskretinstep;
   reststepx = conf_.betweenPoints_x % conf_.diskretinstep;
@@ -1282,8 +1321,8 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
      }
       if (!flgVirtual)
       {
-        if (flgMaxJump)  retract();
-        else        retract(ZJump);
+        if (flgMaxJump)  retract(); //втянуться на макс
+        else        retract(ZJump); //втянуться на ZJump
       }   
       sleep_us(50);
       for (uint32_t k = 0; k < stepsfastline; ++k) 
@@ -1458,6 +1497,7 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
       conf_.ThresholdAutoUpdate  = vector[8];; // изменения опоры, если изменение тока превысило порог     21
       conf_.KoeffCorrectISat     = vector[9];  // опора  %  от тока насыщения        
       flgMaxJump=(conf_.HopeZ==0);
+      ZJump=-conf_.HopeZ;
       sleep_ms(100);   
       for (int j = 1; j <= 9; ++j)
       {
@@ -2055,18 +2095,19 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
 // const int16_t STM=1;
 // const int16_t SICMDC=3;      
  int16_t   NPoints=(int16_t )vector[1]; // n точек
- int16_t    ZStart=(int16_t )vector[2]; // отход на  abs(ZStart)
- int16_t     ZStep=(int16_t )vector[3]; // ZStep>0
- int16_t Threshold=(int16_t )vector[4]; // Threshold
- int16_t     Delay=(int16_t )vector[5]; // delay
- int16_t   flgModa=(int16_t )vector[6]; // flgmode stm,sfm;
+ int16_t   NCurves=(int16_t )vector[2]; // отход на  abs(ZStart)
+ int16_t    ZStart=(int16_t )vector[3]; // отход на  abs(ZStart)
+ int16_t     ZStep=(int16_t )vector[4]; // ZStep>0
+ int16_t Threshold=(int16_t )vector[5]; // Threshold
+ int16_t     Delay=(int16_t )vector[6]; // delay
+ int16_t   flgModa=(int16_t )vector[7]; // flgmode stm,sfm;
 
  int16_t SignalValue;
  int16_t dir,dlt,deltaZ;
 
  int16_t MicrostepDelay=3;
 
-  for (int j = 0; j <= 6; ++j)
+  for (int j = 0; j <= 7; ++j)
   {
     debugdata.emplace_back(vector[j]);
   }
@@ -2092,10 +2133,10 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
  if(!flgVirtual)  freezeLOOP(200);
  //////////////////////////////////////
   sleep_ms(200);      
-  
+ for(int16_t j=0; j<NCurves; j++)    
+ {
   deltaZ = ZMove(0, abs(ZStart), 1, MicrostepDelay ); // отвод в начальную точку - втягивание
-    
- for(int16_t i=0; i<NPoints; i++)     //сближение
+  for(int16_t i=0; i<NPoints; i++)     //сближение
   {
     sleep_ms(Delay);  
    if (!flgVirtual) 
@@ -2111,9 +2152,9 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
    {
            switch (flgModa)
     {
-     case SFM:     { SignalValue=-deltaZ;/*ZMaxValue-dacZ;*/ break;}  
+     case SFM:     { SignalValue=ZMaxValue-abs(deltaZ);/*ZMaxValue-dacZ;*/ break;}  
      case STM:   
-     case SICMDC:  { SignalValue=-deltaZ;/*ZMaxValue-dacZ*/ break;}  
+     case SICMDC:  { SignalValue=ZMaxValue-abs(deltaZ);/*ZMaxValue-dacZ*/ break;}  
     } 
 
    }
@@ -2136,7 +2177,7 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
      }
    };
     deltaZ = ZMove(deltaZ, ZStep, -1, MicrostepDelay);
- }  // for    i
+  }  // for    i
     NPoints= k / 3;
     sleep_ms(300);
 
@@ -2158,9 +2199,9 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
    {
       switch (flgModa)
     {
-     case SFM:    { SignalValue=-deltaZ+100; break;}  
+     case SFM:    { SignalValue=ZMaxValue-abs(deltaZ)+100; break;}  
      case STM:    
-     case SICMDC: { SignalValue=-deltaZ+100; break;}  
+     case SICMDC: { SignalValue=ZMaxValue-abs(deltaZ+100); break;}  
     }
    }
      vectorA_Z.emplace_back(SignalValue);
@@ -2168,13 +2209,15 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
      vectorA_Z.emplace_back(-1);
      deltaZ = ZMove( deltaZ, ZStep, 1, MicrostepDelay);
   }
- //move to start point
+  sendStrData("code66",vectorA_Z,100,true); 
+  //move to start point
   sleep_ms(300);
   dlt=abs(deltaZ);
   if (deltaZ>0) dir=-1;
-  else          dir=1;
+  else          dir= 1;
   deltaZ = ZMove(deltaZ, dlt, dir, MicrostepDelay );
-  sendStrData("code66",vectorA_Z,100,true);  
+  deltaZ=0;
+ } //j
  /////////////////////////////////////////  
  // разморозка состояния pid
     if(!flgVirtual) 
@@ -2214,7 +2257,7 @@ void Scanner::spectroscopyIV(std::vector<int32_t> &vector)
     flgDev          = (int8_t)  vector[6]; // прибор
     UBackup         = (int16_t) vector[7]; // V текущее значение напряжения 
 //start
- for (int j = 0; j <= 6; ++j)
+ for (int j = 0; j <= 8; ++j)
   {
     debugdata.emplace_back(vector[j]);
   }
