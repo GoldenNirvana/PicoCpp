@@ -17,7 +17,6 @@ DAC8563 dac8563_3(1); // DAC Z
 //#warning REMOVE STATIC !!! side effects???
 uint16_t spiBuf[8];
 
-
 int16_t ALGCODE=0;   
 
 bool STOP = false;   // cmd stop algorithms

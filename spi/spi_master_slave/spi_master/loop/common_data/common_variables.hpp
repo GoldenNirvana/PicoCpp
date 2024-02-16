@@ -62,6 +62,7 @@ extern DAC8563 dac8563_3;  // DAC Z
 
 extern std::string afc;
 extern uint16_t spiBuf[8];
+
 extern std::vector<int32_t> vector;
 extern int32_t vectorSize;
 

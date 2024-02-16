@@ -102,7 +102,7 @@ public:
 
   void protract();      // втянуть сканер
  
-  void protract(uint16_t delay,int16_t HeightJump); //разморозить ПИД 
+  void protract(uint16_t delay,int16_t DacZ0,int16_t HeightJump) ; //разморозить ПИД 
  
   void LOOP_freeze_unfreeze(int port, int flg);  
  

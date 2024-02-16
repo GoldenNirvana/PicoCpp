@@ -158,11 +158,12 @@ void Scanner::protract() //вытянуть
 {
   io3_1.disable();  //port 6
 }
-void Scanner::protract(uint16_t delay,int16_t HeightJump) //вытянуть
+void Scanner::protract(uint16_t delay,int16_t DacZ0,int16_t HeightJump) //вытянуть
 {
-  unfreezeLOOP(delay); 
+ // unfreezeLOOP(delay); 
+   protract();
   //set_DACZ(0,0); 
-   ZMove(abs(HeightJump),abs(HeightJump),-1, 0);
+   ZMove(DacZ0,HeightJump,-10, delay);
 }
 void Scanner::LOOP_freeze_unfreeze(int port, int flg) // port virtual 5
 {
@@ -889,12 +890,13 @@ struct Config
   int16_t  ISatCur;
   int16_t  ZCur;
   int16_t  ISatCurPrev;
+  int16_t  DACZ0;
 
   bool  flgMaxJump;
   
   flgMaxJump=(conf_.HopeZ==0);
 
-  ZJump=-conf_.HopeZ;
+  ZJump=conf_.HopeZ;//-conf_.HopeZ;
 
     //std::random_device rd;
     // Create a Mersenne Twister pseudo-random number generator
@@ -968,8 +970,12 @@ struct Config
     {
       if (!flgVirtual)
       {
-        if (flgMaxJump)  retract();      //втянуться на max
-        else             retract(ZCur-abs(ZJump)); //втянуться на ZJump
+        if (flgMaxJump)  retract();           //втянуться на max
+        else       
+        {
+         DACZ0= ZCur-ZJump;
+         retract(DACZ0); //втянуться на ZJump
+        }        
       }   
       sleep_us(50);
       for (uint32_t k = 0; k < stepsfastline; ++k) 
@@ -996,7 +1002,7 @@ struct Config
       if (!flgVirtual)
       {
         if (flgMaxJump) protract();  //вытянуться
-        else            protract(); // protract(0,-ZJump); //вытянуться на ZJump
+        else            protract();//  protract(0, ZJump);// ;//вытянуться на ZJump
       }
       sleep_ms(conf_.HopeDelay);
       sleep_us(conf_.pause);    // CONST 50ms wait for start get data
@@ -1044,7 +1050,10 @@ struct Config
        if (!flgVirtual)
       {
         retract(); //втянуться на макс
-        set_DACZ(0,0);
+        ZMove(DACZ0,DACZ0,-10, 0); // обнуление DACZ
+        DACZ0=0;
+      // set_DACZ(0,0);//????
+      // protract(0,0);
       } 
       sleep_us(50);
 // move backward 
@@ -1189,14 +1198,15 @@ struct Config
           sleep_us(conf_.delayF);
         }
       }
-     }
-     if (!flgVirtual)
+     }    
+      if (!flgVirtual)
       {
         protract();  //вытянуться
       }
       sleep_ms(400);
       sleep_us(conf_.pause);  
-     if (!flgVirtual)
+  
+      if (!flgVirtual)
       {
         getValuesFromAdc();
         ZCur=(int16_t) spiBuf[ZPin];
@@ -1376,7 +1386,7 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
       if (!flgVirtual)
       {
          if (flgMaxJump) protract();
-        else             protract(0,-ZJump);
+        else             protract();//(0,-ZJump);
       }
       sleep_ms(conf_.HopeDelay);
       sleep_us(conf_.pause);    // 50 CONST 50ms wait for start get data
@@ -2082,6 +2092,9 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
  int16_t  Scanner::ZMove( int16_t Z0, int16_t steps, int16_t stepsize, uint16_t delay )   // stepsize=+-1  sign  -> dir 
 	{
 	  int16_t Zt;
+    int16_t dir;
+    if (stepsize>0) dir= 1;
+    else            dir=-1; 
 	  Zt =Z0;
     uint16_t nsteps;
     uint16_t nreststeps;
@@ -2089,7 +2102,7 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
     nreststeps=(uint16_t)abs(steps % stepsize);
 	  for (int16_t j=0; j< nsteps; j++)
 	  {
-      if (stepsize>0)  //втягивание 
+      if (dir==1)  //втягивание 
       {
         if (Zt>=(maxint16_t-stepsize)) { Zt=maxint16_t;}
       }
@@ -2097,21 +2110,22 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
       {
         if (Zt<=(minint16_t-stepsize)) { Zt=minint16_t;}
       } 
-       Zt=Zt+stepsize;  
+       Zt=Zt+stepsize;         
       if (!flgVirtual) set_DACZ(0,Zt);    // - physical - 0
       for(int16_t k=0; k < delay; k++) { }// задержка в каждом дискрете
 	  }
-/*
-     if (stepsize>0)  //втягивание 
+    if (nreststeps!=0)
+    {
+       if (dir==1)  //втягивание 
       {
-        if (Zt>=(maxint16_t-stepsize)) { Zt=maxint16_t;}
+        if (Zt>=(maxint16_t-nreststeps)) { Zt=maxint16_t;}
       }
       else
       {
-        if (Zt<=(minint16_t-stepsize)) { Zt=minint16_t;}
+        if (Zt<=(minint16_t+nreststeps)) { Zt=minint16_t;}
       } 
-       Zt=Zt+nreststeps;
-   */    
+       Zt=Zt+dir*nreststeps;
+    }   
     return(Zt);
 	}
 void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектроскопия Ampl-Z
@@ -2437,19 +2451,19 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
 
   if (!flgVirtual)
   {
-    uint16_t *ptr = getValuesFromAdc(); 
-    ZValue = (int16_t) ptr[ZPin];
+    getValuesFromAdc(); 
+    ZValue = (int16_t)spiBuf[ZPin];
     switch (flgDev)
    {
       case SFM: 
      {
-      SignalValue = (int16_t) ptr[AmplPin];
+      SignalValue = (int16_t)spiBuf[AmplPin];
       break;  
      } 
       case STM:
    case SICMDC:  
      {
-      SignalValue = (int16_t) ptr[IPin];
+      SignalValue = (int16_t)spiBuf[IPin];
       break;  
      } 
    }
@@ -2500,19 +2514,19 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
  
     if (!flgVirtual)
     {
-      auto ptr = getValuesFromAdc();
-      ZValue = (int16_t) ptr[ZPin];
+      getValuesFromAdc();
+      ZValue = (int16_t)spiBuf[ZPin];
      switch (flgDev)
      {
       case SFM: 
       {
-       SignalValue = (int16_t) ptr[AmplPin];
+       SignalValue = (int16_t)spiBuf[AmplPin];
        break;  
       } 
          case STM:
       case SICMDC:  
       {
-       SignalValue = (int16_t) ptr[IPin];
+       SignalValue = (int16_t)spiBuf[IPin];
       break;  
       } 
      }     
@@ -2550,8 +2564,8 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
         {
           if (!flgVirtual)
           {
-            auto ptr = getValuesFromAdc();
-            ZValue = (int16_t) ptr[ZPin];
+             getValuesFromAdc();
+            ZValue = (int16_t)spiBuf[ZPin];
           }
           if (ZValue <= GATE_Z_MAX) k++;
           if (k == 3)
@@ -2564,8 +2578,8 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
           }
           sleep_ms(10);
         }
-        if (buf_status[0] == 3)  { break; }
-      }
+        if (buf_status[0] == ok)  { break; }
+      } 
     } //NSTEPS>0
     if (NSTEPS < 0)
     {
@@ -2579,7 +2593,7 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
       linearDriver.activate(99, freq, scv, std::abs(NSTEPS), NSTEPS > 0);
       protract(); //вытянуть
     }
-  }
+  } //while
   sendStrData( "code75",buf_status,100,false);
   if (!flgVirtual)
   {
