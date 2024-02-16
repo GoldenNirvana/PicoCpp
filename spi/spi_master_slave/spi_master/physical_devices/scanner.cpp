@@ -2424,7 +2424,8 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
   int16_t  GAIN, NSTEPS;
   uint16_t INTDELAY, SCANNERDECAY;
   int16_t  flgDev;
-  int32_t  Bias;
+  int16_t  Bias;
+  int16_t flgSICMPrePos;
   // SET VALUE FROM RX_CORE
   SET_POINT      =(int16_t) vector[1]; // set point
   GATE_Z_MAX     =(int16_t) vector[2]; // max
@@ -2437,6 +2438,7 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
   scv            =(int16_t) vector[9]; // scv
   flgDev         =(int16_t) vector[10];//  0= SFM, 1=STM ;SICMAC-2; SICMDC-3;  device type
   Bias           =(int16_t) vector[11];// Voltage need for STM,SICM
+  flgSICMPrePos  =(int16_t) vector[12];
  //need to add channel Bias ????
  //need to add channel SetPoint ????
 
@@ -2548,7 +2550,10 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
       buf_status[1] = ZValue;
       buf_status[2] = SignalValue;
     }
+
     if (NSTEPS >= 0)
+    {
+    if (flgSICMPrePos!=1)
     {
       if (ZValue <= GATE_Z_MIN)
       {
@@ -2579,7 +2584,24 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
           sleep_ms(10);
         }
         if (buf_status[0] == ok)  { break; }
-      } 
+      }
+    } 
+    else
+    {
+        if (SignalValue>100) 
+        {
+            buf_status[0] = ok;
+            buf_status[1] = ZValue;
+            buf_status[2] = SignalValue;
+            break;
+        }
+        else
+        {
+            buf_status[0] = none;
+            buf_status[1] = ZValue;
+            buf_status[2] = SignalValue;
+        }
+    }
     } //NSTEPS>0
     if (NSTEPS < 0)
     {
