@@ -27,7 +27,7 @@ case APPROACH:{
                blue();
                scanner.approacphm(vector);
                green();
-               activateDark();
+               dark();
                break;
               }
 case FREQ_SET:{

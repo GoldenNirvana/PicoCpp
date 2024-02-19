@@ -204,7 +204,7 @@ void set_SetPoint(int8_t channel, int32_t SetPoint)
   } 
   // отладка
   afc.clear();
-  afc = "debugSetPoint " + std::to_string(channel) + ',' + std::to_string(SetPoint);
+  afc = "debug SetPoint " + std::to_string(channel) + ',' + std::to_string(SetPoint);
   afc += +"\n";
   std::cout << afc;
   afc.clear();
