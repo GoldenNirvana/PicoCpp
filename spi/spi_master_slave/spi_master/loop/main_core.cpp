@@ -26,7 +26,7 @@ case APPROACH:{
                ALGCODE=ALGNONE;
                blue();
                scanner.approacphm(vector);
-               green();
+               //green();
                dark();
                break;
               }
