@@ -868,7 +868,7 @@ struct Config
   const int8_t oneline=11;
   prev_point = pos_; //запоминание начальной точки скана
   vector_data.clear();
-  for (int j = 1; j <= 23; ++j)
+  for (int j = 0; j <= 23; ++j)
   {
     debugdata.emplace_back(vector[j]);
   }
@@ -895,7 +895,7 @@ struct Config
 
   bool  flgMaxJump;
   ZJump=conf_.HopeZ;
-  flgMaxJump=( ZJump==0);
+  flgMaxJump=(ZJump==0);
     //std::random_device rd;
     // Create a Mersenne Twister pseudo-random number generator
     //std::mt19937 gen(rd());
@@ -999,8 +999,8 @@ struct Config
   //******************************************************************************
       if (!flgVirtual)
       {
-        if (flgMaxJump) protract();  //вытянуться
-        else            protract();//  protract(0, ZJump);// ;//вытянуться на ZJump
+        if (flgMaxJump) protract();// вытянуться
+        else            protract();// protract(0, ZJump);// вытянуться на ZJump
       }
       sleep_ms(conf_.HopeDelay);
       sleep_us(conf_.pause);    // CONST 50ms wait for start get data
@@ -1092,13 +1092,14 @@ struct Config
       CONFIG_UPDATE              = false;
       conf_.delayF               = vector[1];
       conf_.delayB               = vector[2];
-      set_GainPID(vector[3]);
-      conf_.HopeDelay            = vector[4];
-      conf_.HopeZ                = vector[5];
-      conf_.flgAutoUpdateSP      = vector[6];; // автообновление опоры на каждой линии                     19
-      conf_.flgAutoUpdateSPDelta = vector[7];; // обновление опоры , если изменение тока превысило порог 20
-      conf_.ThresholdAutoUpdate  = vector[8];; // изменения опоры, если изменение тока превысило порог     21
-      conf_.KoeffCorrectISat     = vector[9];  // опора  %  от тока насыщения        
+      conf_.diskretinstep        = vector[3];
+      set_GainPID(vector[4]);
+      conf_.HopeDelay            = vector[5];
+      conf_.HopeZ                = vector[6];
+      conf_.flgAutoUpdateSP      = vector[7];; // автообновление опоры на каждой линии                     19
+      conf_.flgAutoUpdateSPDelta = vector[8];; // обновление опоры , если изменение тока превысило порог 20
+      conf_.ThresholdAutoUpdate  = vector[9];; // изменения опоры, если изменение тока превысило порог     21
+      conf_.KoeffCorrectISat     = vector[10];  // опора  %  от тока насыщения        
       ZJump=conf_.HopeZ;
       flgMaxJump=(ZJump==0);
    
@@ -1525,13 +1526,15 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
       CONFIG_UPDATE              = false;
       conf_.delayF               = vector[1];
       conf_.delayB               = vector[2];
-      set_GainPID(vector[3]);
-      conf_.HopeDelay            = vector[4];
-      conf_.HopeZ                = vector[5];
-      conf_.flgAutoUpdateSP      = vector[6];; // автообновление опоры на каждой линии                     19
-      conf_.flgAutoUpdateSPDelta = vector[7];; // обновление опоры , если изменение тока превысило порог 20
-      conf_.ThresholdAutoUpdate  = vector[8];; // изменения опоры, если изменение тока превысило порог     21
-      conf_.KoeffCorrectISat     = vector[9];  // опора  %  от тока насыщения        
+      conf_.diskretinstep        = vector[3];
+      set_GainPID(vector[4]);
+      conf_.HopeDelay            = vector[5];
+      conf_.HopeZ                = vector[6];
+      conf_.flgAutoUpdateSP      = vector[7];; // автообновление опоры на каждой линии                     19
+      conf_.flgAutoUpdateSPDelta = vector[8];; // обновление опоры , если изменение тока превысило порог 20
+      conf_.ThresholdAutoUpdate  = vector[9];; // изменения опоры, если изменение тока превысило порог     21
+      conf_.KoeffCorrectISat     = vector[10];  // опора  %  от тока насыщения        
+      ZJump=conf_.HopeZ;   
       flgMaxJump=(conf_.HopeZ==0);
       ZJump=-conf_.HopeZ;
       sleep_ms(100);   
@@ -2061,7 +2064,7 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
        }
        else
        {
-        if (abs(SignalValue)>300) 
+        if (abs(SignalValue)>200) 
         {
            status = ok;
            break;
@@ -2629,6 +2632,7 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
       }
     } //NSTEPS>0
     sendStrData( "code75",buf_status,100,false);
+    /**/
     if (!flgVirtual)
     {
       retract();  //втянуть сканнер
