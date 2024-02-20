@@ -969,6 +969,7 @@ struct Config
         else       
         {
          DACZ0= ZCur-ZJump;
+         if (ZCur<ZJump) DACZ0=0;  //240220
          retract(DACZ0); //втянуться на ZJump
         }        
       }   
@@ -1158,17 +1159,18 @@ struct Config
       CONFIG_UPDATE              = false;
       conf_.delayF               = vector[1];
       conf_.delayB               = vector[2];
-      set_GainPID(vector[3]);
-      conf_.HopeDelay            = vector[4];
-      conf_.HopeZ                = vector[5];
-      conf_.flgAutoUpdateSP      = vector[6];; // автообновление опоры на каждой линии                     19
-      conf_.flgAutoUpdateSPDelta = vector[7];; // обновление опоры , если изменение тока превысило порог 20
-      conf_.ThresholdAutoUpdate  = vector[8];; // изменения опоры, если изменение тока превысило порог     21
-      conf_.KoeffCorrectISat     = vector[9];  // опора  %  от тока насыщения        
+      conf_.diskretinstep        = vector[3];
+                       set_GainPID(vector[4]);
+      conf_.HopeDelay            = vector[5];
+      conf_.HopeZ                = vector[6];
+      conf_.flgAutoUpdateSP      = vector[7];; // автообновление опоры на каждой линии                     19
+      conf_.flgAutoUpdateSPDelta = vector[8];; // обновление опоры , если изменение тока превысило порог 20
+      conf_.ThresholdAutoUpdate  = vector[9];; // изменения опоры, если изменение тока превысило порог     21
+      conf_.KoeffCorrectISat     = vector[10];  // опора  %  от тока насыщения        
       ZJump=conf_.HopeZ;
       flgMaxJump=(ZJump==0);  
       sleep_ms(100);   //?????
-      for (int j = 1; j <= 9; ++j)
+      for (int j = 0; j <= 10; ++j)
       {
         debugdata.emplace_back(vector[j]);
       }
@@ -1201,6 +1203,7 @@ struct Config
       if (!flgVirtual)
       {
         protract();    //вытянуться
+        sleep_ms(250);
       }
       if (!flgVirtual) //get current Z contact
       {
