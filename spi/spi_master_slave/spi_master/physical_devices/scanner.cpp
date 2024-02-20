@@ -1206,6 +1206,7 @@ struct Config
       if (!flgVirtual)
       {
         protract();    //вытянуться
+        sleep_ms(300);
       }
       if (!flgVirtual) //get current Z contact
       {
