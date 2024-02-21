@@ -8,6 +8,7 @@ Scanner scanner;
 
 //int32_t  vector[16];  //datain
 std::vector<int32_t> vector;
+std::vector<int32_t> vupdateparams;
 
 int32_t vectorSize;
 

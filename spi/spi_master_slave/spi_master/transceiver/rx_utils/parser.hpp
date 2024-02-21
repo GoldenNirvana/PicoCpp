@@ -25,8 +25,8 @@ public:
 
   bool equals(int num, const char *comp);
 
-  int32_t parseInts(std::vector<int32_t> &data);
-
+ // int32_t parseInts(std::vector<int32_t> &data);
+  int32_t parseInts(std::vector<int32_t> &data,std::vector<int32_t> &uparams);
   char *buf = NULL;
   char **str = NULL;
 

@@ -35,8 +35,9 @@ void RX_core::launchOnCore1()
 {
    while (true)
   {
-    parse(vector); // парсинг входящих данных из ПК 
-
+    parse(vector,vupdateparams); // парсинг входящих данных из ПК 
+   if (vector.size()!=0)
+   {
     switch (vector[0])
     {
     ///////////////////////////// ??? 
@@ -105,6 +106,8 @@ void RX_core::launchOnCore1()
                                        else ALGCODE=0;
       }  
      }
+   } 
+   if (vupdateparams.size()!=0)    CONFIG_UPDATE = true;
   }
 }
 
@@ -159,13 +162,13 @@ void RX_core::parse(int32_t *vec)
   vectorSize = parser.parseInts(vec);
 }
 */
-void RX_core::parse(std::vector<int32_t> &vec)
+void RX_core::parse(std::vector<int32_t> &vec,std::vector<int32_t> &vparams)
 {
   std::string s;
   getline(std::cin, s);
   // todo mb add const_cast
   Parser parser(s.data(), ',');
-  vec.clear();
-  vectorSize = parser.parseInts(vec);
+ // vec.clear();
+  vectorSize = parser.parseInts(vec,vparams);
 }
 
