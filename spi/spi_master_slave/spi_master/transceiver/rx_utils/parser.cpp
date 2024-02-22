@@ -2,6 +2,9 @@
 #include <cstdlib>
 #include <cstring>
 #include <vector>
+#include "../../loop/common_data/common_variables.hpp"
+
+
 
 Parser::Parser(char *data, char newDiv)
 {
@@ -65,14 +68,22 @@ bool Parser::equals(int num, const char *comp)
   return !strcmp(str[num], comp);
 }
 
-int32_t Parser::parseInts(std::vector<int32_t> &data)
+int32_t Parser::parseInts(std::vector<int32_t> &data,std::vector<int32_t> &uparams)
 {
   int count = 0;
+  bool flgUpdate;
   char *offset = buf;
   while (true)
   {
-  //  data[count++] = atoi(offset);
-    data.emplace_back((int32_t)atoi(offset));
+    if (count==0)
+    {
+      flgUpdate=bool((int32_t)atoi(offset)==CONFIG_UPDATECmd);
+      if (flgUpdate) uparams.clear();
+      else data.clear();
+      count++;
+    }
+    if (flgUpdate) uparams.emplace_back((int32_t)atoi(offset)); 
+    else           data.emplace_back((int32_t)atoi(offset)); 
     offset = strchr(offset, div);
     if (offset)   { offset++; }
     else          { break;    }

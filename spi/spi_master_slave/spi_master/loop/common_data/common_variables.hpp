@@ -64,6 +64,7 @@ extern std::string afc;
 extern uint16_t spiBuf[8];
 
 extern std::vector<int32_t> vector;
+extern std::vector<int32_t> vupdateparams;
 extern int32_t vectorSize;
 
 extern bool AD9833_SENDER;

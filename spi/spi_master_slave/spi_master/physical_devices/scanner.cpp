@@ -163,7 +163,7 @@ void Scanner::protract(uint16_t delay,int16_t DacZ0,int16_t HeightJump) //выт
  // unfreezeLOOP(delay); 
    protract();
   //set_DACZ(0,0); 
-   ZMove(DacZ0,HeightJump,-10, delay);
+   ZMove(DacZ0,HeightJump,-20, delay);
 }
 void Scanner::LOOP_freeze_unfreeze(int port, int flg) // port virtual 5
 {
@@ -225,7 +225,7 @@ struct Config
 */
   prev_point = pos_; //запоминание начальной точки скана
   vector_data.clear();
-  for (int j = 1; j <= 17; ++j)
+  for (int j = 0; j <= 17; ++j)
   {
     debugdata.emplace_back(vector[j]);
   }
@@ -436,17 +436,18 @@ struct Config
     if (CONFIG_UPDATE)
     {
       CONFIG_UPDATE = false;
-      conf_.delayF  = vector[1];
-      conf_.delayB  = vector[2];
-      set_GainPID(vector[3]);
+      conf_.delayF  = vupdateparams[1];
+      conf_.delayB  = vupdateparams[2];
+      set_GainPID(vupdateparams[3]);
       sleep_ms(100);              
-      conf_.diskretinstep = vector[4]; 
+      conf_.diskretinstep = vupdateparams[4]; 
  
-      for (int j = 1; j <= 3; ++j)
+      for (int j = 0; j <= 3; ++j)
       {
-        debugdata.emplace_back(vector[j]);
+        debugdata.emplace_back(vupdateparams[j]);
       }
       sendStrData( "debug parameters update",debugdata,100,true);
+      vupdateparams.clear();
      stepsx = (uint16_t) conf_.betweenPoints_x / conf_.diskretinstep;
      stepsy = (uint16_t) conf_.betweenPoints_y / conf_.diskretinstep;
      reststepx = conf_.betweenPoints_x % conf_.diskretinstep;
@@ -749,6 +750,7 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
         debugdata.emplace_back(vector[j]);
       }
       sendStrData( "debug parameters update",debugdata,100,true);
+      vupdateparams.clear();
       //    dark();
     }
     if (STOP)   // stop
@@ -936,9 +938,8 @@ struct Config
   {
     ISatCurPrev=(int16_t)round(conf_.SetPoint);
   }
-  // retract();
-   //set_DACZ(0,ZCur-abs(ZJump)); 
-
+//****************************************************************
+//   start  
   for (uint32_t i = 0; i < nslowline; ++i)
   { 
     stepsx = (uint16_t) conf_.betweenPoints_x / conf_.diskretinstep;
@@ -972,6 +973,7 @@ struct Config
         else       
         {
          DACZ0= ZCur-ZJump;
+         if (ZCur<ZJump) DACZ0=0;  //240220
          retract(DACZ0); //втянуться на ZJump
         }        
       }   
@@ -1026,14 +1028,14 @@ struct Config
           case 7://current
           {
             vector_data.emplace_back((int16_t) spiBuf[IPin]);
-             break;
+            break;
           }
         }
       }
       else
       {
-    //    vector_data.emplace_back(
-    //        int16_t(10000.0 * (sin(M_PI * j * 0.1) + sin(M_PI * i * 0.1))));  // get Z from adc
+    //  vector_data.emplace_back(
+    //  int16_t(10000.0 * (sin(M_PI * j * 0.1) + sin(M_PI * i * 0.1))));  // get Z from adc
         double_t w;
         w= 10*M_PI/(nfastline);   
         vector_data.emplace_back(int16_t(10000.0 * (sin(w*j) + sin(w* i ))));  // get Z from adc
@@ -1050,8 +1052,6 @@ struct Config
         retract(); //втянуться на макс
         ZMove(DACZ0,DACZ0,-10, 0); // обнуление DACZ
         DACZ0=0;
-      // set_DACZ(0,0);//????
-      // protract(0,0);
       } 
       sleep_us(50);
 // move backward 
@@ -1061,81 +1061,21 @@ struct Config
        set_DACXY(portfast, pos_fast);
       }
       else
-      { pos_fast -= conf_.diskretinstep * stepsfastline * nfastline; }
+      {
+       pos_fast -= conf_.diskretinstep * stepsfastline * nfastline;
+      }
       sleep_us(conf_.delayB);
       if (reststepfast != 0)
       {
-       if (!flgVirtual)
-       {
-        pos_fast -= reststepfast;
-        set_DACXY(portfast, pos_fast);
-       }
-       else { pos_fast -= reststepfast; }
-       sleep_us(conf_.delayF);
-      }
-      int16_t count0 = 0;
-    while ((!DrawDone) || (count0<20))//ожидание ответа ПК для синхронизации
-    {
-     sleep_ms(10);
-     count0++;
-    } 
-    DrawDone = false;
-  
-    if (STOP)  // stop
-    {
-      STOP = false;
-      sendStrData("stopped");
-      break;
-    }
-    if (CONFIG_UPDATE)
-    {
-      CONFIG_UPDATE              = false;
-      conf_.delayF               = vector[1];
-      conf_.delayB               = vector[2];
-      conf_.diskretinstep        = vector[3];
-      set_GainPID(vector[4]);
-      conf_.HopeDelay            = vector[5];
-      conf_.HopeZ                = vector[6];
-      conf_.flgAutoUpdateSP      = vector[7];; // автообновление опоры на каждой линии                     19
-      conf_.flgAutoUpdateSPDelta = vector[8];; // обновление опоры , если изменение тока превысило порог 20
-      conf_.ThresholdAutoUpdate  = vector[9];; // изменения опоры, если изменение тока превысило порог     21
-      conf_.KoeffCorrectISat     = vector[10];  // опора  %  от тока насыщения        
-      ZJump=conf_.HopeZ;
-      flgMaxJump=(ZJump==0);
-   
-      sleep_ms(100);   
-
-      for (int j = 1; j <= 9; ++j)
-      {
-        debugdata.emplace_back(vector[j]);
-      }
-      sendStrData("debug parameters update",debugdata,100,true);
-  
-      stepsx = (uint16_t) conf_.betweenPoints_x / conf_.diskretinstep;
-      stepsy = (uint16_t) conf_.betweenPoints_y / conf_.diskretinstep;
-      reststepx = conf_.betweenPoints_x % conf_.diskretinstep;
-      reststepy = conf_.betweenPoints_y % conf_.diskretinstep;
-       switch (conf_.path)
-     {
-      case 0://X+
-      {
-        stepsslowline = stepsy;
-        stepsfastline = stepsx;
-        reststepfast = reststepx;
-        reststepslow = reststepy;
-        break;
-      }
-      case 1: //Y+
-      {
-        stepsslowline = stepsx;
-        stepsfastline = stepsy;
-        reststepfast = reststepy;
-        reststepslow = reststepx;
-        break;
-      }
-     }
-    }
-     //next line
+        if (!flgVirtual)
+        {
+         pos_fast -= reststepfast;
+         set_DACXY(portfast, pos_fast);
+        }
+        else { pos_fast -= reststepfast; }
+        sleep_us(conf_.delayF);
+      }// move backward 
+      //next line
      if ((nslowline - 1 - i) > 0)  //если не последняя линия
      {
       if (conf_.method !=oneline) //не сканирование по одной линии
@@ -1161,9 +1101,9 @@ struct Config
           sleep_us(conf_.delayF);
         }
       }
-     }    
+     }   //next line 
  //  
-      sleep_ms(400);
+      sleep_ms(200);  //400
       sleep_us(conf_.pause);  
 
      if (!flgVirtual)  //read  Saturation Current
@@ -1201,12 +1141,74 @@ struct Config
      }
      
      vector_data.emplace_back(round(conf_.SetPoint));
-     sendStrData("code50",vector_data,60,true); //send data
 
+     int16_t count0 = 0;
+     while ((!DrawDone) || (count0<20))//ожидание ответа ПК для синхронизации
+     {
+      sleep_ms(10);
+      count0++;
+     } 
+     DrawDone = false;
+//*****************************************************************
+     sendStrData("code50",vector_data,60,true); //send data
+//*****************************************************************
+    if (STOP)  // stop
+    {
+      STOP = false;
+      sendStrData("stopped");
+      break;
+    }
+    if (CONFIG_UPDATE)
+    {
+      CONFIG_UPDATE              = false;
+      conf_.delayF               = vupdateparams[1];
+      conf_.delayB               = vupdateparams[2];
+      conf_.diskretinstep        = vupdateparams[3];
+                       set_GainPID(vupdateparams[4]);
+      conf_.HopeDelay            = vupdateparams[5];
+      conf_.HopeZ                = vupdateparams[6];
+      conf_.flgAutoUpdateSP      = vupdateparams[7];; // автообновление опоры на каждой линии                     19
+      conf_.flgAutoUpdateSPDelta = vupdateparams[8];; // обновление опоры , если изменение тока превысило порог 20
+      conf_.ThresholdAutoUpdate  = vupdateparams[9];; // изменения опоры, если изменение тока превысило порог     21
+      conf_.KoeffCorrectISat     = vupdateparams[10];  // опора  %  от тока насыщения        
+      ZJump=conf_.HopeZ;
+      flgMaxJump=(ZJump==0);  
+      sleep_ms(100);   //?????
+      for (int j = 0; j <= 10; ++j)
+      {
+        debugdata.emplace_back(vupdateparams[j]);
+      }
+      sendStrData("debug parameters update",debugdata,100,true);
+      vupdateparams.clear();
+  
+      stepsx = (uint16_t) conf_.betweenPoints_x / conf_.diskretinstep;
+      stepsy = (uint16_t) conf_.betweenPoints_y / conf_.diskretinstep;
+      reststepx = conf_.betweenPoints_x % conf_.diskretinstep;
+      reststepy = conf_.betweenPoints_y % conf_.diskretinstep;
+       switch (conf_.path)
+     {
+      case 0://X+
+      {
+        stepsslowline = stepsy;
+        stepsfastline = stepsx;
+        reststepfast = reststepx;
+        reststepslow = reststepy;
+        break;
+      }
+      case 1: //Y+
+      {
+        stepsslowline = stepsx;
+        stepsfastline = stepsy;
+        reststepfast = reststepy;
+        reststepslow = reststepx;
+        break;
+      }
+     }
+    } //update
       if (!flgVirtual)
       {
         protract();    //вытянуться
-        sleep_ms(300);
+        sleep_ms(250);
       }
       if (!flgVirtual) //get current Z contact
       {
@@ -1217,10 +1219,10 @@ struct Config
       {
         ZCur=(int16_t)round(conf_.SetPoint);
       } 
-  } 
+  } //for slowline
 
   //end scanning 
-  blue();
+ // blue();
   switch (conf_.path)
   {
     case 0:
@@ -1236,12 +1238,19 @@ struct Config
       break;
     }
   }
-  stop_scan();  //возврат в начальную точку скана
+  stop_scan();  //возврат в начальную точку скана - сканер втянут
   sleep_ms(200);
   if (!flgVirtual)
   {
-    protract();
-    set_DACZ(0,0);
+   // protract();
+  //  set_DACZ(0,0);  //????
+  protract(30,DACZ0,DACZ0); //вытянуть
+{
+ // unfreezeLOOP(delay); 
+ //  protract();
+  //set_DACZ(0,0); 
+ //  ZMove(DacZ0,HeightJump,-10, delay);
+}
   }
   sleep_ms(1000);
   int16_t count = 0;
@@ -1253,8 +1262,9 @@ struct Config
   TheadDone = false;
   conf_.flgHoping=0;
   sendStrData("end");
-  activateDark();
+ // activateDark();
 }
+
 void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
 {
   const int8_t oneline=11;
@@ -1280,12 +1290,14 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
   uint16_t pos_fast;
   uint16_t pos_slow;
   int16_t  ZJump;
-  bool     flgMaxJump;
   int16_t  ISatCur;
+  int16_t  ZCur;
   int16_t  ISatCurPrev;
+  int16_t  DACZ0;
 
-  flgMaxJump=(conf_.HopeZ==0);
-  ZJump=-conf_.HopeZ;
+  bool  flgMaxJump;
+  ZJump=conf_.HopeZ;
+  flgMaxJump=(ZJump==0);
 
   stepsx = (uint16_t) conf_.betweenPoints_x / conf_.diskretinstep;
   stepsy = (uint16_t) conf_.betweenPoints_y / conf_.diskretinstep;
@@ -1324,15 +1336,16 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
     }
   }
 
-  if (!flgVirtual)
-     {
-        getValuesFromAdc();
-        ISatCurPrev=(int16_t) spiBuf[IPin];
-     }
-     else
-     {
-        ISatCurPrev=(int16_t)round(conf_.SetPoint);
-     }
+ if (!flgVirtual)
+  {
+    getValuesFromAdc();
+    ISatCurPrev=(int16_t) spiBuf[IPin];
+    ZCur=(int16_t) spiBuf[ZPin];
+  }
+  else
+  {
+    ISatCurPrev=(int16_t)round(conf_.SetPoint);
+  }
 
   for (uint32_t i = 0; i < nslowline; ++i)
   { 
@@ -1359,10 +1372,15 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
      }
       if (!flgVirtual)
       {
-        if (flgMaxJump)  retract(); //втянуться на макс
-        else        retract(ZJump); //втянуться на ZJump
+        if (flgMaxJump)  retract();           //втянуться на max
+        else       
+        {
+         DACZ0= ZCur-ZJump;
+         retract(DACZ0); //втянуться на ZJump
+        }        
       }   
       sleep_us(50);
+
       for (uint32_t k = 0; k < stepsfastline; ++k) 
       {
         if (!flgVirtual)
@@ -1387,12 +1405,13 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
   //******************************************************************************
       if (!flgVirtual)
       {
-         if (flgMaxJump) protract();
-        else             protract();//(0,-ZJump);
+        if (flgMaxJump) protract();  //вытянуться
+        else            protract();//  protract(0, ZJump);// ;//вытянуться на ZJump
       }
       sleep_ms(conf_.HopeDelay);
-      sleep_us(conf_.pause);    // 50 CONST 50ms wait for start get data
+      sleep_us(conf_.pause);    // CONST 50ms wait for start get data
   //*******************************************************************************
+  
       if (!flgVirtual)
       {
          getValuesFromAdc();
@@ -1428,14 +1447,18 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
           vector_data.emplace_back(int16_t(10000.0 * (sin(M_PI * j * 0.1) + sin(M_PI * i * 0.1))));
         }
       }
-    }
- // move back   
-    if (!flgVirtual)
-     {
-         retract();
-     } 
-    sleep_us(50);
-
+    } //fast line
+      //move to the start line point   
+      if (!flgVirtual)
+      {
+        retract(); //втянуться на макс
+        ZMove(DACZ0,DACZ0,-10, 0); // обнуление DACZ
+        DACZ0=0;
+      // set_DACZ(0,0);//????
+      // protract(0,0);
+      } 
+      sleep_us(50);
+// move backward 
     switch (conf_.path)
     {
       case 0://X+
@@ -1478,13 +1501,6 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
 
       sleep_us(conf_.delayF);
      }
-     int16_t count0 = 0;
-     while ((!DrawDone) || (count0<20) )//ожидание ответа ПК для синхронизации
-     {
-      sleep_ms(10);
-      count0++;
-     } 
-     DrawDone = false;
      if (!flgVirtual)
      {
         getValuesFromAdc();
@@ -1519,9 +1535,23 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
        }
      }    
      vector_data.emplace_back(round(conf_.SetPoint));
-     
-     sendStrData("code50",vector_data,60,true);
 
+     int16_t count0 = 0;
+     while ((!DrawDone) || (count0<20) )//ожидание ответа ПК для синхронизации
+     {
+      sleep_ms(10);
+      count0++;
+     } 
+     DrawDone = false; 
+//*******************************************************     
+     sendStrData("code50",vector_data,60,true);
+//********************************************************
+    if (STOP)  // stop
+    {
+      STOP = false;
+      sendStrData("stopped");
+      break;
+    }  
     if (CONFIG_UPDATE)
     {
       CONFIG_UPDATE              = false;
@@ -1544,13 +1574,6 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
         debugdata.emplace_back(vector[j]);
       }
       sendStrData("debug parameters update",debugdata,100,true);
-    }
-    if (STOP)  // stop
-    {
-      STOP = false;
- //     sleep_ms(100);  //24/02/02
-      sendStrData("stopped");
-      break;
     }
 ///move next line
     switch (conf_.path)
@@ -1598,7 +1621,9 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
         }
       }
     } 
-   } 
+   } // slow line
+
+
   blue();
   switch (conf_.path)
   {
@@ -1982,18 +2007,19 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
       if (CONFIG_UPDATE)
       {
         CONFIG_UPDATE = false;
-        ln = vector[1]; // with sign
-        GATE_Z_MAX = (uint16_t)vector[2];
-        GATE_Z_MIN = (uint16_t)vector[3];
+        ln = vupdateparams[1]; // with sign
+        GATE_Z_MAX = (uint16_t)vupdateparams[2];
+        GATE_Z_MIN = (uint16_t)vupdateparams[3];
         ldir = 0;
         if (ln > 0) ldir = 1;
         ln = abs(ln);
         sleep_ms(100);
         for (int j = 1; j <= 3; ++j)
         {
-          debugdata.emplace_back(vector[j]);
+          debugdata.emplace_back(vupdateparams[j]);
         }
         sendStrData("debug parameters update",debugdata,100,true);
+        vupdateparams.clear();
       }
       status = none;
       if (!flgVirtual) //add mf
@@ -2027,6 +2053,7 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
          debugdata.emplace_back(vector[j]);
        }
        sendStrData("debug parameters posistionXYZ update",debugdata,100,true);
+       vupdateparams.clear();
       }
       status = none;
       if (!flgVirtual) 
@@ -2451,7 +2478,7 @@ void Scanner::spectroscopyIV(std::vector<int32_t> &vector)
    int16_t count = 0;
   while ((!TheadDone) || (count<20) )//ожидание ответа ПК для синхронизации
   {
-    sleep_ms(100);
+    sleep_ms(10);
     count++;
   } 
   TheadDone = false;
@@ -2543,23 +2570,24 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
     {
       // log("config updated\n",flgDebugLevel);
       CONFIG_UPDATE = false;
-      SET_POINT    = vector[1];
-      GATE_Z_MAX   = vector[2];
-      GATE_Z_MIN   = vector[3];
-      NSTEPS       = vector[4];
-      INTDELAY     = vector[5];
-      GAIN         = vector[6];
-      SCANNERDECAY = vector[7];
+      SET_POINT    = vupdateparams[1];
+      GATE_Z_MAX   = vupdateparams[2];
+      GATE_Z_MIN   = vupdateparams[3];
+      NSTEPS       = vupdateparams[4];
+      INTDELAY     = vupdateparams[5];
+      GAIN         = vupdateparams[6];
+      SCANNERDECAY = vupdateparams[7];
      
      // if (flgDev!=SFM) set_Bias(1,Bias);  240211
       set_SetPoint(0,SET_POINT); 
       set_GainPID(GAIN);
       sleep_ms(100);  // need for virtual для разделение afc
-      for (int j = 1; j <= 7; ++j)
+      for (int j = 0; j <= 7; ++j)
       {
-        debugdata.emplace_back(vector[j]);
+        debugdata.emplace_back(vupdateparams[j]);
       }
       sendStrData("debug parameters update",debugdata,200,true);
+      vupdateparams.clear();
     }
  
     if (!flgVirtual) // get values
