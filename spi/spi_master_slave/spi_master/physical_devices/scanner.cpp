@@ -544,7 +544,7 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
 
   prev_point = pos_; //запоминание начальной точки скана
   vector_data.clear();
-  for (int j = 1; j <= 17; ++j)
+  for (int j = 0; j <= 17; ++j)
   {
     debugdata.emplace_back(vector[j]);
   }
@@ -745,7 +745,7 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
       set_GainPID(vector[3]);
       sleep_ms(100);              
       conf_.diskretinstep = vector[4]; 
-       for (int j = 1; j <= 3; ++j)
+       for (int j = 0; j <= 3; ++j)
       {
         debugdata.emplace_back(vector[j]);
       }
@@ -1264,7 +1264,7 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
   const int8_t oneline=11;
   prev_point = pos_; //запоминание начальной точки скана
   vector_data.clear();
-  for (int j = 1; j <= 23; ++j)
+  for (int j = 0; j <= 23; ++j)
   {
     debugdata.emplace_back(vector[j]);
   }
@@ -1563,7 +1563,7 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
       flgMaxJump=(conf_.HopeZ==0);
       ZJump=-conf_.HopeZ;
       sleep_ms(100);   
-      for (int j = 1; j <= 9; ++j)
+      for (int j = 0; j <= 9; ++j)
       {
         debugdata.emplace_back(vector[j]);
       }
@@ -1670,7 +1670,7 @@ void Scanner::start_fastscan(std::vector<int32_t> &vector)
 
   prev_point = pos_; //запоминание начальной точки скана
   vector_data.clear();
-  for (int j = 1; j <= 17; ++j)
+  for (int j = 0; j <= 17; ++j)
   {
     debugdata.emplace_back(vector[j]);
   }
@@ -2008,7 +2008,7 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
         if (ln > 0) ldir = 1;
         ln = abs(ln);
         sleep_ms(100);
-        for (int j = 1; j <= 3; ++j)
+        for (int j =0; j <= 3; ++j)
         {
           debugdata.emplace_back(vupdateparams[j]);
         }
@@ -2042,7 +2042,7 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
         ldir = 0;
         if (ln > 0) ldir = 1;
         sleep_ms(100);
-       for (int j = 1; j <= 3; ++j)
+       for (int j = 0; j <= 3; ++j)
        {
          debugdata.emplace_back(vector[j]);
        }
