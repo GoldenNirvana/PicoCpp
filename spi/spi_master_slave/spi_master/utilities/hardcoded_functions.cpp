@@ -158,7 +158,7 @@ void move_scannerY(int y)
  dac8563_2.writeB(y);
 
 }
-/*
+
 void set_Bias(int8_t channel,int32_t Bias)
 {
 //   code  22 , 2, 8, 0, 1, 1, value 
@@ -173,7 +173,8 @@ void set_Bias(int8_t channel,int32_t Bias)
         dac8563_1.writeB(Bias+ShiftDac);
       }	
   }
-  */
+}
+ /*
  void set_Bias(int32_t Bias)
 {
 //   code  22 , 2, 8, 0, 1, 1, value 
@@ -183,16 +184,8 @@ void set_Bias(int8_t channel,int32_t Bias)
   }	
 }   
  //  отладка
-/*
-  afc.clear();
-  afc = "debug Bias " + std::to_string(channel) + ',' + std::to_string(Bias);
-  afc += +"\n";
-  std::cout << afc;
-  afc.clear();
-  sleep_ms(100);
- */ 
-}
-/*
+*/
+
 void set_SetPoint(int8_t channel, int32_t SetPoint)
 {//  code  22, 2, 8, 0, 1, 0, value
   if (!flgVirtual)
@@ -215,8 +208,8 @@ void set_SetPoint(int8_t channel, int32_t SetPoint)
   afc.clear();
   sleep_ms(100); 
 }
-*/
 
+/*
 void set_SetPoint( int32_t SetPoint)
 {//  code  22, 2, 8, 0, 1, 0, value
   if (!flgVirtual)
@@ -231,7 +224,7 @@ void set_SetPoint( int32_t SetPoint)
   afc.clear();
   sleep_ms(100); 
 }
-
+*/
 void set_GainApmlMod(int8_t port, uint8_t gain)
 {
   uint8_t intBuf[1]; 
