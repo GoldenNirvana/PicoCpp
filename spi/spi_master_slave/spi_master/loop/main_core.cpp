@@ -130,14 +130,15 @@ case InitDAC_XY:
 case SET_BIAS:
               {
                 ALGCODE=ALGNONE;
-                init_SPI(vector[1],vector[2],vector[3],vector[4]);//22, 2, 8, 0, 1, 1, value	
+              //  '2'+'8'+'0'+'1'+'1'
+                init_SPI(vector[1],vector[2],vector[3],vector[4]);//19, 2, 8, 0, 1, 1, value	
                 set_Bias(vector[5],vector[6]);
                 break;
               }               
 case SET_SETPOINT:
               {
                 ALGCODE=ALGNONE;
-                init_SPI(vector[1],vector[2],vector[3],vector[4]);  //22, 2, 8, 0, 1, 0, value	
+                init_SPI(vector[1],vector[2],vector[3],vector[4]);//22, 2, 8, 0, 1, 0, value	
                 set_SetPoint(vector[5],vector[6]);
                 break; 
               }   
@@ -148,7 +149,7 @@ case SET_SETPOINT:
               }     
  case SET_XY: {
                ALGCODE=ALGNONE;
-               init_SPI(vector[1],vector[2],vector[3],vector[4]);//22, 3, 8, 0, 1, 1, value	
+               init_SPI(vector[1],vector[2],vector[3],vector[4]);//29, 3, 8, 0, 1, 1, value	
                if (vector[5] == 0)
                {
                 move_scannerX(vector[6]);

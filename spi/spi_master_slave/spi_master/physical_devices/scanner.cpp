@@ -898,13 +898,7 @@ struct Config
   bool  flgMaxJump;
   ZJump=conf_.HopeZ;
   flgMaxJump=(ZJump==0);
-    //std::random_device rd;
-    // Create a Mersenne Twister pseudo-random number generator
-    //std::mt19937 gen(rd());
-    
-    // Create a uniform distribution from 1 to 100
-  //  std::uniform_int_distribution<int> dis(1, 100);
-
+  
   switch (conf_.path)
   {
     case 0://X+
@@ -2689,24 +2683,24 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
 
 void Scanner::start_frqscan()
 {
-  static uint16_t inBuf[5]; // n, start_freq, step, channel, delay
+  static uint16_t inBuf[5]; // n, start_freq, step, delay
   int16_t signalvalue;
   int16_t res_freq = 10000;
   int16_t a = 10000;
   int16_t scan_index = 0;
   int16_t current_freq = 0;
-  int32_t current_channel;
-  for (int j = 0; j < 5; ++j)
+ // int32_t current_channel;
+  for (int j = 0; j < 4; ++j)
   {
     inBuf[j] = vector[1 + j];
     debugdata.emplace_back(inBuf[j]);
   }
-  debugdata.emplace_back(flgVirtual);
-  debugdata.emplace_back(AmplPin);
-  debugdata.emplace_back(ZPin);
+ // debugdata.emplace_back(flgVirtual);
+ // debugdata.emplace_back(AmplPin);
+//  debugdata.emplace_back(ZPin);
   sendStrData("debug frq scan parameters ",debugdata,100,true);
   
-  current_channel = inBuf[3] - 1;  
+ // current_channel = inBuf[3] - 1;  
 
   std::vector<int32_t> data;
 
@@ -2715,14 +2709,14 @@ void Scanner::start_frqscan()
     if (!flgVirtual)
     {
       set_Freq(inBuf[1]);
-      sleep_ms(inBuf[4]);
+      sleep_ms(inBuf[3]); //edited 240226
       data.emplace_back((int32_t)inBuf[1]);
-      data.emplace_back((int32_t)getValuesFromAdc()[current_channel]);
+      data.emplace_back((int32_t)getValuesFromAdc()[AmplPin]); //edited 240226
     }
     else
     {
       current_freq = inBuf[1];
-      sleep_ms(inBuf[4]);
+      sleep_ms(inBuf[3]);
       signalvalue = (int16_t) std::round(a * (pow(M_E, -pow((current_freq - res_freq), 2) / 1000000))); //231126
       data.emplace_back((int32_t)current_freq);
       data.emplace_back((int32_t)signalvalue);

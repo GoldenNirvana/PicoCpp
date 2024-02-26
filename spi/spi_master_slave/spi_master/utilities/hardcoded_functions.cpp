@@ -71,9 +71,6 @@ void setDefaultSettings()
   io_ports.push_back(io2_2);
   io_ports.push_back(io3_0);
   io_ports.push_back(io3_1);
-
-
-
   //io_ports.push_back(io3_2);
 }
 void set_Freq(uint32_t freq)
@@ -100,7 +97,6 @@ void set_Freq(uint32_t freq)
   spi_write_blocking(spi_default, buf, 2);
   spi_write_blocking(spi_default, buf + 2, 2);
   spi_write_blocking(spi_default, buf + 4, 2);
-
 }
 
 void get_result_from_adc()
@@ -131,7 +127,6 @@ void init_DACSPB(uint8_t port) //  4 для подставки
 void init_DACXY(uint8_t port)
 {
   dac8563_2.initialize(port); //code 27
-
   dac8563_2.setSpiProps();
   dac8563_2.writeA(0);
   dac8563_2.writeB(0);
@@ -163,6 +158,7 @@ void move_scannerY(int y)
  dac8563_2.writeB(y);
 
 }
+/*
 void set_Bias(int8_t channel,int32_t Bias)
 {
 //   code  22 , 2, 8, 0, 1, 1, value 
@@ -176,7 +172,16 @@ void set_Bias(int8_t channel,int32_t Bias)
       {
         dac8563_1.writeB(Bias+ShiftDac);
       }	
-  }   
+  }
+  */
+ void set_Bias(int32_t Bias)
+{
+//   code  22 , 2, 8, 0, 1, 1, value 
+  if (!flgVirtual)
+  { 
+     dac8563_1.writeB(Bias+ShiftDac);
+  }	
+}   
  //  отладка
 /*
   afc.clear();
@@ -187,7 +192,7 @@ void set_Bias(int8_t channel,int32_t Bias)
   sleep_ms(100);
  */ 
 }
-
+/*
 void set_SetPoint(int8_t channel, int32_t SetPoint)
 {//  code  22, 2, 8, 0, 1, 0, value
   if (!flgVirtual)
@@ -210,6 +215,23 @@ void set_SetPoint(int8_t channel, int32_t SetPoint)
   afc.clear();
   sleep_ms(100); 
 }
+*/
+
+void set_SetPoint( int32_t SetPoint)
+{//  code  22, 2, 8, 0, 1, 0, value
+  if (!flgVirtual)
+  {
+     dac8563_1.writeA(SetPoint+ShiftDac);
+  } 
+  // отладка
+  afc.clear();
+  afc = "debug SetPoint " + std::to_string(channel) + ',' + std::to_string(SetPoint);
+  afc += +"\n";
+  std::cout << afc;
+  afc.clear();
+  sleep_ms(100); 
+}
+
 void set_GainApmlMod(int8_t port, uint8_t gain)
 {
   uint8_t intBuf[1]; 
@@ -244,6 +266,7 @@ void set_DACXY(uint8_t channel, uint16_t value)
   if (channel == 0)  dac8563_2.writeA(value);
   if (channel == 1)  dac8563_2.writeB(value);
 }
+
 void set_DACZ(uint8_t channel,int16_t value) 
 {
   dac8563_3.setSpiProps();
@@ -255,38 +278,7 @@ void stopAll()
 {
   STOP=false;
 }
-/*
-uint16_t *getValuesFromAdc()
-{
-  get_result_from_adc();
-  int i = 0;
-  while (!ADC_IS_READY_TO_READ && i++ < 3)
-  {
-//    std::cout << "EndlessLoop\n";
-    sleep_us(100);
-  }
-  return spiBuf;
-}
 
-*/
-/*
-uint16_t *getValuesFromAdc()
-{
-  repeatTwoTimes();
-  return repeatTwoTimes();
-}
-
-uint16_t *repeatTwoTimes()
-{
-  get_result_from_adc();
-  int j = 0;
-  while (!ADC_IS_READY_TO_READ && j++ < 3)
-  {
-    sleep_us(100);
-  }
-  return spiBuf;
-}
-*/
 uint16_t *getValuesFromAdc()
 {
   repeatTwoTimes();
