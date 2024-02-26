@@ -141,7 +141,7 @@ void init_DACXY(uint8_t port)
 void init_DACZ(uint8_t port)
 {
   dac8563_3.initialize(port); //code 27
-  set_DACZ(0,0); 
+  set_DACZ(0); 
   afc.clear();
   afc = "debug Init DACZ 0 port=" + std::to_string(port);
   afc += +"\n";
@@ -158,7 +158,7 @@ void move_scannerY(int y)
  dac8563_2.writeB(y);
 
 }
-
+/*
 void set_Bias(int8_t channel,int32_t Bias)
 {
 //   code  22 , 2, 8, 0, 1, 1, value 
@@ -174,7 +174,8 @@ void set_Bias(int8_t channel,int32_t Bias)
       }	
   }
 }
- /*
+*/
+ 
  void set_Bias(int32_t Bias)
 {
 //   code  22 , 2, 8, 0, 1, 1, value 
@@ -182,9 +183,14 @@ void set_Bias(int8_t channel,int32_t Bias)
   { 
      dac8563_1.writeB(Bias+ShiftDac);
   }	
+   afc.clear();
+  afc = "debug Bias"+ std::to_string(Bias);
+  afc += +"\n";
+  std::cout << afc;
+  afc.clear();
+  sleep_ms(100);
 }   
- //  отладка
-*/
+/*
 
 void set_SetPoint(int8_t channel, int32_t SetPoint)
 {//  code  22, 2, 8, 0, 1, 0, value
@@ -208,8 +214,8 @@ void set_SetPoint(int8_t channel, int32_t SetPoint)
   afc.clear();
   sleep_ms(100); 
 }
+*/
 
-/*
 void set_SetPoint( int32_t SetPoint)
 {//  code  22, 2, 8, 0, 1, 0, value
   if (!flgVirtual)
@@ -218,17 +224,17 @@ void set_SetPoint( int32_t SetPoint)
   } 
   // отладка
   afc.clear();
-  afc = "debug SetPoint " + std::to_string(channel) + ',' + std::to_string(SetPoint);
+  afc = "debug SetPoint "+ std::to_string(SetPoint);
   afc += +"\n";
   std::cout << afc;
   afc.clear();
   sleep_ms(100); 
 }
-*/
-void set_GainApmlMod(int8_t port, uint8_t gain)
+
+void set_GainApmlMod(uint8_t gain)
 {
   uint8_t intBuf[1]; 
-  decoder.activePort(port);
+  decoder.activePort(5);
   Spi::setProperties(8, 0, 0);
   intBuf[0] = 0;
   spi_write_blocking(spi_default, intBuf, 1); 
@@ -260,11 +266,12 @@ void set_DACXY(uint8_t channel, uint16_t value)
   if (channel == 1)  dac8563_2.writeB(value);
 }
 
-void set_DACZ(uint8_t channel,int16_t value) 
+void set_DACZ(int16_t value) 
 {
-  dac8563_3.setSpiProps();
-  if (channel == 0)  dac8563_3.writeA(int32_t(value)+ShiftDac);
-  if (channel == 1)  dac8563_3.writeB(int32_t(value)+ShiftDac);
+  dac8563_3.setSpiProps(); 
+  dac8563_3.writeA(int32_t(value)+ShiftDac);
+ // if (channel == 0) 
+ // if (channel == 1)  dac8563_3.writeB(int32_t(value)+ShiftDac);
 }
 
 void stopAll()

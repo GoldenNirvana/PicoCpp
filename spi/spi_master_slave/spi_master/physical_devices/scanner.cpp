@@ -151,7 +151,7 @@ void Scanner::retract(int16_t HeightJump) //втянуть на H
 {
  //freezeLOOP(100); 
  retract(); 
- set_DACZ(0,-abs(HeightJump)); 
+ set_DACZ(-abs(HeightJump)); 
 }
 
 void Scanner::protract() //вытянуть
@@ -1121,14 +1121,14 @@ struct Config
          {
           conf_.SetPoint=round(ISatCur*conf_.KoeffCorrectISat*0.01 );
           ISatCurPrev=ISatCur;
-          set_SetPoint(0,conf_.SetPoint);
+          set_SetPoint(conf_.SetPoint);
           sleep_ms(conf_.HopeDelay);
          }
        }
        else
        { 
         conf_.SetPoint=round(ISatCur*conf_.KoeffCorrectISat*0.01 );
-        set_SetPoint(0,conf_.SetPoint);
+        set_SetPoint(conf_.SetPoint);
         ISatCurPrev=ISatCur;
         sleep_ms(conf_.HopeDelay);
        }
@@ -1516,14 +1516,14 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
          {
           conf_.SetPoint=round(ISatCur*conf_.KoeffCorrectISat*0.01 );
           ISatCurPrev=ISatCur;
-          set_SetPoint(0,conf_.SetPoint);
+          set_SetPoint(conf_.SetPoint);
           sleep_ms(conf_.HopeDelay);
          }
        }
        else
        { 
         conf_.SetPoint=round(ISatCur*conf_.KoeffCorrectISat*0.01 );
-        set_SetPoint(0,conf_.SetPoint);
+        set_SetPoint(conf_.SetPoint);
         ISatCurPrev=ISatCur;
         sleep_ms(conf_.HopeDelay);
        }
@@ -2180,7 +2180,7 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
         if (Zt<=(minint16_t-stepsize)) { Zt=minint16_t;}
       } 
        Zt=Zt+stepsize;         
-      if (!flgVirtual) set_DACZ(0,Zt);    // - physical - 0
+      if (!flgVirtual) set_DACZ(Zt);    // - physical - 0
       for(int16_t k=0; k < delay; k++) { }// задержка в каждом дискрете
 	  }
     if (nreststeps!=0)
@@ -2415,16 +2415,16 @@ void Scanner::spectroscopyIV(std::vector<int32_t> &vector)
         rest=dlt%start_step;
       for (kk=0; kk<nstep; kk++)
       {
-       if (!flgVirtual) set_Bias(1,dacU);    
+       if (!flgVirtual) set_Bias(dacU);    
        sleep_ms(10);   
        dacU+=step;
       } 
        dacU+=rest;
-      if (!flgVirtual)set_Bias(1,dacU);         
+      if (!flgVirtual)set_Bias(dacU);         
       sleep_ms(10);  
       for(i=0; i<UPoints; i++)
       {
-       if (!flgVirtual) {set_Bias(1,dacU); }
+       if (!flgVirtual) {set_Bias(dacU); }
        sleep_ms(delay);
        if (!flgVirtual)
        {
@@ -2456,15 +2456,15 @@ void Scanner::spectroscopyIV(std::vector<int32_t> &vector)
   nstep=dlt/start_step;
   for (kk=0; kk<nstep; kk++)
   {
-   if (!flgVirtual) set_Bias(1,dacU);  
+   if (!flgVirtual) set_Bias(dacU);  
    sleep_ms(10);
    dacU+=step;
   }
     dacU+=rest;
-  if (!flgVirtual) set_Bias(1,dacU);  
+  if (!flgVirtual) set_Bias(dacU);  
     sleep_ms(10);
   
-  if (!flgVirtual) set_Bias(1,UBackup);  //240206
+  if (!flgVirtual) set_Bias(UBackup);  //240206
     sleep_ms(10);
 ///////////////////////////////////////////////
    if(!flgVirtual)  unfreezeLOOP(500);
@@ -2516,8 +2516,8 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
     debugdata.emplace_back(vector[j]);
   } 
   sendStrData( "debug approach parameters  ",debugdata,100,true);
-  set_SetPoint(0,SET_POINT); 
-  if (flgDev!=SFM) set_Bias(1,Bias);  
+  set_SetPoint(SET_POINT); 
+  if (flgDev!=SFM) set_Bias(Bias);  
   set_GainPID(GAIN);
 
   if (!flgVirtual)
@@ -2573,7 +2573,7 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
       SCANNERDECAY = vupdateparams[7];
      
      // if (flgDev!=SFM) set_Bias(1,Bias);  240211
-      set_SetPoint(0,SET_POINT); 
+      set_SetPoint(SET_POINT); 
       set_GainPID(GAIN);
       sleep_ms(100);  // need for virtual для разделение afc
       for (int j = 0; j <= 7; ++j)

@@ -106,7 +106,7 @@ case SET_PID_GAIN:
 case SET_AMPLMOD_GAIN: // усиление раскачка зонда 
               {
                  ALGCODE=ALGNONE;
-                 if (!flgVirtual)  set_GainApmlMod(vector[1],(uint8_t)vector[5]); //port ,value
+                 if (!flgVirtual)  set_GainApmlMod((uint8_t)vector[1]);
                  break;
               }   
 case InitDAC_BIAS_SET_POINT:
@@ -131,20 +131,20 @@ case SET_BIAS:
               {
                 ALGCODE=ALGNONE;
               //  '2'+'8'+'0'+'1'+'1'
-                init_SPI(vector[1],vector[2],vector[3],vector[4]);//19, 2, 8, 0, 1, 1, value	
-                set_Bias(vector[5],vector[6]);
+              //  init_SPI(vector[1],vector[2],vector[3],vector[4]);//19, 2, 8, 0, 1, 1, value	
+                set_Bias(vector[1]);
                 break;
               }               
 case SET_SETPOINT:
               {
                 ALGCODE=ALGNONE;
-                init_SPI(vector[1],vector[2],vector[3],vector[4]);//22, 2, 8, 0, 1, 0, value	
-                set_SetPoint(vector[5],vector[6]);
+               // init_SPI(vector[1],vector[2],vector[3],vector[4]);//22, 2, 8, 0, 1, 0, value	
+                set_SetPoint(vector[1]);
                 break; 
               }   
   case SET_Z: { 
                 ALGCODE=ALGNONE;
-                set_DACZ(0,vector[1]);
+                set_DACZ(vector[1]);
                 break;
               }     
  case SET_XY: {
