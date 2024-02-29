@@ -113,7 +113,7 @@ extern OutputPort dec;
 extern OutputPort resetPort;
 extern OutputPort ledPort;
 extern OutputPort rdbLed;
-                           //ports
+ //ports SPI                          
 extern OutputPort io1_0;   //0 channel -pins  
 extern OutputPort io1_1;   //1
 extern OutputPort io2_0;   //2

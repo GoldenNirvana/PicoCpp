@@ -235,13 +235,22 @@ void set_SetPoint( int32_t SetPoint)
 void set_GainApmlMod(uint8_t gain)
 {
   uint8_t intBuf[1]; 
-  decoder.activePort(5);
-  Spi::setProperties(8, 0, 0);
-  intBuf[0] = 0;
-  spi_write_blocking(spi_default, intBuf, 1); 
-  intBuf[0] = (uint8_t)gain;
-  spi_write_blocking(spi_default, intBuf, 1); 
-  decoder.activePort(7);
+  if (!flgVirtual)
+  { decoder.activePort(5);
+    Spi::setProperties(8, 0, 0);
+    intBuf[0] = 0;
+    spi_write_blocking(spi_default, intBuf, 1); 
+    intBuf[0] = (uint8_t)gain;
+    spi_write_blocking(spi_default, intBuf, 1); 
+    decoder.activePort(7);
+  } 
+     // отладка
+  afc.clear();
+  afc = "debug Ampl Gain "+ std::to_string(gain);
+  afc += +"\n";
+  std::cout << afc;
+  afc.clear();
+  sleep_ms(100); 
 }
 
 void set_GainPID(int gain)
@@ -249,7 +258,7 @@ void set_GainPID(int gain)
   set_io_value(2, gain); 
     // отладка
   afc.clear();
-  afc = "debug PId Gain "+ std::to_string(gain);
+  afc = "debug PID Gain "+ std::to_string(gain);
   afc += +"\n";
   std::cout << afc;
   afc.clear();
