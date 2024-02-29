@@ -445,11 +445,11 @@ struct Config
       sleep_ms(100);              
       conf_.diskretinstep = vupdateparams[4]; 
  
-      for (int j = 0; j <= 3; ++j)
+      for (int j = 0; j <= 4; ++j)
       {
         debugdata.emplace_back(vupdateparams[j]);
       }
-      sendStrData( "debug parameters update",debugdata,100,true);
+      sendStrData( "debug scan parameters update",debugdata,100,true);
       vupdateparams.clear();
      stepsx = (uint16_t) conf_.betweenPoints_x / conf_.diskretinstep;
      stepsy = (uint16_t) conf_.betweenPoints_y / conf_.diskretinstep;
@@ -1168,7 +1168,7 @@ struct Config
       conf_.flgAutoUpdateSP      = vupdateparams[7];; // автообновление опоры на каждой линии                     19
       conf_.flgAutoUpdateSPDelta = vupdateparams[8];; // обновление опоры , если изменение тока превысило порог 20
       conf_.ThresholdAutoUpdate  = vupdateparams[9];; // изменения опоры, если изменение тока превысило порог     21
-      conf_.KoeffCorrectISat     = vupdateparams[10];  // опора  %  от тока насыщения        
+      conf_.KoeffCorrectISat     = vupdateparams[10]; // опора  %  от тока насыщения        
       ZJump=conf_.HopeZ;
       flgMaxJump=(ZJump==0);  
       sleep_ms(100);   //?????
@@ -1176,7 +1176,7 @@ struct Config
       {
         debugdata.emplace_back(vupdateparams[j]);
       }
-      sendStrData("debug parameters update",debugdata,100,true);
+      sendStrData("debug hoping parameters update",debugdata,100,true);
       vupdateparams.clear();
   
       stepsx = (uint16_t) conf_.betweenPoints_x / conf_.diskretinstep;
