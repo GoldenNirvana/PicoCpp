@@ -21,7 +21,8 @@ void set_io_value(int port, int value)
     binary[1] == '1' ? io1_0.enable() : io1_0.disable();
     binary[0] == '1' ? io1_1.enable() : io1_1.disable();
   } 
-  else if (port == 2) //gain
+  else
+  if (port == 2) //gain
   {
     std::string binary = std::bitset<3>(value).to_string();
     binary[2] == '1' ? io2_0.enable() : io2_0.disable();
@@ -245,7 +246,14 @@ void set_GainApmlMod(uint8_t gain)
 
 void set_GainPID(int gain)
 {
-   set_io_value(2, gain); 
+  set_io_value(2, gain); 
+    // отладка
+  afc.clear();
+  afc = "debug PId Gain "+ std::to_string(gain);
+  afc += +"\n";
+  std::cout << afc;
+  afc.clear();
+  sleep_ms(100); 
 }
 
 void set_clock_enable()

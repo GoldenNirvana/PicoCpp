@@ -20,23 +20,24 @@
 #define DebugLevelCmd            15
 #define GET_CURRENTX0Y0          18
 #define SET_BIAS                 19
-#define SET_SETPOINT             22  //DAC8563_1
+#define SET_SETPOINT             20  //DAC8563_1
+#define SET_PID_GAIN             21
+#define SET_AMPLMOD_GAIN         22
 #define InitDAC_BIAS_SET_POINT   23  //DAC8563_1 
 #define ADC_GET_VALUECmd         24  // don't use
-#define RESONANCE                25  //AD9833 
 #define InitDAC_Z                26  //DAC8563_3
 #define InitDAC_XY               27  //DAC8563_2
 #define SET_Z                    28  //DAC8563_3
 #define SET_XY                   29  //DAC8563_SET_VOLTAGE_2
 #define FREQ_SET                 30  //AD9833
 #define TheadDoneCmd             33
-#define SET_AMPLMOD_GAIN         40
+#define TestStepsMover           39
+#define RESONANCE                40  //AD9833 
 #define SCANNING                 50
 #define MOVE_TOX0Y0              51  //переместиться в начальную точку  скана из начальной точке предыдущего скана
 #define CONFIG_UPDATECmd         55
 #define FASTSCANNING             56
 #define SENDDATALIN              57
-#define SET_PID_GAIN             60
 #define SCANNER_RETRACT_PROTRACT 61
 #define SPECTROSOPY_IV           65
 #define SPECTROSOPY_AIZ          66

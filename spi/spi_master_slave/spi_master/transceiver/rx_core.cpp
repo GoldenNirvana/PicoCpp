@@ -68,9 +68,11 @@ void RX_core::launchOnCore1()
            IPin=2;
         }
        break;
-      case 21:
+    /* 
+       case 21:
         AD5664 = true;
         break;
+     */   
   //*************************************** 
       case VirtualCmd : //флаг симуляции работы микрокотроллера      
         flgVirtual =(bool)vector[1];
@@ -162,6 +164,15 @@ void RX_core::parse(int32_t *vec)
   vectorSize = parser.parseInts(vec);
 }
 */
+void RX_core::parse(std::vector<int32_t> &vec)
+{
+  std::string s;
+  getline(std::cin, s);
+  // todo mb add const_cast
+  Parser parser(s.data(), ',');
+ // vec.clear();
+  vectorSize = parser.parseInts(vec);
+}
 void RX_core::parse(std::vector<int32_t> &vec,std::vector<int32_t> &vparams)
 {
   std::string s;

@@ -438,7 +438,7 @@ struct Config
       CONFIG_UPDATE = false;
       conf_.delayF  = vupdateparams[1];
       conf_.delayB  = vupdateparams[2];
-      set_GainPID(vupdateparams[3]);
+      set_GainPID((uint8_t)vupdateparams[3]);
       sleep_ms(100);              
       conf_.diskretinstep = vupdateparams[4]; 
  
@@ -742,7 +742,7 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
       CONFIG_UPDATE = false;
       conf_.delayF        = vector[1];
       conf_.delayB        = vector[2];
-      set_GainPID(vector[3]);
+      set_GainPID((uint8_t)vector[3]);
       sleep_ms(100);              
       conf_.diskretinstep = vector[4]; 
        for (int j = 0; j <= 3; ++j)
@@ -1158,7 +1158,7 @@ struct Config
       conf_.delayF               = vupdateparams[1];
       conf_.delayB               = vupdateparams[2];
       conf_.diskretinstep        = vupdateparams[3];
-                       set_GainPID(vupdateparams[4]);
+         set_GainPID((uint8_t)vupdateparams[4]);
       conf_.HopeDelay            = vupdateparams[5];
       conf_.HopeZ                = vupdateparams[6];
       conf_.flgAutoUpdateSP      = vupdateparams[7];; // автообновление опоры на каждой линии                     19
@@ -1552,7 +1552,7 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
       conf_.delayF               = vector[1];
       conf_.delayB               = vector[2];
       conf_.diskretinstep        = vector[3];
-      set_GainPID(vector[4]);
+      set_GainPID((uint8_t)vector[4]);
       conf_.HopeDelay            = vector[5];
       conf_.HopeZ                = vector[6];
       conf_.flgAutoUpdateSP      = vector[7];; // автообновление опоры на каждой линии                     19
@@ -1963,7 +1963,7 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
           lid_name=(uint8_t)vector[1]; //  int lid_name
                  f=vector[2]; //  int f
                  p=vector[3]; //  int p
-                ln=abs((int16_t)vector[4]); //  int n
+                ln=abs((int16_t)vector[4]); //  int nsteps
               ldir=(bool)vector[5]; //  int dir
         GATE_Z_MAX=(uint16_t)vector[6]; //  int Z gate max
         GATE_Z_MIN=(uint16_t)vector[7]; //  int Z gate min
@@ -1971,7 +1971,7 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
      flgSICMPrePos=(uint16_t)vector[9];
    //   pos_data[7] / //  0= SFM, 1=STM ;SICMAC-2; SICMDC-3;  device type
   //    pos_data[8]/ //  Voltage
-   for (int j = 0; j <= 8; ++j)
+   for (int j = 0; j <= 9; ++j)
    {
      debugdata.emplace_back(vector[j]);
     }
@@ -2518,7 +2518,7 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
   sendStrData( "debug approach parameters  ",debugdata,100,true);
   set_SetPoint(SET_POINT); 
   if (flgDev!=SFM) set_Bias(Bias);  
-  set_GainPID(GAIN);
+  set_GainPID((uint8_t)GAIN);
 
   if (!flgVirtual)
   {
@@ -2574,7 +2574,7 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
      
      // if (flgDev!=SFM) set_Bias(1,Bias);  240211
       set_SetPoint(SET_POINT); 
-      set_GainPID(GAIN);
+      set_GainPID((uint8_t)GAIN);
       sleep_ms(100);  // need for virtual для разделение afc
       for (int j = 0; j <= 7; ++j)
       {
@@ -2735,4 +2735,8 @@ void Scanner::start_frqscan()
   TheadDone = false;
   sendStrData("end");
 }
+void Scanner::testpiezomover()
+{
 
+
+}

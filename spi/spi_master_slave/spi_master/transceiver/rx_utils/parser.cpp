@@ -67,7 +67,19 @@ bool Parser::equals(int num, const char *comp)
 {
   return !strcmp(str[num], comp);
 }
-
+int32_t Parser::parseInts(std::vector<int32_t> &data)
+{
+  char *offset = buf;  
+  data.clear(); 
+  while (true)
+  {
+    data.emplace_back((int32_t)atoi(offset)); 
+    offset = strchr(offset, div);
+    if (offset)   { offset++; }
+    else          { break;    }
+  }
+  return data.size();
+}
 int32_t Parser::parseInts(std::vector<int32_t> &data,std::vector<int32_t> &uparams)
 {
   int count = 0;

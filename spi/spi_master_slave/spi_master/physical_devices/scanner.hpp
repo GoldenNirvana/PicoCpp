@@ -77,6 +77,8 @@ public:
   void positioningXYZ(std::vector<int32_t> &vector);  // abs(n) перемещение по  X,Y и Z (с контролем ворот)
 
   void start_frqscan();                               //поиск резонанса датчика
+  
+  void testpiezomover();                               //тестирование шагов пьезомувера
 
   void spectroscopyIV(std::vector<int32_t> &vector);  // спектроскопия I-V
 

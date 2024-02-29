@@ -100,7 +100,7 @@ case FASTSCANNING:
 case SET_PID_GAIN:
               {
                 ALGCODE=ALGNONE;
-                if (!flgVirtual)  set_io_value(vector[1], vector[2]);     
+                if (!flgVirtual) set_GainPID((uint8_t)vector[1]);// set_io_value(vector[1], vector[2]);     
                 break; 
               }  
 case SET_AMPLMOD_GAIN: // усиление раскачка зонда 
