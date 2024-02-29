@@ -2728,7 +2728,7 @@ void Scanner::start_frqscan()
     sleep_ms(10);
     freq += freqstep;
   }
-  sendStrData("code25",data,100,true);
+  sendStrData("code40",data,100,true);
   //current_channel = -1;
   int16_t count = 0;
   while ((!TheadDone) || (count<20) )//ожидание ответа ПК для синхронизации
