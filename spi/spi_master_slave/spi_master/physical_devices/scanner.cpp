@@ -23,7 +23,7 @@ void Scanner::sendStrData(std::string const& header)
  // sleep_ms(100);
 }
 
-void Scanner::sendStrData(std::string const& header, std::vector<int32_t> &data, const uint16_t delay,const bool flg)
+void Scanner::    sendStrData(std::string const& header, std::vector<int32_t> &data, const uint16_t delay,const bool flg)
 {
   std::string afcc;
   afcc.clear();
@@ -121,14 +121,16 @@ void Scanner::readADC()
         debugdata.emplace_back(ZValue);
         debugdata.emplace_back(SignalValue);
         debugdata.emplace_back(vector[1]);
-        sendStrData("code12",debugdata,100,true);
+    //    std::string str="code"+std::to_string(ADC_READCmd);
+        sendStrData("code"+std::to_string(ADC_READCmd),debugdata,100,true);
   } 
   else
   {
         debugdata.emplace_back(ZValue);
         debugdata.emplace_back(SignalValue);
         debugdata.emplace_back(vector[1]);
-        sendStrData("code12",debugdata,100,true);
+     //   std::string str="code"+std::to_string(ADC_READCmd);
+        sendStrData("code"+std::to_string(ADC_READCmd),debugdata,100,true);
   }
 }
 void Scanner::scanner_retract_protract(int port, int flg) // port  6  1- втянуть,  0-вытянуть
@@ -431,8 +433,9 @@ struct Config
      count0++;
     } 
     DrawDone = false;
-    sendStrData("code50",vector_data,60,true); //100
- 
+    //std::string str="code"+std::to_string(SCANNING);
+
+    sendStrData("code"+std::to_string(SCANNING),vector_data,60,true); //100
     if (CONFIG_UPDATE)
     {
       CONFIG_UPDATE = false;
@@ -736,7 +739,7 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
      count0++;
     } 
     DrawDone = false;
-    sendStrData("code50",vector_data,40,true); //100
+    sendStrData("code"+std::to_string(SCANNING),vector_data,40,true); //100
      if (CONFIG_UPDATE)
     {
       CONFIG_UPDATE = false;
@@ -1144,7 +1147,8 @@ struct Config
      } 
      DrawDone = false;
 //*****************************************************************
-     sendStrData("code50",vector_data,60,true); //send data
+ //    std::string str="code"+std::to_string(SCANNING);
+     sendStrData("code"+std::to_string(SCANNING),vector_data,60,true); //send data
 //*****************************************************************
     if (STOP)  // stop
     {
@@ -1537,8 +1541,9 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
       count0++;
      } 
      DrawDone = false; 
-//*******************************************************     
-     sendStrData("code50",vector_data,60,true);
+//*******************************************************  
+ //   std::string str="code"+std::to_string(SCANNING);   
+     sendStrData("code"+std::to_string(SCANNING),vector_data,60,true);
 //********************************************************
     if (STOP)  // stop
     {
@@ -1817,7 +1822,8 @@ void Scanner::start_fastscan(std::vector<int32_t> &vector)
       }
     } //i
     sendStrData("debug end fastscan");
-    sendStrData("code56",vector_data,100,true);
+     std::string str="code"+std::to_string(FASTSCANNING);
+    sendStrData(str,vector_data,100,true);
     stop_scan();  //возврат в начальную точку скана
     if (conf_.flgOneFrame == 1) { STOP = true; };
   } 
@@ -1866,7 +1872,8 @@ Point Scanner::getX0Y0()
   sleep_ms(200);
   debugdata.emplace_back(pos_.x);
   debugdata.emplace_back(pos_.y);
-  sendStrData("code18",debugdata,100,true);
+//   std::string str="code"+std::to_string(GET_CURRENTX0Y0);
+  sendStrData("code"+std::to_string(GET_CURRENTX0Y0),debugdata,100,true);
   return pos_;
 }
 
@@ -2333,7 +2340,7 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
      vectorA_Z.emplace_back(-1);
      deltaZ = ZMove( deltaZ, ZStep, 1, MicrostepDelay);
   }
-  sendStrData("code66",vectorA_Z,100,true); 
+  sendStrData("code"+std::to_string(SPECTROSOPY_AIZ),vectorA_Z,100,true); //66
   //move to start point
   sleep_ms(300);
   dlt=abs(deltaZ);
@@ -2440,7 +2447,8 @@ void Scanner::spectroscopyIV(std::vector<int32_t> &vector)
        dacU+=UStep;
       }
       sleep_ms(300);
-      sendStrData("code65",vectorI_V,100,true);  
+
+      sendStrData("code"+std::to_string(SPECTROSOPY_IV),vectorI_V,100,true); //65 
   //move to start point
   }// j Curves  
     //возврат к исходному напряжению
@@ -2544,7 +2552,7 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
   buf_status.push_back(ZValue);
   buf_status.push_back(SignalValue);
 
-  sendStrData( "code75",buf_status,100,false);
+  sendStrData( "code"+std::to_string(APPROACH),buf_status,100,false);
 
   while (true)
   { 
@@ -2654,7 +2662,7 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
         if (buf_status[0] == ok)  { break; }
       }
     } //NSTEPS>0
-    sendStrData( "code75",buf_status,100,false);
+    sendStrData( "code"+std::to_string(APPROACH),buf_status,100,false);//75
     /**/
     if (!flgVirtual)
     {
@@ -2664,7 +2672,7 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
       protract(); //вытянуть
     }
   } //while
-  sendStrData( "code75",buf_status,100,false);
+  sendStrData( "code"+std::to_string(APPROACH),buf_status,100,false);
   if (!flgVirtual)
   {
     protract();//вытянуть
@@ -2728,7 +2736,7 @@ void Scanner::start_frqscan()
     sleep_ms(10);
     freq += freqstep;
   }
-  sendStrData("code40",data,100,true);
+  sendStrData("code"+std::to_string(RESONANCE),data,100,true);
   //current_channel = -1;
   int16_t count = 0;
   while ((!TheadDone) || (count<20) )//ожидание ответа ПК для синхронизации
