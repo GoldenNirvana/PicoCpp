@@ -133,12 +133,27 @@ void Scanner::readADC()
         sendStrData("code"+std::to_string(ADC_READCmd),debugdata,100,true);
   }
 }
-void Scanner::scanner_retract_protract(int port, int flg) // port  6  1- втянуть,  0-вытянуть
+void Scanner::scanner_retract_protract(int port, int flg) 
+// port  5  1- втянуть,     0-вытянуть
+// port  6  1- заморозить,  0-разморозить
  {
-  flg == 1 ? io_ports[port].enable() : io_ports[port].disable();
   afc.clear();
-  if (flg == 1) { afc = "debug scanner retract " + std::to_string(port);}
-  else          { afc = "debug scanner protract" + std::to_string(port);}
+  if (flg == 0)
+  {     
+     switch (port)
+   {  
+   case 5: { io_ports[port].enable();  afc = "debug scanner retract " + std::to_string(port); break;}
+   case 6: { io_ports[port].enable();  afc = "debug PID unfreeze "    + std::to_string(port); break;}
+   }
+  }
+  else 
+  {
+     switch (port)
+   {  
+   case 5: { io_ports[port].disable();  afc = "debug scanner protract " + std::to_string(port); break;}
+   case 6: { io_ports[port].disable();  afc = "debug PID  freeze "      + std::to_string(port); break;}
+   }
+  } 
   afc += +"\n";
   std::cout << afc;
   afc.clear();
