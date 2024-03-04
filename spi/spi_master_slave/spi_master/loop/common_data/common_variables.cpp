@@ -39,7 +39,9 @@ bool LOOP_FREEZE_UNFREEZE=false;
 bool TheadDone = false;
 bool DrawDone=true;
 
+
 //************************************************
+bool    flgDebug=false;
 bool    flgVirtual = false;     // флаг симуляции работа микроконтроллера
 uint8_t flgDebugLevel = 2;      // уровень отладки
 bool    flgUseUART = false;     // использовать UART для передачи данных

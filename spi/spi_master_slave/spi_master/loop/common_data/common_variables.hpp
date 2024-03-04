@@ -90,6 +90,7 @@ extern bool SCANNER_RETRACT;
 extern bool SCANNER_PROTRACT;
 extern bool ADC_IS_READY_TO_READ;
 // service flags
+extern bool flgDebug;
 extern bool TheadDone;   //need dor synchronization with PC 
 extern bool DrawDone;
 extern uint8_t ZPin;

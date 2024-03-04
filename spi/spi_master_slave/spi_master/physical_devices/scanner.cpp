@@ -106,13 +106,13 @@ void Scanner::readADC()
    ZValue = (int16_t) ptr[ZPin];
       switch (vector[1]) //прибор
    {
-        case SFM: //SFM
+        case SFM: //SFM=0
                 {
                  SignalValue = (int16_t) ptr[AmplPin];
                  break;  
                 } 
-        case STM://STM
-     case SICMDC://SICMDC  
+        case STM://STM=1
+     case SICMDC://SICMDC=3  
                 {
                  SignalValue = (int16_t) ptr[IPin];
                  break;  
@@ -2461,7 +2461,7 @@ void Scanner::spectroscopyIV(std::vector<int32_t> &vector)
        }
        dacU+=UStep;
       }
-      sleep_ms(300);
+      sleep_ms(100);
 
       sendStrData("code"+std::to_string(SPECTROSOPY_IV),vectorI_V,100,true); //65 
   //move to start point

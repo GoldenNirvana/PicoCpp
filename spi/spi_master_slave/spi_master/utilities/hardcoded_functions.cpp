@@ -184,12 +184,14 @@ void set_Bias(int8_t channel,int32_t Bias)
   { 
      dac8563_1.writeB(Bias+ShiftDac);
   }	
-   afc.clear();
+ if  (flgDebug)
+ { afc.clear();
   afc = "debug Bias"+ std::to_string(Bias);
   afc += +"\n";
   std::cout << afc;
   afc.clear();
   sleep_ms(100);
+ }
 }   
 /*
 
@@ -224,12 +226,15 @@ void set_SetPoint( int32_t SetPoint)
      dac8563_1.writeA(SetPoint+ShiftDac);
   } 
   // отладка
+ if  (flgDebug)
+ {
   afc.clear();
   afc = "debug SetPoint "+ std::to_string(SetPoint);
   afc += +"\n";
   std::cout << afc;
   afc.clear();
   sleep_ms(100); 
+ }
 }
 
 void set_GainApmlMod(uint8_t gain)
