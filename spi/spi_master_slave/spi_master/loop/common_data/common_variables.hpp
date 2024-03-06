@@ -31,7 +31,6 @@
 #define SET_XY                   29  //DAC8563_SET_VOLTAGE_2
 #define FREQ_SET                 30  //AD9833
 #define TheadDoneCmd             33
-#define TestStepsMover           39
 #define RESONANCE                40  //AD9833 
 #define SCANNING                 50
 #define MOVE_TOX0Y0              51  //переместиться в начальную точку  скана из начальной точке предыдущего скана
@@ -44,6 +43,7 @@
 #define STOPCmd                  70
 #define DRAWDONECmd              71
 #define APPROACH                 75
+#define TESTMOVER                76
 #define LID_MOVE_UNTIL_STOP      80
 #define LID_MOVE_TOZ0            84 // отвестись в безопасную начальную точку по Z
 

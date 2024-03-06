@@ -78,7 +78,7 @@ public:
 
   void start_frqscan();                               //поиск резонанса датчика
   
-  void testpiezomover();                               //тестирование шагов пьезомувера
+  void testpiezomover(std::vector<int32_t> &vector);  //тестирование шагов пьезомувера
 
   void spectroscopyIV(std::vector<int32_t> &vector);  // спектроскопия I-V
 

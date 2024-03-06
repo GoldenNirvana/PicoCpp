@@ -30,6 +30,14 @@ case APPROACH:{
                dark();
                break;
               }
+case TESTMOVER:{
+               ALGCODE=ALGNONE;
+               blue();
+               scanner.testpiezomover(vector);
+               //green();
+               dark();
+               break;
+              }
 case FREQ_SET:{
                ALGCODE=ALGNONE;
                set_Freq((uint32_t) vector[1]);              

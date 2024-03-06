@@ -2704,6 +2704,252 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
   sendStrData("end");
 }
 
+void Scanner::testpiezomover(std::vector<int32_t> &vector)
+{
+  int8_t   flgstop;  //=1  stop
+   int16_t  step,Z0;
+  int16_t  GATE_Z_MAX, GATE_Z_MIN;
+  int16_t  freq, scv;//
+  int16_t  NSTEPS,NCYCLES;
+  uint16_t INTDELAY, SCANNERDECAY;
+ 
+
+ // SET VALUE FROM RX_CORE
+         GATE_Z_MAX     =(int16_t) vector[1]; // max
+         GATE_Z_MIN     =(int16_t) vector[2]; // min
+         NSTEPS         =abs((int16_t) vector[3]); // steps 
+         NCYCLES        =(int16_t) vector[4]; // ncycles 
+         INTDELAY       =(uint16_t)vector[5]; // initdelay
+         SCANNERDECAY   =(uint16_t)vector[6]; // scannerDelay 
+         freq           =(int16_t) vector[7]; // freq
+         scv            =(int16_t) vector[8]; // scv
+       
+    //     flgDev         =(int16_t) vector[9];//  0= SFM, 1=STM ;SICMAC-2; SICMDC-3;  device type
+
+ for (size_t j = 0; j < 9; j++)     // send info
+  {
+    debugdata.emplace_back(vector[j]);
+  } 
+  sendStrData("debug test motor steps parameters  ",debugdata,300,true);
+  flgstop=0;
+  if (!flgVirtual)
+  {
+    getValuesFromAdc(); 
+    ZValue = (int16_t)spiBuf[ZPin];
+  } 
+  else
+  { 
+    ZValue= GATE_Z_MIN+1000;
+  }    
+     Z0=ZValue;  
+     std::vector<int16_t> buf_status;
+     buf_status.push_back(ZValue);
+     buf_status.push_back(NSTEPS);
+     buf_status.push_back(0);
+     sendStrData( "code"+std::to_string(TESTMOVER),buf_status,100,true);
+ 
+    // проверить, в воротах ли Z
+
+    step = NSTEPS;          // NSTEPS > 0 - сближение
+   // Идти вниз до мин. точки
+     while ( ZValue > GATE_Z_MIN )          // ZMin < Z < ZMax означает, что Z  в воротах
+    	{
+        if (STOP)
+        {
+         STOP=false;
+         flgstop=1;
+      //   buf_status.push_back(ZValue);
+      //   buf_status.push_back(NSTEPS);    
+      //   buf_status.push_back(1);    
+         sendStrData("stopped");
+         break;
+        }
+          //steps
+        if (!flgVirtual)
+        {
+          retract();  //втянуть сканнер
+          sleep_ms(SCANNERDECAY);
+          linearDriver.activate(99, freq, scv, std::abs(step), step > 0);
+          protract(); //вытянуть
+          sleep_ms(INTDELAY);
+        }
+     
+        if (!flgVirtual)
+        {
+          getValuesFromAdc(); 
+          ZValue = (int16_t)spiBuf[ZPin];
+        } 
+        else
+        {
+          sleep_ms(INTDELAY);
+         ZValue=ZValue-step*100;
+        }     
+        buf_status.push_back(ZValue);
+        buf_status.push_back(step);
+        buf_status.push_back(0);
+        sendStrData( "code"+std::to_string(TESTMOVER),buf_status,100,true);
+      };
+      // циклическое хождение между воротами
+      int16_t i=0;
+      while(NCYCLES>i)
+      {
+       if (flgstop==1) break;                 // если "стоп" был прочитан ранее
+       step=-NSTEPS;
+       while (ZValue <GATE_Z_MAX)                                    // идти вверх до верхних ворот
+       {
+        if (flgstop==1) break;                 // если "стоп" был прочитан ранее
+        if (STOP)
+        {
+         STOP=false;
+         flgstop=1;
+       //  buf_status.push_back(ZValue);
+       //  buf_status.push_back(NSTEPS);
+       //  buf_status.push_back(0);    
+         sendStrData("stopped");
+         break;
+        }                                    
+        if (!flgVirtual)
+        {
+          retract();  //втянуть сканнер
+          sleep_ms(SCANNERDECAY);
+          linearDriver.activate(99, freq, scv, std::abs(step), step > 0);
+          protract(); //вытянуть
+          sleep_ms(INTDELAY);
+        }
+        if (!flgVirtual)
+        {
+          getValuesFromAdc(); 
+          ZValue = (int16_t)spiBuf[ZPin];
+        }  
+        else
+        {
+         sleep_ms(INTDELAY);
+         ZValue=ZValue-step*100;
+        }    
+        buf_status.push_back(ZValue);
+        buf_status.push_back(step);
+        buf_status.push_back(0);
+        sendStrData( "code"+std::to_string(TESTMOVER),buf_status,100,true);  
+       } //while
+       step = NSTEPS;
+       while (ZValue > GATE_Z_MIN)          // идти до нижних ворот
+       {
+         if (flgstop==1) break;                 // если "стоп" был прочитан ранее
+         if (STOP)
+         {
+          flgstop=1;
+        //   buf_status.push_back(ZValue);
+        //   buf_status.push_back(step);
+        //   buf_status.push_back(0);
+            sendStrData("stopped");
+        //  sendStrData( "code"+std::to_string(TESTMOVER),buf_status,100,false);  
+           break;
+         }
+         if (!flgVirtual)
+         {
+          retract();  //втянуть сканнер
+          sleep_ms(SCANNERDECAY);
+          linearDriver.activate(99, freq, scv, std::abs(step), step > 0);
+          protract(); //вытянуть
+          sleep_ms(INTDELAY);
+         }
+         if (!flgVirtual)
+         {
+           getValuesFromAdc(); 
+           ZValue = (int16_t)spiBuf[ZPin];
+         }  
+         else
+         { 
+           sleep_ms(INTDELAY);
+           ZValue=ZValue-step*100;
+         }      
+         buf_status.push_back(ZValue);
+         buf_status.push_back(step);
+         buf_status.push_back(0);
+         sendStrData( "code"+std::to_string(TESTMOVER),buf_status,100,true);       
+       } // while
+       i++;
+      }//while cyclecount
+//////////////////////////////////////////////////////////////////////////////////////
+//  возврат в начальное состояние
+////////////////////////////////////////////////////////////////
+        if (ZValue < Z0) 
+        {
+         step= - NSTEPS;
+         while (ZValue < Z0)                                    // идти вверх до Z0 (начальной позиции)
+  		    {
+           if (!flgVirtual)
+              {
+               retract();  //втянуть сканнер
+               sleep_ms(SCANNERDECAY);
+               linearDriver.activate(99, freq, scv, std::abs(step), step > 0);
+               protract(); //вытянуть
+               sleep_ms(INTDELAY);
+              }
+              if (!flgVirtual)
+              {
+                getValuesFromAdc(); 
+                ZValue = (int16_t)spiBuf[ZPin];
+              }   
+              else
+              {
+                sleep_ms(INTDELAY);
+               ZValue=ZValue-step*100;
+              }     
+              buf_status.push_back(ZValue);
+              buf_status.push_back(step);
+              buf_status.push_back(0);
+              sendStrData( "code"+std::to_string(TESTMOVER),buf_status,100,true); 
+            };
+       }
+       else
+       {
+            step=   NSTEPS;
+            while (ZValue > Z0)                                    // идти вверх до Z0 (начальной позиции)
+    		    {
+              if (!flgVirtual)
+              {
+               retract();  //втянуть сканнер
+               sleep_ms(SCANNERDECAY);
+               linearDriver.activate(99, freq, scv, std::abs(step), step > 0);
+               protract(); //вытянуть
+               sleep_ms(INTDELAY);
+              }
+              if (!flgVirtual)
+              {
+                getValuesFromAdc(); 
+                ZValue = (int16_t)spiBuf[ZPin];
+              }
+              else
+              {
+                sleep_ms(INTDELAY);
+               ZValue=ZValue-step*100;
+              }        
+              buf_status.push_back(ZValue);
+              buf_status.push_back(step);
+              buf_status.push_back(0);
+              sendStrData( "code"+std::to_string(TESTMOVER),buf_status,100,true); 
+            };
+        }     
+//  Признак конца
+            sleep_ms(300);
+            buf_status.push_back(ZValue);
+            buf_status.push_back(step);
+            buf_status.push_back(1); //!!!!
+            sendStrData( "code"+std::to_string(TESTMOVER),buf_status,100,true); 
+     
+
+///////////////////////////////////////////////////////////////////////////////////
+  int16_t count = 0;
+  while ((!TheadDone) || (count<20) )//ожидание ответа ПК для синхронизации
+  {
+    sleep_ms(100);
+    count++;
+  } 
+  TheadDone = false;
+  sendStrData("end");
+ }   //test mover
+
 void Scanner::start_frqscan()
 {
 
@@ -2762,8 +3008,4 @@ void Scanner::start_frqscan()
   TheadDone = false;
   sendStrData("end");
 }
-void Scanner::testpiezomover()
-{
 
-
-}
