@@ -185,7 +185,8 @@ void set_Bias(int8_t channel,int32_t Bias)
      dac8563_1.writeB(Bias+ShiftDac);
   }	
  if  (flgDebug)
- { afc.clear();
+ { 
+  afc.clear();
   afc = "debug Bias"+ std::to_string(Bias);
   afc += +"\n";
   std::cout << afc;
