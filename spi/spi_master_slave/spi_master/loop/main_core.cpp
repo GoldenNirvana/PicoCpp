@@ -52,7 +52,7 @@ case LID_MOVE_UNTIL_STOP:
 case MOVE_TOX0Y0:
               {
                 ALGCODE=ALGNONE;
-                scanner.move_toX0Y0(vector[1], vector[2], vector[3]);
+                scanner.move_toX0Y0(vector[1], vector[2], vector[3],vector[4]);
                 break; 
               }     
 case LID_MOVE_TOZ0:
@@ -134,7 +134,13 @@ case InitDAC_XY:
                 ALGCODE=ALGNONE; 
                 init_DACXY(vector[1]);
                 break; 
-              }  
+              } 
+case SetDACZeroCmd:
+              {
+                ALGCODE=ALGNONE;
+                set_DACZero();
+                break;
+              } 
 case SET_BIAS:
               {
                 ALGCODE=ALGNONE;

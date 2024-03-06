@@ -88,7 +88,7 @@ public:
 
   void scan_update(const Config &config);             // обновить параметры скaнирования
 
-  void move_toX0Y0(int x, int y, int delay);          //переместиться в начальную точку скана из начальной точке предыдущего скана
+  void move_toX0Y0(uint16_t x, uint16_t y, uint16_t delay, int8_t flg);          //переместиться в начальную точку скана из начальной точке предыдущего скана
 
   void LID_move_toZ0(int lid_name, int f, int p, int n, int dir);// отвестись в безопасную начальную точку по Z при старте и выходе из программы
   

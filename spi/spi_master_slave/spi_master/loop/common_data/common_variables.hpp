@@ -25,6 +25,7 @@
 #define SET_AMPLMOD_GAIN         22
 #define InitDAC_BIAS_SET_POINT   23  //DAC8563_1 
 #define ADC_GET_VALUECmd         24  // don't use
+#define SetDACZeroCmd            25
 #define InitDAC_Z                26  //DAC8563_3
 #define InitDAC_XY               27  //DAC8563_2
 #define SET_Z                    28  //DAC8563_3

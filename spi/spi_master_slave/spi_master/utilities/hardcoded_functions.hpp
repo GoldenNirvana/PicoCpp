@@ -33,6 +33,8 @@ void set_DACXY(uint8_t channel, uint16_t value);
 
 void set_DACZ(int16_t value); 
 
+void set_DACZero();
+
 void stopAll(); //остановка  выполнения алгоритма
 
 void move_scannerX(int x);

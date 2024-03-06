@@ -1892,23 +1892,31 @@ Point Scanner::getX0Y0()
   return pos_;
 }
 
-void Scanner::move_toX0Y0(int x, int y,int delay) 
+void Scanner::move_toX0Y0(uint16_t x, uint16_t y, uint16_t delay, int8_t flg)
  //переместиться в начальную точку  скана из начальной точке предыдущего скана
 {
   Point pointX0Y0;
   pointX0Y0.x = (uint16_t) (x);
   pointX0Y0.y = (uint16_t) (y);
   delay = (uint16_t) (delay);
-  sleep_ms(100);
+ // sleep_ms(100);  //240306
   debugdata.emplace_back(pointX0Y0.x);
   debugdata.emplace_back(pointX0Y0.y);
   debugdata.emplace_back(delay);
   debugdata.emplace_back(pos_.x);
   debugdata.emplace_back(pos_.y);
   sendStrData("debug moveto parameters",debugdata,200,true);
-
+  if (flg==1)
+  {
+    retract();
+    sleep_ms(100);
+  }
   move_to(pointX0Y0, delay);
-
+ if (flg==1)
+  {
+    protract();
+    sleep_ms(delay);
+  }
   sleep_ms(200);
   sendStrData("stopped");
    int16_t count = 0;

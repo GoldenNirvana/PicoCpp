@@ -277,13 +277,15 @@ void set_clock_enable()
   decoder.activePort(7);
   spi_write_blocking(spi_default, intBuf, 1);
 }
-
+void set_DACZero()
+{ 
+ set_DACXY(0,0); 
+ set_DACXY(1,0); 
+ set_DACZ(0); 
+}
 void set_DACXY(uint8_t channel, uint16_t value) 
 {
   dac8563_2.setSpiProps();
-//  AD56X4Class::setChannel(AD56X4_SETMODE_INPUT, channel, value);
-//  AD56X4Class::updateChannel(channel);
-//  channel--; //???
   if (channel == 0)  dac8563_2.writeA(value);
   if (channel == 1)  dac8563_2.writeB(value);
 }
@@ -292,8 +294,6 @@ void set_DACZ(int16_t value)
 {
   dac8563_3.setSpiProps(); 
   dac8563_3.writeA(int32_t(value)+ShiftDac);
- // if (channel == 0) 
- // if (channel == 1)  dac8563_3.writeB(int32_t(value)+ShiftDac);
 }
 
 void stopAll()
