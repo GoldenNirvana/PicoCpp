@@ -2876,6 +2876,21 @@ void Scanner::testpiezomover(std::vector<int32_t> &vector)
          buf_status.push_back(0);
          sendStrData( "code"+std::to_string(TESTMOVER),buf_status,100,true);       
        } // while
+     if (CONFIG_UPDATE)
+     {
+        CONFIG_UPDATE = false;
+        NSTEPS       = abs(vupdateparams[1]);
+        INTDELAY     = vupdateparams[2];   
+        freq         = vupdateparams[3];
+        scv          = vupdateparams[4];
+    
+        for (int j = 0; j <= 4; ++j)
+        {
+         debugdata.emplace_back(vupdateparams[j]);
+        }
+        sendStrData("debug test piezo parameters update",debugdata,200,true);
+        vupdateparams.clear();
+       }
        i++;
       }//while cyclecount
 //////////////////////////////////////////////////////////////////////////////////////
