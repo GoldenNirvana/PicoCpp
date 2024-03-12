@@ -23,21 +23,23 @@ void RX_core::comReceiveISR(uint a, uint32_t b)
   decoder.activePort(0);
   Spi::setProperties(16, 1, 0);
   spi_read16_blocking(spi_default, 0, spiBuf, 8);
-  if (Z_STATE) 
+/*  if (Z_STATE) 
   {
     Z_STATE = false;
     if (!flgVirtual) serialPrintBuffer(spiBuf, 8);
     return;
   } 
+*/  
   ADC_IS_READY_TO_READ = true;
 }
 void RX_core::launchOnCore1()
 {
    while (true)
   {
-    parse(vector,vupdateparams); // парсинг входящих данных из ПК 
+    parse(vector,vupdateparams); //wait for data ! парсинг входящих данных из ПК 
    if (vector.size()!=0)
    {
+    critical_section_enter_blocking(&criticalSection); //added 24/03/11
     switch (vector[0])
     {
     ///////////////////////////// ??? 
@@ -74,10 +76,10 @@ void RX_core::launchOnCore1()
         break;
      */   
   //*************************************** 
-      case VirtualCmd : //флаг симуляции работы микрокотроллера      
+    case VirtualCmd : //флаг симуляции работы микрокотроллера      
         flgVirtual =(bool)vector[1];
         break;
-      case DebugLevelCmd: // флаг вывода отладочной инофрмации debug level =2;  =3 запрет вывода!
+    case DebugLevelCmd: // флаг вывода отладочной инофрмации debug level =2;  =3 запрет вывода!
         flgDebugLevel =vector[1];
         break;
   //***************************************      
@@ -91,9 +93,11 @@ void RX_core::launchOnCore1()
       case DRAWDONECmd: // mf  
         DrawDone = true;
         break;
+  /*
       case CONFIG_UPDATECmd: //обновление параметров текущего активного алгоритма
         CONFIG_UPDATE = true;
-        break;
+        break;  
+   */     
       case STOPCmd:
         STOP=true; //stopAll(); stop the active algorithm 
         break;
@@ -104,13 +108,26 @@ void RX_core::launchOnCore1()
    */     
       default: 
       {
-       if (vector[0]>=0 && vector[0]<100)  {ALGCODE=(int16_t)vector[0]; }
+   //    critical_section_enter_blocking(&criticalSection);
+        if (vector[0]>=0 && vector[0]<100)  {ALGCODE=(int16_t)vector[0]; }
                                        else ALGCODE=0;
+   //   critical_section_exit(&criticalSection);
+        break;
       }  
-     }
+     }   
+    critical_section_exit(&criticalSection);
+    continue;
    } 
-   if (vupdateparams.size()!=0)    CONFIG_UPDATE = true;
-  }
+   if (vupdateparams.size()!=0)  
+   {
+    if (vupdateparams[0]==CONFIG_UPDATECmd)
+    {
+     critical_section_enter_blocking(&criticalSection);
+      CONFIG_UPDATE = true;
+     critical_section_exit(&criticalSection);
+    } 
+   }
+  }//while
 }
 
 
