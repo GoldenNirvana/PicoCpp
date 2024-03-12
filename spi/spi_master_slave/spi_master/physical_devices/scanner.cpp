@@ -243,14 +243,16 @@ struct Config
 */
   prev_point = pos_; //запоминание начальной точки скана
   vector_data.clear();
-  for (int j = 0; j <= 17; ++j)
+  if (flgDebug)
   {
+   for (int j = 0; j <= 17; ++j)
+   {
     debugdata.emplace_back(vector[j]);
-  }
-  debugdata.emplace_back(pos_.x);
-  debugdata.emplace_back(pos_.y);
-
-  sendStrData("debug scan parameters",debugdata,100,true);
+   }
+   debugdata.emplace_back(pos_.x);
+   debugdata.emplace_back(pos_.y);
+   sendStrData("debug scan parameters",debugdata,100,true);
+  } 
 
   uint16_t stepsx;
   uint16_t stepsy;
@@ -466,12 +468,14 @@ struct Config
       set_GainPID((uint8_t)vupdateparams[3]);
       sleep_ms(100);              
       conf_.diskretinstep = vupdateparams[4]; 
- 
-      for (int j = 0; j <= 4; ++j)
+      if (flgDebug)
       {
+       for (int j = 0; j <= 4; ++j)
+       {
         debugdata.emplace_back(vupdateparams[j]);
+       }
+       sendStrData( "debug scan parameters update",debugdata,100,true);
       }
-      sendStrData( "debug scan parameters update",debugdata,100,true);
      critical_section_enter_blocking(&criticalSection); 
       vupdateparams.clear();
      critical_section_exit(&criticalSection);  
@@ -910,12 +914,15 @@ struct Config
   const int8_t oneline=11;
   prev_point = pos_; //запоминание начальной точки скана
   vector_data.clear();
-  for (int j = 0; j <= 23; ++j)
+  if (flgDebug)
   {
+   for (int j = 0; j <= 23; ++j)
+   {
     debugdata.emplace_back(vector[j]);
-  }
-  debugdata.emplace_back(RAND_MAX);
-  sendStrData("debug hoping scan parameters",debugdata,100,true);
+   }
+   debugdata.emplace_back(RAND_MAX);
+   sendStrData("debug hoping scan parameters",debugdata,100,true);
+  } 
   uint16_t stepsx;
   uint16_t stepsy;
   uint16_t reststepfast;
@@ -1217,11 +1224,14 @@ struct Config
       ZJump=conf_.HopeZ;
       flgMaxJump=(ZJump==0);  
       sleep_ms(100);   //?????
-      for (int j = 0; j <= 10; ++j)
-      {
+      if (flgDebug)
+      {   
+       for (int j = 0; j <= 10; ++j)
+       {
         debugdata.emplace_back(vupdateparams[j]);
-      }
-      sendStrData("debug hoping parameters update",debugdata,100,true);
+       }
+       sendStrData("debug hoping parameters update",debugdata,100,true);
+      } 
      critical_section_enter_blocking(&criticalSection); 
       vupdateparams.clear();
      critical_section_exit(&criticalSection);  

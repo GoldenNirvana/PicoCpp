@@ -16,6 +16,7 @@
 
 #define ALGNONE                   0
 #define ADC_READCmd              12  //AD7606 timer
+#define DebugCmd                 13
 #define VirtualCmd               14
 #define DebugLevelCmd            15
 #define GET_CURRENTX0Y0          18

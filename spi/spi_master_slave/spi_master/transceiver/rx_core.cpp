@@ -56,7 +56,7 @@ void RX_core::launchOnCore1()
       case 11:
         ADC_RESET = true;
         break;
-      case 13: 
+    /*  case 13: 
         if (vector[1]==1)
         {
            ZPin=0; 
@@ -70,20 +70,24 @@ void RX_core::launchOnCore1()
            IPin=2;
         }
        break;
+    */   
     /* 
        case 21:
         AD5664 = true;
         break;
      */   
   //*************************************** 
-    case VirtualCmd : //флаг симуляции работы микрокотроллера      
-        flgVirtual =(bool)vector[1];
+      case VirtualCmd : //флаг симуляции работы микрокотроллера      
+        flgVirtual=(bool)vector[1];
         break;
-    case DebugLevelCmd: // флаг вывода отладочной инофрмации debug level =2;  =3 запрет вывода!
-        flgDebugLevel =vector[1];
+      case DebugLevelCmd: // флаг вывода отладочной инофрмации debug level =2;  =3 запрет вывода!
+        flgDebugLevel=vector[1];
         break;
-  //***************************************      
-
+      
+      case DebugCmd: // флаг вывода отладочной инофрмации debug level =2;  =3 запрет вывода!
+        flgDebug=boolean(vector[1]);
+        break;
+  //***************************************     
       case ADC_GET_VALUECmd:            
         ADC_GET_VALUE = true;// прочитатать сигналы АЦП      
         break;
@@ -100,12 +104,7 @@ void RX_core::launchOnCore1()
    */     
       case STOPCmd:
         STOP=true; //stopAll(); stop the active algorithm 
-        break;
-   /*
-      case 90 ... 99:
-        LID = true;
-        break;
-   */     
+        break; 
       default: 
       {
    //    critical_section_enter_blocking(&criticalSection);

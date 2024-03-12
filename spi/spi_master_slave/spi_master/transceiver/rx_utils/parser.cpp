@@ -91,7 +91,7 @@ int32_t Parser::parseInts(std::vector<int32_t> &data,std::vector<int32_t> &upara
     {
       flgUpdate=bool((int32_t)atoi(offset)==CONFIG_UPDATECmd);
       if (flgUpdate) uparams.clear();
-      //else 
+      //else //240312
       data.clear();
       count++;
     }
