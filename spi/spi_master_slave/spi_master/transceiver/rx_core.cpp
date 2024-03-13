@@ -82,10 +82,15 @@ void RX_core::launchOnCore1()
         break;
       case DebugLevelCmd: // флаг вывода отладочной инофрмации debug level =2;  =3 запрет вывода!
         flgDebugLevel=vector[1];
-        break;
-      
+        break;    
       case DebugCmd: // флаг вывода отладочной инофрмации debug level =2;  =3 запрет вывода!
         flgDebug=boolean(vector[1]);
+        afc.clear();
+        afc = "debug Set Debug "+ std::to_string(flgDebug);
+        afc += +"\n";
+        std::cout << afc;
+        afc.clear();
+        sleep_ms(100); 
         break;
   //***************************************     
       case ADC_GET_VALUECmd:            
