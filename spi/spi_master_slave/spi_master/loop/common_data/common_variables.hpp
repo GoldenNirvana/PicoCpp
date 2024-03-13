@@ -19,6 +19,8 @@
 #define DebugCmd                 13
 #define VirtualCmd               14
 #define DebugLevelCmd            15
+#define Debug                    16
+#define End                      17
 #define GET_CURRENTX0Y0          18
 #define SET_BIAS                 19
 #define SET_SETPOINT             20  //DAC8563_1
@@ -32,6 +34,7 @@
 #define SET_Z                    28  //DAC8563_3
 #define SET_XY                   29  //DAC8563_SET_VOLTAGE_2
 #define FREQ_SET                 30  //AD9833
+#define STOPPED                  31
 #define TheadDoneCmd             33
 #define RESONANCE                40  //AD9833 
 #define SCANNING                 50
