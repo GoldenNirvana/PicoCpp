@@ -132,7 +132,7 @@ case SET_PID_GAIN:
                critical_section_enter_blocking(&criticalSection);
                  ALGCODE=ALGNONE;
                critical_section_exit(&criticalSection);
-                if (!flgVirtual) set_GainPID((uint8_t)vector[1]);// set_io_value(vector[1], vector[2]);     
+                set_GainPID((uint8_t)vector[1]);// set_io_value(vector[1], vector[2]);     
                 break; 
               }  
 case SET_AMPLMOD_GAIN: // усиление раскачка зонда 
@@ -140,7 +140,7 @@ case SET_AMPLMOD_GAIN: // усиление раскачка зонда
                 critical_section_enter_blocking(&criticalSection);
                  ALGCODE=ALGNONE;
                 critical_section_exit(&criticalSection);
-                 if (!flgVirtual)  set_GainApmlMod((uint8_t)vector[1]);
+                 set_GainApmlMod((uint8_t)vector[1]);
                  break;
               }   
 case InitDAC_BIAS_SET_POINT:
@@ -148,7 +148,6 @@ case InitDAC_BIAS_SET_POINT:
                critical_section_enter_blocking(&criticalSection);
                  ALGCODE=ALGNONE;
                critical_section_exit(&criticalSection);
-
                 if (!flgVirtual)  init_DACSPB(vector[1]);       
                 break;         
               }   
@@ -157,7 +156,6 @@ case InitDAC_Z:
                critical_section_enter_blocking(&criticalSection);
                  ALGCODE=ALGNONE;
                critical_section_exit(&criticalSection);
-
                 if (!flgVirtual)  init_DACZ(vector[1]);       
                 break;         
               }   
@@ -166,7 +164,6 @@ case InitDAC_XY:
                critical_section_enter_blocking(&criticalSection);
                  ALGCODE=ALGNONE;
                critical_section_exit(&criticalSection);
-
                 init_DACXY(vector[1]);
                 break; 
               } 

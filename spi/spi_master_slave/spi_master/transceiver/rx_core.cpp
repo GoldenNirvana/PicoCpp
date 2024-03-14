@@ -86,7 +86,7 @@ void RX_core::launchOnCore1()
       case DebugCmd: // флаг вывода отладочной инофрмации debug level =2;  =3 запрет вывода!
         flgDebug=boolean(vector[1]);
         afc.clear();
-        afc = "debug Set Debug "+ std::to_string(flgDebug);
+        afc = "code"+std::to_string(DEBUG)+"debug Set Debug "+ std::to_string(flgDebug);
         afc += +"\n";
         std::cout << afc;
         afc.clear();
@@ -120,6 +120,7 @@ void RX_core::launchOnCore1()
       }  
      }   
     critical_section_exit(&criticalSection);
+    
     continue;
    } 
    if (vupdateparams.size()!=0)  

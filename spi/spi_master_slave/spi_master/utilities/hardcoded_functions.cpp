@@ -118,7 +118,7 @@ void init_DACSPB(uint8_t port) //  4 для подставки
 {
   dac8563_1.initialize(port); //code 23
   afc.clear();
-  afc = "debug Init DACSPB " + std::to_string(port);
+  afc = "code"+std::to_string(DEBUG)+ "debug Init DACSPB " + std::to_string(port);
   afc += +"\n";
   std::cout << afc;
   afc.clear();
@@ -132,7 +132,7 @@ void init_DACXY(uint8_t port)
   dac8563_2.writeA(0);
   dac8563_2.writeB(0);
   afc.clear();
-  afc = "debug Init DACXY 0,0 port=" + std::to_string(port);
+  afc ="code"+std::to_string(DEBUG)+ "debug Init DACXY 0,0 port=" + std::to_string(port);
   afc += +"\n";
   std::cout << afc;
   afc.clear();
@@ -144,7 +144,7 @@ void init_DACZ(uint8_t port)
   dac8563_3.initialize(port); //code 27
   set_DACZ(0); 
   afc.clear();
-  afc = "debug Init DACZ 0 port=" + std::to_string(port);
+  afc ="code"+std::to_string(DEBUG)+ "debug Init DACZ 0 port=" + std::to_string(port);
   afc += +"\n";
   std::cout << afc;
   afc.clear();
@@ -185,8 +185,9 @@ void set_Bias(int8_t channel,int32_t Bias)
      dac8563_1.writeB(Bias+ShiftDac);
   }	
  if  (flgDebug)
- { afc.clear();
-  afc = "debug Bias"+ std::to_string(Bias);
+ {
+  afc.clear();
+  afc ="code"+std::to_string(DEBUG)+ "debug Bias"+ std::to_string(Bias);
   afc += +"\n";
   std::cout << afc;
   afc.clear();
@@ -226,22 +227,23 @@ void set_SetPoint( int32_t SetPoint)
      dac8563_1.writeA(SetPoint+ShiftDac);
   } 
   // отладка
- if  (flgDebug)
- {
-  afc.clear();
-  afc = "debug SetPoint "+ std::to_string(SetPoint);
-  afc += +"\n";
-  std::cout << afc;
-  afc.clear();
-  sleep_ms(100); 
- }
+  if  (flgDebug)
+  {
+   afc.clear();
+   afc ="code"+std::to_string(DEBUG)+ "debug SetPoint "+ std::to_string(SetPoint);
+   afc += +"\n";
+   std::cout << afc;
+   afc.clear();
+   sleep_ms(100); 
+  }
 }
 
 void set_GainApmlMod(uint8_t gain)
 {
   uint8_t intBuf[1]; 
   if (!flgVirtual)
-  { decoder.activePort(5);
+  { 
+    decoder.activePort(5);
     Spi::setProperties(8, 0, 0);
     intBuf[0] = 0;
     spi_write_blocking(spi_default, intBuf, 1); 
@@ -250,24 +252,30 @@ void set_GainApmlMod(uint8_t gain)
     decoder.activePort(7);
   } 
      // отладка
-  afc.clear();
-  afc = "debug Ampl Gain "+ std::to_string(gain);
-  afc += +"\n";
-  std::cout << afc;
-  afc.clear();
-  sleep_ms(100); 
+  if (flgDebug)  
+  {
+   afc.clear();
+   afc ="code"+std::to_string(DEBUG)+ "debug Ampl Gain "+ std::to_string(gain);
+   afc += +"\n";
+   std::cout << afc;
+   afc.clear();
+   sleep_ms(100); 
+  } 
 }
 
 void set_GainPID(int gain)
 {
-  set_io_value(2, gain); 
+  if (!flgVirtual) set_io_value(2, gain); 
     // отладка
-  afc.clear();
-  afc = "debug PID Gain "+ std::to_string(gain);
-  afc += +"\n";
-  std::cout << afc;
-  afc.clear();
-  sleep_ms(100); 
+  if (flgDebug)  
+  {
+   afc.clear();
+   afc = "code"+std::to_string(DEBUG)+"debug PID Gain "+ std::to_string(gain);
+   afc += +"\n";
+   std::cout << afc;
+   afc.clear();
+   sleep_ms(100); 
+  }  
 }
 
 void set_clock_enable()
