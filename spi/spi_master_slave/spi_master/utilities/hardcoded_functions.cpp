@@ -117,12 +117,15 @@ void init_SPI( uint8_t port ,uint8_t v2 ,uint8_t v3, uint8_t v4 )
 void init_DACSPB(uint8_t port) //  4 для подставки
 {
   dac8563_1.initialize(port); //code 23
+ if (flgDebug)  
+ {
   afc.clear();
   afc = "debug Init DACSPB " + std::to_string(port);
   afc += +"\n";
   std::cout << afc;
   afc.clear();
   sleep_ms(100);
+ } 
 }
 
 void init_DACXY(uint8_t port)
@@ -131,24 +134,30 @@ void init_DACXY(uint8_t port)
   dac8563_2.setSpiProps();
   dac8563_2.writeA(0);
   dac8563_2.writeB(0);
+ if (flgDebug)  
+ {
   afc.clear();
   afc = "debug Init DACXY 0,0 port=" + std::to_string(port);
   afc += +"\n";
   std::cout << afc;
   afc.clear();
   sleep_ms(100);
+ } 
 }
 
 void init_DACZ(uint8_t port)
 {
   dac8563_3.initialize(port); //code 27
   set_DACZ(0); 
-  afc.clear();
+ if (flgDebug)  
+ {
+   afc.clear();
   afc = "debug Init DACZ 0 port=" + std::to_string(port);
   afc += +"\n";
   std::cout << afc;
   afc.clear();
   sleep_ms(100);
+ } 
 }
 void move_scannerX(int x)
 {
@@ -250,24 +259,30 @@ void set_GainApmlMod(uint8_t gain)
     decoder.activePort(7);
   } 
      // отладка
+ if (flgDebug)  
+ {
   afc.clear();
   afc = "debug Ampl Gain "+ std::to_string(gain);
   afc += +"\n";
   std::cout << afc;
   afc.clear();
   sleep_ms(100); 
+ } 
 }
 
 void set_GainPID(int gain)
 {
   set_io_value(2, gain); 
     // отладка
-  afc.clear();
+ if (flgDebug)  
+ {
+   afc.clear();
   afc = "debug PID Gain "+ std::to_string(gain);
   afc += +"\n";
   std::cout << afc;
   afc.clear();
   sleep_ms(100); 
+ } 
 }
 
 void set_clock_enable()

@@ -466,8 +466,9 @@ struct Config
       critical_section_exit(&criticalSection);
       conf_.delayF  = vupdateparams[1];
       conf_.delayB  = vupdateparams[2];
+      if (flgDebug)   sleep_ms(100); 
       set_GainPID((uint8_t)vupdateparams[3]);
-      sleep_ms(100);              
+      if (flgDebug)   sleep_ms(100); 
       conf_.diskretinstep = vupdateparams[4]; 
       if (flgDebug)
       {
@@ -779,24 +780,26 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
      sendStrData("code"+std::to_string(SCANNING),vector_data,40,true); //100
     if (CONFIG_UPDATE)
     {
-      critical_section_enter_blocking(&criticalSection);
+     critical_section_enter_blocking(&criticalSection);
        CONFIG_UPDATE = false;
       critical_section_exit(&criticalSection);
-      conf_.delayF        = vector[1];
-      conf_.delayB        = vector[2];
-      set_GainPID((uint8_t)vector[3]);
-      sleep_ms(100);              
-      conf_.diskretinstep = vector[4]; 
+      conf_.delayF  = vupdateparams[1];
+      conf_.delayB  = vupdateparams[2];
+      if (flgDebug)   sleep_ms(100); 
+      set_GainPID((uint8_t)vupdateparams[3]);
+      if (flgDebug)   sleep_ms(100); 
+      conf_.diskretinstep = vupdateparams[4]; 
       if (flgDebug)
-      { 
-       for (int j = 0; j <= 3; ++j)
+      {
+       for (int j = 0; j <= 4; ++j)
        {
-        debugdata.emplace_back(vector[j]);
+        debugdata.emplace_back(vupdateparams[j]);
        }
-       sendStrData( "debug parameters update",debugdata,100,true);
-      } 
+       sendStrData( "debug scan parameters update",debugdata,100,true);
+      }
+     critical_section_enter_blocking(&criticalSection); 
       vupdateparams.clear();
-      //    dark();
+     critical_section_exit(&criticalSection);  
     }
     if (STOP)   // stop
     {
@@ -1219,7 +1222,8 @@ struct Config
       conf_.delayF               = vupdateparams[1];
       conf_.delayB               = vupdateparams[2];
       conf_.diskretinstep        = vupdateparams[3];
-         set_GainPID((uint8_t)vupdateparams[4]);
+      if (flgDebug)   sleep_ms(100); 
+       set_GainPID((uint8_t)vupdateparams[4]);
       conf_.HopeDelay            = vupdateparams[5];
       conf_.HopeZ                = vupdateparams[6];
       conf_.flgAutoUpdateSP      = vupdateparams[7];; // автообновление опоры на каждой линии                     19
@@ -1228,9 +1232,9 @@ struct Config
       conf_.KoeffCorrectISat     = vupdateparams[10]; // опора  %  от тока насыщения        
       ZJump=conf_.HopeZ;
       flgMaxJump=(ZJump==0);  
-      sleep_ms(100);   //?????
       if (flgDebug)
-      {   
+      { 
+        sleep_ms(100);  
        for (int j = 0; j <= 10; ++j)
        {
         debugdata.emplace_back(vupdateparams[j]);
@@ -1301,15 +1305,7 @@ struct Config
   sleep_ms(200);
   if (!flgVirtual)
   {
-   // protract();
-  //  set_DACZ(0,0);  //????
    protract(30,DACZ0,DACZ0); //вытянуть
-   {
- // unfreezeLOOP(delay); 
- //  protract();
-  //set_DACZ(0,0); 
- //  ZMove(DacZ0,HeightJump,-10, delay);
-   }
   }
   sleep_ms(1000);
   int16_t count = 0;
@@ -1621,29 +1617,32 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
     {
       critical_section_enter_blocking(&criticalSection);
        CONFIG_UPDATE              = false;
-      critical_section_exit(&criticalSection);
-      conf_.delayF               = vector[1];
-      conf_.delayB               = vector[2];
-      conf_.diskretinstep        = vector[3];
-      set_GainPID((uint8_t)vector[4]);
-      conf_.HopeDelay            = vector[5];
-      conf_.HopeZ                = vector[6];
-      conf_.flgAutoUpdateSP      = vector[7];; // автообновление опоры на каждой линии                     19
-      conf_.flgAutoUpdateSPDelta = vector[8];; // обновление опоры , если изменение тока превысило порог 20
-      conf_.ThresholdAutoUpdate  = vector[9];; // изменения опоры, если изменение тока превысило порог     21
-      conf_.KoeffCorrectISat     = vector[10];  // опора  %  от тока насыщения        
-      ZJump=conf_.HopeZ;   
-      flgMaxJump=(conf_.HopeZ==0);
-      ZJump=-conf_.HopeZ;
-      sleep_ms(100);   
+      critical_section_exit(&criticalSection); 
+      conf_.delayF               = vupdateparams[1];
+      conf_.delayB               = vupdateparams[2];
+      conf_.diskretinstep        = vupdateparams[3];
+      if (flgDebug)   sleep_ms(100); 
+       set_GainPID((uint8_t)vupdateparams[4]);
+      conf_.HopeDelay            = vupdateparams[5];
+      conf_.HopeZ                = vupdateparams[6];
+      conf_.flgAutoUpdateSP      = vupdateparams[7];; // автообновление опоры на каждой линии                     19
+      conf_.flgAutoUpdateSPDelta = vupdateparams[8];; // обновление опоры , если изменение тока превысило порог 20
+      conf_.ThresholdAutoUpdate  = vupdateparams[9];; // изменения опоры, если изменение тока превысило порог     21
+      conf_.KoeffCorrectISat     = vupdateparams[10]; // опора  %  от тока насыщения        
+      ZJump=conf_.HopeZ;
+      flgMaxJump=(ZJump==0);  
       if (flgDebug)
-      {  
-       for (int j = 0; j <= 9; ++j)
+      { 
+        sleep_ms(100);  
+       for (int j = 0; j <= 10; ++j)
        {
-        debugdata.emplace_back(vector[j]);
+        debugdata.emplace_back(vupdateparams[j]);
        }
-       sendStrData("debug parameters update",debugdata,100,true);
-      }
+       sendStrData("debug hoping parameters update",debugdata,100,true);
+      } 
+     critical_section_enter_blocking(&criticalSection); 
+      vupdateparams.clear();
+     critical_section_exit(&criticalSection);       
     }
 ///move next line
     switch (conf_.path)
