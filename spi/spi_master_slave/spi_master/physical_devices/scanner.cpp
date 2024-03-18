@@ -1219,17 +1219,17 @@ struct Config
       critical_section_enter_blocking(&criticalSection);
        CONFIG_UPDATE              = false;
       critical_section_exit(&criticalSection); 
-      conf_.delayF               = vupdateparams[1];
-      conf_.delayB               = vupdateparams[2];
-      conf_.diskretinstep        = vupdateparams[3];
+      conf_.delayF               = (uint16_t)vupdateparams[1];
+      conf_.delayB               = (uint16_t)vupdateparams[2];
+      conf_.diskretinstep        = (uint16_t)vupdateparams[3];
       if (flgDebug)   sleep_ms(100); 
        set_GainPID((uint8_t)vupdateparams[4]);
-      conf_.HopeDelay            = vupdateparams[5];
-      conf_.HopeZ                = vupdateparams[6];
-      conf_.flgAutoUpdateSP      = vupdateparams[7];; // автообновление опоры на каждой линии                     19
-      conf_.flgAutoUpdateSPDelta = vupdateparams[8];; // обновление опоры , если изменение тока превысило порог 20
-      conf_.ThresholdAutoUpdate  = vupdateparams[9];; // изменения опоры, если изменение тока превысило порог     21
-      conf_.KoeffCorrectISat     = vupdateparams[10]; // опора  %  от тока насыщения        
+      conf_.HopeDelay            = (uint16_t)vupdateparams[5];
+      conf_.HopeZ                = (uint16_t)vupdateparams[6];
+      conf_.flgAutoUpdateSP      = (uint8_t)vupdateparams[7];; // автообновление опоры на каждой линии                     19
+      conf_.flgAutoUpdateSPDelta = (uint8_t)vupdateparams[8];; // обновление опоры , если изменение тока превысило порог 20
+      conf_.ThresholdAutoUpdate  = (uint16_t)vupdateparams[9];; // изменения опоры, если изменение тока превысило порог     21
+      conf_.KoeffCorrectISat     = (uint16_t)vupdateparams[10]; // опора  %  от тока насыщения        
       ZJump=conf_.HopeZ;
       flgMaxJump=(ZJump==0);  
       if (flgDebug)
@@ -1958,7 +1958,7 @@ Point Scanner::getX0Y0()
   return pos_;
 }
 
-void Scanner::move_toX0Y0(uint16_t x, uint16_t y, uint16_t delay, int8_t flg)
+void Scanner::move_toX0Y0(uint16_t x, uint16_t y, uint16_t delay, uint8_t flg)
  //переместиться в начальную точку  скана из начальной точке предыдущего скана
 {
   Point pointX0Y0;
@@ -1966,12 +1966,15 @@ void Scanner::move_toX0Y0(uint16_t x, uint16_t y, uint16_t delay, int8_t flg)
   pointX0Y0.y = (uint16_t) (y);
   delay = (uint16_t) (delay);
  // sleep_ms(100);  //240306
-  debugdata.emplace_back(pointX0Y0.x);
-  debugdata.emplace_back(pointX0Y0.y);
-  debugdata.emplace_back(delay);
-  debugdata.emplace_back(pos_.x);
-  debugdata.emplace_back(pos_.y);
-  sendStrData("debug moveto parameters",debugdata,200,true);
+ if( flgDebug) 
+ { 
+   debugdata.emplace_back(pointX0Y0.x);
+   debugdata.emplace_back(pointX0Y0.y);
+   debugdata.emplace_back(delay);
+   debugdata.emplace_back(pos_.x);
+   debugdata.emplace_back(pos_.y);
+   sendStrData("debug moveto parameters",debugdata,200,true);
+ }
   if (flg==1)
   {
     retract();
