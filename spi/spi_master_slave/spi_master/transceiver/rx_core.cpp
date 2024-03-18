@@ -4,6 +4,7 @@
 #include <iomanip>
 #include <pico/bootrom.h>
 #include "pico/mutex.h"
+
 #include "rx_utils/parser.hpp"
 #include "../utilities/base_types/Spi.hpp"
 #include "../loop/common_data/common_variables.hpp"
@@ -34,9 +35,13 @@ void RX_core::comReceiveISR(uint a, uint32_t b)
 }
 void RX_core::launchOnCore1()
 {
+  
    while (true)
   {
     parse(vector,vupdateparams); //wait for data ! парсинг входящих данных из ПК 
+ //   flgParamsUpdated=false;
+//    while (not flgParamsUpdated;) sleep_ms(100);
+
    if (vector.size()!=0)
    {
     critical_section_enter_blocking(&criticalSection); //added 24/03/11

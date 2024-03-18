@@ -465,12 +465,12 @@ struct Config
       critical_section_exit(&criticalSection);
       conf_.delayF  = vupdateparams[1];
       conf_.delayB  = vupdateparams[2];
-      sleep_ms(100);
+      if (flgDebug) sleep_ms(100);
       set_GainPID((uint8_t)vupdateparams[3]);
-      sleep_ms(100);  //240314            
       conf_.diskretinstep = vupdateparams[4]; 
       if (flgDebug)
       {
+        sleep_ms(100);
        for (int j = 0; j <= 4; ++j)
        {
         debugdata.emplace_back(vupdateparams[j]);
@@ -505,7 +505,7 @@ struct Config
       }
       //    dark();
     } 
-      sendStrData("code"+std::to_string(PARAMUPDATEDCmd)); //240314
+      sendStrData("code"+std::to_string(PARAMUPDATEDCmd)); //!!!!!!!!!!!!!!!!!240314
     }
     if (STOP)   // stop
     {
@@ -785,8 +785,9 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
       critical_section_exit(&criticalSection);
       conf_.delayF        = vector[1];
       conf_.delayB        = vector[2];
+      if (flgDebug) sleep_ms(100);     
       set_GainPID((uint8_t)vector[3]);
-      sleep_ms(100);              
+      if (flgDebug) sleep_ms(100);              
       conf_.diskretinstep = vector[4]; 
       if (flgDebug)
       { 
@@ -1221,7 +1222,7 @@ struct Config
       conf_.delayF               = vupdateparams[1];
       conf_.delayB               = vupdateparams[2];
       conf_.diskretinstep        = vupdateparams[3];
-      sleep_ms(100);   //240314
+      if (flgDebug) sleep_ms(100);       //240314
       set_GainPID((uint8_t)vupdateparams[4]);
       conf_.HopeDelay            = vupdateparams[5];
       conf_.HopeZ                = vupdateparams[6];
@@ -1231,9 +1232,9 @@ struct Config
       conf_.KoeffCorrectISat     = vupdateparams[10]; // опора  %  от тока насыщения        
       ZJump=conf_.HopeZ;
       flgMaxJump=(ZJump==0);  
-      sleep_ms(100);   //
       if (flgDebug)
-      {   
+      { 
+       sleep_ms(100);   
        for (int j = 0; j <= 10; ++j)
        {
         debugdata.emplace_back(vupdateparams[j]);

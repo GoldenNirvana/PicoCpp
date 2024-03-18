@@ -3,6 +3,7 @@
 
 #include <ctime>
 #include <vector>
+#include "pico/util/queue.h"
 
 class RX_core
 {
@@ -16,6 +17,8 @@ class RX_core
   static void comReceiveISR(uint a, uint32_t b);
   static void launchOnCore1();
 private:
+queue_t parseqeue;
+
  };
 
 
