@@ -44,7 +44,7 @@ void RX_core::launchOnCore1()
 
    if (vector.size()!=0)
    {
-    critical_section_enter_blocking(&criticalSection); //added 24/03/11
+     if (flgСritical_section) critical_section_enter_blocking(&criticalSection); //added 24/03/11
     switch (vector[0])
     {
     ///////////////////////////// ??? 
@@ -124,7 +124,7 @@ void RX_core::launchOnCore1()
         break;
       }  
      }   
-    critical_section_exit(&criticalSection);
+     if (flgСritical_section) critical_section_exit(&criticalSection);
     
     continue;
    } 
@@ -132,9 +132,9 @@ void RX_core::launchOnCore1()
    {
     if (vupdateparams[0]==CONFIG_UPDATECmd)
     {
-     critical_section_enter_blocking(&criticalSection);
+      if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
       CONFIG_UPDATE = true;
-     critical_section_exit(&criticalSection);
+      if (flgСritical_section) critical_section_exit(&criticalSection);
     } 
    }
   }//while

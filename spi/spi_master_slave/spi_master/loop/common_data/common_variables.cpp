@@ -42,6 +42,7 @@ bool DrawDone=true;
 
 //************************************************
 bool    flgParamsUpdated=false;
+bool    flgСritical_section=true;
 bool    flgDebug=false;
 bool    flgVirtual = false;     // флаг симуляции работа микроконтроллера
 uint8_t flgDebugLevel = 2;      // уровень отладки

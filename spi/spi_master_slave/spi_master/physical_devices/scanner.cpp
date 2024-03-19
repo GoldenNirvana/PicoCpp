@@ -280,9 +280,9 @@ struct Config
   debugdata.emplace_back(reststepy);
   sendStrData("debug scan parameters stepsxy  ",debugdata,100);
 */
-  critical_section_enter_blocking(&criticalSection);
+ if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
    DrawDone=true;
-  critical_section_exit(&criticalSection);
+ if (flgСritical_section)  critical_section_exit(&criticalSection);
   switch (conf_.path)
   {
     case 0://X+
@@ -453,16 +453,16 @@ struct Config
      sleep_ms(10);
      count0++;
     } 
-   critical_section_enter_blocking(&criticalSection);
+   if (flgСritical_section)  critical_section_enter_blocking(&criticalSection);
     DrawDone = false;
-   critical_section_exit(&criticalSection);
+   if (flgСritical_section)  critical_section_exit(&criticalSection);
     sendStrData("code"+std::to_string(SCANNING),vector_data,60,true); //240314  60
 
     if (CONFIG_UPDATE)
     {
-      critical_section_enter_blocking(&criticalSection);
+    if (flgСritical_section)    critical_section_enter_blocking(&criticalSection);
        CONFIG_UPDATE = false;
-      critical_section_exit(&criticalSection);
+     if (flgСritical_section)   critical_section_exit(&criticalSection);
       conf_.delayF  = vupdateparams[1];
       conf_.delayB  = vupdateparams[2];
       if (flgDebug) sleep_ms(100);
@@ -477,9 +477,9 @@ struct Config
        }
        sendStrData("code"+std::to_string(DEBUG)+"debug scan parameters update",debugdata,100,true); //240314 100
       }
-     critical_section_enter_blocking(&criticalSection); 
+     if (flgСritical_section)  critical_section_enter_blocking(&criticalSection); 
       vupdateparams.clear();
-     critical_section_exit(&criticalSection);  
+     if (flgСritical_section)  critical_section_exit(&criticalSection);  
 
      stepsx = (uint16_t) conf_.betweenPoints_x / conf_.diskretinstep;
      stepsy = (uint16_t) conf_.betweenPoints_y / conf_.diskretinstep;
@@ -509,9 +509,9 @@ struct Config
     }
     if (STOP)   // stop
     {
-     critical_section_enter_blocking(&criticalSection);
+      if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
       STOP = false;
-     critical_section_exit(&criticalSection);
+      if (flgСritical_section) critical_section_exit(&criticalSection);
       sleep_ms(200);
       sendStrData("code"+std::to_string(STOPPED)+"stopped");
       break;
@@ -568,9 +568,9 @@ struct Config
     sleep_ms(100);
     count++;
   } 
- critical_section_enter_blocking(&criticalSection);
+  if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
   TheadDone = false;
- critical_section_exit(&criticalSection);
+  if (flgСritical_section) critical_section_exit(&criticalSection);
   green();
   sendStrData("code"+std::to_string(END)+"end"); 
   activateDark();
@@ -1199,26 +1199,26 @@ struct Config
       sleep_ms(10);
       count0++;
      } 
-    critical_section_enter_blocking(&criticalSection);
+     if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
      DrawDone = false;
-    critical_section_exit(&criticalSection);     
+     if (flgСritical_section) critical_section_exit(&criticalSection);     
 //*****************************************************************
     sendStrData("code"+std::to_string(SCANNING),vector_data,60,true); //send data 60
 //*****************************************************************
     if (STOP)  // stop
     {
-     critical_section_enter_blocking(&criticalSection);
+      if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
       STOP = false;
-     critical_section_exit(&criticalSection);
+      if (flgСritical_section) critical_section_exit(&criticalSection);
       sleep_ms(300);
       sendStrData("code"+std::to_string(STOPPED)+"stopped");
       break;
     }
     if (CONFIG_UPDATE)
     {
-      critical_section_enter_blocking(&criticalSection);
+       if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
        CONFIG_UPDATE              = false;
-      critical_section_exit(&criticalSection); 
+       if (flgСritical_section) critical_section_exit(&criticalSection); 
       conf_.delayF               = vupdateparams[1];
       conf_.delayB               = vupdateparams[2];
       conf_.diskretinstep        = vupdateparams[3];
@@ -1241,9 +1241,9 @@ struct Config
        }
        sendStrData("code"+std::to_string(DEBUG)+"debug hoping parameters update",debugdata,100,true);
       } 
-     critical_section_enter_blocking(&criticalSection); 
+      if (flgСritical_section) critical_section_enter_blocking(&criticalSection); 
       vupdateparams.clear();
-     critical_section_exit(&criticalSection);  
+      if (flgСritical_section) critical_section_exit(&criticalSection);  
 
       stepsx = (uint16_t) conf_.betweenPoints_x / conf_.diskretinstep;
       stepsy = (uint16_t) conf_.betweenPoints_y / conf_.diskretinstep;
@@ -1323,9 +1323,9 @@ struct Config
     sleep_ms(100);
     count++;
   } 
-  critical_section_enter_blocking(&criticalSection);
+   if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
    TheadDone = false;
-  critical_section_exit(&criticalSection);
+   if (flgСritical_section) critical_section_exit(&criticalSection);
   conf_.flgHoping=0;
   sendStrData("code"+std::to_string(END)+"end");
  // activateDark();

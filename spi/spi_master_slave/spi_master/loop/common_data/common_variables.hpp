@@ -96,20 +96,21 @@ extern bool SCANNER_RETRACT;
 extern bool SCANNER_PROTRACT;
 extern bool ADC_IS_READY_TO_READ;
 // service flags
-extern bool flgDebug;
 extern bool TheadDone;   //need dor synchronization with PC 
 extern bool DrawDone;
 extern bool flgParamsUpdated;
+extern bool flgDebug;
+extern bool flgVirtual;  // Virtual device for debuging and simulation
+extern bool flgСritical_section;
+extern bool flgUseUART;  //
 extern uint8_t ZPin;
 extern uint8_t AmplPin; //amplitude
 extern uint8_t IPin;    //current
-
-extern int16_t ZValue; //for simulation
-extern int16_t SignalValue; //for simulation
-extern bool    flgVirtual;  // Virtual device for debuging and simulation
 extern uint8_t flgDebugLevel; //  leveldebug
+extern int16_t ZValue; //for simulation
+extern int16_t SignalValue; //for simulation //  
 extern int16_t ZMaxValue;
-extern bool    flgUseUART;  // 
+
 extern int32_t ShiftDac;
 //
 //extern volatile int32_t current_channel;
