@@ -64,7 +64,7 @@ case MOVE_TOX0Y0:
                 critical_section_enter_blocking(&criticalSection);
                  ALGCODE=ALGNONE;
                 critical_section_exit(&criticalSection);
-                scanner.move_toX0Y0(vector[1], vector[2], vector[3],vector[4]);
+                scanner.move_toX0Y0((uint16_t)vector[1], (uint16_t)vector[2], (uint16_t)vector[3],(uint8_t)vector[4]);
                 break; 
               }     
 case LID_MOVE_TOZ0:
