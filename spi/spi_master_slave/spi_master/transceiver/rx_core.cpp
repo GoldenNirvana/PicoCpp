@@ -97,6 +97,9 @@ void RX_core::launchOnCore1()
         afc.clear();
         sleep_ms(100); 
         break;
+      case SetUseCritialSectAlgCode: // флаг использовать Сritical_section
+        flgСritical_section=(bool)vector[1]; 
+        break;
   //***************************************     
       case ADC_GET_VALUECmd:            
         ADC_GET_VALUE = true;// прочитатать сигналы АЦП      

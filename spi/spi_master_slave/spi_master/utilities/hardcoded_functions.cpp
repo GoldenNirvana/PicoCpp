@@ -269,11 +269,11 @@ void set_GainPID(int gain)
   uint8_t tiadd;
   tiadd=(uint8_t)(gain>>8);
   ti=(uint8_t)(gain&0x00FF);
-  if (!flgVirtual) set_io_value(2, ti); 
+  if (!flgVirtual) 
+  {
+    set_io_value(2, ti); 
     // отладка
-     uint8_t intBuf[1]; 
-  if (!flgVirtual)
-  { 
+    uint8_t intBuf[1]; 
     decoder.activePort(5);
     Spi::setProperties(8, 0, 0);
     intBuf[0] = 0;

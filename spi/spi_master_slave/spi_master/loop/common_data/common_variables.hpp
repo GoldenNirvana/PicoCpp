@@ -37,6 +37,7 @@
 #define STOPPED                  31
 #define PARAMUPDATEDCmd          32
 #define TheadDoneCmd             33
+#define SetUseCritialSectAlgCode 34
 #define RESONANCE                40  //AD9833 
 #define SCANNING                 50
 #define MOVE_TOX0Y0              51  //переместиться в начальную точку  скана из начальной точке предыдущего скана
