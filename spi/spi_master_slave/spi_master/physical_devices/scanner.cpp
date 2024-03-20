@@ -1216,6 +1216,8 @@ struct Config
     }
     if (CONFIG_UPDATE)
     {
+    //  uint8_t ti;
+    //  uint8_t tiadd;
       critical_section_enter_blocking(&criticalSection);
        CONFIG_UPDATE              = false;
       critical_section_exit(&criticalSection); 
@@ -1223,7 +1225,12 @@ struct Config
       conf_.delayB               = vupdateparams[2];
       conf_.diskretinstep        = vupdateparams[3];
       if (flgDebug)   sleep_ms(100); 
-       set_GainPID((uint8_t)vupdateparams[4]);
+     // ti=vupdateparams[4] shr 8;
+     // tiadd=vupdateparams[4] & 00FF;
+     // set_GainPID((uint8_t)vupdateparams[4]);
+    //  set_GainPIDScheme2((uint8_t)vupdateparams[4]);
+      set_GainPID(vupdateparams[4]);
+   //   set_GainPIDScheme2(tiadd);
       conf_.HopeDelay            = vupdateparams[5];
       conf_.HopeZ                = vupdateparams[6];
       conf_.flgAutoUpdateSP      = vupdateparams[7];; // автообновление опоры на каждой линии                     19
@@ -1966,12 +1973,15 @@ void Scanner::move_toX0Y0(uint16_t x, uint16_t y, uint16_t delay, int8_t flg)
   pointX0Y0.y = (uint16_t) (y);
   delay = (uint16_t) (delay);
  // sleep_ms(100);  //240306
+ if (flgDebug)
+ {
   debugdata.emplace_back(pointX0Y0.x);
   debugdata.emplace_back(pointX0Y0.y);
   debugdata.emplace_back(delay);
   debugdata.emplace_back(pos_.x);
   debugdata.emplace_back(pos_.y);
   sendStrData("debug moveto parameters",debugdata,200,true);
+ }
   if (flg==1)
   {
     retract();
