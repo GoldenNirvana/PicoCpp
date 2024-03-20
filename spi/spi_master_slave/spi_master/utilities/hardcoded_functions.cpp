@@ -265,12 +265,27 @@ void set_GainApmlMod(uint8_t gain)
 
 void set_GainPID(int gain)
 {
-  if (!flgVirtual) set_io_value(2, gain); 
+  uint8_t ti;
+  uint8_t tiadd;
+  tiadd=(uint8_t)(gain>>8);
+  ti=(uint8_t)(gain&0x00FF);
+  if (!flgVirtual) set_io_value(2, ti); 
     // отладка
+     uint8_t intBuf[1]; 
+  if (!flgVirtual)
+  { 
+    decoder.activePort(5);
+    Spi::setProperties(8, 0, 0);
+    intBuf[0] = 0;
+    spi_write_blocking(spi_default, intBuf, 1); 
+    intBuf[0] = tiadd;
+    spi_write_blocking(spi_default, intBuf, 1); 
+    decoder.activePort(7);
+  } 
   if (flgDebug)  
   {
    afc.clear();
-   afc = "code"+std::to_string(DEBUG)+"debug PID Gain "+ std::to_string(gain);
+   afc = "code"+std::to_string(DEBUG)+"debug PID Gain "+ std::to_string(ti)+' '+ std::to_string(tiadd);
    afc += +"\n";
    std::cout << afc;
    afc.clear();

@@ -132,7 +132,7 @@ void Scanner::readADC()
         debugdata.emplace_back(ZValue);
         debugdata.emplace_back(SignalValue);
         debugdata.emplace_back(vector[1]);
-        sendStrData("code"+std::to_string(ADC_READCmd),debugdata,100,true);
+        sendStrData("code"+std::to_string(ADC_READCmd),debugdata,100,true);     
   }
 }
 void Scanner::scanner_retract_protract(int port, int flg) 
@@ -1223,7 +1223,7 @@ struct Config
       conf_.delayB               = vupdateparams[2];
       conf_.diskretinstep        = vupdateparams[3];
       if (flgDebug) sleep_ms(100);       //240314
-      set_GainPID((uint8_t)vupdateparams[4]);
+      set_GainPID((uint16_t)vupdateparams[4]); //240320
       conf_.HopeDelay            = vupdateparams[5];
       conf_.HopeZ                = vupdateparams[6];
       conf_.flgAutoUpdateSP      = vupdateparams[7];; // автообновление опоры на каждой линии                     19
