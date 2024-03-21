@@ -1154,7 +1154,7 @@ struct Config
       }
      }   //next line 
  //  
-      sleep_ms(200);  //400
+      sleep_ms(500);  //200 240318
       sleep_us(conf_.pause);  
 
      if (!flgVirtual)  //read  Saturation Current
