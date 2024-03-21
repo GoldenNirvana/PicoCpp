@@ -465,8 +465,8 @@ struct Config
      if (flgСritical_section)   critical_section_exit(&criticalSection);
       conf_.delayF  = vupdateparams[1];
       conf_.delayB  = vupdateparams[2];
-      if (flgDebug) sleep_ms(100);
-      set_GainPID((uint8_t)vupdateparams[3]);
+      if (flgDebug) sleep_ms(100); 
+      set_GainPID((uint8_t)vupdateparams[3]);//240320
       conf_.diskretinstep = vupdateparams[4]; 
       if (flgDebug)
       {
@@ -774,15 +774,15 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
      sleep_ms(10);
      count0++;
     } 
-   critical_section_enter_blocking(&criticalSection);
+    if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
     DrawDone = false;
-   critical_section_exit(&criticalSection);
+    if (flgСritical_section) critical_section_exit(&criticalSection);
      sendStrData("code"+std::to_string(SCANNING),vector_data,40,true); //100
     if (CONFIG_UPDATE)
     {
-      critical_section_enter_blocking(&criticalSection);
+       if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
        CONFIG_UPDATE = false;
-      critical_section_exit(&criticalSection);
+       if (flgСritical_section) critical_section_exit(&criticalSection);
       conf_.delayF        = vector[1];
       conf_.delayB        = vector[2];
       if (flgDebug) sleep_ms(100);     
@@ -802,9 +802,9 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
     }
     if (STOP)   // stop
     {
-      critical_section_enter_blocking(&criticalSection);    
+       if (flgСritical_section) critical_section_enter_blocking(&criticalSection);    
        STOP = false;
-      critical_section_exit(&criticalSection);
+       if (flgСritical_section)  critical_section_exit(&criticalSection);
       sleep_ms(100);
       sendStrData("code"+std::to_string(STOPPED)+"stopped");
       break;
@@ -881,9 +881,9 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
     sleep_ms(100);
     count++;
   } 
- critical_section_enter_blocking(&criticalSection);
+  if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
   TheadDone = false;
- critical_section_exit(&criticalSection);
+  if (flgСritical_section) critical_section_exit(&criticalSection);
   green();
   sendStrData("code"+std::to_string(END)+"end"); 
   dark();
@@ -1607,26 +1607,26 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
       sleep_ms(10);
       count0++;
      } 
-    critical_section_enter_blocking(&criticalSection);
+     if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
      DrawDone = false; 
-    critical_section_exit(&criticalSection);
+     if (flgСritical_section) critical_section_exit(&criticalSection);
 //*******************************************************  
     sendStrData("code"+std::to_string(SCANNING),vector_data,60,true);
 //********************************************************
     if (STOP)  // stop
     {
-     critical_section_enter_blocking(&criticalSection); 
+      if (flgСritical_section) critical_section_enter_blocking(&criticalSection); 
       STOP = false;
-     critical_section_exit(&criticalSection);
+      if (flgСritical_section) critical_section_exit(&criticalSection);
       sleep_ms(300);
       sendStrData("code"+std::to_string(STOPPED)+"stopped");
       break;
     }  
     if (CONFIG_UPDATE)
     {
-      critical_section_enter_blocking(&criticalSection);
+       if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
        CONFIG_UPDATE              = false;
-      critical_section_exit(&criticalSection);
+       if (flgСritical_section) critical_section_exit(&criticalSection);
       conf_.delayF               = vector[1];
       conf_.delayB               = vector[2];
       conf_.diskretinstep        = vector[3];
@@ -1726,9 +1726,9 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
     sleep_ms(100);
     count++;
   } 
-  critical_section_enter_blocking(&criticalSection);
+   if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
    TheadDone = false;
-  critical_section_exit(&criticalSection);
+   if (flgСritical_section) critical_section_exit(&criticalSection);
   conf_.flgHoping=0;
   sendStrData("code"+std::to_string(END)+"end");
   activateDark();
@@ -1905,15 +1905,15 @@ void Scanner::start_fastscan(std::vector<int32_t> &vector)
     stop_scan();  //возврат в начальную точку скана
     if (conf_.flgOneFrame == 1) 
     { 
-     critical_section_enter_blocking(&criticalSection);
+      if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
       STOP = true;
-     critical_section_exit(&criticalSection);
+      if (flgСritical_section) critical_section_exit(&criticalSection);
      };
   } 
   blue();
-   critical_section_enter_blocking(&criticalSection);
+    if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
     STOP=false;
-   critical_section_exit(&criticalSection);
+    if (flgСritical_section) critical_section_exit(&criticalSection);
    switch (conf_.path)
   {
     case 0:
@@ -1937,9 +1937,9 @@ void Scanner::start_fastscan(std::vector<int32_t> &vector)
     sleep_ms(100);
     count++;
   } 
-critical_section_enter_blocking(&criticalSection);
+ if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
   TheadDone = false;
-critical_section_exit(&criticalSection);
+ if (flgСritical_section) critical_section_exit(&criticalSection);
   sendStrData("code"+std::to_string(END)+"end");
   activateDark();
 }
@@ -2000,9 +2000,9 @@ void Scanner::move_toX0Y0(uint16_t x, uint16_t y, uint16_t delay, int8_t flg)
     sleep_ms(100);
     count++;
   } 
- critical_section_enter_blocking(&criticalSection);
+  if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
   TheadDone = false;
-critical_section_exit(&criticalSection);
+  if (flgСritical_section) critical_section_exit(&criticalSection);
   sendStrData("code"+std::to_string(END)+"end");
 }
 
@@ -2113,9 +2113,9 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
     {
       if (CONFIG_UPDATE)
       {
-        critical_section_enter_blocking(&criticalSection);
+        if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
          CONFIG_UPDATE = false;
-        critical_section_exit(&criticalSection);
+        if (flgСritical_section)  critical_section_exit(&criticalSection);
         ln = vupdateparams[1]; // with sign
         GATE_Z_MAX = (uint16_t)vupdateparams[2];
         GATE_Z_MIN = (uint16_t)vupdateparams[3];
@@ -2153,9 +2153,9 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
     //   Z_STATE = true;  // 231215 ????
       if (CONFIG_UPDATE)
       { 
-       critical_section_enter_blocking(&criticalSection);
+        if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
         CONFIG_UPDATE = false;
-       critical_section_exit(&criticalSection); 
+        if (flgСritical_section) critical_section_exit(&criticalSection); 
                 ln =  (int16_t)vector[1];
         GATE_Z_MAX = (uint16_t)vector[2];
         GATE_Z_MIN = (uint16_t)vector[3];
@@ -2243,9 +2243,9 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
       sendStrData("code"+ std::to_string(lid_name) ,debugdata,100,true);
     }
   }
-   critical_section_enter_blocking(&criticalSection);
+    if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
     STOP=false;
-   critical_section_exit(&criticalSection);
+    if (flgСritical_section) critical_section_exit(&criticalSection);
    debugdata.emplace_back(status);
    debugdata.emplace_back(ZValue);
    debugdata.emplace_back(SignalValue);
@@ -2257,9 +2257,9 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
     sleep_ms(100);
     count++;
   } 
-critical_section_enter_blocking(&criticalSection);
+ if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
   TheadDone = false;
-critical_section_exit(&criticalSection);
+ if (flgСritical_section) critical_section_exit(&criticalSection);
   sendStrData("code"+std::to_string(END)+"end");
   dark();
 }
@@ -2484,9 +2484,9 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
     sleep_ms(100);
     count++;
   } 
- critical_section_enter_blocking(&criticalSection);
+  if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
   TheadDone = false;
- critical_section_exit(&criticalSection);
+  if (flgСritical_section) critical_section_exit(&criticalSection);
   sendStrData("code"+std::to_string(END)+"end");
 }
 
@@ -2610,9 +2610,9 @@ void Scanner::spectroscopyIV(std::vector<int32_t> &vector)
     sleep_ms(10);
     count++;
   } 
-critical_section_enter_blocking(&criticalSection);
+ if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
   TheadDone = false;
-critical_section_exit(&criticalSection);
+ if (flgСritical_section) critical_section_exit(&criticalSection);
   sendStrData("code"+std::to_string(END)+"end");  
 }
 
@@ -2692,9 +2692,9 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
     buf_status[0] = none;
     if (STOP)
     {
-     critical_section_enter_blocking(&criticalSection);
+      if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
        STOP=false;
-     critical_section_exit(&criticalSection);
+      if (flgСritical_section) critical_section_exit(&criticalSection);
       buf_status[0] = stopdone;
       buf_status[1] = ZValue;
       buf_status[2] = SignalValue;
@@ -2705,9 +2705,9 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
     }
     if (CONFIG_UPDATE)
     {
-      critical_section_enter_blocking(&criticalSection);
+      if (flgСritical_section)  critical_section_enter_blocking(&criticalSection);
        CONFIG_UPDATE = false;
-      critical_section_exit(&criticalSection);
+      if (flgСritical_section)  critical_section_exit(&criticalSection);
       SET_POINT    = vupdateparams[1];
       GATE_Z_MAX   = vupdateparams[2];
       GATE_Z_MIN   = vupdateparams[3];
@@ -2825,9 +2825,9 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
     sleep_ms(100);
     count++;
   } 
-critical_section_enter_blocking(&criticalSection);
+ if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
   TheadDone = false;
-critical_section_exit(&criticalSection);
+ if (flgСritical_section) critical_section_exit(&criticalSection);
   sendStrData("code"+std::to_string(END)+"end");
 }
 
@@ -2885,9 +2885,9 @@ void Scanner::testpiezomover(std::vector<int32_t> &vector)
     	{
         if (STOP)
         {
-         critical_section_enter_blocking(&criticalSection);
+         if (flgСritical_section)  critical_section_enter_blocking(&criticalSection);
           STOP=false;
-         critical_section_exit(&criticalSection);
+          if (flgСritical_section) critical_section_exit(&criticalSection);
          flgstop=1;
          sleep_ms(200);
       //   buf_status.push_back(ZValue);
@@ -2931,9 +2931,9 @@ void Scanner::testpiezomover(std::vector<int32_t> &vector)
         if (flgstop==1) break;                 // если "стоп" был прочитан ранее
         if (STOP)
         {
-         critical_section_enter_blocking(&criticalSection);
+          if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
           STOP=false;
-         critical_section_exit(&criticalSection);
+          if (flgСritical_section) critical_section_exit(&criticalSection);
          flgstop=1;
          sleep_ms(200);
        //  buf_status.push_back(ZValue);
@@ -3005,9 +3005,9 @@ void Scanner::testpiezomover(std::vector<int32_t> &vector)
        } // while
      if (CONFIG_UPDATE)
      {
-        critical_section_enter_blocking(&criticalSection);
+        if (flgСritical_section)  critical_section_enter_blocking(&criticalSection);
          CONFIG_UPDATE = false;
-        critical_section_exit(&criticalSection);
+         if (flgСritical_section) critical_section_exit(&criticalSection);
         NSTEPS       = abs(vupdateparams[1]);
         INTDELAY     = vupdateparams[2];   
         freq         = vupdateparams[3];
@@ -3098,9 +3098,9 @@ void Scanner::testpiezomover(std::vector<int32_t> &vector)
     sleep_ms(100);
     count++;
   } 
-critical_section_enter_blocking(&criticalSection);
+ if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
   TheadDone = false;
-critical_section_exit(&criticalSection);
+ if (flgСritical_section) critical_section_exit(&criticalSection);
   sendStrData("code"+std::to_string(END)+"end");
  }   //test mover
 
@@ -3159,9 +3159,9 @@ void Scanner::start_frqscan()
     sleep_ms(100);
     count++;
   } 
- critical_section_enter_blocking(&criticalSection);
+  if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
   TheadDone = false;
- critical_section_exit(&criticalSection);
+  if (flgСritical_section) critical_section_exit(&criticalSection);
   sendStrData("code"+std::to_string(END)+"end");
 }
 
