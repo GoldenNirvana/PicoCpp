@@ -273,10 +273,10 @@ void set_GainApmlMod(uint8_t gain)
 void set_GainPID(int gain)
 {
   set_io_value(2, gain); 
-    // отладка
+ // отладка
  if (flgDebug)  
  {
-   afc.clear();
+  afc.clear();
   afc = "debug PID Gain "+ std::to_string(gain);
   afc += +"\n";
   std::cout << afc;

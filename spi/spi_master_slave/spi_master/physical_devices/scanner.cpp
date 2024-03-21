@@ -1966,14 +1966,14 @@ void Scanner::move_toX0Y0(uint16_t x, uint16_t y, uint16_t delay, uint8_t flg)
   pointX0Y0.y = (uint16_t) (y);
   delay = (uint16_t) (delay);
  // sleep_ms(100);  //240306
- if( flgDebug) 
- { 
-   debugdata.emplace_back(pointX0Y0.x);
-   debugdata.emplace_back(pointX0Y0.y);
-   debugdata.emplace_back(delay);
-   debugdata.emplace_back(pos_.x);
-   debugdata.emplace_back(pos_.y);
-   sendStrData("debug moveto parameters",debugdata,200,true);
+ if(flgDebug)
+ {
+  debugdata.emplace_back(pointX0Y0.x);
+  debugdata.emplace_back(pointX0Y0.y);
+  debugdata.emplace_back(delay);
+  debugdata.emplace_back(pos_.x);
+  debugdata.emplace_back(pos_.y);
+  sendStrData("debug moveto parameters",debugdata,200,true);
  }
   if (flg==1)
   {
