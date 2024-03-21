@@ -2638,7 +2638,7 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
   GATE_Z_MIN     =(int16_t) vector[3]; // min
   NSTEPS         =(int16_t) vector[4]; // steps 
   INTDELAY       =(uint16_t)vector[5]; // initdelay
-  GAIN           =(int16_t) vector[6]; // gain
+  GAIN           =(uint16_t)vector[6]; // gain  //240320
   SCANNERDECAY   =(uint16_t)vector[7]; // scannerDelay 
   freq           =(int16_t) vector[8]; // freq
   scv            =(int16_t) vector[9]; // scv
@@ -2658,7 +2658,7 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
  } 
   set_SetPoint(SET_POINT); 
   if (flgDev!=SFM) set_Bias(Bias);  
-  set_GainPID((uint8_t)GAIN);
+  set_GainPID((uint16_t)GAIN); //240320
 
   if (!flgVirtual)
   {
@@ -2713,13 +2713,13 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
       GATE_Z_MIN   = vupdateparams[3];
       NSTEPS       = vupdateparams[4];
       INTDELAY     = vupdateparams[5];
-      GAIN         = vupdateparams[6];
+      GAIN         =(uint16_t) vupdateparams[6];
       SCANNERDECAY = vupdateparams[7];
      
      // if (flgDev!=SFM) set_Bias(1,Bias);  240211
       set_SetPoint(SET_POINT); 
       sleep_ms(100);  // need for virtual для разделение afc //240314
-      set_GainPID((uint8_t)GAIN);
+      set_GainPID((uint16_t)GAIN); //240316
       sleep_ms(100);  // need for virtual для разделение afc //240314
       if (flgDebug)
       {  
