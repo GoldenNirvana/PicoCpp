@@ -2285,7 +2285,7 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
     return(Zt);
 	}
 */
- int16_t  Scanner::ZMove( int16_t Z0, int16_t steps, int16_t stepsize, uint16_t delay )   // stepsize=+-1  sign  -> dir 
+ int16_t  Scanner::ZMove( int16_t Z0, int16_t dZ, int16_t stepsize, uint16_t delay )   // stepsize=+-1  sign  -> dir 
 	{
 	  int16_t Zt;
     int16_t dir;
@@ -2294,8 +2294,8 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
 	  Zt =Z0;
     uint16_t nsteps;
     uint16_t nreststeps;
-    nsteps=(uint16_t)abs(steps/stepsize);
-    nreststeps=(uint16_t)abs(steps % stepsize);
+    nsteps=(uint16_t)abs(dZ/stepsize);
+    nreststeps=(uint16_t)abs(dZ % stepsize);
 	  for (int16_t j=0; j< nsteps; j++)
 	  {
       if (dir==1)  //втягивание 
@@ -2350,11 +2350,12 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
  int16_t    ZStart=(int16_t )vector[3]; // отход на  abs(ZStart)
  int16_t     ZStep=(int16_t )vector[4]; // ZStep>0
  int16_t Threshold=(int16_t )vector[5]; // Threshold
- int16_t     Delay=(int16_t )vector[6]; // delay
+ int16_t     delay=(int16_t )vector[6]; // delay
  int16_t   flgModa=(int16_t )vector[7]; // flgmode stm,sfm;
 
  int16_t SignalValue;
  int16_t dir,dlt,deltaZ;
+ int16_t Z0;
 
  int16_t MicrostepDelay=3;
  if (flgDebug)
@@ -2383,15 +2384,24 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
   int16_t k=0;
   vectorA_Z.clear();
 ////////////////////////////////////////
- if(!flgVirtual)  freezeLOOP(200);
- //////////////////////////////////////
+// if(!flgVirtual)  freezeLOOP(200);
+  if (!flgVirtual)
+  {
+    getValuesFromAdc();
+    Z0=(int16_t) spiBuf[ZPin];
+    retract();
+    sleep_ms(50);
+    ZMove(0,Z0,-10,delay);
+  }
+
+//////////////////////////////////////
   sleep_ms(200);      
  for(int16_t j=0; j<NCurves; j++)    
  {
   deltaZ = ZMove(0, abs(ZStart), 1, MicrostepDelay ); // отвод в начальную точку - втягивание
   for(int16_t i=0; i<NPoints; i++)     //сближение
   {
-    sleep_ms(Delay);  
+    sleep_ms(delay);  
    if (!flgVirtual) 
    {   auto ptr = getValuesFromAdc();   
         switch (flgModa)
@@ -2436,7 +2446,7 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
 
   for(int16_t i=NPoints; i>=1; i--)  // отвод
   {
-    sleep_ms(Delay); 
+    sleep_ms(delay); 
 
    if (!flgVirtual)
    {
@@ -2475,7 +2485,10 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
  // разморозка состояния pid
   if(!flgVirtual) 
   {
-    unfreezeLOOP(500); 
+ //   unfreezeLOOP(500); 
+    protract();
+    sleep_ms(400);
+    ZMove(Z0,Z0,10,delay);
   }
  //////////////////////////////////////////
     int16_t count = 0;
@@ -2493,7 +2506,8 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
 void Scanner::spectroscopyIV(std::vector<int32_t> &vector)
 {
     int i,j;
-		int16_t  UBackup;
+    int16_t  Z0;
+    int16_t  UBackup;
     int16_t  delay;
     int16_t  UPoints;
     int16_t  UCurves;
@@ -2521,7 +2535,16 @@ void Scanner::spectroscopyIV(std::vector<int32_t> &vector)
   sendStrData("code"+std::to_string(DEBUG)+"debug I_V parameters",debugdata,100,true);
  } 
 ///////////////////////////////////////////////////  
-  if(!flgVirtual)  freezeLOOP(200);
+//  if(!flgVirtual)  freezeLOOP(200);
+  if (!flgVirtual)
+  {
+    getValuesFromAdc();
+    Z0=(int16_t) spiBuf[ZPin];
+    retract();
+    sleep_ms(50);
+    ZMove(0,Z0,-10,delay);
+  }
+
 ////////////////////////////////////////////////////
   sleep_ms(300);
  // установка начального значения напряжения
@@ -2602,7 +2625,13 @@ void Scanner::spectroscopyIV(std::vector<int32_t> &vector)
   if (!flgVirtual) set_Bias(UBackup);  //240206
     sleep_ms(10);
 ///////////////////////////////////////////////
-   if(!flgVirtual)  unfreezeLOOP(500);
+ //  if(!flgVirtual)  unfreezeLOOP(500); //240322
+  if (!flgVirtual)
+  {
+    protract();
+    sleep_ms(400);
+    ZMove(Z0,Z0,10,delay);
+  }
 /////////////////////////////////////////////  
    int16_t count = 0;
   while ((!TheadDone) || (count<20) )//ожидание ответа ПК для синхронизации

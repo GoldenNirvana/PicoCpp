@@ -82,7 +82,7 @@ public:
 
   void spectroscopyIV(std::vector<int32_t> &vector);  // спектроскопия I-V
 
-  int16_t ZMove( int16_t Z0, int16_t steps, int16_t stepsize, uint16_t delay );   // stepsize=+-1  sign  -> dir 
+  int16_t ZMove( int16_t Z0, int16_t dZ, int16_t stepsize, uint16_t delay );   // stepsize=+-1  sign  -> dir 
 
   void spectroscopyAIZ(std::vector<int32_t> &vector); // спектроскопия Ampl-Z
 
