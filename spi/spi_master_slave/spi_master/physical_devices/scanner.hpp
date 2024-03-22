@@ -86,6 +86,8 @@ public:
 
   void spectroscopyAIZ(std::vector<int32_t> &vector); // спектроскопия Ampl-Z
 
+  void spectroscopyAIZv2(std::vector<int32_t> &vector);
+
   void scan_update(const Config &config);             // обновить параметры скaнирования
 
   void move_toX0Y0(uint16_t x, uint16_t y, uint16_t delay, int8_t flg);          //переместиться в начальную точку скана из начальной точке предыдущего скана
