@@ -1216,13 +1216,14 @@ struct Config
     }
     if (CONFIG_UPDATE)
     {
-       if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
+      if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
        CONFIG_UPDATE              = false;
-       if (flgСritical_section) critical_section_exit(&criticalSection); 
+      if (flgСritical_section) critical_section_exit(&criticalSection); 
       conf_.delayF               = vupdateparams[1];
       conf_.delayB               = vupdateparams[2];
       conf_.diskretinstep        = vupdateparams[3];
-      if (flgDebug) sleep_ms(100);       //240314
+      //if (flgDebug)
+      sleep_ms(100);             //240314
       set_GainPID((uint16_t)vupdateparams[4]); //240320
       conf_.HopeDelay            = vupdateparams[5];
       conf_.HopeZ                = vupdateparams[6];
@@ -1242,7 +1243,7 @@ struct Config
        sendStrData("code"+std::to_string(DEBUG)+"debug hoping parameters update",debugdata,100,true);
       } 
       if (flgСritical_section) critical_section_enter_blocking(&criticalSection); 
-      vupdateparams.clear();
+       vupdateparams.clear();
       if (flgСritical_section) critical_section_exit(&criticalSection);  
 
       stepsx = (uint16_t) conf_.betweenPoints_x / conf_.diskretinstep;
@@ -1268,7 +1269,8 @@ struct Config
         break;
       }
      }
-     sendStrData("code"+std::to_string(PARAMUPDATEDCmd)); //240314
+      if (flgDebug)
+      { sendStrData("code"+std::to_string(PARAMUPDATEDCmd));} //240314
     } //update
       if (!flgVirtual)
       {
@@ -1323,9 +1325,9 @@ struct Config
     sleep_ms(100);
     count++;
   } 
-   if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
+  if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
    TheadDone = false;
-   if (flgСritical_section) critical_section_exit(&criticalSection);
+  if (flgСritical_section) critical_section_exit(&criticalSection);
   conf_.flgHoping=0;
   sendStrData("code"+std::to_string(END)+"end");
  // activateDark();
@@ -2360,7 +2362,7 @@ void Scanner::spectroscopyAIZv2(std::vector<int32_t> &vector) // спектро�
 
  int16_t SignalValue;
  int16_t dir,dlt,deltaZ;
- int16_t Z0;
+ int16_t Z0,Zt;
 
  int16_t MicrostepDelay=3;
  if (flgDebug)
@@ -2383,7 +2385,7 @@ void Scanner::spectroscopyAIZv2(std::vector<int32_t> &vector) // спектро�
     Z0=(int16_t) spiBuf[ZPin];
     retract();
     sleep_ms(50);
-    ZMove(0,Z0,-10,delay);
+   Zt=ZMove(0,Z0,-10,delay);
   }
 
 //////////////////////////////////////
@@ -2391,7 +2393,7 @@ void Scanner::spectroscopyAIZv2(std::vector<int32_t> &vector) // спектро�
  for(int16_t j=0; j<NCurves; j++)    
  {
   //deltaZ = ZMove(0, abs(ZStart), 1, MicrostepDelay ); // отвод в начальную точку - втягивание
-  deltaZ = ZMove(Z0, abs(ZStart), 1, MicrostepDelay ); // отвод в начальную точку - втягивание
+  deltaZ = ZMove(Zt, abs(ZStart), 1, MicrostepDelay ); // отвод в начальную точку - втягивание
   for(int16_t i=0; i<NPoints; i++)     //сближение
   {
     sleep_ms(delay);  
@@ -2415,7 +2417,8 @@ void Scanner::spectroscopyAIZv2(std::vector<int32_t> &vector) // спектро�
 
    }
      vectorA_Z.emplace_back(SignalValue); 
-     vectorA_Z.emplace_back(-deltaZ);
+     //vectorA_Z.emplace_back(-deltaZ);
+     vectorA_Z.emplace_back(deltaZ);
      vectorA_Z.emplace_back(1);
      k+=3;       	
    if (flgModa==STM) 
@@ -2432,7 +2435,7 @@ void Scanner::spectroscopyAIZv2(std::vector<int32_t> &vector) // спектро�
       break; 
      }
    };
-    deltaZ = ZMove(deltaZ, ZStep, -1, MicrostepDelay);
+    deltaZ = ZMove(deltaZ, ZStep, 1, MicrostepDelay); //-1
   }  // for    i
     NPoints= k / 3;
     sleep_ms(300);
@@ -2461,9 +2464,10 @@ void Scanner::spectroscopyAIZv2(std::vector<int32_t> &vector) // спектро�
     }
    }
      vectorA_Z.emplace_back(SignalValue);
-     vectorA_Z.emplace_back(-deltaZ);
+  //   vectorA_Z.emplace_back(-deltaZ);
+     vectorA_Z.emplace_back(deltaZ);
      vectorA_Z.emplace_back(-1);
-     deltaZ = ZMove( deltaZ, ZStep, 1, MicrostepDelay);
+     deltaZ = ZMove( deltaZ, ZStep, -1, MicrostepDelay); //1
   }
   sendStrData("code"+std::to_string(SPECTROSOPY_AIZ),vectorA_Z,100,true); //66
   //move to start point
@@ -2472,7 +2476,7 @@ void Scanner::spectroscopyAIZv2(std::vector<int32_t> &vector) // спектро�
   if (deltaZ>0) dir=-1;
   else          dir= 1;
   deltaZ = ZMove(deltaZ, dlt, dir, MicrostepDelay );
-  deltaZ=0;
+ // deltaZ=0;
  } //j
  /////////////////////////////////////////  
  // разморозка состояния pid
@@ -2481,7 +2485,7 @@ void Scanner::spectroscopyAIZv2(std::vector<int32_t> &vector) // спектро�
  //   unfreezeLOOP(500); 
     protract();
     sleep_ms(400);
-    ZMove(Z0,Z0,10,delay);
+    ZMove(deltaZ,abs(deltaZ),10,delay);
   }
  //////////////////////////////////////////
     int16_t count = 0;
