@@ -2316,7 +2316,7 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
 	  }
     if (nreststeps!=0)
     {
-       if (dir==1)  //втягивание 
+      if (dir==1)  //втягивание 
       {
         if (Zt>=(maxint16_t-nreststeps)) { Zt=maxint16_t;} 
         else Zt=Zt+nreststeps;
@@ -2326,7 +2326,7 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
         if (Zt<=(minint16_t+nreststeps)) { Zt=minint16_t;}
         else Zt=Zt-nreststeps;
       } 
-      
+      if (!flgVirtual) set_DACZ(Zt);        
     }   
     return(Zt);
 	}
@@ -2435,7 +2435,7 @@ void Scanner::spectroscopyAIZv2(std::vector<int32_t> &vector) // спектро�
       break; 
      }
    };
-    deltaZ = ZMove(deltaZ, ZStep, 1, MicrostepDelay); //-1
+    deltaZ = ZMove(deltaZ, ZStep, -1, MicrostepDelay); //-1
   }  // for    i
     NPoints= k / 3;
     sleep_ms(300);
@@ -2467,8 +2467,8 @@ void Scanner::spectroscopyAIZv2(std::vector<int32_t> &vector) // спектро�
   //   vectorA_Z.emplace_back(-deltaZ);
      vectorA_Z.emplace_back(deltaZ);
      vectorA_Z.emplace_back(-1);
-     deltaZ = ZMove( deltaZ, ZStep, -1, MicrostepDelay); //1
-  }
+     deltaZ = ZMove( deltaZ, ZStep, 1, MicrostepDelay); //1
+  } //i
   sendStrData("code"+std::to_string(SPECTROSOPY_AIZ),vectorA_Z,100,true); //66
   //move to start point
   sleep_ms(300);
@@ -2685,7 +2685,7 @@ void Scanner::spectroscopyIV(std::vector<int32_t> &vector)
   sendStrData("code"+std::to_string(DEBUG)+"debug I_V parameters",debugdata,100,true);
  } 
 ///////////////////////////////////////////////////  
- if(!flgVirtual)  freezeLOOP(200);
+// if(!flgVirtual)  freezeLOOP(200); 240325
   if (!flgVirtual)
   {
     getValuesFromAdc();
@@ -2780,7 +2780,7 @@ void Scanner::spectroscopyIV(std::vector<int32_t> &vector)
   {
     protract();
     sleep_ms(400);
-    ZMove(Z0,Z0,10,delay);
+    ZMove(-Z0,Z0,10,delay);
   }
 /////////////////////////////////////////////  
    int16_t count = 0;
