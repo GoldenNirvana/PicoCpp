@@ -2470,7 +2470,7 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
      deltaZ = ZMove( deltaZ, ZStep, 1, MicrostepDelay); //1
   } //i
   sendStrData("code"+std::to_string(SPECTROSOPY_AIZ),vectorA_Z,100,true); //66
-  //move to start point
+  //move to DACZ zero point 
   sleep_ms(300);
   dlt=abs(deltaZ);
   if (deltaZ>0) dir=-1;
