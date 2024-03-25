@@ -2331,7 +2331,7 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
     return(Zt);
 	}
 
-void Scanner::spectroscopyAIZv2(std::vector<int32_t> &vector) // спектроскопия Ampl-Z
+void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектроскопия Ampl-Z
 {
 /*
    params[0]:=(SpectrParams.Npoints);
@@ -2499,7 +2499,7 @@ void Scanner::spectroscopyAIZv2(std::vector<int32_t> &vector) // спектро�
   if (flgСritical_section) critical_section_exit(&criticalSection);
   sendStrData("code"+std::to_string(END)+"end");
 }
-void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектроскопия Ampl-Z
+void Scanner::spectroscopyAIZV0(std::vector<int32_t> &vector) // спектроскопия Ampl-Z
 {
 /*
    params[0]:=(SpectrParams.Npoints);
