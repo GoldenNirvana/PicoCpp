@@ -2334,6 +2334,8 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
 */
  int16_t  Scanner::ZMove( int16_t Z0, int16_t dZ, int16_t stepsize, uint16_t delay )   // stepsize=+-1  sign  -> dir 
 	{
+    //  dacZ    0  втянут
+    //     -32768  вытянут
 	  int16_t Zt;
     int16_t dir;
     if (stepsize>0) dir= 1;
@@ -2421,8 +2423,6 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
   SignalValue=0;
   int16_t k=0;
   vectorA_Z.clear();
-////////////////////////////////////////
-// if(!flgVirtual)  freezeLOOP(200);
   if (!flgVirtual)
   {
     getValuesFromAdc();
@@ -2436,8 +2436,6 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
   sleep_ms(200);      
  for(int16_t j=0; j<NCurves; j++)    
  {
-  //deltaZ = ZMove(0, abs(ZStart), 1, MicrostepDelay ); // отвод в начальную точку - втягивание
- // deltaZ = ZMove(Zt, abs(ZStart), 1, MicrostepDelay ); // 1 отвод в начальную точку - втягивание
  Zt=-abs(ZStart);
   for(int16_t i=0; i<NPoints; i++)     //сближение
   {
@@ -2493,10 +2491,8 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
 
    if (!flgVirtual)
    {
-        getValuesFromAdc(); 
-       // Zt=(int16_t) spiBuf[ZPin];  // get Z from adc
-     
-      switch (flgModa)
+       getValuesFromAdc(); 
+       switch (flgModa)
     {
      case SFM:    { SignalValue=(int16_t)spiBuf[AmplPin]; break;}  
      case STM: 
@@ -2515,10 +2511,10 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
      vectorA_Z.emplace_back(SignalValue);
      vectorA_Z.emplace_back(Zt);
      vectorA_Z.emplace_back(-1);
-     deltaZ = ZMove( deltaZ, ZStep, 1, MicrostepDelay); //1
+     deltaZ = ZMove( deltaZ, ZStep, 1, MicrostepDelay); 
      Zt=Zt-ZStep;
   } //i
-  sendStrData("code"+std::to_string(SPECTROSOPY_AIZ),vectorA_Z,100,true); //66
+  sendStrData("code"+std::to_string(SPECTROSOPY_AIZ),vectorA_Z,100,true); 
   //move to DACZ zero point 
   sleep_ms(300);
   dlt=abs(deltaZ);
@@ -2526,13 +2522,11 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
  // else
   dir= 10;  //1
   deltaZ = ZMove(deltaZ, dlt, dir, MicrostepDelay );
- // deltaZ=0;
  } //j
  /////////////////////////////////////////  
  // разморозка состояния pid
   if(!flgVirtual) 
   {
- //   unfreezeLOOP(500); 
     protract();
     sleep_ms(400);
     ZMove(deltaZ,abs(deltaZ),10,delay);
@@ -2549,160 +2543,7 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
   if (flgСritical_section) critical_section_exit(&criticalSection);
   sendStrData("code"+std::to_string(END)+"end");
 }
-void Scanner::spectroscopyAIZV0(std::vector<int32_t> &vector) // спектроскопия Ampl-Z
-{
-/*
-   params[0]:=(SpectrParams.Npoints);
-   params[1]:=(round(SpectrParams.StartP*TransformUnit.Znm_d) );   //SFM
-   params[2]:=(round(SpectrParams.Step*TransformUnit.Znm_d));
-//   Threshold
-     case  SpectrParams.flgType of
-   I_Z:  params[3]:=(round((SpectrParams.LevelIZ)*0.01*round(abs(ApproachParams.SetPoint*TransformUnit.nA_d))));//stop approach i-z
-   A_Z:  params[3]:=(round((100-SpectrParams.LevelSFM)*0.01*ApproachParams.UAMMax));//stop approach SFM  ampl-z
-         end;
-   params[4]:=(SpectrParams.T);
-   params[5]:=(integer(flgmode));
- //  params[6]:=(apiType(round(SpectrParams.BiasV*TransformUnit.BiasV_d))); // add 22/10/25
-*/
 
-//  Z<=0 сканнер втянут
-//  32767 - вытянут
-// const int16_t SFM=0;
-// const int16_t STM=1;
-// const int16_t SICMDC=3;      
- int16_t   NPoints=(int16_t )vector[1]; // n точек
- int16_t   NCurves=(int16_t )vector[2]; // отход на  abs(ZStart)
- int16_t    ZStart=(int16_t )vector[3]; // отход на  abs(ZStart)
- int16_t     ZStep=(int16_t )vector[4]; // ZStep>0
- int16_t Threshold=(int16_t )vector[5]; // Threshold
- int16_t     delay=(int16_t )vector[6]; // delay
- int16_t   flgModa=(int16_t )vector[7]; // flgmode stm,sfm;
-
- int16_t SignalValue;
- int16_t dir,dlt,deltaZ;
- int16_t Z0;
-
- int16_t MicrostepDelay=3;
- if (flgDebug)
- {  
-  for (int j = 0; j <= 7; ++j)
-  {
-    debugdata.emplace_back(vector[j]);
-  }
-  sendStrData("code"+std::to_string(DEBUG)+"debug AI_Z parameters",debugdata,100,true);
- } 
- //start
-  SignalValue=0;
-  int16_t k=0;
-  vectorA_Z.clear();
-////////////////////////////////////////
- if(!flgVirtual)  freezeLOOP(200);
-
-//////////////////////////////////////
-  sleep_ms(200);      
- for(int16_t j=0; j<NCurves; j++)    
- {
-  deltaZ = ZMove(0, abs(ZStart), 1, MicrostepDelay ); // отвод в начальную точку - втягивание
-  for(int16_t i=0; i<NPoints; i++)     //сближение
-  {
-    sleep_ms(delay);  
-   if (!flgVirtual) 
-   {   auto ptr = getValuesFromAdc();   
-        switch (flgModa)
-    {
-     case SFM:     { SignalValue=(int16_t)ptr[AmplPin]; break;}  
-     case STM:
-     case SICMDC:  { SignalValue=(int16_t)ptr[IPin];    break;}  
-    }
-   }
-   else
-   {
-           switch (flgModa)
-    {
-     case SFM:     { SignalValue=ZMaxValue-abs(deltaZ);/*ZMaxValue-dacZ;*/ break;}  
-     case STM:   
-     case SICMDC:  { SignalValue=ZMaxValue-abs(deltaZ);/*ZMaxValue-dacZ*/ break;}  
-    } 
-
-   }
-     vectorA_Z.emplace_back(SignalValue); 
-     vectorA_Z.emplace_back(-deltaZ);
-     vectorA_Z.emplace_back(1);
-     k+=3;       	
-   if (flgModa==STM) 
-   {
-    if ((abs(SignalValue)>abs(Threshold)) and (i<=(NPoints-1)))
-     {
-       break;
-     }
-   };
-   if  ((flgModa==SICMDC) || (flgModa==SFM) )
-   {
-     if (abs(SignalValue)<abs(Threshold) and (i<=(NPoints-1)))
-     {
-      break; 
-     }
-   };
-    deltaZ = ZMove(deltaZ, ZStep, -1, MicrostepDelay);
-  }  // for    i
-    NPoints= k / 3;
-    sleep_ms(300);
-
-  for(int16_t i=NPoints; i>=1; i--)  // отвод
-  {
-    sleep_ms(delay); 
-
-   if (!flgVirtual)
-   {
-      auto ptr = getValuesFromAdc();
-      switch (flgModa)
-    {
-     case SFM:    { SignalValue=(int16_t)ptr[AmplPin]; break;}  
-     case STM: 
-     case SICMDC: { SignalValue=(int16_t)ptr[IPin];    break;}  
-    }
-   }
-   else
-   {
-      switch (flgModa)
-    {
-     case SFM:    { SignalValue=ZMaxValue-abs(deltaZ)+100; break;}  
-     case STM:    
-     case SICMDC: { SignalValue=ZMaxValue-abs(deltaZ+100); break;}  
-    }
-   }
-     vectorA_Z.emplace_back(SignalValue);
-     vectorA_Z.emplace_back(-deltaZ);
-     vectorA_Z.emplace_back(-1);
-     deltaZ = ZMove( deltaZ, ZStep, 1, MicrostepDelay);
-  }
-  sendStrData("code"+std::to_string(SPECTROSOPY_AIZ),vectorA_Z,100,true); //66
-  //move to start point
-  sleep_ms(300);
-  dlt=abs(deltaZ);
-  if (deltaZ>0) dir=-1;
-  else          dir= 1;
-  deltaZ = ZMove(deltaZ, dlt, dir, MicrostepDelay );
-  deltaZ=0;
- } //j
- /////////////////////////////////////////  
- // разморозка состояния pid
-  if(!flgVirtual) 
-  {
-   unfreezeLOOP(500);  
-  }
- //////////////////////////////////////////
-    int16_t count = 0;
-  while ((!TheadDone) || (count<20) )//ожидание ответа ПК для синхронизации
-  {
-    sleep_ms(100);
-    count++;
-  } 
-  if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
-  TheadDone = false;
-  if (flgСritical_section) critical_section_exit(&criticalSection);
-  sendStrData("code"+std::to_string(END)+"end");
-}
 void Scanner::spectroscopyIV(std::vector<int32_t> &vector)
 {
     int i,j;
