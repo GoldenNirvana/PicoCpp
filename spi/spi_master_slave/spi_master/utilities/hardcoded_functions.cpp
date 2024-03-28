@@ -73,6 +73,13 @@ void setDefaultSettings()
   io_ports.push_back(io3_0);
   io_ports.push_back(io3_1);
   //io_ports.push_back(io3_2);
+
+  init_DACSPB(2);//инициирование ЦАП1  SetPoint,BIAS
+
+  init_DACXY(3); //инициирование ЦАП2  DACXY
+
+  init_DACZ(4);  //инициирование ЦАП3  DACZ
+  
 }
 void set_Freq(uint32_t freq)
 {
@@ -117,12 +124,14 @@ void init_SPI( uint8_t port ,uint8_t v2 ,uint8_t v3, uint8_t v4 )
 void init_DACSPB(uint8_t port) //  4 для подставки
 {
   dac8563_1.initialize(port); //code 23
+/*
   afc.clear();
   afc = "code"+std::to_string(DEBUG)+ "debug Init DACSPB " + std::to_string(port);
   afc += +"\n";
   std::cout << afc;
   afc.clear();
   sleep_ms(100);
+ */ 
 }
 
 void init_DACXY(uint8_t port)
@@ -131,24 +140,27 @@ void init_DACXY(uint8_t port)
   dac8563_2.setSpiProps();
   dac8563_2.writeA(0);
   dac8563_2.writeB(0);
-  afc.clear();
+ /* afc.clear();
   afc ="code"+std::to_string(DEBUG)+ "debug Init DACXY 0,0 port=" + std::to_string(port);
   afc += +"\n";
   std::cout << afc;
   afc.clear();
   sleep_ms(100);
+  */
 }
 
 void init_DACZ(uint8_t port)
 {
   dac8563_3.initialize(port); //code 27
   set_DACZ(0); 
+ /*
   afc.clear();
   afc ="code"+std::to_string(DEBUG)+ "debug Init DACZ 0 port=" + std::to_string(port);
   afc += +"\n";
   std::cout << afc;
   afc.clear();
   sleep_ms(100);
+ */ 
 }
 void move_scannerX(int x)
 {
