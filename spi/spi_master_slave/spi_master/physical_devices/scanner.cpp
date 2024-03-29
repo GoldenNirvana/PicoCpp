@@ -2944,9 +2944,9 @@ void Scanner::testpiezomover(std::vector<int32_t> &vector)
      std::vector<int16_t> buf_status;
      buf_status.push_back(ZValue);
      buf_status.push_back(NSTEPS);
+     buf_status.push_back(0); //cycle nmb
      buf_status.push_back(0);
      sendStrData( "code"+std::to_string(TESTMOVER),buf_status,100,true);
- 
     // проверить, в воротах ли Z
 
     step = NSTEPS;          // NSTEPS > 0 - сближение
@@ -2959,10 +2959,7 @@ void Scanner::testpiezomover(std::vector<int32_t> &vector)
           STOP=false;
           if (flgСritical_section) critical_section_exit(&criticalSection);
          flgstop=1;
-         sleep_ms(200);
-      //   buf_status.push_back(ZValue);
-      //   buf_status.push_back(NSTEPS);    
-      //   buf_status.push_back(1);    
+         sleep_ms(200);  
          sendStrData("code"+std::to_string(STOPPED)+"stopped");
          break;
         }
@@ -2987,6 +2984,7 @@ void Scanner::testpiezomover(std::vector<int32_t> &vector)
         }     
         buf_status.push_back(ZValue);
         buf_status.push_back(step);
+        buf_status.push_back(0); //cycle nmb
         buf_status.push_back(0);
         sendStrData( "code"+std::to_string(TESTMOVER),buf_status,100,true);
       };
@@ -3005,10 +3003,7 @@ void Scanner::testpiezomover(std::vector<int32_t> &vector)
           STOP=false;
           if (flgСritical_section) critical_section_exit(&criticalSection);
          flgstop=1;
-         sleep_ms(200);
-       //  buf_status.push_back(ZValue);
-       //  buf_status.push_back(NSTEPS);
-       //  buf_status.push_back(0);    
+         sleep_ms(200); 
          sendStrData("code"+std::to_string(STOPPED)+"stopped");
          break;
         }                                    
@@ -3028,10 +3023,11 @@ void Scanner::testpiezomover(std::vector<int32_t> &vector)
         else
         {
          sleep_ms(INTDELAY);
-         ZValue=ZValue-step*100;
+         ZValue=ZValue-step*300;
         }    
         buf_status.push_back(ZValue);
         buf_status.push_back(step);
+        buf_status.push_back(i); //cycle nmb
         buf_status.push_back(0);
         sendStrData( "code"+std::to_string(TESTMOVER),buf_status,100,true);  
        } //while
@@ -3043,12 +3039,8 @@ void Scanner::testpiezomover(std::vector<int32_t> &vector)
          {
           flgstop=1;
           sleep_ms(200);
-        //   buf_status.push_back(ZValue);
-        //   buf_status.push_back(step);
-        //   buf_status.push_back(0);
-            sendStrData("code"+std::to_string(STOPPED)+"stopped");
-        //  sendStrData( "code"+std::to_string(TESTMOVER),buf_status,100,false);  
-           break;
+          sendStrData("code"+std::to_string(STOPPED)+"stopped");
+          break;
          }
          if (!flgVirtual)
          {
@@ -3066,10 +3058,11 @@ void Scanner::testpiezomover(std::vector<int32_t> &vector)
          else
          { 
            sleep_ms(INTDELAY);
-           ZValue=ZValue-step*100;
+           ZValue=ZValue-step*300;
          }      
          buf_status.push_back(ZValue);
          buf_status.push_back(step);
+         buf_status.push_back(i); //cycle nmb
          buf_status.push_back(0);
          sendStrData( "code"+std::to_string(TESTMOVER),buf_status,100,true);       
        } // while
@@ -3102,6 +3095,12 @@ void Scanner::testpiezomover(std::vector<int32_t> &vector)
          step= - NSTEPS;
          while (ZValue < Z0)                                    // идти вверх до Z0 (начальной позиции)
   		    {
+            if (STOP)
+            {
+             sleep_ms(200);
+             sendStrData("code"+std::to_string(STOPPED)+"stopped");
+             break;
+            }
            if (!flgVirtual)
               {
                retract();  //втянуть сканнер
@@ -3118,10 +3117,11 @@ void Scanner::testpiezomover(std::vector<int32_t> &vector)
               else
               {
                 sleep_ms(INTDELAY);
-               ZValue=ZValue-step*100;
+                ZValue=ZValue-step*100;
               }     
               buf_status.push_back(ZValue);
               buf_status.push_back(step);
+              buf_status.push_back(i); //cycle nmb
               buf_status.push_back(0);
               sendStrData( "code"+std::to_string(TESTMOVER),buf_status,100,true); 
             };
@@ -3131,7 +3131,13 @@ void Scanner::testpiezomover(std::vector<int32_t> &vector)
             step=   NSTEPS;
             while (ZValue > Z0)                                    // идти вверх до Z0 (начальной позиции)
     		    {
-              if (!flgVirtual)
+             if (STOP)
+             {
+              sleep_ms(200);
+              sendStrData("code"+std::to_string(STOPPED)+"stopped");
+              break;
+             }
+             if (!flgVirtual)
               {
                retract();  //втянуть сканнер
                sleep_ms(SCANNERDECAY);
@@ -3151,6 +3157,7 @@ void Scanner::testpiezomover(std::vector<int32_t> &vector)
               }        
               buf_status.push_back(ZValue);
               buf_status.push_back(step);
+              buf_status.push_back(i); //cycle nmb
               buf_status.push_back(0);
               sendStrData( "code"+std::to_string(TESTMOVER),buf_status,100,true); 
             };
@@ -3159,6 +3166,7 @@ void Scanner::testpiezomover(std::vector<int32_t> &vector)
             sleep_ms(300);
             buf_status.push_back(ZValue);
             buf_status.push_back(step);
+             buf_status.push_back(i); //cycle nmb
             buf_status.push_back(1); //!!!!
             sendStrData( "code"+std::to_string(TESTMOVER),buf_status,100,true);    
 ///////////////////////////////////////////////////////////////////////////////////
