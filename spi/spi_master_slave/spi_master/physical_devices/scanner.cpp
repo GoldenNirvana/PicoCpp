@@ -3014,9 +3014,6 @@ void Scanner::testpiezomover(std::vector<int32_t> &vector)
           linearDriver.activate(99, freq, scv, std::abs(step), step > 0);
           protract(); //вытянуть
           sleep_ms(INTDELAY);
-        }
-        if (!flgVirtual)
-        {
           getValuesFromAdc(); 
           ZValue = (int16_t)spiBuf[ZPin];
         }  
@@ -3049,11 +3046,8 @@ void Scanner::testpiezomover(std::vector<int32_t> &vector)
           linearDriver.activate(99, freq, scv, std::abs(step), step > 0);
           protract(); //вытянуть
           sleep_ms(INTDELAY);
-         }
-         if (!flgVirtual)
-         {
-           getValuesFromAdc(); 
-           ZValue = (int16_t)spiBuf[ZPin];
+          getValuesFromAdc(); 
+          ZValue = (int16_t)spiBuf[ZPin];
          }  
          else
          { 
@@ -3090,6 +3084,8 @@ void Scanner::testpiezomover(std::vector<int32_t> &vector)
 //////////////////////////////////////////////////////////////////////////////////////
 //  возврат в начальное состояние
 ////////////////////////////////////////////////////////////////
+        getValuesFromAdc(); 
+        ZValue = (int16_t)spiBuf[ZPin];
         if (ZValue < Z0) 
         {
          step= - NSTEPS;
@@ -3108,11 +3104,8 @@ void Scanner::testpiezomover(std::vector<int32_t> &vector)
                linearDriver.activate(99, freq, scv, std::abs(step), step > 0);
                protract(); //вытянуть
                sleep_ms(INTDELAY);
-              }
-              if (!flgVirtual)
-              {
-                getValuesFromAdc(); 
-                ZValue = (int16_t)spiBuf[ZPin];
+               getValuesFromAdc(); 
+               ZValue = (int16_t)spiBuf[ZPin];
               }   
               else
               {
@@ -3129,7 +3122,7 @@ void Scanner::testpiezomover(std::vector<int32_t> &vector)
        else
        {
             step=   NSTEPS;
-            while (ZValue > Z0)                                    // идти вверх до Z0 (начальной позиции)
+            while (ZValue > Z0) // идти вверх до Z0 (начальной позиции)
     		    {
              if (STOP)
              {
@@ -3144,15 +3137,12 @@ void Scanner::testpiezomover(std::vector<int32_t> &vector)
                linearDriver.activate(99, freq, scv, std::abs(step), step > 0);
                protract(); //вытянуть
                sleep_ms(INTDELAY);
-              }
-              if (!flgVirtual)
-              {
-                getValuesFromAdc(); 
-                ZValue = (int16_t)spiBuf[ZPin];
+               getValuesFromAdc(); 
+               ZValue = (int16_t)spiBuf[ZPin];
               }
               else
               {
-                sleep_ms(INTDELAY);
+               sleep_ms(INTDELAY);
                ZValue=ZValue-step*100;
               }        
               buf_status.push_back(ZValue);
@@ -3166,8 +3156,8 @@ void Scanner::testpiezomover(std::vector<int32_t> &vector)
             sleep_ms(300);
             buf_status.push_back(ZValue);
             buf_status.push_back(step);
-             buf_status.push_back(i); //cycle nmb
-            buf_status.push_back(1); //!!!!
+            buf_status.push_back(i); //cycle nmb
+            buf_status.push_back(1); //признак конца
             sendStrData( "code"+std::to_string(TESTMOVER),buf_status,100,true);    
 ///////////////////////////////////////////////////////////////////////////////////
   int16_t count = 0;
