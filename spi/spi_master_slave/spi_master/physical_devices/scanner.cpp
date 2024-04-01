@@ -3097,8 +3097,8 @@ void Scanner::testpiezomover(std::vector<int32_t> &vector)
              sendStrData("code"+std::to_string(STOPPED)+"stopped");
              break;
             }
-           if (!flgVirtual)
-              {
+            if (!flgVirtual)
+            {
                retract();  //втянуть сканнер
                sleep_ms(SCANNERDECAY);
                linearDriver.activate(99, freq, scv, std::abs(step), step > 0);
@@ -3106,12 +3106,12 @@ void Scanner::testpiezomover(std::vector<int32_t> &vector)
                sleep_ms(INTDELAY);
                getValuesFromAdc(); 
                ZValue = (int16_t)spiBuf[ZPin];
-              }   
-              else
-              {
+            }   
+            else
+            {
                 sleep_ms(INTDELAY);
                 ZValue=ZValue-step*100;
-              }     
+            }     
               buf_status.push_back(ZValue);
               buf_status.push_back(step);
               buf_status.push_back(i); //cycle nmb
