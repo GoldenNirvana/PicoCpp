@@ -261,10 +261,18 @@ case SPECTROSOPY_AIZ:
               {
                  if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
                  ALGCODE=ALGNONE;
-                 if (flgСritical_section) critical_section_exit(&criticalSection);
-                 scanner.spectroscopyAIZ(vector);
+   if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
+                               scanner.spectroscopyAIZ(vector);
                  break;
               }  
+case  RetractAlCode:
+              {
+                if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
+                ALGCODE=ALGNONE; 
+                scanner.retract();  
+                if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
+                break;
+              }
 
 default:      {/*activateError();*/  break;}                                                                                                                                            
    }
