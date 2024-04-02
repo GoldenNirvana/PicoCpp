@@ -3084,8 +3084,16 @@ void Scanner::testpiezomover(std::vector<int32_t> &vector)
 //////////////////////////////////////////////////////////////////////////////////////
 //  возврат в начальное состояние
 ////////////////////////////////////////////////////////////////
-        getValuesFromAdc(); 
-        ZValue = (int16_t)spiBuf[ZPin];
+        if (!flgVirtual)
+        {
+          getValuesFromAdc(); 
+          ZValue = (int16_t)spiBuf[ZPin];
+        } 
+        else
+        {
+        //  sleep_ms(INTDELAY);
+        // ZValue=ZValue-step*100;
+        }     
         if (ZValue < Z0) 
         {
          step= - NSTEPS;
