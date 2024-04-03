@@ -39,7 +39,6 @@ void set_io_value(int port, int value)
 void setDefaultSettings()
 {
   /// BASIC SETTINGS
-
   uart_init(uart1, 115200);
  // uart_init(uart0, 256000);
   gpio_set_function(UART_TX_PIN, GPIO_FUNC_UART);
@@ -61,7 +60,9 @@ void setDefaultSettings()
   gpio_pull_down(resetPort.getPort());
   ledPort.enable();
   //io3_1.disable(); 
-  set_GainPID(7);  //установить минимальное усиление 240209
+  uint16_t ti=7<<8; //240403
+  set_GainPID(ti);  //установить минимальное усиление 240209
+  scanner.retract();// 240403
   io3_1.enable();  //втянуть   240209
  
   // init io_ports, mb  delete
