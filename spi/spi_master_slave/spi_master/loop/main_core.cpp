@@ -88,7 +88,7 @@ case SCANNING:
                              static_cast<uint16_t>(vector[7]), static_cast<uint16_t>(vector[8]),
                              static_cast<uint8_t>(vector[9]),  static_cast<uint8_t>(vector[10]),
                              static_cast<uint16_t>(vector[11]),static_cast<uint16_t>(vector[12]),
-                             static_cast<uint8_t>(vector[13]), static_cast<int16_t>(vector[14]),  //add 240122            
+                             static_cast<uint16_t>(vector[13]),static_cast<int16_t>(vector[14]),  //edited 240404            
                              static_cast<uint8_t>(vector[15]), static_cast<uint8_t>(vector[16]),
                              static_cast<uint16_t>(vector[17]),static_cast<uint16_t>(vector[18]),
                              static_cast<uint8_t>(vector[19]), static_cast<uint8_t>(vector[20]),
@@ -106,7 +106,7 @@ case SCANNING:
                                                  else                         {scanner.start_hopingscanlin(vector);}
                                                }
                  if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
-                 DrawDone=true;
+                  DrawDone=true;
                  if (flgСritical_section)critical_section_exit(&criticalSection); 
                 break; 
               }

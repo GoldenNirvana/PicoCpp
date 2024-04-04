@@ -399,15 +399,21 @@ struct Config
       }
     }
 // move  back  add 24/01/22 ////////////////////////////////////
+   /*
     stepsx    = (uint16_t) conf_.betweenPoints_x*conf_.nPoints_x / conf_.diskretinstep;
     stepsy    = (uint16_t) conf_.betweenPoints_y*conf_.nPoints_y / conf_.diskretinstep;
     reststepx = (uint16_t) conf_.betweenPoints_x*conf_.nPoints_x % conf_.diskretinstep;
     reststepy = (uint16_t) conf_.betweenPoints_y*conf_.nPoints_y % conf_.diskretinstep;
-
+   */
     switch (conf_.path)
     {
       case 0://X+
       {
+        stepsx    = (uint16_t) conf_.betweenPoints_x*conf_.nPoints_x / conf_.diskretinstep;
+        stepsy    = (uint16_t) conf_.betweenPoints_y / conf_.diskretinstep;
+        reststepx = (uint16_t) conf_.betweenPoints_x*conf_.nPoints_x % conf_.diskretinstep;
+        reststepy = (uint16_t) conf_.betweenPoints_y % conf_.diskretinstep;
+
         stepsslowline = stepsy;
         stepsfastline = stepsx;
         reststepfast = reststepx;
@@ -460,13 +466,13 @@ struct Config
 
     if (CONFIG_UPDATE)
     {
-    if (flgСritical_section)    critical_section_enter_blocking(&criticalSection);
+     if (flgСritical_section)    critical_section_enter_blocking(&criticalSection);
        CONFIG_UPDATE = false;
      if (flgСritical_section)   critical_section_exit(&criticalSection);
       conf_.delayF  = vupdateparams[1];
       conf_.delayB  = vupdateparams[2];
       if (flgDebug) sleep_ms(100); 
-      set_GainPID((uint8_t)vupdateparams[3]);//240320
+      set_GainPID((uint16_t)vupdateparams[3]);//240320
       conf_.diskretinstep = vupdateparams[4]; 
       if (flgDebug)
       {
@@ -504,7 +510,7 @@ struct Config
         break;
       }
       //    dark();
-    } 
+     } 
       sendStrData("code"+std::to_string(PARAMUPDATEDCmd)); //!!!!!!!!!!!!!!!!!240314
     }
     if (STOP)   // stop
@@ -516,6 +522,7 @@ struct Config
       sendStrData("code"+std::to_string(STOPPED)+"stopped");
       break;
     }
+    //next line
     if ((nslowline - 1 - i) > 0)  //если непоследняя линия
     {
       if (conf_.method != oneline) //не сканирование по одной линии
@@ -534,10 +541,10 @@ struct Config
         {
           if (!flgVirtual) 
           {
-            pos_slow -= reststepslow;
+            pos_slow += reststepslow; // - 240404 !!!
             set_DACXY(portslow, pos_slow);
           } 
-          else { pos_slow -= reststepslow; }
+          else { pos_slow += reststepslow; } //-240404
           sleep_us(conf_.delayF);
         }
       }
@@ -903,7 +910,7 @@ struct Config
   uint16_t betweenPoints_x;  // расстояние между точками по X в дискретах    7 
   uint16_t betweenPoints_y;  // расстояние между точками по Y в дискретах    8 
   uint8_t  size;             // size=1  -Z; size=2 - Z,Амплитуда             9
-  uint8_t  Ti;               // усиление ПИД                                10
+  uint16_t  Ti;               // усиление ПИД                               10
   uint16_t diskretinstep;    // размер шага в дискретах                     11
   uint16_t pause;            // время ожидания в точке измерения  мксек     12  
   uint8_t  flgLin;           // флаг линеализации                           13   
@@ -1145,10 +1152,10 @@ struct Config
         {
           if (!flgVirtual) 
           {
-            pos_slow -= reststepslow;
+            pos_slow += reststepslow; // - 240404!!!!!
             set_DACXY(portslow, pos_slow);
           }
-          else { pos_slow -= reststepslow; }
+          else { pos_slow += reststepslow; }  // -240404
           sleep_us(conf_.delayF);
         }
       }
@@ -1200,7 +1207,8 @@ struct Config
       count0++;
      } 
      if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
-     DrawDone = false;
+     
+      DrawDone = false;
      if (flgСritical_section) critical_section_exit(&criticalSection);     
 //*****************************************************************
     sendStrData("code"+std::to_string(SCANNING),vector_data,60,true); //send data 60
@@ -1948,7 +1956,25 @@ void Scanner::start_fastscan(std::vector<int32_t> &vector)
 
 void Scanner::stop_scan()
 {
+   if (flgDebug) 
+  {
+   debugdata.emplace_back(prev_point.x);
+   debugdata.emplace_back(prev_point.y);
+   debugdata.emplace_back(pos_.x);
+   debugdata.emplace_back(pos_.y);
+   sendStrData("code"+std::to_string(DEBUG)+" stopscan parameters",debugdata,100,true);
+   sleep_ms(400);
+   }
   move_to(prev_point, 10);
+  debugdata.clear();
+  if (flgDebug) 
+  {
+   debugdata.emplace_back(prev_point.x);
+   debugdata.emplace_back(prev_point.y);
+   debugdata.emplace_back(pos_.x);
+   debugdata.emplace_back(pos_.y);
+   sendStrData("code"+std::to_string(DEBUG)+" stopscan parameters",debugdata,100,true);
+   }
 }
 
 void Scanner::scan_update(const Config &config)

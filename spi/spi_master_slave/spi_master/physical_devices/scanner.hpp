@@ -17,7 +17,7 @@ struct Config
   uint16_t betweenPoints_x;  // расстояние между точками по X в дискретах                  7 
   uint16_t betweenPoints_y;  // расстояние между точками по Y в дискретах                  8 
   uint8_t  size;             // size=1  -Z; size=2 - Z,Амплитуда                           9
-  uint8_t  Ti;               // усиление ПИД                                              10
+  uint16_t Ti;               // усиление ПИД                                              10
   uint16_t diskretinstep;    // размер шага в дискретах                                   11
   uint16_t pause;            // время ожидания в точке измерения  мксек                   12  
   uint8_t  flgLin;           // флаг линеализации                                         13   
@@ -25,7 +25,7 @@ struct Config
   uint8_t  flgOneFrame;      // быстрое сканирование один кадр=1                          15
   uint8_t  flgHoping;        // сканирование прыжками                                     16
   uint16_t HopeDelay;        // задержка в точке измерения при прыжках                    17
-  uint16_t  HopeZ;            // прыжок по Z,если=0,то прыжок по максимуму                 18
+  uint16_t HopeZ;            // прыжок по Z,если=0,то прыжок по максимуму                 18
   uint8_t  flgAutoUpdateSP;   // автообновление опоры на каждой линии                     19
   uint8_t  flgAutoUpdateSPDelta;// обновление опоры , если изменение тока превысило порог 20
   uint16_t ThresholdAutoUpdate;//изменения опоры, если изменение тока превысило порог     21
