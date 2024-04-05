@@ -39,7 +39,7 @@ struct ConfigCurrent
 {
   uint16_t delayF;  // Задержка вперёд
   uint16_t delayB;  // Задержка назад
-  uint8_t  Ti;      // Усиление ПИД
+  uint16_t Ti;      // Усиление ПИД
 };
 
 class Scanner

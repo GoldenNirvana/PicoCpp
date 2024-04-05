@@ -224,7 +224,7 @@ struct Config
   uint16_t betweenPoints_x;  // расстояние между точками по X в дискретах    7 
   uint16_t betweenPoints_y;  // расстояние между точками по Y в дискретах    8 
   uint8_t  size;             // size=1  -Z; size=2 - Z,Амплитуда             9
-  uint8_t  Ti;               // усиление ПИД                                10
+  uint16_t  Ti;              // усиление ПИД                                10
   uint16_t diskretinstep;    // размер шага в дискретах                     11
   uint16_t pause;            // время ожидания в точке измерения  мксек     12  
   uint8_t  flgLin;           // флаг линеализации                           13   
@@ -782,7 +782,7 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
      count0++;
     } 
     if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
-    DrawDone = false;
+     DrawDone = false;
     if (flgСritical_section) critical_section_exit(&criticalSection);
      sendStrData("code"+std::to_string(SCANNING),vector_data,40,true); //100
     if (CONFIG_UPDATE)
@@ -793,7 +793,7 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
       conf_.delayF        = vector[1];
       conf_.delayB        = vector[2];
       if (flgDebug) sleep_ms(100);     
-      set_GainPID((uint8_t)vector[3]);
+      set_GainPID((uint16_t)vector[3]);
       if (flgDebug) sleep_ms(100);              
       conf_.diskretinstep = vector[4]; 
       if (flgDebug)
@@ -854,10 +854,10 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
         {
           if (!flgVirtual) 
           {
-            pos_slow -= reststepslow;
+            pos_slow += reststepslow;
             set_DACXY(portslow, pos_slow);
           }
-          else { pos_slow -= reststepslow; }
+          else { pos_slow += reststepslow; }
           sleep_us(conf_.delayF);
         }
       }
@@ -1640,7 +1640,7 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
       conf_.delayF               = vector[1];
       conf_.delayB               = vector[2];
       conf_.diskretinstep        = vector[3];
-      set_GainPID((uint8_t)vector[4]);
+      set_GainPID((uint16_t)vector[4]);
       conf_.HopeDelay            = vector[5];
       conf_.HopeZ                = vector[6];
       conf_.flgAutoUpdateSP      = vector[7];; // автообновление опоры на каждой линии                     19
@@ -1698,10 +1698,10 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
         {
           if (!flgVirtual) 
           {
-            pos_slow -= reststepslow;
+            pos_slow += reststepslow;
             set_DACXY(portslow, pos_slow);
           }
-          else { pos_slow -= reststepslow; }
+          else { pos_slow += reststepslow; }
           sleep_us(conf_.delayF);
         }
       }
@@ -3119,11 +3119,13 @@ void Scanner::testpiezomover(std::vector<int32_t> &vector)
         {
         //  sleep_ms(INTDELAY);
         // ZValue=ZValue-step*100;
-        }     
-        if (ZValue < Z0) 
-        {
-         step= - NSTEPS;
-         while (ZValue < Z0)                                    // идти вверх до Z0 (начальной позиции)
+        }  
+        if (flgstop!=1) 
+        {     
+         if (ZValue < Z0) 
+         {
+          step= - NSTEPS;
+          while (ZValue < Z0)                                    // идти вверх до Z0 (начальной позиции)
   		    {
             if (STOP)
             {
@@ -3152,9 +3154,9 @@ void Scanner::testpiezomover(std::vector<int32_t> &vector)
               buf_status.push_back(0);
               sendStrData( "code"+std::to_string(TESTMOVER),buf_status,100,true); 
             };
-       }
-       else
-       {
+          }
+          else
+          {
             step=   NSTEPS;
             while (ZValue > Z0) // идти вверх до Z0 (начальной позиции)
     		    {
@@ -3185,7 +3187,8 @@ void Scanner::testpiezomover(std::vector<int32_t> &vector)
               buf_status.push_back(0);
               sendStrData( "code"+std::to_string(TESTMOVER),buf_status,100,true); 
             };
-        }     
+          }     
+       }
 //  Признак конца
             sleep_ms(300);
             buf_status.push_back(ZValue);
