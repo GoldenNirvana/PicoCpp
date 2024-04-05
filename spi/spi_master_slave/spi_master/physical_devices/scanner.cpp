@@ -2671,9 +2671,10 @@ void Scanner::spectroscopyIV(std::vector<int32_t> &vector)
        sleep_ms(delay);
        if (!flgVirtual)
        {
-        auto ptr = getValuesFromAdc();
+        getValuesFromAdc();
+        SignalValue = (int16_t)spiBuf[IPin];
         vectorI_V.emplace_back(UStart+i*UStep);
-        vectorI_V.emplace_back((int16_t)ptr[IPin]);
+        vectorI_V.emplace_back(SignalValue);
        }
        else
        {
@@ -3230,8 +3231,7 @@ void Scanner::testpiezomover(std::vector<int32_t> &vector)
 
 void Scanner::start_frqscan()
 {
-
-  int16_t signalvalue;
+  int16_t SignalValue;
   int16_t res_freq = 10000;
   int16_t a = 10000;
   int16_t scan_index = 0;
@@ -3243,8 +3243,8 @@ void Scanner::start_frqscan()
   int16_t npoint;
   // n, start_freq, step, delay
     npoint=vector[1];
- freqstart=(uint32_t)vector[2];
-  freqstep=(uint32_t)vector[3];
+ freqstart=(uint16_t)vector[2];
+  freqstep=(uint16_t)vector[3];
      delay=vector[4];
   if (flgDebug)
   {  
@@ -3261,17 +3261,19 @@ void Scanner::start_frqscan()
     if (!flgVirtual)
     {
       set_Freq(freq);
-      sleep_ms(delay); 
-      data.emplace_back((int32_t)freq);
-      data.emplace_back((int32_t)getValuesFromAdc()[AmplPin]); //edited 240226
+      sleep_ms(delay);
+      getValuesFromAdc();
+      SignalValue = (int16_t)spiBuf[AmplPin];
+      data.emplace_back(freq);
+      data.emplace_back(SignalValue); //edited 240405
     }
     else
     {
       current_freq =freq;
       sleep_ms(delay);
-      signalvalue = (int16_t) std::round(a * (pow(M_E, -pow((current_freq - res_freq), 2) / 1000000))); //231126
-      data.emplace_back((int32_t)current_freq);
-      data.emplace_back((int32_t)signalvalue);
+      SignalValue = (int16_t) std::round(a*(pow(M_E,-pow((current_freq - res_freq),2)/1000000))); //231126
+      data.emplace_back(current_freq);
+      data.emplace_back(SignalValue);
     }
     sleep_ms(10);
     freq += freqstep;
@@ -3284,7 +3286,7 @@ void Scanner::start_frqscan()
     count++;
   } 
   if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
-  TheadDone = false;
+   TheadDone = false;
   if (flgСritical_section) critical_section_exit(&criticalSection);
   sendStrData("code"+std::to_string(END)+"end");
 }

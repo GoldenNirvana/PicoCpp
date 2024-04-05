@@ -83,7 +83,7 @@ void setDefaultSettings()
   
 }
 
-void set_Freq(uint32_t freq)
+void set_Freq(uint16_t freq)
 {
   int64_t flag_freq = 1 << 14;
   int64_t scale = 1 << 28;
