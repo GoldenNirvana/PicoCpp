@@ -82,6 +82,7 @@ void setDefaultSettings()
   init_DACZ(4);  //инициирование ЦАП3  DACZ
   
 }
+
 void set_Freq(uint32_t freq)
 {
   int64_t flag_freq = 1 << 14;
@@ -106,17 +107,8 @@ void set_Freq(uint32_t freq)
   spi_write_blocking(spi_default, buf, 2);
   spi_write_blocking(spi_default, buf + 2, 2);
   spi_write_blocking(spi_default, buf + 4, 2);
- /* if  (flgDebug)
-  {
-   afc.clear();
-   afc ="code"+std::to_string(DEBUG)+ "set Freq"+ std::to_string(freq);
-   afc += +"\n";
-   std::cout << afc;
-   afc.clear();
-   sleep_ms(100);
-  }
-  */
 }
+
 
 void get_result_from_adc()
 {
