@@ -54,10 +54,8 @@
 #define TESTMOVER                76
 #define LID_MOVE_UNTIL_STOP      80
 #define LID_MOVE_TOZ0            84 // отвестись в безопасную начальную точку по Z
-
-//#define ADC_GET_VALUE  ;
-//#define SCANNER_RETRACT
-//#define SCANNER_PROTRACT
+#define portx                    0
+#define porty                    1
 
 extern int16_t  ALGCODE;
 extern uint32_t DEBUG_LEVEL;

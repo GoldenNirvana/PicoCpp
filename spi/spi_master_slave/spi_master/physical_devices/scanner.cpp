@@ -263,8 +263,8 @@ struct Config
   uint16_t reststepy;
   uint16_t nfastline, nslowline;
   uint16_t stepsslowline, stepsfastline;
-  uint8_t  portx =0;// 1;
-  uint8_t  porty =1;// 2;
+ // uint8_t  portx =0;// 1;
+ // uint8_t  porty =1;// 2;
   uint8_t  portfast;
   uint8_t  portslow;
   uint16_t pos_fast;
@@ -596,8 +596,8 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
   uint16_t reststepy;
   uint16_t nfastline, nslowline;
   uint16_t stepsslowline, stepsfastline;
-  uint8_t  portx = 0;//1;
-  uint8_t  porty = 1;//2;
+  //uint8_t  portx = 0;//1;
+ // uint8_t  porty = 1;//2;
   uint8_t  portfast;
   uint8_t  portslow;
   uint16_t pos_fast;
@@ -927,8 +927,8 @@ struct Config
   uint16_t reststepy;
   uint16_t nfastline, nslowline;
   uint16_t stepsslowline, stepsfastline;
-  uint8_t  portx =0;// 1;
-  uint8_t  porty =1;// 2;
+ // uint8_t  portx =0;// 1;
+ // uint8_t  porty =1;// 2;
   uint8_t  portfast;
   uint8_t  portslow;
   uint16_t pos_fast;
@@ -1341,8 +1341,8 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
   uint16_t reststepy;
   uint16_t nfastline, nslowline;
   uint16_t stepsslowline, stepsfastline;
-  uint8_t  portx = 0;// 1;
-  uint8_t  porty = 1;// 2;
+ // uint8_t  portx = 0;// 1;
+ // uint8_t  porty = 1;// 2;
   uint8_t  portfast;
   uint8_t  portslow;
   uint16_t pos_fast;
@@ -1799,8 +1799,8 @@ void Scanner::start_fastscan(std::vector<int32_t> &vector)
   uint16_t reststepy;
   uint16_t nfastline, nslowline;
   uint16_t stepslowline, stepfastline;
-  uint8_t  portx = 0;//1;
-  uint8_t  porty = 1;//2;
+ // uint8_t  portx = 0;//1;
+ // uint8_t  porty = 1;//2;
   uint8_t  portfast;
   uint8_t  portslow;
   uint16_t pos_fast;
@@ -2055,8 +2055,8 @@ void Scanner::move_toX0Y0(uint16_t x, uint16_t y, uint16_t delay, int8_t flg)
 
 void Scanner::move_to(const Point &point, uint16_t delay)
 {
-  uint8_t  portx = 0;//1;
-  uint8_t  porty = 1;//2;
+ // uint8_t  portx = 0;//1;
+//  uint8_t  porty = 1;//2;
   if (!flgVirtual)
   {
     while (pos_.x < point.x)
