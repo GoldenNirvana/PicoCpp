@@ -262,8 +262,10 @@ void set_GainApmlMod(uint8_t gain)
     Spi::setProperties(8, 0, 0);
     intBuf[0] = 0;
     spi_write_blocking(spi_default, intBuf, 1); 
+    sleep_ms(2);//240405 
     intBuf[0] = (uint8_t)gain;
-    spi_write_blocking(spi_default, intBuf, 1); 
+    spi_write_blocking(spi_default, intBuf, 1);
+    sleep_ms(2);//240405 
     decoder.activePort(7);
   } 
      // отладка
@@ -320,18 +322,21 @@ void set_DACZero()
  set_DACXY(0,0); 
  set_DACXY(1,0); 
  set_DACZ(0); 
+ sleep_ms(10); //240405
 }
 void set_DACXY(uint8_t channel, uint16_t value) 
 {
   dac8563_2.setSpiProps();
   if (channel == 0)  dac8563_2.writeA(value);
   if (channel == 1)  dac8563_2.writeB(value);
+  sleep_ms(2);// 240405
 }
 
 void set_DACZ(int16_t value) 
 {
   dac8563_3.setSpiProps(); 
   dac8563_3.writeA(int32_t(value)+ShiftDac);
+  sleep_ms(2);// 240405
 }
 
 void stopAll()

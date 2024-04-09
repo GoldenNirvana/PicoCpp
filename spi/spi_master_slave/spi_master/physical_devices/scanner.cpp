@@ -438,7 +438,7 @@ struct Config
       }
       else  { pos_fast -= reststepfast; }
 
-      sleep_us(conf_.delayF);
+      sleep_us(conf_.delayB);
     }
     int16_t count0 = 0;
     while ((!DrawDone) || (count0<20) )//ожидание ответа ПК для синхронизации
@@ -753,7 +753,7 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
         set_DACXY(portfast, pos_fast);
       }
       else { pos_fast -= reststepfast; }
-      sleep_us(conf_.delayF);
+      sleep_us(conf_.delayB);
     }
     int16_t count0 = 0;
     while ((!DrawDone) || (count0<20) )//ожидание ответа ПК для синхронизации
@@ -1087,7 +1087,7 @@ struct Config
       if (!flgVirtual)
       {
         retract(); //втянуться на макс
-        ZMove(DACZ0,DACZ0,-10, 0); // обнуление DACZ
+        ZMove(DACZ0,DACZ0,-10, 0); // обнуление DACZ   //240405
         DACZ0=0;
       } 
       sleep_us(50);
@@ -1110,7 +1110,7 @@ struct Config
          set_DACXY(portfast, pos_fast);
         }
         else { pos_fast -= reststepfast; }
-        sleep_us(conf_.delayF);
+        sleep_us(conf_.delayB);
       }// move backward 
       //next line
      if ((nslowline - 1 - i) > 0)  //если не последняя линия
@@ -1509,7 +1509,7 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
       if (!flgVirtual)
       {
         retract(); //втянуться на макс
-        ZMove(DACZ0,DACZ0,-10, 0); // обнуление DACZ
+        ZMove(DACZ0,DACZ0,-10, 0); // обнуление DACZ  //09 240405
         DACZ0=0;
       } 
       sleep_us(50);
@@ -1551,7 +1551,7 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
         set_DACXY(portfast, pos_fast);
       } 
       else { pos_fast -= reststepfast; }
-      sleep_us(conf_.delayF);
+      sleep_us(conf_.delayB);
      }
     //
       sleep_ms(200);  //400
@@ -1902,7 +1902,7 @@ void Scanner::start_fastscan(std::vector<int32_t> &vector)
         }
         else { pos_fast -= reststepfast; }
 
-        sleep_us(conf_.delayF);
+        sleep_us(conf_.delayB);
       }
       if ((nslowline - 1 - i) > 0)  //если непослелняя лниия
       {
@@ -2404,7 +2404,8 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
       } 
     //   Zt=Zt+stepsize;         
       if (!flgVirtual) set_DACZ(Zt);    
-      for(int16_t k=0; k < delay; k++) { }// задержка в каждом дискрете
+      sleep_ms(10);  //240405     
+      for(int16_t k=0; k < delay; k++) { }// задержка в каждом дискрете  ?????
 	  }
     if (nreststeps!=0)
     {
@@ -2418,7 +2419,8 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
         if (Zt<=(minint16_t+nreststeps)) { Zt=minint16_t;}
         else Zt=Zt-nreststeps;
       } 
-      if (!flgVirtual) set_DACZ(Zt);        
+      if (!flgVirtual) set_DACZ(Zt);   
+      sleep_us(300);     //240405
     }   
     return(Zt);
 	}
