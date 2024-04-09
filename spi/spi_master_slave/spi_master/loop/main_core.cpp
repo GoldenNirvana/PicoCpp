@@ -80,7 +80,7 @@ case SCANNING:
                 if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
                  ALGCODE=ALGNONE;
                  DrawDone=true;
-                 scanner.scan_update
+                /* scanner.scan_update
                           ({
                              static_cast<uint16_t>(vector[1]), static_cast<uint16_t>(vector[2]),
                              static_cast<uint8_t>(vector[3]),  static_cast<uint8_t>(vector[4]),
@@ -96,6 +96,25 @@ case SCANNING:
                              static_cast<int16_t>(vector[23])
                             }
                            );  
+                      */     
+                     scanner.scan_update
+                          ({
+                             static_cast<uint16_t>(vector[1]), static_cast<uint16_t>(vector[2]),
+                             static_cast<uint8_t>(vector[3]),  static_cast<uint8_t>(vector[4]),
+                             static_cast<uint16_t>(vector[5]), static_cast<uint16_t>(vector[6]),
+                             static_cast<uint16_t>(vector[7]), static_cast<uint16_t>(vector[8]),
+                             static_cast<uint8_t>(vector[9]),  static_cast<uint16_t>(vector[10]),
+                             static_cast<uint16_t>(vector[11]),static_cast<uint16_t>(vector[12]),
+                             static_cast<uint8_t>(vector[13]), static_cast<int16_t>(vector[14]),  
+                             static_cast<uint8_t>(vector[15]), static_cast<uint8_t>(vector[16]),
+                             static_cast<uint16_t>(vector[17]),static_cast<uint16_t>(vector[18]),
+                             static_cast<uint8_t>(vector[19]), static_cast<uint8_t>(vector[20]),
+                             static_cast<uint16_t>(vector[21]),static_cast<uint16_t>(vector[22]),
+                             static_cast<int16_t>(vector[23])
+                            }
+                           );  
+
+
                 if (flgСritical_section) critical_section_exit(&criticalSection);
                 if (!scanner.getHoppingFlg()){
                                               if (!scanner.getLinearFlg()) {scanner.start_scan(vector);   }
