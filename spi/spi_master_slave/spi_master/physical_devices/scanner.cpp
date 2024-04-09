@@ -2048,33 +2048,35 @@ void Scanner::move_toX0Y0(uint16_t x, uint16_t y, uint16_t delay, int8_t flg)
     count++;
   } 
   if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
-  TheadDone = false;
+   TheadDone = false;
   if (flgСritical_section) critical_section_exit(&criticalSection);
   sendStrData("code"+std::to_string(END)+"end");
 }
 
 void Scanner::move_to(const Point &point, uint16_t delay)
 {
+  uint8_t  portx = 0;//1;
+  uint8_t  porty = 1;//2;
   if (!flgVirtual)
   {
     while (pos_.x < point.x)
     {
-      set_DACXY(1, ++pos_.x);
+      set_DACXY(portx, ++pos_.x);// 1
       sleep_us(delay);
     }
     while (pos_.x > point.x)
     {
-      set_DACXY(1, --pos_.x);
+      set_DACXY(portx, --pos_.x);
       sleep_us(delay);
     }
-    while (pos_.y < point.y)
+    while (pos_.y < point.y)//2
     {
-      set_DACXY(2, ++pos_.y);
+      set_DACXY(porty, ++pos_.y);
       sleep_us(delay);
     }
     while (pos_.y > point.y)
     {
-      set_DACXY(2, --pos_.y);
+      set_DACXY(porty, --pos_.y); //2
       sleep_us(delay);
     }
   }
@@ -2404,7 +2406,7 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
       } 
     //   Zt=Zt+stepsize;         
       if (!flgVirtual) set_DACZ(Zt);    
-      sleep_ms(10);  //240405     
+      sleep_us(10);  //240405     
       for(int16_t k=0; k < delay; k++) { }// задержка в каждом дискрете  ?????
 	  }
     if (nreststeps!=0)
@@ -2616,7 +2618,7 @@ void Scanner::spectroscopyIV(std::vector<int32_t> &vector)
 //start
  if (flgDebug)
  {  
-  for (int j = 0; j <= 8; ++j)
+  for (int j = 0; j <= 7; ++j)
   {
     debugdata.emplace_back(vector[j]);
   }
@@ -2719,7 +2721,8 @@ void Scanner::spectroscopyIV(std::vector<int32_t> &vector)
   {
     protract();
     sleep_ms(400);
-    ZMove(-Z0,Z0,10,delay);
+   // ZMove(-Z0,Z0,10,delay);
+    ZMove(Z0,abs(Z0),10,delay);
   }
 /////////////////////////////////////////////  
    int16_t count = 0;

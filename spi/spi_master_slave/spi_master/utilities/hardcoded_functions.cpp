@@ -199,6 +199,7 @@ void set_Bias(int8_t channel,int32_t Bias)
   { 
      dac8563_1.writeB(Bias+ShiftDac);
   }	
+  /*
  if  (flgDebug)
  {
   afc.clear();
@@ -208,6 +209,7 @@ void set_Bias(int8_t channel,int32_t Bias)
   afc.clear();
   sleep_ms(100);
  }
+ */
 }   
 /*
 
@@ -322,21 +324,21 @@ void set_DACZero()
  set_DACXY(0,0); 
  set_DACXY(1,0); 
  set_DACZ(0); 
- sleep_ms(10); //240405
+ sleep_us(10); //240405
 }
 void set_DACXY(uint8_t channel, uint16_t value) 
 {
   dac8563_2.setSpiProps();
   if (channel == 0)  dac8563_2.writeA(value);
   if (channel == 1)  dac8563_2.writeB(value);
-  sleep_ms(2);// 240405
+  sleep_us(2);// 240405
 }
 
 void set_DACZ(int16_t value) 
 {
   dac8563_3.setSpiProps(); 
   dac8563_3.writeA(int32_t(value)+ShiftDac);
-  sleep_ms(2);// 240405
+  sleep_us(2);// 240405
 }
 
 void stopAll()
