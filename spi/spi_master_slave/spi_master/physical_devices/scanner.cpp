@@ -1262,7 +1262,7 @@ struct Config
       if (!flgVirtual)
       {
         protract();    //вытянуться
-        sleep_ms(250);
+        sleep_ms(700); //240411 250
       }
       if (!flgVirtual) //get current Z contact
       {
@@ -2722,7 +2722,7 @@ void Scanner::spectroscopyIV(std::vector<int32_t> &vector)
     protract();
     sleep_ms(400);
    // ZMove(-Z0,Z0,10,delay);
-    ZMove(Z0,abs(Z0),10,delay);
+    ZMove(-Z0,abs(Z0),10,delay);
   }
 /////////////////////////////////////////////  
    int16_t count = 0;
