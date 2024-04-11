@@ -1075,10 +1075,10 @@ struct Config
       {
         double_t w;
         w= 10*M_PI/(nfastline);   
-        vector_data.emplace_back(int16_t(10000.0 * (sin(w*j) + sin(w* i ))));  // get Z from adc
-        if (conf_.size == 2)                               // added signal
+        vector_data.emplace_back(int16_t(10000.0*(sin(w*j) + sin(w* i ))));  // get Z from adc
+        if (conf_.size == 2)                                                   // added signal
         {
-          vector_data.emplace_back(int16_t(10000.0 * (sin(M_PI * j * 0.1) + sin(M_PI * i * 0.1))));
+          vector_data.emplace_back(int16_t(10000.0*(sin(M_PI * j * 0.1) + sin(M_PI * i * 0.1))));
         }
       }
     } //fast line
@@ -1142,7 +1142,7 @@ struct Config
  //  
       sleep_ms(200);  //400
       sleep_us(conf_.pause);  
-
+     
      if (!flgVirtual)  //read  Saturation Current
       {
         getValuesFromAdc();
@@ -3236,16 +3236,16 @@ void Scanner::testpiezomover(std::vector<int32_t> &vector)
 
 void Scanner::start_frqscan()
 {
-  int16_t SignalValue;
+  int16_t  SignalValue;
   uint32_t res_freq = 10000;
-  int16_t a = 10000;
-  int16_t scan_index = 0;
+  int16_t  a = 10000;
+  int16_t  scan_index = 0;
   uint32_t current_freq = 0;
   uint32_t freq;
   uint32_t freqstep;
-  int16_t delay;
+  int16_t  delay;
   uint32_t freqstart;
-  int16_t npoint;
+  int16_t  npoint;
   // n, start_freq, step, delay
     npoint=vector[1];
  freqstart=(uint32_t)vector[2];
@@ -3270,7 +3270,7 @@ void Scanner::start_frqscan()
       getValuesFromAdc();
       SignalValue = (int16_t)spiBuf[AmplPin];
       data.emplace_back(freq);
-      data.emplace_back(SignalValue); //edited 240405
+      data.emplace_back(SignalValue); 
     }
     else
     {

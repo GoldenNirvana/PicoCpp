@@ -48,8 +48,7 @@ void setDefaultSettings()
 
 //#warning should be undeleted
 //  RX_core rxCore;
-
-  // fixme mb should add & before isr
+// fixme mb should add & before isr
   gpio_set_irq_enabled_with_callback(busy.getPort(), GPIO_IRQ_EDGE_FALL, true, RX_core::comReceiveISR);
 
   multicore_launch_core1(RX_core::launchOnCore1);
@@ -82,6 +81,32 @@ void setDefaultSettings()
   init_DACZ(4);  //инициирование ЦАП3  DACZ
   
 }
+
+/*
+void set_freq(uint32_t freq)
+{
+  int64_t flag_freq = 1 << 14;
+  int64_t scale = 1 << 28;
+  int64_t n_reg = int64_t(freq * scale / 25.0e6);
+  int64_t n_low = n_reg & 0x3fff;
+  int64_t n_hi = (n_reg >> 14) & 0x3fff;
+  uint8_t buf[6];
+  buf[0] = (flag_freq | n_low) / (0x100);
+  buf[1] = (flag_freq | n_low) % (0x100);
+  buf[2] = (flag_freq | n_hi) / (0x100);
+  buf[3] = (flag_freq | n_hi) % (0x100);
+  buf[4] = (0x2000) / (0x100);
+  buf[5] = (0x2000) % (0x100);
+
+  logger(buf, 6);
+
+  decoder.activePort(1);
+  Spi::setProperties(8, 1, 1);
+  spi_write_blocking(spi_default, buf, 2);
+  spi_write_blocking(spi_default, buf + 2, 2);
+  spi_write_blocking(spi_default, buf + 4, 2);
+}
+*/
 
 void set_Freq(uint32_t freq)
 {
@@ -264,10 +289,10 @@ void set_GainApmlMod(uint8_t gain)
     Spi::setProperties(8, 0, 0);
     intBuf[0] = 0;
     spi_write_blocking(spi_default, intBuf, 1); 
-    sleep_ms(2);//240405 
+  //  sleep_us(2);//240405 
     intBuf[0] = (uint8_t)gain;
     spi_write_blocking(spi_default, intBuf, 1);
-    sleep_ms(2);//240405 
+ //   sleep_us(2);//240405 
     decoder.activePort(7);
   } 
      // отладка
