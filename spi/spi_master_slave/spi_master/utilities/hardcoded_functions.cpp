@@ -125,13 +125,18 @@ void set_Freq(uint32_t freq)
   buf[4] = (0x2000) / (0x100);
   buf[5] = (0x2000) % (0x100);
 
-  logger(buf, 6);
+  //logger(buf, 6);
 
   decoder.activePort(1);
+  sleep_us(1); // 240411 add
   Spi::setProperties(8, 1, 1);
   spi_write_blocking(spi_default, buf, 2);
+    sleep_us(1); // 240411 add
   spi_write_blocking(spi_default, buf + 2, 2);
+    sleep_us(1); // 240411 add
   spi_write_blocking(spi_default, buf + 4, 2);
+  sleep_us(1);
+  decoder.activePort(7); //240411  add
 }
 
 
