@@ -263,8 +263,6 @@ struct Config
   uint16_t reststepy;
   uint16_t nfastline, nslowline;
   uint16_t stepsslowline, stepsfastline;
- // uint8_t  portx =0;// 1;
- // uint8_t  porty =1;// 2;
   uint8_t  portfast;
   uint8_t  portslow;
   uint16_t pos_fast;
@@ -296,6 +294,7 @@ struct Config
       break;
     }
   }
+//main cycle
   for (uint32_t i = 0; i < nslowline; ++i)
   {
     stepsx = (uint16_t) conf_.betweenPoints_x / conf_.diskretinstep;
@@ -308,16 +307,16 @@ struct Config
       {
         stepsslowline = stepsy;
         stepsfastline = stepsx;
-        reststepfast = reststepx;
-        reststepslow = reststepy;
+        reststepfast  = reststepx;
+        reststepslow  = reststepy;
         break;
       }
       case 1: //Y+
       {
         stepsslowline = stepsx;
         stepsfastline = stepsy;
-        reststepfast = reststepy;
-        reststepslow = reststepx;
+        reststepfast  = reststepy;
+        reststepslow  = reststepx;
         break;
       }
     }
@@ -400,7 +399,6 @@ struct Config
         stepsy    = (uint16_t) conf_.betweenPoints_y / conf_.diskretinstep;
         reststepx = (uint16_t) conf_.betweenPoints_x*conf_.nPoints_x % conf_.diskretinstep;
         reststepy = (uint16_t) conf_.betweenPoints_y % conf_.diskretinstep;
-
         stepsslowline = stepsy;
         stepsfastline = stepsx;
         reststepfast = reststepx;
@@ -409,6 +407,10 @@ struct Config
       }
       case 1: //Y+
       {
+        stepsx    = (uint16_t) conf_.betweenPoints_x / conf_.diskretinstep;
+        stepsy    = (uint16_t) conf_.betweenPoints_y*conf_.nPoints_y / conf_.diskretinstep;
+        reststepx = (uint16_t) conf_.betweenPoints_x % conf_.diskretinstep;
+        reststepy = (uint16_t) conf_.betweenPoints_y *conf_.nPoints_y% conf_.diskretinstep;
         stepsslowline = stepsx;
         stepsfastline = stepsy;
         reststepfast = reststepy;
@@ -1048,9 +1050,9 @@ struct Config
   //*******************************************************************************
       if (!flgVirtual)
       {
-        getValuesFromAdc();
-        vector_data.emplace_back(ZMaxValue-(int16_t) spiBuf[ZPin]);     // считать  Z invertCur=
+        getValuesFromAdc(); 
         ZCur=(int16_t) spiBuf[ZPin];
+        vector_data.emplace_back(ZMaxValue-ZCur);     // считать  Z invertCur=
         switch (conf_.method)
           //added signal  Const  BackPass=2;    //PM  Const  Phase=3;  Const  UAM=4;   //Force Image
         {
@@ -1295,15 +1297,7 @@ struct Config
   sleep_ms(200);
   if (!flgVirtual)
   {
-   // protract();
-  //  set_DACZ(0,0);  //????
    protract(30,DACZ0,DACZ0); //вытянуть
-   {
- // unfreezeLOOP(delay); 
- //  protract();
-  //set_DACZ(0,0); 
- //  ZMove(DacZ0,HeightJump,-10, delay);
-   }
   }
   sleep_ms(1000);
   int16_t count = 0;
@@ -1474,7 +1468,8 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
       if (!flgVirtual)
       {
          getValuesFromAdc();
-        vector_data.emplace_back(ZMaxValue-(int16_t) spiBuf[ZPin]);     // считать  Z 
+         ZCur=(int16_t) spiBuf[ZPin];
+         vector_data.emplace_back(ZMaxValue-ZCur);     // считать  Z 
         switch (conf_.method)
           //added signal  Const  BackPass=2;    //PM  Const  Phase=3;  Const  UAM=4;   //Force Image
         {
@@ -1723,6 +1718,20 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
         }
       }
     } 
+      if (!flgVirtual)
+      {
+        protract();    //вытянуться
+        sleep_ms(700); //240411 250
+      }
+      if (!flgVirtual) //get current Z contact
+      {
+        getValuesFromAdc();
+        ZCur=(int16_t) spiBuf[ZPin];
+      }
+      else
+      {
+        ZCur=(int16_t)round(conf_.SetPoint);
+      } 
    } // slow line
 
    
@@ -1742,14 +1751,15 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
       break;
     }
   }
-  stop_scan();  //возврат в начальную точку скана
+  stop_scan();  //возврат в начальную точку скана - сканер втянут
   sleep_ms(200);
   if (!flgVirtual)
   {
-    protract();
+   protract(30,DACZ0,DACZ0); //вытянуть
   }
   sleep_ms(1000);
-   int16_t count = 0;
+
+  int16_t count = 0;
   while ((!TheadDone) || (count<20) )//ожидание ответа ПК для синхронизации
   {
     sleep_ms(100);
@@ -2721,7 +2731,6 @@ void Scanner::spectroscopyIV(std::vector<int32_t> &vector)
   {
     protract();
     sleep_ms(400);
-   // ZMove(-Z0,Z0,10,delay);
     ZMove(-Z0,abs(Z0),10,delay);
   }
 /////////////////////////////////////////////  
