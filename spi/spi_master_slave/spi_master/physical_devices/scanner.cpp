@@ -395,26 +395,26 @@ struct Config
     {
       case 0://X+
       {
-        stepsx    = (uint16_t) conf_.betweenPoints_x*conf_.nPoints_x / conf_.diskretinstep;
+        stepsx    = (uint16_t) conf_.betweenPoints_x*conf_.nPoints_x / conf_.diskretinstep; //n-1
         stepsy    = (uint16_t) conf_.betweenPoints_y / conf_.diskretinstep;
         reststepx = (uint16_t) conf_.betweenPoints_x*conf_.nPoints_x % conf_.diskretinstep;
         reststepy = (uint16_t) conf_.betweenPoints_y % conf_.diskretinstep;
         stepsslowline = stepsy;
         stepsfastline = stepsx;
-        reststepfast = reststepx;
-        reststepslow = reststepy;
+        reststepfast  = reststepx;
+        reststepslow  = reststepy;
         break;
       }
       case 1: //Y+
       {
         stepsx    = (uint16_t) conf_.betweenPoints_x / conf_.diskretinstep;
-        stepsy    = (uint16_t) conf_.betweenPoints_y*conf_.nPoints_y / conf_.diskretinstep;
+        stepsy    = (uint16_t) conf_.betweenPoints_y*conf_.nPoints_y / conf_.diskretinstep; //n-1
         reststepx = (uint16_t) conf_.betweenPoints_x % conf_.diskretinstep;
         reststepy = (uint16_t) conf_.betweenPoints_y *conf_.nPoints_y% conf_.diskretinstep;
         stepsslowline = stepsx;
         stepsfastline = stepsy;
-        reststepfast = reststepy;
-        reststepslow = reststepx;
+        reststepfast  = reststepy;
+        reststepslow  = reststepx;
         break;
       }
     }
@@ -486,16 +486,16 @@ struct Config
       {
         stepsslowline = stepsy;
         stepsfastline = stepsx;
-        reststepfast = reststepx;
-        reststepslow = reststepy;
+        reststepfast  = reststepx;
+        reststepslow  = reststepy;
         break;
       }
       case 1: //Y+
       {
         stepsslowline = stepsx;
         stepsfastline = stepsy;
-        reststepfast = reststepy;
-        reststepslow = reststepx;
+        reststepfast  = reststepy;
+        reststepslow  = reststepx;
         break;
       }
       //    dark();
@@ -505,7 +505,7 @@ struct Config
     if (STOP)   // stop
     {
       if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
-      STOP = false;
+       STOP = false;
       if (flgСritical_section) critical_section_exit(&criticalSection);
       sleep_ms(200);
       sendStrData("code"+std::to_string(STOPPED)+"stopped");
@@ -929,8 +929,6 @@ struct Config
   uint16_t reststepy;
   uint16_t nfastline, nslowline;
   uint16_t stepsslowline, stepsfastline;
- // uint8_t  portx =0;// 1;
- // uint8_t  porty =1;// 2;
   uint8_t  portfast;
   uint8_t  portslow;
   uint16_t pos_fast;
