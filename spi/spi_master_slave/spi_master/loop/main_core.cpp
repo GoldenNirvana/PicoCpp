@@ -235,7 +235,7 @@ case SET_SETPOINT:
                }
                break;
               }   
-case ADC_READCmd:
+case ADC_READCmd: //TIMER
               {
                 if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
                  ALGCODE=ALGNONE;
