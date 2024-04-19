@@ -44,7 +44,7 @@
 #define MOVE_TOX0Y0              51  //переместиться в начальную точку  скана из начальной точке предыдущего скана
 #define CONFIG_UPDATECmd         55
 #define FASTSCANNING             56
-#define SENDDATALIN              57
+#define SENDDATALIN              57  //данные линеализации
 #define SCANNER_RETRACT_PROTRACT 61
 #define SPECTROSOPY_IV           65
 #define SPECTROSOPY_AIZ          66

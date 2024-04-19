@@ -3244,10 +3244,10 @@ void Scanner::testpiezomover(std::vector<int32_t> &vector)
 void Scanner::start_frqscan()
 {
   int16_t  SignalValue;
-  uint32_t res_freq = 10000;
-  int16_t  a = 10000;
+  int32_t res_freq = 10000;
+  double_t  a = 10000;
   int16_t  scan_index = 0;
-  uint32_t current_freq = 0;
+  int32_t current_freq = 0;
   uint32_t freq;
   uint32_t freqstep;
   int16_t  delay;
@@ -3283,7 +3283,7 @@ void Scanner::start_frqscan()
     {
       current_freq =freq;
       sleep_ms(delay);
-      SignalValue = (int16_t) std::round(a*(pow(M_E,-pow((current_freq - res_freq),2)/1000000))); //231126
+      SignalValue = (int16_t) std::round(a*(pow(M_E,-pow((current_freq - res_freq),2)/1000000))); 
       data.emplace_back(current_freq);
       data.emplace_back(SignalValue);
     }
