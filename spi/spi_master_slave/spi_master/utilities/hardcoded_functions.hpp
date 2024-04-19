@@ -2,9 +2,12 @@
 #define PICO_EXAMPLES_HARDCODED_FUNCTIONS_HPP
 
 #include "../devices/ad5664.hpp"
+#include <ctime>
 
 // WARNING HARDCODED FUNCTIONS
 void setDefaultSettings();
+
+void GetVersion();
 
 void set_Freq(uint32_t freq); //установка заданной частоты генератора
 

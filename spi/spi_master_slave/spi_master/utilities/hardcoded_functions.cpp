@@ -107,6 +107,20 @@ void set_freq(uint32_t freq)
   spi_write_blocking(spi_default, buf + 4, 2);
 }
 */
+void GetVersion()
+{
+ //time_t now = time(0);
+// char* version = ctime(&now);
+  afc.clear();
+ // std::string date;
+ // date=version;
+  afc = "code"+std::to_string(VersionCmd)+" version "+ VERSION;
+  afc += +"\n";
+  std::cout << afc;
+  afc.clear();
+  sleep_ms(100);
+
+}
 
 void set_Freq(uint32_t freq)
 {

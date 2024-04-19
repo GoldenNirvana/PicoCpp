@@ -15,6 +15,7 @@
 #define minint16_t              -32768
 
 #define ALGNONE                   0
+#define VersionCmd               10
 #define ADC_READCmd              12  //AD7606 timer
 #define DebugCmd                 13
 #define VirtualCmd               14
@@ -57,6 +58,7 @@
 #define portx                    0
 #define porty                    1
 
+extern std::string  VERSION;
 extern int16_t  ALGCODE;
 extern uint32_t DEBUG_LEVEL;
 extern Spi      spi;

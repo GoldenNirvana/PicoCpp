@@ -1,5 +1,9 @@
 #include "common_variables.hpp"
 
+//////////////////////////////////////////////
+std::string  VERSION="24.04.19.01";
+//////////////////////////////////////////////
+
 std::string afc;  //dataout string
 Spi spi;
 LinearDriver linearDriver;
@@ -19,7 +23,6 @@ DAC8563 dac8563_3(1); // DAC Z
 uint16_t spiBuf[8];
 
 int16_t ALGCODE=0;   
-
 bool STOP = false;   // cmd stop algorithms
 bool AD9833_SENDER = false;
 bool AD8400_SENDER = false;
