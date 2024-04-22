@@ -10,7 +10,7 @@ int start_app()
  
   scanner=new  Scanner;
   scanner->hardware->setDefaultSettings();
-  scanner->hardware->dark(); 
+  //scanner->hardware->dark(); 
   critical_section_init(&criticalSection);
   if (!critical_section_is_initialized(&criticalSection))
   {

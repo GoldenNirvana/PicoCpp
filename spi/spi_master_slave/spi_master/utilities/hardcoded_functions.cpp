@@ -17,7 +17,26 @@ HARDWARE::HARDWARE()
   dac8563_1=new DAC8563(1); // DAC BIAS,SetPoint
   dac8563_2=new DAC8563(2); // DAC X,Y
   dac8563_3=new DAC8563(1);
-
+   busy=new InputPort(16); // FIXME TEMP!!!
+      conv=new OutputPort(7);
+       dec=new OutputPort(10);
+ resetPort=new OutputPort(17); 
+   ledPort=new OutputPort(PICO_DEFAULT_LED_PIN);
+    rdbLed=new OutputPort(23); 
+     io1_0=new OutputPort(11);
+     io1_1=new OutputPort(12);
+     io2_0=new OutputPort(13);
+     io2_1=new OutputPort(14); 
+     io2_2=new OutputPort(15); 
+     io3_0=new OutputPort(26); //вытянуть сканнер
+     io3_1=new OutputPort(27); //втянуть сканнер
+     io_ports.push_back(io1_0);
+     io_ports.push_back(io1_1);
+     io_ports.push_back(io2_0);
+     io_ports.push_back(io2_1);
+     io_ports.push_back(io2_2);
+     io_ports.push_back(io3_0);
+     io_ports.push_back(io3_1);
   
 }
 
@@ -73,20 +92,23 @@ void HARDWARE::setDefaultSettings()
   resetPort->disable();
   gpio_pull_down(resetPort->getPort());
   ledPort->enable();
+  dark();
   //io3_1.disable(); 
   uint16_t ti=7<<8; //240403
   set_GainPID(ti);  //установить минимальное усиление 240209
-  scanner->retract();// 240403 ???
+  
+  retract();// 240403 ???
   io3_1->blink();  //втянуть   240209
  
   // init io_ports, mb  delete
-  io_ports.push_back(io1_0);
+/*  io_ports.push_back(io1_0);
   io_ports.push_back(io1_1);
   io_ports.push_back(io2_0);
   io_ports.push_back(io2_1);
   io_ports.push_back(io2_2);
   io_ports.push_back(io3_0);
   io_ports.push_back(io3_1);
+  */
   //io_ports.push_back(io3_2);
 
   init_DACSPB(2);//инициирование ЦАП1  SetPoint,BIAS
@@ -495,7 +517,7 @@ void HARDWARE::activateError()
     ledPort->enable();
     activateRed();
     sleep_ms(1000);
-    ledPort.disable();
+    ledPort->disable();
     activateDark();
     sleep_ms(1000);
   }
@@ -579,17 +601,17 @@ void HARDWARE::activateGreen()
   sleep_us(60);
   for (int i = 0; i < 8; ++i)
   {
-    rdbLed.enable();
+    rdbLed->enable();
     busy_wait_at_least_cycles(85);
-    rdbLed.disable();
+    rdbLed->disable();
     busy_wait_at_least_cycles(35);
   }
 
   for (int i = 0; i < 16; ++i)
   {
-    rdbLed.enable();
+    rdbLed->enable();
     busy_wait_at_least_cycles(35);
-    rdbLed.disable();
+    rdbLed->disable();
     busy_wait_at_least_cycles(85);
   }
 }
@@ -600,25 +622,25 @@ void HARDWARE::activateRed()
   sleep_us(60);
   for (int i = 0; i < 8; ++i)
   {
-    rdbLed.enable();
+    rdbLed->enable();
     busy_wait_at_least_cycles(35);
-    rdbLed.disable();
+    rdbLed->disable();
     busy_wait_at_least_cycles(85);
   }
 
   for (int i = 0; i < 8; ++i)
   {
-    rdbLed.enable();
+    rdbLed->enable();
     busy_wait_at_least_cycles(85);
-    rdbLed.disable();
+    rdbLed->disable();
     busy_wait_at_least_cycles(35);
   }
 
   for (int i = 0; i < 8; ++i)
   {
-    rdbLed.enable();
+    rdbLed->enable();
     busy_wait_at_least_cycles(35);
-    rdbLed.disable();
+    rdbLed->disable();
     busy_wait_at_least_cycles(85);
   }
 }

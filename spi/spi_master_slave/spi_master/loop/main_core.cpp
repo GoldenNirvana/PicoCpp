@@ -8,7 +8,7 @@
 
 void MainCore::loop()
 {
-  scanner->hardware->dark();
+ 
   uint64_t time = 0;
   while (time++ < UINT64_MAX - 1000)
   {
@@ -27,20 +27,20 @@ case APPROACH:{
                 if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
                  ALGCODE=ALGNONE;
                 if (flgСritical_section) critical_section_exit(&criticalSection);
-                blue();
+               // blue();
                 scanner->approacphm(vector);
                //green();
-                dark();
+              //  dark();
                 break;
               }
 case TESTMOVER:{
                 if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
                  ALGCODE=ALGNONE;
                 if (flgСritical_section) critical_section_exit(&criticalSection);
-                blue();
+             //   blue();
                 scanner->testpiezomover(vector);
                 //green();
-                dark();
+              //  dark();
                 break;
                }
 case FREQ_SET:{
@@ -174,7 +174,7 @@ case InitDAC_Z:
                 if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
                  ALGCODE=ALGNONE;
                 if (flgСritical_section) critical_section_exit(&criticalSection);
-                if (!flgVirtual)   scanner.hardware->init_DACZ(vector[1]);       
+                if (!flgVirtual)   scanner->hardware->init_DACZ(vector[1]);       
                 break;         
               }   
 case InitDAC_XY:
@@ -258,7 +258,7 @@ case SCANNER_RETRACT_PROTRACT:
                 if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
                  ALGCODE=ALGNONE;
                 if (flgСritical_section) critical_section_exit(&criticalSection);
-                scanner->scanner_retract_protract(vector[1],vector[2]); //int port=6 , int flg
+                scanner->hardware->scanner_retract_protract(vector[1],vector[2]); //int port=6 , int flg
                 // vector[2] == 1 ? io_ports[vector[1]].enable() : io_ports[vector[1]].disable();
                 break;
               } 
@@ -283,7 +283,7 @@ case  RetractAlCode:
                 if (flgСritical_section) critical_section_enter_blocking(&criticalSection); 
                  ALGCODE=ALGNONE; 
                 if (flgСritical_section) critical_section_exit(&criticalSection);  
-                scanner->retract();
+                scanner->hardware->retract();
                 break;
               }
 case VersionCmd:

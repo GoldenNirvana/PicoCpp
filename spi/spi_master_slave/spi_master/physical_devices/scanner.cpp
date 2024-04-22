@@ -8,26 +8,7 @@
 
 Scanner::Scanner() : pos_({0, 0}), conf_({})
 {
-      busy=new InputPort(16); // FIXME TEMP!!!
-      conv=new OutputPort(7);
-       dec=new OutputPort(10);
- resetPort=new OutputPort(17); 
-   ledPort=new OutputPort(PICO_DEFAULT_LED_PIN);
-    rdbLed=new OutputPort(23); 
-     io1_0=new OutputPort(11);
-     io1_1=new OutputPort(12);
-     io2_0=new OutputPort(13);
-     io2_1=new OutputPort(14); 
-     io2_2=new OutputPort(15); 
-     io3_0=new OutputPort(26); //вытянуть сканнер
-     io3_1=new OutputPort(27); //втянуть сканнер
-     io_ports.push_back(io1_0);
-     io_ports.push_back(io1_1);
-     io_ports.push_back(io2_0);
-     io_ports.push_back(io2_1);
-     io_ports.push_back(io2_2);
-     io_ports.push_back(io3_0);
-     io_ports.push_back(io3_1);
+   
      hardware=new  HARDWARE;
 }
 

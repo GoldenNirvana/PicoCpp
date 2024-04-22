@@ -39,7 +39,6 @@ private:
 
  void set_clock_enable();
 
-[[noreturn]] void activateError();
 
  void activateGreen();
 
@@ -63,6 +62,7 @@ public:
 
   ~HARDWARE();
 
+[[noreturn]] void activateError();
  void setDefaultSettings();
 
  void GetSOFTHARDWAREVersion();
