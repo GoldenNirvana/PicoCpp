@@ -7,7 +7,7 @@
 // WARNING HARDCODED FUNCTIONS
 void setDefaultSettings();
 
-void GetVersion();
+void GetSOFTHARDWAREVersion();
 
 void set_Freq(uint32_t freq); //установка заданной частоты генератора
 
@@ -18,11 +18,6 @@ void init_DACSPB(uint8_t port); //инициирование ЦАП1  SetPoint,B
 void init_DACXY(uint8_t port); //инициирование ЦАП2  XY
 
 void init_DACZ(uint8_t port); //инициирование ЦАП2  Z
-/*
-void set_Bias(int8_t chanel,int32_t Bias); //установка заданного значения напряжения
-
-void set_SetPoint(int8_t chanel,int32_t SetPoint);//установка заданной опроры для ПИД
-*/
 
 void set_Bias(int32_t Bias); //установка заданного значения напряжения
 

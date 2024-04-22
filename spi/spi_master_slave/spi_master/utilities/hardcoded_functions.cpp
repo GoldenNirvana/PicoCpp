@@ -107,14 +107,14 @@ void set_freq(uint32_t freq)
   spi_write_blocking(spi_default, buf + 4, 2);
 }
 */
-void GetVersion()
+void GetSOFTHARDWAREVersion()
 {
  //time_t now = time(0);
 // char* version = ctime(&now);
   afc.clear();
  // std::string date;
  // date=version;
-  afc = "code"+std::to_string(VersionCmd)+" version "+ VERSION;
+  afc = "code"+std::to_string(VersionCmd)+" version "+ SOFTVERSION+','+HARDWAREVERSION;
   afc += +"\n";
   std::cout << afc;
   afc.clear();

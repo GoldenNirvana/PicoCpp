@@ -58,7 +58,8 @@
 #define portx                    0
 #define porty                    1
 
-extern std::string  VERSION;
+extern std::string  SOFTVERSION;
+extern std::string  HARDWAREVERSION;
 extern int16_t  ALGCODE;
 extern uint32_t DEBUG_LEVEL;
 extern Spi      spi;

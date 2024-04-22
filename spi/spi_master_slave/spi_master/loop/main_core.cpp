@@ -292,7 +292,7 @@ case VersionCmd:
                 if (flgСritical_section) critical_section_enter_blocking(&criticalSection); 
                  ALGCODE=ALGNONE; 
                 if (flgСritical_section) critical_section_exit(&criticalSection);  
-                GetVersion();
+                GetSOFTHARDWAREVersion();
                 break;
               }               
 
