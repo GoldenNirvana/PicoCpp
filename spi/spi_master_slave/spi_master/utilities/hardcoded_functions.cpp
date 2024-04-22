@@ -422,10 +422,6 @@ void HARDWARE::set_DACZ(int16_t value)
   sleep_us(2);// 240405
 }
 
-void HARDWARE::stopAll()
-{
-  STOP=false;
-}
 
 uint16_t *HARDWARE::getValuesFromAdc()
 {

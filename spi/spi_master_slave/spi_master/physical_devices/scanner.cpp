@@ -80,6 +80,11 @@ void Scanner::sendStrData(std::string const& header,std::vector<uint16_t> &data,
   sleep_ms(delay);
   if (flg) data.clear();
 }
+void Scanner::stopAll()
+{
+  STOP=false;
+}
+
 void Scanner::readDATALin()
 {
   data_LinX.clear();
@@ -1673,7 +1678,7 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
    if (flgСritical_section) critical_section_exit(&criticalSection);
   conf_.flgHoping=0;
   sendStrData("code"+std::to_string(END)+"end");
-  activateDark();
+  hardware->activateDark();
 } //hoppinglin
 
 void Scanner::start_fastscan(std::vector<int32_t> &vector)
@@ -1712,8 +1717,6 @@ void Scanner::start_fastscan(std::vector<int32_t> &vector)
   uint16_t reststepy;
   uint16_t nfastline, nslowline;
   uint16_t stepslowline, stepfastline;
- // uint8_t  portx = 0;//1;
- // uint8_t  porty = 1;//2;
   uint8_t  portfast;
   uint8_t  portslow;
   uint16_t pos_fast;
@@ -1883,7 +1886,7 @@ void Scanner::start_fastscan(std::vector<int32_t> &vector)
   TheadDone = false;
  if (flgСritical_section) critical_section_exit(&criticalSection);
   sendStrData("code"+std::to_string(END)+"end");
-  activateDark();
+  hardware->activateDark();
 }
 
 void Scanner::stop_scan()

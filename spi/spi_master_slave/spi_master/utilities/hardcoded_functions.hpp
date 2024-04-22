@@ -93,18 +93,12 @@ public:
 
  void set_DACZero();
  
- void stopAll(); //остановка  выполнения алгоритма
-
  void move_scannerX(int x);
 
  void move_scannerY(int y);
 
  uint16_t *getValuesFromAdc();  // чтение АЦП
- 
-  void readADC(); //чтение  ADC по таймеру
 
-  void readDATALin();
-  
   void scanner_retract_protract(int port, int flg);
   
   void retract();       // втянуть сканер
