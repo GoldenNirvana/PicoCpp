@@ -12,9 +12,9 @@ class HARDWARE
 {
 // WARNING HARDCODED FUNCTIONS
 private:
- DAC8563 *dac8563_1; // DAC BIAS,SetPoint
- DAC8563 *dac8563_2; // DAC X,Y
- DAC8563 *dac8563_3; // DAC Z
+ DAC8563    *dac8563_1; // DAC BIAS,SetPoint
+ DAC8563    *dac8563_2; // DAC X,Y
+ DAC8563    *dac8563_3; // DAC Z
  InputPort  *busy; // FIXME TEMP!!!
  OutputPort *conv;
  OutputPort *dec;
@@ -63,6 +63,7 @@ public:
   ~HARDWARE();
 
 [[noreturn]] void activateError();
+
  void setDefaultSettings();
 
  void GetSOFTHARDWAREVersion();
