@@ -11,7 +11,7 @@ Spi spi;
 LinearDriver linearDriver;
 Decoder decoder(4, 5, 6);
 
-Scanner  scanner;
+//Scanner  scanner;
 //HARDWARE hardware;
 
 //int32_t  vector[16];  //datain
@@ -58,7 +58,6 @@ int16_t SignalValue = maxint16_t;
 int16_t ZMaxValue   = maxint16_t;
 int32_t ShiftDac    = 32768;
 
-
 uint8_t ZPin    = 0; // Z
 uint8_t AmplPin = 1; // амплитуда
 uint8_t IPin    = 2; // ток  
@@ -69,6 +68,7 @@ bool ADC_IS_READY_TO_READ = true;
 //volatile int32_t current_channel = 0;
 
 critical_section_t criticalSection;
+/*
 InputPort  busy(16); // FIXME TEMP!!!
 OutputPort conv(7);
 OutputPort dec(10);
@@ -84,3 +84,4 @@ OutputPort io3_0(26); //вытянуть сканнер
 OutputPort io3_1(27); //втянуть сканнер
 
 std::vector<OutputPort> io_ports;
+*/

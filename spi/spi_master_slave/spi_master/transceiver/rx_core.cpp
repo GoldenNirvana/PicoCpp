@@ -8,7 +8,6 @@
 #include "rx_utils/parser.hpp"
 #include "../utilities/base_types/Spi.hpp"
 #include "../loop/common_data/common_variables.hpp"
-#include "../utilities/peripheral_functions.hpp"
 #include "../utilities/hardcoded_functions.hpp"
 #include "../utilities/debug_logger.hpp"
 

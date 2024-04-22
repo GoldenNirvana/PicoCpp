@@ -3,12 +3,34 @@
 
 #include "../devices/ad5664.hpp"
 #include "../devices/DAC8563.hpp"
+#include "../physical_devices/LinearDriver.hpp"
 #include <ctime>
+#include <cstdint>
+#include <hardware/clocks.h>
 
 class HARDWARE
 {
 // WARNING HARDCODED FUNCTIONS
 private:
+ DAC8563 *dac8563_1; // DAC BIAS,SetPoint
+ DAC8563 *dac8563_2; // DAC X,Y
+ DAC8563 *dac8563_3; // DAC Z
+ InputPort  *busy; // FIXME TEMP!!!
+ OutputPort *conv;
+ OutputPort *dec;
+ OutputPort *resetPort; // FIXME TEMP
+ OutputPort *ledPort;
+ OutputPort *rdbLed;
+ OutputPort *io1_0; 
+ OutputPort *io1_1;
+ OutputPort *io2_0;
+ OutputPort *io2_1;
+ OutputPort *io2_2;
+ OutputPort *io3_0; //вытянуть сканнер
+ OutputPort *io3_1; //втянуть сканнер
+
+ std::vector<OutputPort*> io_ports; 
+ 
  uint16_t *repeatTwoTimes(); 
 
  void get_result_from_adc();       // чтение АЦП
@@ -17,9 +39,23 @@ private:
 
  void set_clock_enable();
 
- DAC8563 *dac8563_1; // DAC BIAS,SetPoint
- DAC8563 *dac8563_2; // DAC X,Y
- DAC8563 *dac8563_3; // DAC Z
+[[noreturn]] void activateError();
+
+ void activateGreen();
+
+ void activateRed();
+
+ void activateBlue();
+
+ void activateDark();
+
+ void green();
+
+ void blue();
+
+ void red();
+ 
+ void dark();
 
 public:
 
@@ -62,5 +98,26 @@ public:
  void move_scannerY(int y);
 
  uint16_t *getValuesFromAdc();  // чтение АЦП
+ 
+  void readADC(); //чтение  ADC по таймеру
+
+  void readDATALin();
+  
+  void scanner_retract_protract(int port, int flg);
+  
+  void retract();       // втянуть сканер
+
+  void retract(int16_t HeightJump); //втянуть на H
+
+  void protract();      // втянуть сканер
+ 
+ // void protract(uint16_t delay,int16_t DacZ0,int16_t HeightJump) ; //разморозить ПИД 
+ 
+  void LOOP_freeze_unfreeze(int port, int flg);  
+ 
+  void freezeLOOP(uint16_t delay);    // заморизить ПИД
+
+  void unfreezeLOOP(uint16_t delay);  // разморизить ПИД
+
 };
 #endif

@@ -8,7 +8,27 @@
 
 Scanner::Scanner() : pos_({0, 0}), conf_({})
 {
-  hardware=new  HARDWARE;
+      busy=new InputPort(16); // FIXME TEMP!!!
+      conv=new OutputPort(7);
+       dec=new OutputPort(10);
+ resetPort=new OutputPort(17); 
+   ledPort=new OutputPort(PICO_DEFAULT_LED_PIN);
+    rdbLed=new OutputPort(23); 
+     io1_0=new OutputPort(11);
+     io1_1=new OutputPort(12);
+     io2_0=new OutputPort(13);
+     io2_1=new OutputPort(14); 
+     io2_2=new OutputPort(15); 
+     io3_0=new OutputPort(26); //вытянуть сканнер
+     io3_1=new OutputPort(27); //втянуть сканнер
+     io_ports.push_back(io1_0);
+     io_ports.push_back(io1_1);
+     io_ports.push_back(io2_0);
+     io_ports.push_back(io2_1);
+     io_ports.push_back(io2_2);
+     io_ports.push_back(io3_0);
+     io_ports.push_back(io3_1);
+     hardware=new  HARDWARE;
 }
 
 Scanner::~Scanner()
@@ -136,71 +156,6 @@ void Scanner::readADC()
         debugdata.emplace_back(vector[1]);
         sendStrData("code"+std::to_string(ADC_READCmd),debugdata,100,true);     
   }
-}
-void Scanner::scanner_retract_protract(int port, int flg) 
-// port  5  1- втянуть,     0-вытянуть
-// port  6  1- заморозить,  0-разморозить
- {
-  afc.clear();
-  if (flg == 0)
-  {     
-     switch (port)
-   {  
-   case 5: { io_ports[port].enable();  afc = " scanner retract " + std::to_string(port); break;}
-   case 6: { io_ports[port].enable();  afc = " PID unfreeze "    + std::to_string(port); break;}
-   }
-  }
-  else 
-  {
-     switch (port)
-   {  
-   case 5: { io_ports[port].disable();  afc = " scanner protract " + std::to_string(port); break;}
-   case 6: { io_ports[port].disable();  afc = " PID  freeze "      + std::to_string(port); break;}
-   }
-  } 
-  afc += +"\n";
-  std::cout << afc;
-  afc.clear();
-  sleep_ms(100); 
- } 
-
-void Scanner::retract() //втянуть
-{
-  io3_1.enable();  //  port 6   элемент массива портов 
-}
-void Scanner::retract(int16_t HeightJump) //втянуть на H
-{
- //freezeLOOP(100); 
- retract(); 
- hardware->set_DACZ(-abs(HeightJump)); 
-}
-
-void Scanner::protract() //вытянуть
-{
-  io3_1.disable();  //port 6
-}
-void Scanner::protract(uint16_t delay,int16_t DacZ0,int16_t HeightJump) //вытянуть
-{
- // unfreezeLOOP(delay); 
-   protract();
-  //set_DACZ(0,0); 
-   ZMove(DacZ0,HeightJump,-20, delay);
-}
-void Scanner::LOOP_freeze_unfreeze(int port, int flg) // port virtual 5
-{
-//flg == 1 ? io_ports[port - 1].enable() : io_ports[port - 1].disable();
- flg == 1 ? io_ports[port].enable() : io_ports[port].disable();
-}
-void Scanner::freezeLOOP(uint16_t delay)    // заморозить ПИД
-{
-  io3_0.enable(); // 5 элемент массива портов ???
-  sleep_ms(delay);
-}
-
-void Scanner::unfreezeLOOP(uint16_t delay)  // разморозить ПИД
-{
-  io3_0.disable();  // 5 элемент массива портов ???
-  sleep_ms(delay);
 }
 
 bool Scanner::getHoppingFlg() //получить флаг установлен ли флаг сканирования прыжками
@@ -1010,12 +965,12 @@ struct Config
     {
       if (!flgVirtual)
       {
-        if (flgMaxJump)  retract();           //втянуться на max
+        if (flgMaxJump)  hardware->retract();           //втянуться на max
         else       
         {
          DACZ0= ZCur-ZJump;
          if (ZCur<ZJump) DACZ0=0;  //240220
-         retract(DACZ0); //втянуться на ZJump
+         hardware->retract(DACZ0); //втянуться на ZJump
         }        
       }   
       sleep_us(50);
@@ -1042,8 +997,8 @@ struct Config
   //******************************************************************************
       if (!flgVirtual)
       {
-        if (flgMaxJump) protract();// вытянуться
-        else            protract();// protract(0, ZJump);// вытянуться на ZJump
+        if (flgMaxJump) hardware->protract();// вытянуться
+        else            hardware->protract();// protract(0, ZJump);// вытянуться на ZJump
       }
       sleep_ms(conf_.HopeDelay);
       sleep_us(conf_.pause);    // CONST 50ms wait for start get data
@@ -1088,7 +1043,7 @@ struct Config
  //move to the start line point   
       if (!flgVirtual)
       {
-        retract(); //втянуться на макс
+        hardware->retract(); //втянуться на макс
         ZMove(DACZ0,DACZ0,-10, 0); // обнуление DACZ   //240405
         DACZ0=0;
       } 
@@ -1263,7 +1218,7 @@ struct Config
     } //update
       if (!flgVirtual)
       {
-        protract();    //вытянуться
+        hardware->protract();    //вытянуться
         sleep_ms(700); //240411 250
       }
       if (!flgVirtual) //get current Z contact
@@ -1297,7 +1252,8 @@ struct Config
   sleep_ms(200);
   if (!flgVirtual)
   {
-   protract(30,DACZ0,DACZ0); //вытянуть
+   hardware->protract();
+   ZMove(DACZ0,DACZ0,-20, 30);//вытянуть
   }
   sleep_ms(1000);
   int16_t count = 0;
@@ -1424,12 +1380,12 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
      }
       if (!flgVirtual)
       {
-        if (flgMaxJump)  retract();           //втянуться на max
+        if (flgMaxJump)  hardware->retract();           //втянуться на max
         else       
         {
          DACZ0= ZCur-ZJump;    
          if (ZCur<ZJump) DACZ0=0;  //240220
-         retract(DACZ0); //втянуться на ZJump
+         hardware->retract(DACZ0); //втянуться на ZJump
         }        
       }   
       sleep_us(50);
@@ -1458,8 +1414,8 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
   //******************************************************************************
       if (!flgVirtual)
       {
-        if (flgMaxJump) protract();  //вытянуться
-        else            protract();//  protract(0, ZJump);// ;//вытянуться на ZJump
+        if (flgMaxJump) hardware->protract();  //вытянуться
+        else            hardware->protract();//  protract(0, ZJump);// ;//вытянуться на ZJump
       }
       sleep_ms(conf_.HopeDelay);
       sleep_us(conf_.pause);    // CONST 50ms wait for start get data
@@ -1503,7 +1459,7 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
       //move to the start line point   
       if (!flgVirtual)
       {
-        retract(); //втянуться на макс
+        hardware->retract(); //втянуться на макс
         ZMove(DACZ0,DACZ0,-10, 0); // обнуление DACZ  //09 240405
         DACZ0=0;
       } 
@@ -1588,42 +1544,7 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
      vector_data.emplace_back(round(conf_.SetPoint));
      int16_t count0 = 0;
     // 
-  /*   if (!flgVirtual)
-     {
-       getValuesFromAdc();
-       ISatCur=(int16_t) spiBuf[IPin];
-       vector_data.emplace_back(ISatCur);
-     }
-     else
-     {
-       uint16_t random_num =i;   
-       ISatCur=ISatCur-100*random_num;
-       vector_data.emplace_back(ISatCur);
-     }
-// auto correction setpoint for sicm
-     if (conf_.flgAutoUpdateSP) 
-     {
-       if (conf_.flgAutoUpdateSPDelta) 
-       {
-         if (abs((ISatCurPrev-ISatCur)/ISatCurPrev)>0.01*conf_.ThresholdAutoUpdate) 
-         {
-          conf_.SetPoint=round(ISatCur*conf_.KoeffCorrectISat*0.01 );
-          ISatCurPrev=ISatCur;
-          set_SetPoint(conf_.SetPoint);
-          sleep_ms(conf_.HopeDelay);
-         }
-       }
-       else
-       { 
-        conf_.SetPoint=round(ISatCur*conf_.KoeffCorrectISat*0.01 );
-        set_SetPoint(conf_.SetPoint);
-        ISatCurPrev=ISatCur;
-        sleep_ms(conf_.HopeDelay);
-       }
-     }    
-     vector_data.emplace_back(round(conf_.SetPoint));
-     int16_t count0 = 0;
-    */ 
+ 
      while ((!DrawDone) || (count0<20) )//ожидание ответа ПК для синхронизации
      {
       sleep_ms(10);
@@ -1720,7 +1641,7 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
     } 
       if (!flgVirtual)
       {
-        protract();    //вытянуться
+        hardware->protract();    //вытянуться
         sleep_ms(700); //240411 250
       }
       if (!flgVirtual) //get current Z contact
@@ -1755,7 +1676,8 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
   sleep_ms(200);
   if (!flgVirtual)
   {
-   protract(30,DACZ0,DACZ0); //вытянуть
+   hardware->protract();
+   ZMove(DACZ0,DACZ0,20,30); //вытянуть
   }
   sleep_ms(1000);
 
@@ -2040,13 +1962,13 @@ void Scanner::move_toX0Y0(uint16_t x, uint16_t y, uint16_t delay, int8_t flg)
   }
   if (flg==1)
   {
-    retract();
+    hardware->retract();
     sleep_ms(100);
   }
   move_to(pointX0Y0, delay);
  if (flg==1)
   {
-    protract();
+    hardware->protract();
     sleep_ms(delay);
   }
   sleep_ms(200);
@@ -2102,10 +2024,10 @@ void Scanner::LID_move_toZ0(int lid_name, int f, int p, int n, int dir)  //от�
 {
  if (!flgVirtual)
  {
-  retract();  //втянуть сканер
+  hardware->retract();  //втянуть сканер
   sleep_ms(50);
   if (!flgVirtual) linearDriver.activate(lid_name, f, p, std::abs(n), dir);
-  protract();  //вытянуть сканер
+  hardware->protract();  //вытянуть сканер
  } 
   sleep_ms(1000);
    if (flgDebug)
@@ -2322,73 +2244,7 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
   sendStrData("code"+std::to_string(END)+"end");
   dark();
 }
-/*
- static int16_t ZMove( int16_t Z0, int16_t steps, int16_t stepsize, uint16_t delay )   // stepsize=+-1  sign  -> dir 
-	{
-	  int16_t Zt;
-	  Zt =Z0;
-	  for (int16_t j=0; j< steps; j++)
-	  {
-      if (stepsize>0)  //вытягивание 
-      {
-        if (Zt>=(maxint16_t-stepsize)) { Zt=maxint16_t;}
-      }
-      else
-      {
-        if (Zt<=(minint16_t-stepsize)) { Zt=minint16_t;}
-      } 
-       Zt=Zt+stepsize;  
-      if (!flgVirtual) set_DACZ(0,Zt);    // - physical - 0
-      for(int16_t k=0; k < delay; k++) { }// задержка в каждом дискрете
-	  }
-    return(Zt);
-	}
-*/
-/*
- int16_t  Scanner::ZMove( int16_t Z0, int16_t dZ, int16_t stepsize, uint16_t delay )   // stepsize=+-1  sign  -> dir 
-	{
-	  int16_t Zt;
-    int16_t dir;
-    if (stepsize>0) dir= 1;
-    else            dir=-1; 
-	  Zt =Z0;
-    uint16_t nsteps;
-    uint16_t nreststeps;
-    nsteps=(uint16_t)abs(dZ/stepsize);
-    nreststeps=(uint16_t)abs(dZ) % abs(stepsize);
-	  for (int16_t j=0; j< nsteps; j++)
-	  {
-      if (dir==1)  //втягивание 
-      {
-        if (Zt>=(maxint16_t-stepsize)) { Zt=maxint16_t;}
-        else  Zt=Zt+stepsize; 
-      }
-      else
-      {
-        if (Zt<=(minint16_t-stepsize)) { Zt=minint16_t;}
-        else  Zt=Zt+stepsize; 
-      } 
-    //   Zt=Zt+stepsize;         
-      if (!flgVirtual) set_DACZ(Zt);    
-      for(int16_t k=0; k < delay; k++) { }// задержка в каждом дискрете
-	  }
-    if (nreststeps!=0)
-    {
-      if (dir==1)  //втягивание 
-      {
-        if (Zt>=(maxint16_t-nreststeps)) { Zt=maxint16_t;} 
-        else Zt=Zt+nreststeps;
-      }
-      else
-      {
-        if (Zt<=(minint16_t+nreststeps)) { Zt=minint16_t;}
-        else Zt=Zt-nreststeps;
-      } 
-      if (!flgVirtual) set_DACZ(Zt);        
-    }   
-    return(Zt);
-	}
-*/
+
  int16_t  Scanner::ZMove( int16_t Z0, int16_t dZ, int16_t stepsize, uint16_t delay )   // stepsize=+-1  sign  -> dir 
 	{
     //  dacZ    0  втянут
@@ -2486,9 +2342,9 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
   {
     hardware->getValuesFromAdc();
     Z0=(int16_t) spiBuf[ZPin];
-    retract();
+    hardware->retract();
     sleep_ms(50);
-   deltaZ=ZMove(0,Z0-abs(ZStart),-10,delay);
+    deltaZ=ZMove(0,Z0-abs(ZStart),-10,delay);
   }
 
 //////////////////////////////////////
@@ -2586,7 +2442,7 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
  // разморозка состояния pid
   if(!flgVirtual) 
   {
-    protract();
+    hardware->protract();
     sleep_ms(400);
     ZMove(deltaZ,abs(deltaZ),10,delay);
   }
@@ -2640,7 +2496,7 @@ void Scanner::spectroscopyIV(std::vector<int32_t> &vector)
   {
     hardware->getValuesFromAdc();
     Z0=(int16_t) spiBuf[ZPin];
-    retract();
+    hardware->retract();
     sleep_ms(50);
     ZMove(0,Z0,-10,delay);
   }
@@ -2729,7 +2585,7 @@ void Scanner::spectroscopyIV(std::vector<int32_t> &vector)
  //  if(!flgVirtual)  unfreezeLOOP(500); //240322
   if (!flgVirtual)
   {
-    protract();
+    hardware->protract();
     sleep_ms(400);
     ZMove(-Z0,abs(Z0),10,delay);
   }
@@ -2936,16 +2792,16 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
     /**/
     if (!flgVirtual)
     {
-      retract();  //втянуть сканнер
+      hardware->retract();  //втянуть сканнер
       sleep_ms(SCANNERDECAY);
       linearDriver.activate(99, freq, scv, std::abs(NSTEPS), NSTEPS > 0);
-      protract(); //вытянуть
+      hardware->protract(); //вытянуть
     }
   } //while
   sendStrData( "code"+std::to_string(APPROACH),buf_status,100,false);
   if (!flgVirtual)
   {
-    protract();//вытянуть
+    hardware->protract();//вытянуть
     sleep_ms(INTDELAY);
   }
  //  sendStrData("stopped");
@@ -3026,10 +2882,10 @@ void Scanner::testpiezomover(std::vector<int32_t> &vector)
           //steps
         if (!flgVirtual)
         {
-          retract();  //втянуть сканнер
+          hardware->retract();  //втянуть сканнер
           sleep_ms(SCANNERDECAY);
           linearDriver.activate(99, freq, scv, std::abs(step), step > 0);
-          protract(); //вытянуть
+          hardware->protract(); //вытянуть
           sleep_ms(INTDELAY);
         }  
         if (!flgVirtual)
@@ -3069,10 +2925,10 @@ void Scanner::testpiezomover(std::vector<int32_t> &vector)
         }                                    
         if (!flgVirtual)
         {
-          retract();  //втянуть сканнер
+          hardware->retract();  //втянуть сканнер
           sleep_ms(SCANNERDECAY);
           linearDriver.activate(99, freq, scv, std::abs(step), step > 0);
-          protract(); //вытянуть
+          hardware->protract(); //вытянуть
           sleep_ms(INTDELAY);
           hardware->getValuesFromAdc(); 
           ZValue = (int16_t)spiBuf[ZPin];
@@ -3101,10 +2957,10 @@ void Scanner::testpiezomover(std::vector<int32_t> &vector)
          }
          if (!flgVirtual)
          {
-          retract();  //втянуть сканнер
+          hardware->retract();  //втянуть сканнер
           sleep_ms(SCANNERDECAY);
           linearDriver.activate(99, freq, scv, std::abs(step), step > 0);
-          protract(); //вытянуть
+          hardware->protract(); //вытянуть
           sleep_ms(INTDELAY);
           hardware->getValuesFromAdc(); 
           ZValue = (int16_t)spiBuf[ZPin];
@@ -3169,10 +3025,10 @@ void Scanner::testpiezomover(std::vector<int32_t> &vector)
             }
             if (!flgVirtual)
             {
-               retract();  //втянуть сканнер
+               hardware->retract();  //втянуть сканнер
                sleep_ms(SCANNERDECAY);
                linearDriver.activate(99, freq, scv, std::abs(step), step > 0);
-               protract(); //вытянуть
+               hardware->protract(); //вытянуть
                sleep_ms(INTDELAY);
                hardware->getValuesFromAdc(); 
                ZValue = (int16_t)spiBuf[ZPin];
@@ -3202,10 +3058,10 @@ void Scanner::testpiezomover(std::vector<int32_t> &vector)
              }
              if (!flgVirtual)
               {
-               retract();  //втянуть сканнер
+               hardware->retract();  //втянуть сканнер
                sleep_ms(SCANNERDECAY);
                linearDriver.activate(99, freq, scv, std::abs(step), step > 0);
-               protract(); //вытянуть
+               hardware->protract(); //вытянуть
                sleep_ms(INTDELAY);
                hardware->getValuesFromAdc(); 
                ZValue = (int16_t)spiBuf[ZPin];

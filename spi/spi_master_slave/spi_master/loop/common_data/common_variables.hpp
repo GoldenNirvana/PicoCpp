@@ -66,7 +66,7 @@ extern uint32_t DEBUG_LEVEL;
 extern Spi      spi;
 extern LinearDriver linearDriver;
 extern Decoder decoder;
-extern Scanner  scanner;
+extern Scanner  *scanner;
 //extern HARDWARE *hardware;
 
 
@@ -118,7 +118,7 @@ extern int32_t ShiftDac;
 //
 //extern volatile int32_t current_channel;
 extern critical_section_t criticalSection;
-
+/*
 extern InputPort  busy;
 extern OutputPort conv;
 extern OutputPort dec;
@@ -135,5 +135,5 @@ extern OutputPort io3_0;   //5 заморозить-разморозить ?
 extern OutputPort io3_1;   //6 втянуть- вытянуть?
 
 extern std::vector<OutputPort> io_ports;
-
+*/
 #endif //PICO_EXAMPLES_COMMON_VARIABLES_HPP
