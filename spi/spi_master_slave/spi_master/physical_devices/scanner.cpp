@@ -2,7 +2,7 @@
 #include <iostream>
 #include "../loop/common_data/common_variables.hpp"
 //#include "../utilities/hardcoded_functions.hpp"
-#include "../utilities/peripheral_functions.hpp"
+//#include "../utilities/peripheral_functions.hpp"
 #include <cmath>
 #include <time.h>
 
@@ -477,7 +477,7 @@ struct Config
       }
     }
   } 
-  blue();
+//  blue();
   switch (conf_.path) 
   {
     case 0:
@@ -505,10 +505,10 @@ struct Config
   if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
   TheadDone = false;
   if (flgСritical_section) critical_section_exit(&criticalSection);
-  green();
+  hardware->green();
   sendStrData("code"+std::to_string(END)+"end"); 
-  activateDark();
-  dark();
+  hardware->activateDark();
+  hardware->dark();
 }
 void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирование
 {
@@ -784,7 +784,7 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
       }
     }
   } 
-  blue();
+  hardware->blue();
   switch (conf_.path)
   {
     case 0:
@@ -812,9 +812,9 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
   if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
    TheadDone = false;
   if (flgСritical_section) critical_section_exit(&criticalSection);
-  green();
+  scanner->hardware->green();
   sendStrData("code"+std::to_string(END)+"end"); 
-  dark();
+   hardware->dark();
 }
 
 void Scanner::start_hopingscan(std::vector<int32_t> &vector)
@@ -1637,7 +1637,7 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
    } // slow line
 
    
-  blue();
+ // blue();
   switch (conf_.path)
   {
     case 0:
@@ -1852,7 +1852,7 @@ void Scanner::start_fastscan(std::vector<int32_t> &vector)
       if (flgСritical_section) critical_section_exit(&criticalSection);
      };
   } 
-  blue();
+//  blue();
     if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
     STOP=false;
     if (flgСritical_section) critical_section_exit(&criticalSection);
@@ -2223,7 +2223,7 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
   TheadDone = false;
  if (flgСritical_section) critical_section_exit(&criticalSection);
   sendStrData("code"+std::to_string(END)+"end");
-  dark();
+   hardware->dark();
 }
 
  int16_t  Scanner::ZMove( int16_t Z0, int16_t dZ, int16_t stepsize, uint16_t delay )   // stepsize=+-1  sign  -> dir 

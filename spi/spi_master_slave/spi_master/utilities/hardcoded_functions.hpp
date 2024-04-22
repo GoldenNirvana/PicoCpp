@@ -1,6 +1,6 @@
 #ifndef PICO_EXAMPLES_HARDCODED_FUNCTIONS_HPP
 #define PICO_EXAMPLES_HARDCODED_FUNCTIONS_HPP
-
+#include <vector>
 #include "../devices/ad5664.hpp"
 #include "../devices/DAC8563.hpp"
 #include "../physical_devices/LinearDriver.hpp"
@@ -38,13 +38,20 @@ private:
  void set_io_value(int, int);
 
  void set_clock_enable();
-
-
+ 
+ void _delay_us(double __us);
+ 
  void activateGreen();
 
  void activateRed();
 
  void activateBlue();
+
+public:
+
+   HARDWARE();
+
+  ~HARDWARE();
 
  void activateDark();
 
@@ -55,12 +62,6 @@ private:
  void red();
  
  void dark();
-
-public:
-
-   HARDWARE();
-
-  ~HARDWARE();
 
 [[noreturn]] void activateError();
 

@@ -27,9 +27,9 @@ case APPROACH:{
                 if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
                  ALGCODE=ALGNONE;
                 if (flgСritical_section) critical_section_exit(&criticalSection);
-               // blue();
+               scanner->hardware->blue();
                 scanner->approacphm(vector);
-               //green();
+               scanner->hardware->green();
               //  dark();
                 break;
               }

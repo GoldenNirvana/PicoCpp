@@ -66,9 +66,9 @@ extern uint32_t DEBUG_LEVEL;
 extern Spi      spi;
 extern LinearDriver linearDriver;
 extern Decoder decoder;
+
 extern Scanner  *scanner;
 //extern HARDWARE *hardware;
-
 
 extern std::string afc;
 extern uint16_t spiBuf[8];

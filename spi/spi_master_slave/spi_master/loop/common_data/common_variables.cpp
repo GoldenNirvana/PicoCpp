@@ -11,7 +11,7 @@ Spi spi;
 LinearDriver linearDriver;
 Decoder decoder(4, 5, 6);
 
-//Scanner  scanner;
+Scanner  *scanner;
 //HARDWARE hardware;
 
 //int32_t  vector[16];  //datain
