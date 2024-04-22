@@ -1,13 +1,15 @@
 #include "scanner.hpp"
 #include <iostream>
 #include "../loop/common_data/common_variables.hpp"
-#include "../utilities/hardcoded_functions.hpp"
+//#include "../utilities/hardcoded_functions.hpp"
 #include "../utilities/peripheral_functions.hpp"
 #include <cmath>
 #include <time.h>
 
 Scanner::Scanner() : pos_({0, 0}), conf_({})
-{}
+{
+  hardware=new  HARDWARE;
+}
 
 Scanner::~Scanner()
 {
@@ -105,7 +107,7 @@ void Scanner::readADC()
 {
   if (!flgVirtual)
   {
-   auto ptr = getValuesFromAdc();
+   auto ptr = hardware->getValuesFromAdc();
   //logger(ptr, 8);
    ZValue = (int16_t) ptr[ZPin];
       switch (vector[1]) //прибор
@@ -170,7 +172,7 @@ void Scanner::retract(int16_t HeightJump) //втянуть на H
 {
  //freezeLOOP(100); 
  retract(); 
- set_DACZ(-abs(HeightJump)); 
+ hardware->set_DACZ(-abs(HeightJump)); 
 }
 
 void Scanner::protract() //вытянуть
@@ -326,7 +328,7 @@ struct Config
       {
         if (!flgVirtual)
         {
-          set_DACXY(portfast, pos_fast);
+          hardware->set_DACXY(portfast, pos_fast);
           pos_fast += conf_.diskretinstep;
         } 
         else
@@ -338,7 +340,7 @@ struct Config
         if (!flgVirtual)
         {
           pos_fast += reststepfast;
-          set_DACXY(portfast, pos_fast);
+          hardware->set_DACXY(portfast, pos_fast);
         } 
         else
         { pos_fast += reststepfast; }
@@ -350,7 +352,7 @@ struct Config
       //*******************************************************************************
       if (!flgVirtual)
       {
-        getValuesFromAdc();
+        hardware->getValuesFromAdc();
         vector_data.emplace_back(ZMaxValue-(int16_t) spiBuf[ZPin]);  // get Z from adc
         if (conf_.size == 2)
           switch (conf_.method)
@@ -425,7 +427,7 @@ struct Config
       if (!flgVirtual)
       {
         pos_fast -= conf_.diskretinstep;
-        set_DACXY(portfast, pos_fast);
+        hardware->set_DACXY(portfast, pos_fast);
       }
       else  { pos_fast -= conf_.diskretinstep; }
       sleep_us(conf_.delayB);
@@ -436,7 +438,7 @@ struct Config
       if (!flgVirtual)
       {
         pos_fast -= reststepfast;
-        set_DACXY(portfast, pos_fast);
+        hardware->set_DACXY(portfast, pos_fast);
       }
       else  { pos_fast -= reststepfast; }
 
@@ -461,7 +463,7 @@ struct Config
       conf_.delayF  = vupdateparams[1];
       conf_.delayB  = vupdateparams[2];
       if (flgDebug) sleep_ms(100); 
-      set_GainPID((uint16_t)vupdateparams[3]);//240320
+      hardware->set_GainPID((uint16_t)vupdateparams[3]);//240320
       conf_.diskretinstep = vupdateparams[4]; 
       if (flgDebug)
       {
@@ -521,7 +523,7 @@ struct Config
           if (!flgVirtual)
           {
             pos_slow += conf_.diskretinstep;
-            set_DACXY(portslow, pos_slow);
+            hardware->set_DACXY(portslow, pos_slow);
           }
           else { pos_slow += conf_.diskretinstep; }
           sleep_us(conf_.delayF);
@@ -531,7 +533,7 @@ struct Config
           if (!flgVirtual) 
           {
             pos_slow += reststepslow; // - 240404 !!!
-            set_DACXY(portslow, pos_slow);
+            hardware->set_DACXY(portslow, pos_slow);
           } 
           else { pos_slow += reststepslow; } //-240404
           sleep_us(conf_.delayF);
@@ -655,7 +657,7 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
       {
         if (!flgVirtual)
         {
-          set_DACXY(portfast, pos_fast);
+          hardware->set_DACXY(portfast, pos_fast);
           pos_fast += conf_.diskretinstep;
         }
         else
@@ -667,7 +669,7 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
         if (!flgVirtual)
         {
           pos_fast += reststepfast;
-          set_DACXY(portfast, pos_fast);
+          hardware->set_DACXY(portfast, pos_fast);
         } else
         { pos_fast += reststepfast; }
         sleep_us(conf_.delayF);
@@ -677,7 +679,7 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
       //*******************************************************************************
       if (!flgVirtual)
       {
-        getValuesFromAdc();
+        hardware->getValuesFromAdc();
         vector_data.emplace_back(ZMaxValue-(int16_t) spiBuf[ZPin]);  // get Z from adc
         if (conf_.size == 2)
           switch (conf_.method)
@@ -742,7 +744,7 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
       if (!flgVirtual)
       {
         pos_fast -= conf_.diskretinstep;
-        set_DACXY(portfast, pos_fast);
+        hardware->set_DACXY(portfast, pos_fast);
       }
       else { pos_fast -= conf_.diskretinstep; }
       sleep_us(conf_.delayB);
@@ -752,7 +754,7 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
       if (!flgVirtual)
       {
         pos_fast -= reststepfast;
-        set_DACXY(portfast, pos_fast);
+        hardware->set_DACXY(portfast, pos_fast);
       }
       else { pos_fast -= reststepfast; }
       sleep_us(conf_.delayB);
@@ -777,7 +779,7 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
       conf_.delayF        = vector[1];
       conf_.delayB        = vector[2];
       if (flgDebug) sleep_ms(100);     
-      set_GainPID((uint16_t)vector[3]);
+      hardware->set_GainPID((uint16_t)vector[3]);
       if (flgDebug) sleep_ms(100);              
       conf_.diskretinstep = vector[4]; 
       if (flgDebug)
@@ -828,7 +830,7 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
           if (!flgVirtual)
           {
             pos_slow += conf_.diskretinstep;
-            set_DACXY(portslow, pos_slow);
+            hardware->set_DACXY(portslow, pos_slow);
           } 
           else { pos_slow += conf_.diskretinstep; }
           sleep_us(conf_.delayF);
@@ -838,7 +840,7 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
           if (!flgVirtual) 
           {
             pos_slow += reststepslow;
-            set_DACXY(portslow, pos_slow);
+            hardware->set_DACXY(portslow, pos_slow);
           }
           else { pos_slow += reststepslow; }
           sleep_us(conf_.delayF);
@@ -968,7 +970,7 @@ struct Config
   }
   if (!flgVirtual)
   {
-    getValuesFromAdc();
+    hardware->getValuesFromAdc();
     ISatCurPrev=(int16_t) spiBuf[IPin];
     ZCur=(int16_t) spiBuf[ZPin];
   }
@@ -1021,7 +1023,7 @@ struct Config
       {
         if (!flgVirtual)
         {
-          set_DACXY(portfast, pos_fast);
+          hardware->set_DACXY(portfast, pos_fast);
           pos_fast += conf_.diskretinstep;
         } 
         else { pos_fast += conf_.diskretinstep; }
@@ -1032,7 +1034,7 @@ struct Config
         if (!flgVirtual)
         {
           pos_fast += reststepfast;
-          set_DACXY(portfast, pos_fast);
+          hardware->set_DACXY(portfast, pos_fast);
         }
         else { pos_fast += reststepfast; }
         sleep_us(conf_.delayF);
@@ -1048,7 +1050,7 @@ struct Config
   //*******************************************************************************
       if (!flgVirtual)
       {
-        getValuesFromAdc(); 
+        hardware->getValuesFromAdc(); 
         ZCur=(int16_t) spiBuf[ZPin];
         vector_data.emplace_back(ZMaxValue-ZCur);     // считать  Z invertCur=
         switch (conf_.method)
@@ -1095,7 +1097,7 @@ struct Config
       if (!flgVirtual)
       {
        pos_fast -= conf_.diskretinstep * stepsfastline * nfastline;
-       set_DACXY(portfast, pos_fast);
+       hardware->set_DACXY(portfast, pos_fast);
       }
       else
       {
@@ -1107,7 +1109,7 @@ struct Config
         if (!flgVirtual)
         {
          pos_fast -= reststepfast;
-         set_DACXY(portfast, pos_fast);
+         hardware->set_DACXY(portfast, pos_fast);
         }
         else { pos_fast -= reststepfast; }
         sleep_us(conf_.delayB);
@@ -1122,7 +1124,7 @@ struct Config
           if (!flgVirtual)
           {
             pos_slow += conf_.diskretinstep;
-            set_DACXY(portslow, pos_slow);
+            hardware->set_DACXY(portslow, pos_slow);
           }
           else { pos_slow += conf_.diskretinstep; }
           sleep_us(conf_.delayF);
@@ -1132,7 +1134,7 @@ struct Config
           if (!flgVirtual) 
           {
             pos_slow += reststepslow; // - 240404!!!!!
-            set_DACXY(portslow, pos_slow);
+            hardware->set_DACXY(portslow, pos_slow);
           }
           else { pos_slow += reststepslow; }  // -240404
           sleep_us(conf_.delayF);
@@ -1145,7 +1147,7 @@ struct Config
      
      if (!flgVirtual)  //read  Saturation Current
       {
-        getValuesFromAdc();
+        hardware->getValuesFromAdc();
         ISatCur=(int16_t) spiBuf[IPin];
         vector_data.emplace_back(ISatCur);
       }
@@ -1164,14 +1166,14 @@ struct Config
          {
           conf_.SetPoint=round(ISatCur*conf_.KoeffCorrectISat*0.01 );
           ISatCurPrev=ISatCur;
-          set_SetPoint(conf_.SetPoint);
+          hardware->set_SetPoint(conf_.SetPoint);
           sleep_ms(conf_.HopeDelay);
          }
        }
        else
        { 
         conf_.SetPoint=round(ISatCur*conf_.KoeffCorrectISat*0.01 );
-        set_SetPoint(conf_.SetPoint);
+        hardware->set_SetPoint(conf_.SetPoint);
         ISatCurPrev=ISatCur;
         sleep_ms(conf_.HopeDelay);
        }
@@ -1211,7 +1213,7 @@ struct Config
       conf_.diskretinstep        = vupdateparams[3];
       //if (flgDebug)
       sleep_ms(100);             //240314
-      set_GainPID((uint16_t)vupdateparams[4]); //240320
+      hardware->set_GainPID((uint16_t)vupdateparams[4]); //240320
       conf_.HopeDelay            = vupdateparams[5];
       conf_.HopeZ                = vupdateparams[6];
       conf_.flgAutoUpdateSP      = vupdateparams[7];; // автообновление опоры на каждой линии                     19
@@ -1266,7 +1268,7 @@ struct Config
       }
       if (!flgVirtual) //get current Z contact
       {
-        getValuesFromAdc();
+        hardware->getValuesFromAdc();
         ZCur=(int16_t) spiBuf[ZPin];
       }
       else
@@ -1388,7 +1390,7 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
 
  if (!flgVirtual)
   {
-    getValuesFromAdc();
+    hardware->getValuesFromAdc();
     ISatCurPrev=(int16_t) spiBuf[IPin];
     ZCur=(int16_t) spiBuf[ZPin];
   }
@@ -1436,7 +1438,7 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
       {
         if (!flgVirtual)
         {
-          set_DACXY(portfast, pos_fast);
+          hardware->set_DACXY(portfast, pos_fast);
           pos_fast += conf_.diskretinstep;
         }
         else { pos_fast += conf_.diskretinstep; }
@@ -1447,7 +1449,7 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
         if (!flgVirtual)
         {
           pos_fast += reststepfast;
-          set_DACXY(portfast, pos_fast);
+          hardware->set_DACXY(portfast, pos_fast);
         }
         else { pos_fast += reststepfast; }
 
@@ -1465,7 +1467,7 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
   
       if (!flgVirtual)
       {
-         getValuesFromAdc();
+         hardware->getValuesFromAdc();
          ZCur=(int16_t) spiBuf[ZPin];
          vector_data.emplace_back(ZMaxValue-ZCur);     // считать  Z 
         switch (conf_.method)
@@ -1529,7 +1531,7 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
     if (!flgVirtual)
     {
       pos_fast -= conf_.diskretinstep * stepsfastline * nfastline;
-      set_DACXY(portfast, pos_fast);
+      hardware->set_DACXY(portfast, pos_fast);
     }
     else
     {
@@ -1541,7 +1543,7 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
       if (!flgVirtual)
       {
         pos_fast -= reststepfast;
-        set_DACXY(portfast, pos_fast);
+        hardware->set_DACXY(portfast, pos_fast);
       } 
       else { pos_fast -= reststepfast; }
       sleep_us(conf_.delayB);
@@ -1552,7 +1554,7 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
 
      if (!flgVirtual)  //read  Saturation Current
       {
-        getValuesFromAdc();
+        hardware->getValuesFromAdc();
         ISatCur=(int16_t) spiBuf[IPin];
         vector_data.emplace_back(ISatCur);
       }
@@ -1571,14 +1573,14 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
          {
           conf_.SetPoint=round(ISatCur*conf_.KoeffCorrectISat*0.01 );
           ISatCurPrev=ISatCur;
-          set_SetPoint(conf_.SetPoint);
+          hardware->set_SetPoint(conf_.SetPoint);
           sleep_ms(conf_.HopeDelay);
          }
        }
        else
        { 
         conf_.SetPoint=round(ISatCur*conf_.KoeffCorrectISat*0.01 );
-        set_SetPoint(conf_.SetPoint);
+        hardware->set_SetPoint(conf_.SetPoint);
         ISatCurPrev=ISatCur;
         sleep_ms(conf_.HopeDelay);
        }
@@ -1650,7 +1652,7 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
       conf_.delayF               = vector[1];
       conf_.delayB               = vector[2];
       conf_.diskretinstep        = vector[3];
-      set_GainPID((uint16_t)vector[4]);
+      hardware->set_GainPID((uint16_t)vector[4]);
       conf_.HopeDelay            = vector[5];
       conf_.HopeZ                = vector[6];
       conf_.flgAutoUpdateSP      = vector[7];; // автообновление опоры на каждой линии                     19
@@ -1699,7 +1701,7 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
           if (!flgVirtual)
           {
             pos_slow += conf_.diskretinstep;
-            set_DACXY(portslow, pos_slow);
+            hardware->set_DACXY(portslow, pos_slow);
           } 
           else { pos_slow += conf_.diskretinstep; }
           sleep_us(conf_.delayF);
@@ -1709,7 +1711,7 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
           if (!flgVirtual) 
           {
             pos_slow += reststepslow;
-            set_DACXY(portslow, pos_slow);
+            hardware->set_DACXY(portslow, pos_slow);
           }
           else { pos_slow += reststepslow; }
           sleep_us(conf_.delayF);
@@ -1723,7 +1725,7 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
       }
       if (!flgVirtual) //get current Z contact
       {
-        getValuesFromAdc();
+        hardware->getValuesFromAdc();
         ZCur=(int16_t) spiBuf[ZPin];
       }
       else
@@ -1860,7 +1862,7 @@ void Scanner::start_fastscan(std::vector<int32_t> &vector)
         {
           if (!flgVirtual)
           {
-            set_DACXY(portfast, pos_fast);
+            hardware->set_DACXY(portfast, pos_fast);
             pos_fast += conf_.diskretinstep;
           }
           else { pos_fast += conf_.diskretinstep; }
@@ -1871,7 +1873,7 @@ void Scanner::start_fastscan(std::vector<int32_t> &vector)
           if (!flgVirtual)
           {
             pos_fast += reststepfast;
-            set_DACXY(portfast, pos_fast);
+            hardware->set_DACXY(portfast, pos_fast);
           } 
           else { pos_fast += reststepfast; }
           sleep_us(conf_.delayF);
@@ -1882,7 +1884,7 @@ void Scanner::start_fastscan(std::vector<int32_t> &vector)
 
         if (!flgVirtual)
         {
-          getValuesFromAdc();
+          hardware->getValuesFromAdc();
           vector_data.emplace_back(ZMaxValue-(int16_t) spiBuf[ZPin]);  // считать Z из АЦП
         }
         else
@@ -1896,7 +1898,7 @@ void Scanner::start_fastscan(std::vector<int32_t> &vector)
         if (!flgVirtual)
         {
           pos_fast -= conf_.diskretinstep;
-          set_DACXY(portfast, pos_fast);
+          hardware->set_DACXY(portfast, pos_fast);
         } 
         else { pos_fast -= conf_.diskretinstep; }
         sleep_us(conf_.delayB);
@@ -1906,7 +1908,7 @@ void Scanner::start_fastscan(std::vector<int32_t> &vector)
         if (!flgVirtual)
         {
           pos_fast -= reststepfast;
-          set_DACXY(portfast, pos_fast);
+          hardware->set_DACXY(portfast, pos_fast);
         }
         else { pos_fast -= reststepfast; }
 
@@ -1919,7 +1921,7 @@ void Scanner::start_fastscan(std::vector<int32_t> &vector)
           if (!flgVirtual)
           {
             pos_slow += conf_.diskretinstep;
-            set_DACXY(portslow, pos_slow);
+            hardware->set_DACXY(portslow, pos_slow);
           } 
           else { pos_slow += conf_.diskretinstep; }
           sleep_us(conf_.delayF);
@@ -1929,7 +1931,7 @@ void Scanner::start_fastscan(std::vector<int32_t> &vector)
           if (!flgVirtual) 
           {
             pos_slow -= reststepslow;
-            set_DACXY(portslow, pos_slow);
+            hardware->set_DACXY(portslow, pos_slow);
           }
           else { pos_slow -= reststepslow; }
           sleep_us(conf_.delayF);
@@ -2069,22 +2071,22 @@ void Scanner::move_to(const Point &point, uint16_t delay)
   {
     while (pos_.x < point.x)
     {
-      set_DACXY(portx, ++pos_.x);// 1
+      hardware->set_DACXY(portx, ++pos_.x);// 1
       sleep_us(delay);
     }
     while (pos_.x > point.x)
     {
-      set_DACXY(portx, --pos_.x);
+      hardware->set_DACXY(portx, --pos_.x);
       sleep_us(delay);
     }
     while (pos_.y < point.y)//2
     {
-      set_DACXY(porty, ++pos_.y);
+      hardware->set_DACXY(porty, ++pos_.y);
       sleep_us(delay);
     }
     while (pos_.y > point.y)
     {
-      set_DACXY(porty, --pos_.y); //2
+      hardware->set_DACXY(porty, --pos_.y); //2
       sleep_us(delay);
     }
   }
@@ -2149,7 +2151,7 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
 
    if (!flgVirtual) 
    {
-        getValuesFromAdc();
+        hardware->getValuesFromAdc();
         ZValue = (int16_t)spiBuf[ZPin];
         switch(flgDev)
      {
@@ -2232,7 +2234,7 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
       status = none;
       if (!flgVirtual) 
       {
-        getValuesFromAdc();
+        hardware->getValuesFromAdc();
         ZValue = (int16_t)spiBuf[ZPin];
         switch(flgDev)
        {
@@ -2413,7 +2415,7 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
         else  Zt=Zt+stepsize; 
       } 
     //   Zt=Zt+stepsize;         
-      if (!flgVirtual) set_DACZ(Zt);    
+      if (!flgVirtual) hardware->set_DACZ(Zt);    
       sleep_us(10);  //240405     
       for(int16_t k=0; k < delay; k++) { }// задержка в каждом дискрете  ?????
 	  }
@@ -2429,7 +2431,7 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
         if (Zt<=(minint16_t+nreststeps)) { Zt=minint16_t;}
         else Zt=Zt-nreststeps;
       } 
-      if (!flgVirtual) set_DACZ(Zt);   
+      if (!flgVirtual) hardware->set_DACZ(Zt);   
       sleep_us(300);     //240405
     }   
     return(Zt);
@@ -2482,7 +2484,7 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
   vectorA_Z.clear();
   if (!flgVirtual)
   {
-    getValuesFromAdc();
+    hardware->getValuesFromAdc();
     Z0=(int16_t) spiBuf[ZPin];
     retract();
     sleep_ms(50);
@@ -2499,7 +2501,7 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
     sleep_ms(delay);  
    if (!flgVirtual) 
    {  
-      getValuesFromAdc(); 
+      hardware->getValuesFromAdc(); 
      
         switch (flgModa)
     {
@@ -2548,7 +2550,7 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
 
    if (!flgVirtual)
    {
-       getValuesFromAdc(); 
+       hardware->getValuesFromAdc(); 
        switch (flgModa)
     {
      case SFM:    { SignalValue=(int16_t)spiBuf[AmplPin]; break;}  
@@ -2636,7 +2638,7 @@ void Scanner::spectroscopyIV(std::vector<int32_t> &vector)
 // if(!flgVirtual)  freezeLOOP(200); 240325
   if (!flgVirtual)
   {
-    getValuesFromAdc();
+    hardware->getValuesFromAdc();
     Z0=(int16_t) spiBuf[ZPin];
     retract();
     sleep_ms(50);
@@ -2670,20 +2672,20 @@ void Scanner::spectroscopyIV(std::vector<int32_t> &vector)
         rest=dlt%start_step;
       for (kk=0; kk<nstep; kk++)
       {
-       if (!flgVirtual) set_Bias(dacU);    
+       if (!flgVirtual) hardware->set_Bias(dacU);    
        sleep_ms(10);   
        dacU+=step;
       } 
        dacU+=rest;
-      if (!flgVirtual)set_Bias(dacU);         
+      if (!flgVirtual) hardware->set_Bias(dacU);         
       sleep_ms(10);  
       for(i=0; i<UPoints; i++)
       {
-       if (!flgVirtual) {set_Bias(dacU); }
+       if (!flgVirtual) {hardware->set_Bias(dacU); }
        sleep_ms(delay);
        if (!flgVirtual)
        {
-        getValuesFromAdc();
+        hardware->getValuesFromAdc();
         SignalValue = (int16_t)spiBuf[IPin];
         vectorI_V.emplace_back(UStart+i*UStep);
         vectorI_V.emplace_back(SignalValue);
@@ -2713,15 +2715,15 @@ void Scanner::spectroscopyIV(std::vector<int32_t> &vector)
   nstep=dlt/start_step;
   for (kk=0; kk<nstep; kk++)
   {
-   if (!flgVirtual) set_Bias(dacU);  
+   if (!flgVirtual) hardware->set_Bias(dacU);  
    sleep_ms(10);
    dacU+=step;
   }
     dacU+=rest;
-  if (!flgVirtual) set_Bias(dacU);  
+  if (!flgVirtual) hardware->set_Bias(dacU);  
     sleep_ms(10);
   
-  if (!flgVirtual) set_Bias(UBackup);  //240206
+  if (!flgVirtual) hardware->set_Bias(UBackup);  //240206
     sleep_ms(10);
 ///////////////////////////////////////////////
  //  if(!flgVirtual)  unfreezeLOOP(500); //240322
@@ -2784,13 +2786,13 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
   } 
   sendStrData("code"+std::to_string(DEBUG)+" approach parameters  ",debugdata,100,true);
  } 
-  set_SetPoint(SET_POINT); 
-  if (flgDev!=SFM) set_Bias(Bias);  
-  set_GainPID((uint16_t)GAIN); //240320
+  hardware->set_SetPoint(SET_POINT); 
+  if (flgDev!=SFM) hardware->set_Bias(Bias);  
+  hardware->set_GainPID((uint16_t)GAIN); //240320
 
   if (!flgVirtual)
   {
-    getValuesFromAdc(); 
+    hardware->getValuesFromAdc(); 
     ZValue = (int16_t)spiBuf[ZPin];
     switch (flgDev)
    {
@@ -2845,9 +2847,9 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
       SCANNERDECAY = vupdateparams[7];
      
      // if (flgDev!=SFM) set_Bias(1,Bias);  240211
-      set_SetPoint(SET_POINT); 
+      hardware->set_SetPoint(SET_POINT); 
       sleep_ms(100);  // need for virtual для разделение afc //240314
-      set_GainPID((uint16_t)GAIN); //240316
+      hardware->set_GainPID((uint16_t)GAIN); //240316
       sleep_ms(100);  // need for virtual для разделение afc //240314
       if (flgDebug)
       {  
@@ -2862,7 +2864,7 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
  
     if (!flgVirtual) // get values
     {
-      getValuesFromAdc();
+      hardware->getValuesFromAdc();
       ZValue = (int16_t)spiBuf[ZPin];
      switch (flgDev)
      {
@@ -2913,7 +2915,7 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
         {
           if (!flgVirtual)
           {
-             getValuesFromAdc();
+             hardware->getValuesFromAdc();
             ZValue = (int16_t)spiBuf[ZPin];
           }
           if (ZValue <= GATE_Z_MAX) k++;
@@ -2991,7 +2993,7 @@ void Scanner::testpiezomover(std::vector<int32_t> &vector)
   flgstop=0;
   if (!flgVirtual)
   {
-    getValuesFromAdc(); 
+    hardware->getValuesFromAdc(); 
     ZValue = (int16_t)spiBuf[ZPin];
   } 
   else
@@ -3032,7 +3034,7 @@ void Scanner::testpiezomover(std::vector<int32_t> &vector)
         }  
         if (!flgVirtual)
         {
-          getValuesFromAdc(); 
+          hardware->getValuesFromAdc(); 
           ZValue = (int16_t)spiBuf[ZPin];
         } 
         else
@@ -3072,7 +3074,7 @@ void Scanner::testpiezomover(std::vector<int32_t> &vector)
           linearDriver.activate(99, freq, scv, std::abs(step), step > 0);
           protract(); //вытянуть
           sleep_ms(INTDELAY);
-          getValuesFromAdc(); 
+          hardware->getValuesFromAdc(); 
           ZValue = (int16_t)spiBuf[ZPin];
         }  
         else
@@ -3104,7 +3106,7 @@ void Scanner::testpiezomover(std::vector<int32_t> &vector)
           linearDriver.activate(99, freq, scv, std::abs(step), step > 0);
           protract(); //вытянуть
           sleep_ms(INTDELAY);
-          getValuesFromAdc(); 
+          hardware->getValuesFromAdc(); 
           ZValue = (int16_t)spiBuf[ZPin];
          }  
          else
@@ -3144,7 +3146,7 @@ void Scanner::testpiezomover(std::vector<int32_t> &vector)
 ////////////////////////////////////////////////////////////////
         if (!flgVirtual)
         {
-          getValuesFromAdc(); 
+          hardware->getValuesFromAdc(); 
           ZValue = (int16_t)spiBuf[ZPin];
         } 
         else
@@ -3172,7 +3174,7 @@ void Scanner::testpiezomover(std::vector<int32_t> &vector)
                linearDriver.activate(99, freq, scv, std::abs(step), step > 0);
                protract(); //вытянуть
                sleep_ms(INTDELAY);
-               getValuesFromAdc(); 
+               hardware->getValuesFromAdc(); 
                ZValue = (int16_t)spiBuf[ZPin];
             }   
             else
@@ -3205,7 +3207,7 @@ void Scanner::testpiezomover(std::vector<int32_t> &vector)
                linearDriver.activate(99, freq, scv, std::abs(step), step > 0);
                protract(); //вытянуть
                sleep_ms(INTDELAY);
-               getValuesFromAdc(); 
+               hardware->getValuesFromAdc(); 
                ZValue = (int16_t)spiBuf[ZPin];
               }
               else
@@ -3272,9 +3274,9 @@ void Scanner::start_frqscan()
   {
     if (!flgVirtual)
     {
-      set_Freq(freq);
+      hardware->set_Freq(freq);
       sleep_ms(delay);
-      getValuesFromAdc();
+      hardware->getValuesFromAdc();
       SignalValue = (int16_t)spiBuf[AmplPin];
       data.emplace_back(freq);
       data.emplace_back(SignalValue); 

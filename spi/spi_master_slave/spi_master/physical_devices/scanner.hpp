@@ -5,6 +5,8 @@
 #include <vector>
 #include <random>
 #include "../utilities/base_types/Point.hpp"
+//#include "../loop/common_data/common_variables.hpp"
+#include "../utilities/hardcoded_functions.hpp"
 
 struct Config
 {
@@ -57,6 +59,8 @@ private:
   void sendStrData(std::string const& header);
 
 public:
+
+   HARDWARE *hardware;
 
    Scanner();
 

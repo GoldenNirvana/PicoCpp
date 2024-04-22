@@ -48,7 +48,7 @@ case FREQ_SET:{
                 if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
                  ALGCODE=ALGNONE;
                 if (flgСritical_section) critical_section_exit(&criticalSection);
-                set_Freq((uint16_t) vector[1]);              
+                scanner.hardware->set_Freq((uint16_t) vector[1]);              
                 break;
               }
 case LID_MOVE_UNTIL_STOP:
@@ -151,7 +151,7 @@ case SET_PID_GAIN:
                 critical_section_enter_blocking(&criticalSection);
                  ALGCODE=ALGNONE;
                 critical_section_exit(&criticalSection);
-                set_GainPID((uint16_t)vector[1]);//240320    
+                scanner.hardware->set_GainPID((uint16_t)vector[1]);//240320    
                 break; 
               }  
 case SET_AMPLMOD_GAIN: // усиление раскачка зонда 
@@ -159,7 +159,7 @@ case SET_AMPLMOD_GAIN: // усиление раскачка зонда
                 if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
                  ALGCODE=ALGNONE;
                 if (flgСritical_section) critical_section_exit(&criticalSection);
-                set_GainApmlMod((uint8_t)vector[1]);
+                 scanner.hardware->set_GainApmlMod((uint8_t)vector[1]);
                 break;
               }   
 case InitDAC_BIAS_SET_POINT:
@@ -167,7 +167,7 @@ case InitDAC_BIAS_SET_POINT:
                 if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
                  ALGCODE=ALGNONE;
                 if (flgСritical_section) critical_section_exit(&criticalSection);
-                if (!flgVirtual)  init_DACSPB(vector[1]);       
+                if (!flgVirtual)   scanner.hardware->init_DACSPB(vector[1]);       
                 break;         
               }   
 case InitDAC_Z:
@@ -175,7 +175,7 @@ case InitDAC_Z:
                 if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
                  ALGCODE=ALGNONE;
                 if (flgСritical_section) critical_section_exit(&criticalSection);
-                if (!flgVirtual)  init_DACZ(vector[1]);       
+                if (!flgVirtual)   scanner.hardware->init_DACZ(vector[1]);       
                 break;         
               }   
 case InitDAC_XY:
@@ -183,7 +183,7 @@ case InitDAC_XY:
                 if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
                  ALGCODE=ALGNONE;
                 if (flgСritical_section) critical_section_exit(&criticalSection);
-                init_DACXY(vector[1]);
+                 scanner.hardware->init_DACXY(vector[1]);
                 break; 
               } 
 case SetDACZeroCmd:
@@ -191,7 +191,7 @@ case SetDACZeroCmd:
                 if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
                  ALGCODE=ALGNONE;
                 if (flgСritical_section) critical_section_exit(&criticalSection);
-                set_DACZero();
+                 scanner.hardware->set_DACZero();
                 break;
               } 
 case SET_BIAS:
@@ -199,7 +199,7 @@ case SET_BIAS:
                 if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
                  ALGCODE=ALGNONE;
                 if (flgСritical_section) critical_section_exit(&criticalSection);
-                set_Bias(vector[1]);
+                 scanner.hardware->set_Bias(vector[1]);
                 break;
               }               
 case SET_SETPOINT:
@@ -207,30 +207,30 @@ case SET_SETPOINT:
                 if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
                  ALGCODE=ALGNONE;
                 if (flgСritical_section) critical_section_exit(&criticalSection);
-                set_SetPoint(vector[1]);
+                 scanner.hardware->set_SetPoint(vector[1]);
                 break; 
               }   
   case SET_Z: { 
                 if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
                  ALGCODE=ALGNONE;
                 if (flgСritical_section) critical_section_exit(&criticalSection);
-                set_DACZ(vector[1]);
+                 scanner.hardware->set_DACZ(vector[1]);
                 break;
               }     
  case SET_XY: {
                 if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
                  ALGCODE=ALGNONE;
                 if (flgСritical_section) critical_section_exit(&criticalSection);
-               init_SPI(vector[1],vector[2],vector[3],vector[4]);//29, 3, 8, 0, 1, 1, value	
+               scanner.hardware->init_SPI(vector[1],vector[2],vector[3],vector[4]);//29, 3, 8, 0, 1, 1, value	
                if (vector[5] == 0)
                {
-                move_scannerX(vector[6]);
+                 scanner.hardware->move_scannerX(vector[6]);
                 // dac8563_2.writeA(vector[6]);
                } 
                else 
                if (vector[5] == 1)
                {
-                move_scannerY(vector[6]);
+                 scanner.hardware->move_scannerY(vector[6]);
                // dac8563_2.writeB(vector[6]);
                }
                break;
@@ -292,7 +292,7 @@ case VersionCmd:
                 if (flgСritical_section) critical_section_enter_blocking(&criticalSection); 
                  ALGCODE=ALGNONE; 
                 if (flgСritical_section) critical_section_exit(&criticalSection);  
-                GetSOFTHARDWAREVersion();
+                 scanner.hardware->GetSOFTHARDWAREVersion();
                 break;
               }               
 

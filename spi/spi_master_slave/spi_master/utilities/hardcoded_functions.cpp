@@ -12,7 +12,20 @@
 #define UART_TX_PIN 8
 #define UART_RX_PIN 9
 
-void set_io_value(int port, int value)  
+HARDWARE::HARDWARE() 
+{
+  dac8563_1=new DAC8563(1); // DAC BIAS,SetPoint
+  dac8563_2=new DAC8563(2); // DAC X,Y
+  dac8563_3=new DAC8563(1);
+}
+
+HARDWARE::~HARDWARE()
+{
+ delete(dac8563_1);
+ delete(dac8563_2);
+ delete(dac8563_3);
+}
+void HARDWARE::set_io_value(int port, int value)  
 {
   SET_IO_VALUE = false;
   if (port == 1)
@@ -36,7 +49,7 @@ void set_io_value(int port, int value)
     binary[0] == '1' ? io3_1.enable() : io3_1.disable();
   }
 }
-void setDefaultSettings()
+void HARDWARE::setDefaultSettings()
 {
   /// BASIC SETTINGS
   uart_init(uart1, 115200);
@@ -107,7 +120,7 @@ void set_freq(uint32_t freq)
   spi_write_blocking(spi_default, buf + 4, 2);
 }
 */
-void GetSOFTHARDWAREVersion()
+void HARDWARE::GetSOFTHARDWAREVersion()
 {
  //time_t now = time(0);
 // char* version = ctime(&now);
@@ -122,7 +135,7 @@ void GetSOFTHARDWAREVersion()
 
 }
 
-void set_Freq(uint32_t freq)
+void HARDWARE::set_Freq(uint32_t freq)
 {
   int64_t flag_freq = 1 << 14;
   int64_t scale = 1 << 28;
@@ -154,7 +167,7 @@ void set_Freq(uint32_t freq)
 }
 
 
-void get_result_from_adc()
+void HARDWARE::get_result_from_adc()
 {
   ADC_IS_READY_TO_READ = false;
   conv.disable();
@@ -162,15 +175,15 @@ void get_result_from_adc()
   conv.enable();
 }
 
-void init_SPI( uint8_t port ,uint8_t v2 ,uint8_t v3, uint8_t v4 )
+void HARDWARE::init_SPI( uint8_t port ,uint8_t v2 ,uint8_t v3, uint8_t v4 )
 {
  decoder.activePort(port);
  Spi::setProperties(v2, v3, v4);
 }
 
-void init_DACSPB(uint8_t port) //  4 для подставки
+void HARDWARE::init_DACSPB(uint8_t port) //  4 для подставки
 {
-  dac8563_1.initialize(port); //code 23
+  dac8563_1->initialize(port); //code 23
 /*
   afc.clear();
   afc = "code"+std::to_string(DEBUG)+ "debug Init DACSPB " + std::to_string(port);
@@ -181,12 +194,12 @@ void init_DACSPB(uint8_t port) //  4 для подставки
  */ 
 }
 
-void init_DACXY(uint8_t port)
+void HARDWARE::init_DACXY(uint8_t port)
 {
-  dac8563_2.initialize(port); //code 27
-  dac8563_2.setSpiProps();
-  dac8563_2.writeA(0);
-  dac8563_2.writeB(0);
+  dac8563_2->initialize(port); //code 27
+  dac8563_2->setSpiProps();
+  dac8563_2->writeA(0);
+  dac8563_2->writeB(0);
  /* afc.clear();
   afc ="code"+std::to_string(DEBUG)+ "debug Init DACXY 0,0 port=" + std::to_string(port);
   afc += +"\n";
@@ -196,9 +209,9 @@ void init_DACXY(uint8_t port)
   */
 }
 
-void init_DACZ(uint8_t port)
+void HARDWARE::init_DACZ(uint8_t port)
 {
-  dac8563_3.initialize(port); //code 27
+  dac8563_3->initialize(port); //code 27
   set_DACZ(0); 
  /*
   afc.clear();
@@ -209,13 +222,13 @@ void init_DACZ(uint8_t port)
   sleep_ms(100);
  */ 
 }
-void move_scannerX(int x)
+void HARDWARE::move_scannerX(int x)
 {
- dac8563_2.writeA(x);
+ dac8563_2->writeA(x);
 }
-void move_scannerY(int y)
+void HARDWARE::move_scannerY(int y)
 {
- dac8563_2.writeB(y);
+ dac8563_2->writeB(y);
 
 }
 /*
@@ -236,12 +249,12 @@ void set_Bias(int8_t channel,int32_t Bias)
 }
 */
  
- void set_Bias(int32_t Bias)
+ void HARDWARE::set_Bias(int32_t Bias)
 {
 //   code  22 , 2, 8, 0, 1, 1, value 
   if (!flgVirtual)
   { 
-     dac8563_1.writeB(Bias+ShiftDac);
+     dac8563_1->writeB(Bias+ShiftDac);
   }	
   /*
  if  (flgDebug)
@@ -281,11 +294,11 @@ void set_SetPoint(int8_t channel, int32_t SetPoint)
 }
 */
 
-void set_SetPoint( int32_t SetPoint)
+void HARDWARE::set_SetPoint( int32_t SetPoint)
 {//  code  22, 2, 8, 0, 1, 0, value
   if (!flgVirtual)
   {
-     dac8563_1.writeA(SetPoint+ShiftDac);
+     dac8563_1->writeA(SetPoint+ShiftDac);
   } 
   // отладка
   if  (flgDebug)
@@ -299,7 +312,7 @@ void set_SetPoint( int32_t SetPoint)
   }
 }
 
-void set_GainApmlMod(uint8_t gain)
+void HARDWARE::set_GainApmlMod(uint8_t gain)
 {
   uint8_t intBuf[1]; 
   if (!flgVirtual)
@@ -326,7 +339,7 @@ void set_GainApmlMod(uint8_t gain)
   } 
 }
 
-void set_GainPID(int gain)
+void HARDWARE::set_GainPID(int gain)
 {
   uint8_t ti;
   uint8_t tiadd;
@@ -356,47 +369,47 @@ void set_GainPID(int gain)
   }  
 }
 
-void set_clock_enable()
+void HARDWARE::set_clock_enable()
 {
   uint8_t intBuf[1];
   Spi::setProperties(8, 1, 1);
   decoder.activePort(7);
   spi_write_blocking(spi_default, intBuf, 1);
 }
-void set_DACZero()
+void HARDWARE::set_DACZero()
 { 
  set_DACXY(0,0); 
  set_DACXY(1,0); 
  set_DACZ(0); 
  sleep_us(10); //240405
 }
-void set_DACXY(uint8_t channel, uint16_t value) 
+void HARDWARE::set_DACXY(uint8_t channel, uint16_t value) 
 {
-  dac8563_2.setSpiProps();
-  if (channel == 0)  dac8563_2.writeA(value);
-  if (channel == 1)  dac8563_2.writeB(value);
+  dac8563_2->setSpiProps();
+  if (channel == 0)  dac8563_2->writeA(value);
+  if (channel == 1)  dac8563_2->writeB(value);
   sleep_us(2);// 240405
 }
 
-void set_DACZ(int16_t value) 
+void HARDWARE::set_DACZ(int16_t value) 
 {
-  dac8563_3.setSpiProps(); 
-  dac8563_3.writeA(int32_t(value)+ShiftDac);
+  dac8563_3->setSpiProps(); 
+  dac8563_3->writeA(int32_t(value)+ShiftDac);
   sleep_us(2);// 240405
 }
 
-void stopAll()
+void HARDWARE::stopAll()
 {
   STOP=false;
 }
 
-uint16_t *getValuesFromAdc()
+uint16_t *HARDWARE::getValuesFromAdc()
 {
   repeatTwoTimes();
   return repeatTwoTimes();
 }
 
-uint16_t *repeatTwoTimes()
+uint16_t *HARDWARE::repeatTwoTimes()
 {
   get_result_from_adc();
   int j = 0;

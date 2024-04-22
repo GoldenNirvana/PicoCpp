@@ -2,6 +2,7 @@
 #include "loop/main_core.hpp"
 #include "utilities/hardcoded_functions.hpp"
 #include "utilities/peripheral_functions.hpp"
+
 uint32_t DEBUG_LEVEL = 2;
 
 int start_app()
@@ -13,7 +14,10 @@ int start_app()
     activateError();
   }
   dark();
-  setDefaultSettings();
+  
+  //hardware=new  HARDWARE;
+
+  scanner.hardware->setDefaultSettings();
   MainCore mainCore;
   mainCore.loop();
   return 0;

@@ -10,17 +10,17 @@ std::string afc;  //dataout string
 Spi spi;
 LinearDriver linearDriver;
 Decoder decoder(4, 5, 6);
-Scanner scanner;
+
+Scanner  scanner;
+//HARDWARE hardware;
 
 //int32_t  vector[16];  //datain
 std::vector<int32_t> vector;
 std::vector<int32_t> vupdateparams;
 
 int32_t vectorSize;
+//HARDWARE hardware;
 
-DAC8563 dac8563_1(1); // DAC BIAS,SetPoint
-DAC8563 dac8563_2(2); // DAC X,Y
-DAC8563 dac8563_3(1); // DAC Z
 //#warning REMOVE STATIC !!! side effects???
 uint16_t spiBuf[8];
 

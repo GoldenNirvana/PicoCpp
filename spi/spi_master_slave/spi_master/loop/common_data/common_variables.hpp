@@ -6,7 +6,8 @@
 #include "../../utilities/base_types/Spi.hpp"
 #include "../../physical_devices/LinearDriver.hpp"
 #include "../../physical_devices/scanner.hpp"
-#include "../../devices/DAC8563.hpp"
+#include "../../utilities/hardcoded_functions.hpp"
+//#include "../../devices/DAC8563.hpp"
 //device
 #define SFM                      0
 #define STM                      1
@@ -65,10 +66,9 @@ extern uint32_t DEBUG_LEVEL;
 extern Spi      spi;
 extern LinearDriver linearDriver;
 extern Decoder decoder;
-extern Scanner scanner;
-extern DAC8563 dac8563_1;  // DAC BIas,SetPoint
-extern DAC8563 dac8563_2;  // DAC X,Y
-extern DAC8563 dac8563_3;  // DAC Z
+extern Scanner  scanner;
+//extern HARDWARE *hardware;
+
 
 extern std::string afc;
 extern uint16_t spiBuf[8];

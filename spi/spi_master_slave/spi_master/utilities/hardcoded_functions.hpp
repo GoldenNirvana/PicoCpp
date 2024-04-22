@@ -2,51 +2,65 @@
 #define PICO_EXAMPLES_HARDCODED_FUNCTIONS_HPP
 
 #include "../devices/ad5664.hpp"
+#include "../devices/DAC8563.hpp"
 #include <ctime>
 
+class HARDWARE
+{
 // WARNING HARDCODED FUNCTIONS
-void setDefaultSettings();
+private:
+ uint16_t *repeatTwoTimes(); 
 
-void GetSOFTHARDWAREVersion();
+ void get_result_from_adc();       // чтение АЦП
+ 
+ void set_io_value(int, int);
 
-void set_Freq(uint32_t freq); //установка заданной частоты генератора
+ void set_clock_enable();
 
-void init_SPI(uint8_t port ,uint8_t v2 ,uint8_t v3, uint8_t v4); //инициирование SPI
+ DAC8563 *dac8563_1; // DAC BIAS,SetPoint
+ DAC8563 *dac8563_2; // DAC X,Y
+ DAC8563 *dac8563_3; // DAC Z
 
-void init_DACSPB(uint8_t port); //инициирование ЦАП1  SetPoint,BIAS
+public:
 
-void init_DACXY(uint8_t port); //инициирование ЦАП2  XY
+   HARDWARE();
 
-void init_DACZ(uint8_t port); //инициирование ЦАП2  Z
+  ~HARDWARE();
 
-void set_Bias(int32_t Bias); //установка заданного значения напряжения
+ void setDefaultSettings();
 
-void set_SetPoint(int32_t SetPoint);//установка заданной опроры для ПИД
+ void GetSOFTHARDWAREVersion();
 
-void set_GainApmlMod(uint8_t gain); // установить усиления 
+ void set_Freq(uint32_t freq); //установка заданной частоты генератора
 
-void set_GainPID(int gain);          //установить усиления ПИД
+ void init_SPI(uint8_t port ,uint8_t v2 ,uint8_t v3, uint8_t v4); //инициирование SPI
 
-void set_DACXY(uint8_t channel, uint16_t value); 
+ void init_DACSPB(uint8_t port); //инициирование ЦАП1  SetPoint,BIAS
 
-void set_DACZ(int16_t value); 
+ void init_DACXY(uint8_t port); //инициирование ЦАП2  XY
 
-void set_DACZero();
+ void init_DACZ(uint8_t port); //инициирование ЦАП2  Z
 
-void stopAll(); //остановка  выполнения алгоритма
+ void set_Bias(int32_t Bias); //установка заданного значения напряжения
 
-void move_scannerX(int x);
+ void set_SetPoint(int32_t SetPoint);//установка заданной опроры для ПИД
 
-void move_scannerY(int y);
+ void set_GainApmlMod(uint8_t gain); // установить усиления 
 
-void get_result_from_adc();       // чтение АЦП
+ void set_GainPID(int gain);          //установить усиления ПИД
 
-void set_clock_enable();
+ void set_DACXY(uint8_t channel, uint16_t value); 
 
-void set_io_value(int, int);
+ void set_DACZ(int16_t value); 
 
-uint16_t *repeatTwoTimes();
+ void set_DACZero();
+ 
+ void stopAll(); //остановка  выполнения алгоритма
 
-uint16_t *getValuesFromAdc();  // чтение АЦП
+ void move_scannerX(int x);
 
+ void move_scannerY(int y);
+
+ uint16_t *getValuesFromAdc();  // чтение АЦП
+};
 #endif
