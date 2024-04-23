@@ -120,6 +120,7 @@ private:
   std::vector<int32_t>  debugdata; 
   Point pos_, prev_point;
   Config conf_;
+  ConfigHardWare confHW_;
 };
 
 #endif

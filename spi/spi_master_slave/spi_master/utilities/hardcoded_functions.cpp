@@ -12,12 +12,13 @@
 #define UART_TX_PIN 8
 #define UART_RX_PIN 9
 
-HARDWARE::HARDWARE() 
+//HARDWARE::HARDWARE(ConfigHardWare confighardware) 
+HARDWARE::HARDWARE()
 {
   dac8563_1=new DAC8563(1); // DAC BIAS,SetPoint
   dac8563_2=new DAC8563(2); // DAC X,Y
   dac8563_3=new DAC8563(1);
-   busy=new InputPort(16); // FIXME TEMP!!!
+      busy=new InputPort(16); // FIXME TEMP!!!
       conv=new OutputPort(7);
        dec=new OutputPort(10);
  resetPort=new OutputPort(17); 
@@ -36,8 +37,32 @@ HARDWARE::HARDWARE()
      io_ports.push_back(io2_1);
      io_ports.push_back(io2_2);
      io_ports.push_back(io3_0);
-     io_ports.push_back(io3_1);
-  
+     io_ports.push_back(io3_1); 
+/* 
+  dac8563_1=new DAC8563(confighardware.DACBSPT); // DAC BIAS,SetPoint
+  dac8563_2=new DAC8563(confighardware.DACXY); // DAC X,Y
+  dac8563_3=new DAC8563(confighardware.DAC);
+      busy=new InputPort(confighardware.BUSY); // FIXME TEMP!!!
+      conv=new OutputPort(confighardware.CONV);
+       dec=new OutputPort(confighardware.DEC);
+ resetPort=new OutputPort(confighardware.ResetPort); 
+   ledPort=new OutputPort(PICO_DEFAULT_LED_PIN);
+    rdbLed=new OutputPort(confighardware.RDBPort); 
+     io1_0=new OutputPort(confighardware.IO1_0);
+     io1_1=new OutputPort(confighardware.IO1_1);
+     io2_0=new OutputPort(confighardware.IO2_0);
+     io2_1=new OutputPort(confighardware.IO2_1); 
+     io2_2=new OutputPort(confighardware.IO2_2); 
+     io3_0=new OutputPort(confighardware.IO3_0); //вытянуть сканнер
+     io3_1=new OutputPort(confighardware.IO3_1); //втянуть сканнер
+     io_ports.push_back(io1_0);
+     io_ports.push_back(io1_1);
+     io_ports.push_back(io2_0);
+     io_ports.push_back(io2_1);
+     io_ports.push_back(io2_2);
+     io_ports.push_back(io3_0);
+     io_ports.push_back(io3_1); 
+     */
 }
 
 HARDWARE::~HARDWARE()

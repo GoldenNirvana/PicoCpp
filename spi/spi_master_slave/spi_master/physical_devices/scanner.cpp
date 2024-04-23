@@ -1,15 +1,12 @@
 #include "scanner.hpp"
 #include <iostream>
 #include "../loop/common_data/common_variables.hpp"
-//#include "../utilities/hardcoded_functions.hpp"
-//#include "../utilities/peripheral_functions.hpp"
 #include <cmath>
 #include <time.h>
 
 Scanner::Scanner() : pos_({0, 0}), conf_({})
 {
-   
-     hardware=new  HARDWARE;
+    hardware=new  HARDWARE();//confighardware);
 }
 
 Scanner::~Scanner()
