@@ -47,11 +47,8 @@ struct ConfigCurrent
 
 class Scanner
 {
-
 private:
 
-
- 
   void stop_scan();         // возвращение сканера в  начальную точку скана
   
   void move_to(const Point &point, uint16_t delay);  // переместиться в начальную точку скана текущего скана

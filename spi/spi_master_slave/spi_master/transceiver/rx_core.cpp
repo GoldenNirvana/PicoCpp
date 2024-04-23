@@ -38,49 +38,14 @@ void RX_core::launchOnCore1()
    while (true)
   {
     parse(vector,vupdateparams); //wait for data ! парсинг входящих данных из ПК 
- //   flgParamsUpdated=false;
-//    while (not flgParamsUpdated;) sleep_ms(100);
-
-   if (vector.size()!=0)
+    if (vector.size()!=0)
    {
      if (flgСritical_section) critical_section_enter_blocking(&criticalSection); //added 24/03/11
     switch (vector[0])
     {
-    ///////////////////////////// ??? 
-      case 1:
-        AD9833_SENDER = true;
-        break;
-      case 5:
-        AD8400_SENDER = true;
-        break;
-      case 6:
-        ADC_ENABLE_DISABLE = true;
-        break;
-     ///////////////////////////   
-      case 11:
+      case 11: ///????
         ADC_RESET = true;
         break;
-    /*  case 13: 
-        if (vector[1]==1)
-        {
-           ZPin=0; 
-           AmplPin=1; 
-           IPin=2;
-        }
-        else
-        {
-           ZPin=1; 
-           AmplPin=0; 
-           IPin=2;
-        }
-       break;
-    */   
-    /* 
-       case 21:
-        AD5664 = true;
-        break;
-     */   
-  //*************************************** 
       case VirtualCmd : //флаг симуляции работы микрокотроллера      
         flgVirtual=(bool)vector[1];
         break;
@@ -108,21 +73,14 @@ void RX_core::launchOnCore1()
         break;
       case DRAWDONECmd: // mf  
         DrawDone = true;
-        break;
-  /*
-      case CONFIG_UPDATECmd: //обновление параметров текущего активного алгоритма
-        CONFIG_UPDATE = true;
         break;  
-   */     
       case STOPCmd:
         STOP=true; //stopAll(); stop the active algorithm 
         break; 
       default: 
       {
-   //    critical_section_enter_blocking(&criticalSection);
-        if (vector[0]>=0 && vector[0]<100)  {ALGCODE=(int16_t)vector[0]; }
+         if (vector[0]>=0 && vector[0]<100)  {ALGCODE=(int16_t)vector[0]; }
                                        else ALGCODE=0;
-   //   critical_section_exit(&criticalSection);
         break;
       }  
      }   
@@ -135,7 +93,7 @@ void RX_core::launchOnCore1()
     if (vupdateparams[0]==CONFIG_UPDATECmd)
     {
       if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
-      CONFIG_UPDATE = true;
+       CONFIG_UPDATE = true;
       if (flgСritical_section) critical_section_exit(&criticalSection);
     } 
    }

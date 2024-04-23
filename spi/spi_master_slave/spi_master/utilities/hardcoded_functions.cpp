@@ -100,17 +100,6 @@ void HARDWARE::setDefaultSettings()
   retract();// 240403 ???
   io3_1->blink();  //втянуть   240209
  
-  // init io_ports, mb  delete
-/*  io_ports.push_back(io1_0);
-  io_ports.push_back(io1_1);
-  io_ports.push_back(io2_0);
-  io_ports.push_back(io2_1);
-  io_ports.push_back(io2_2);
-  io_ports.push_back(io3_0);
-  io_ports.push_back(io3_1);
-  */
-  //io_ports.push_back(io3_2);
-
   init_DACSPB(2);//инициирование ЦАП1  SetPoint,BIAS
 
   init_DACXY(3); //инициирование ЦАП2  DACXY
@@ -119,31 +108,6 @@ void HARDWARE::setDefaultSettings()
   
 }
 
-/*
-void set_freq(uint32_t freq)
-{
-  int64_t flag_freq = 1 << 14;
-  int64_t scale = 1 << 28;
-  int64_t n_reg = int64_t(freq * scale / 25.0e6);
-  int64_t n_low = n_reg & 0x3fff;
-  int64_t n_hi = (n_reg >> 14) & 0x3fff;
-  uint8_t buf[6];
-  buf[0] = (flag_freq | n_low) / (0x100);
-  buf[1] = (flag_freq | n_low) % (0x100);
-  buf[2] = (flag_freq | n_hi) / (0x100);
-  buf[3] = (flag_freq | n_hi) % (0x100);
-  buf[4] = (0x2000) / (0x100);
-  buf[5] = (0x2000) % (0x100);
-
-  logger(buf, 6);
-
-  decoder.activePort(1);
-  Spi::setProperties(8, 1, 1);
-  spi_write_blocking(spi_default, buf, 2);
-  spi_write_blocking(spi_default, buf + 2, 2);
-  spi_write_blocking(spi_default, buf + 4, 2);
-}
-*/
 void HARDWARE::GetSOFTHARDWAREVersion()
 {
  //time_t now = time(0);
@@ -151,7 +115,7 @@ void HARDWARE::GetSOFTHARDWAREVersion()
   afc.clear();
  // std::string date;
  // date=version;
-  afc = "code"+std::to_string(VersionCmd)+" version "+ SOFTVERSION+','+HARDWAREVERSION;
+  afc = "code"+std::to_string(VersionCmd)+" version soft "+ SOFTVERSION+", hardware "+HARDWAREVERSION;
   afc += +"\n";
   std::cout << afc;
   afc.clear();
@@ -470,9 +434,8 @@ void HARDWARE::retract() //втянуть
 {
   io3_1->enable();  //  port 6   элемент массива портов 
 }
-void HARDWARE::retract(int16_t HeightJump) //втянуть на H
+void HARDWARE::retract(int16_t HeightJump) //втянуть на HeightJump
 {
- //freezeLOOP(100); 
  retract(); 
  set_DACZ(-abs(HeightJump)); 
 }

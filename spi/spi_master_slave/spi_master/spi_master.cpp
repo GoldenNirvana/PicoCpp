@@ -6,11 +6,8 @@ uint32_t DEBUG_LEVEL = 2;
 
 int start_app()
 {
-// mb need to delete crit_section
- 
   scanner=new  Scanner;
   scanner->hardware->setDefaultSettings();
-  //scanner->hardware->dark(); 
   critical_section_init(&criticalSection);
   if (!critical_section_is_initialized(&criticalSection))
   {

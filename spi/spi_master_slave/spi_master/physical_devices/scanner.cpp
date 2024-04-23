@@ -1663,7 +1663,7 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
   if (!flgVirtual)
   {
    hardware->protract();
-   ZMove(DACZ0,DACZ0,20,30); //вытянуть
+   ZMove(DACZ0,DACZ0,20,30); //вытянуть -20??
   }
   sleep_ms(1000);
 

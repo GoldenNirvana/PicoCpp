@@ -150,7 +150,7 @@ case SET_PID_GAIN:
                 critical_section_enter_blocking(&criticalSection);
                  ALGCODE=ALGNONE;
                 critical_section_exit(&criticalSection);
-                scanner->hardware->set_GainPID((uint16_t)vector[1]);//240320    
+                scanner->hardware->set_GainPID((uint16_t)vector[1]);  
                 break; 
               }  
 case SET_AMPLMOD_GAIN: // усиление раскачка зонда 
