@@ -1238,8 +1238,8 @@ struct Config
   sleep_ms(200);
   if (!flgVirtual)
   {
-   hardware->protract();
-   ZMove(DACZ0,DACZ0,-20, 30);//вытянуть
+   hardware->protract();// protract(30,DACZ0,DACZ0); 
+   ZMove(DACZ0,DACZ0,-20, 30);//вытянуть            !!!!!!!!!!!!!!!!!!!!!!!!!!
   }
   sleep_ms(1000);
   int16_t count = 0;
