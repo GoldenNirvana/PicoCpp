@@ -63,7 +63,7 @@ public:
 
    HARDWARE *hardware;
 
-   Scanner();
+   Scanner(ConfigHardWare _confighardware);
 
   ~Scanner();
 
@@ -121,7 +121,8 @@ private:
   std::vector<int32_t>  debugdata; 
   Point pos_, prev_point;
   Config conf_;
-  ConfigHardWare _confighardware;
+public:
+ //  ConfigHardWare _confighardware;
 };
 extern Scanner *scanner;
 #endif

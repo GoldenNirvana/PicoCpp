@@ -3,10 +3,11 @@
 
 #include <pico/critical_section.h>
 #include <string>
+#include <vector>
 #include "../../utilities/base_types/Spi.hpp"
 #include "../../physical_devices/LinearDriver.hpp"
 //#include "../../physical_devices/scanner.hpp"
-#include "../../utilities/hardcoded_functions.hpp"
+//#include "../../utilities/hardcoded_functions.hpp"
 //device
 #define SFM                      0
 #define STM                      1
@@ -66,10 +67,6 @@ extern uint32_t DEBUG_LEVEL;
 extern Spi      spi;
 extern LinearDriver linearDriver;
 extern Decoder decoder;
-//extern Scanner *scanner;
-//extern ConfigHardWare confighardwareV0;
-//extern ConfigHardWare confighardwareV1;
-//extern HARDWARE *hardware;
 
 extern std::string afc;
 extern uint16_t spiBuf[8];
@@ -114,27 +111,8 @@ extern uint8_t flgDebugLevel; //  leveldebug
 extern int16_t ZValue; //for simulation
 extern int16_t SignalValue; //for simulation //  
 extern int16_t ZMaxValue;
-
 extern int32_t ShiftDac;
-//
 //extern volatile int32_t current_channel;
 extern critical_section_t criticalSection;
-/*
-extern InputPort  busy;
-extern OutputPort conv;
-extern OutputPort dec;
-extern OutputPort resetPort;
-extern OutputPort ledPort;
-extern OutputPort rdbLed;
- //ports SPI                          
-extern OutputPort io1_0;   //0 channel -pins  
-extern OutputPort io1_1;   //1
-extern OutputPort io2_0;   //2
-extern OutputPort io2_1;   //3
-extern OutputPort io2_2;   //4
-extern OutputPort io3_0;   //5 заморозить-разморозить ?
-extern OutputPort io3_1;   //6 втянуть- вытянуть?
 
-extern std::vector<OutputPort> io_ports;
-*/
 #endif //PICO_EXAMPLES_COMMON_VARIABLES_HPP
