@@ -814,7 +814,7 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
   if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
    TheadDone = false;
   if (flgСritical_section) critical_section_exit(&criticalSection);
-  scanner->hardware->green();
+  hardware->green();
   sendStrData("code"+std::to_string(END)+"end"); 
    hardware->dark();
 }

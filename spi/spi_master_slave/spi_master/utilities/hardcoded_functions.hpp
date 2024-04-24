@@ -8,43 +8,6 @@
 #include <cstdint>
 #include <hardware/clocks.h>
 
-struct ConfigHardWare
-{
-  /*
-  dac8563_1=new DAC8563(1); // DAC BIAS,SetPoint
-  dac8563_2=new DAC8563(2); // DAC X,Y
-  dac8563_3=new DAC8563(1);
-      busy=new InputPort(16); // FIXME TEMP!!!
-      conv=new OutputPort(7);
-       dec=new OutputPort(10);
- resetPort=new OutputPort(17); 
-   ledPort=new OutputPort(PICO_DEFAULT_LED_PIN);
-    rdbLed=new OutputPort(23); 
-     io1_0=new OutputPort(11);
-     io1_1=new OutputPort(12);
-     io2_0=new OutputPort(13);
-     io2_1=new OutputPort(14); 
-     io2_2=new OutputPort(15); 
-     io3_0=new OutputPort(26); //вытянуть сканнер
-     io3_1=new OutputPort(27); //втянуть сканнер
-   */  
-  uint8_t DACBSPT;// DAC8563
-  uint8_t DACXY;  // DAC8563
-  uint8_t DAC;    //dac8563_3
-  uint8_t BUSY;
-  uint8_t CONV;
-  uint8_t DEC;
-  uint8_t ResetPort;  
-  uint8_t LEDPort;
-  uint8_t RDBPort; 
-  uint8_t IO1_0;
-  uint8_t IO1_1;
-  uint8_t IO2_0;
-  uint8_t IO2_1;
-  uint8_t IO2_2;
-  uint8_t IO3_0;
-  uint8_t IO3_1; 
-};
 
 //ConfigHardWare confighardware;
 
