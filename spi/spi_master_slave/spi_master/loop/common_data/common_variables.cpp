@@ -8,21 +8,13 @@ std::string  HARDWAREVERSION="1.0";
 
 std::string afc;  //dataout string
 Spi spi;
-LinearDriver linearDriver;
-Decoder decoder(4, 5, 6);
+//LinearDriver linearDriver; //24/04/24
+//Decoder decoder(4, 5, 6); //24/04/24
 
-//HARDWARE hardware;
-//Scanner *scanner;
-//int32_t  vector[16];  //datain
 std::vector<int32_t> vector;
 std::vector<int32_t> vupdateparams;
 
 int32_t vectorSize;
-
-
-//ConfigHardWare confighardwareV0;
-//ConfigHardWare confighardwareV1;
-//HARDWARE hardware;
 
 //#warning REMOVE STATIC !!! side effects???
 uint16_t spiBuf[8];

@@ -1,6 +1,8 @@
 #ifndef PICO_EXAMPLES_DEVICE_VARIABLES_HPP
 #define PICO_EXAMPLES_DEVICE_VARIABLES_HPP
-#include <pico/critical_section.h>
+#include <pico.h>
+#include "../../physical_devices/LinearDriver.hpp"
+
 
 struct ConfigHardWare
 {
@@ -21,7 +23,8 @@ struct ConfigHardWare
   uint8_t IO3_0;
   uint8_t IO3_1; 
 };
-//extern Scanner *scanner;
+extern LinearDriver   linearDriver;
+extern Decoder        decoder;
 extern ConfigHardWare confighardwarev0;
 extern ConfigHardWare confighardwarev1;
 #endif //PICO_EXAMPLES_DEVICE_VARIABLES_HPP

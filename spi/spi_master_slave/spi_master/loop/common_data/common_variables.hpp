@@ -65,8 +65,8 @@ extern std::string  HARDWAREVERSION;
 extern int16_t  ALGCODE;
 extern uint32_t DEBUG_LEVEL;
 extern Spi      spi;
-extern LinearDriver linearDriver;
-extern Decoder decoder;
+//extern LinearDriver linearDriver; //24/04/24
+//extern Decoder decoder;
 
 extern std::string afc;
 extern uint16_t spiBuf[8];
