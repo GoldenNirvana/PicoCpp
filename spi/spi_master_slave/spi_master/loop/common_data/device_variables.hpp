@@ -1,6 +1,7 @@
 #ifndef PICO_EXAMPLES_DEVICE_VARIABLES_HPP
 #define PICO_EXAMPLES_DEVICE_VARIABLES_HPP
 #include <pico.h>
+#include "../../utilities/base_types/Spi.hpp"
 #include "../../physical_devices/LinearDriver.hpp"
 
 
@@ -23,6 +24,7 @@ struct ConfigHardWare
   uint8_t IO3_0;
   uint8_t IO3_1; 
 };
+extern Spi            spi;
 extern LinearDriver   linearDriver;
 extern Decoder        decoder;
 extern ConfigHardWare confighardwarev0;

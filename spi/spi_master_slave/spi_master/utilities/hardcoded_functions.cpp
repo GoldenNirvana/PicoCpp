@@ -4,7 +4,7 @@
 #include "../loop/common_data/common_variables.hpp"
 #include "../transceiver/rx_core.hpp"
 #include "../utilities/debug_logger.hpp"
-#include "peripheral_functions.hpp"
+//#include "peripheral_functions.hpp"
 
 #include <pico/multicore.h>
 #include <bitset>
@@ -106,18 +106,19 @@ void HARDWARE::setDefaultSettings()
   gpio_pull_down(resetPort->getPort());
   ledPort->enable();
   dark();
-  //io3_1.disable(); 
+
   uint16_t ti=7<<8; //240403
   set_GainPID(ti);  //установить минимальное усиление 240209
   
-  retract();// 240403 ???
-  io3_1->blink();  //втянуть   240209
+  retract();        //втянуть 240403 ???
+//************************************************************* 
+ // io3_1->blink();   //втянуть   240209  ?????
  
-  init_DACSPB(2);//инициирование ЦАП1  SetPoint,BIAS
+  init_DACSPB(2);   //инициирование ЦАП1  SetPoint,BIAS
 
-  init_DACXY(3); //инициирование ЦАП2  DACXY
+  init_DACXY(3);    //инициирование ЦАП2  DACXY
 
-  init_DACZ(4);  //инициирование ЦАП3  DACZ
+  init_DACZ(4);     //инициирование ЦАП3  DACZ
   
 }
 

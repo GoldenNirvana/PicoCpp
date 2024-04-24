@@ -28,9 +28,9 @@ case APPROACH:{
                 if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
                  ALGCODE=ALGNONE;
                 if (flgСritical_section) critical_section_exit(&criticalSection);
-               scanner->hardware->blue();
+                scanner->hardware->blue();
                 scanner->approacphm(vector);
-               scanner->hardware->green();
+                scanner->hardware->green();
               //  dark();
                 break;
               }
@@ -80,24 +80,7 @@ case SCANNING:
                 if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
                  ALGCODE=ALGNONE;
                  DrawDone=true;
-                /* scanner.scan_update
-                          ({
-                             static_cast<uint16_t>(vector[1]), static_cast<uint16_t>(vector[2]),
-                             static_cast<uint8_t>(vector[3]),  static_cast<uint8_t>(vector[4]),
-                             static_cast<uint16_t>(vector[5]), static_cast<uint16_t>(vector[6]),
-                             static_cast<uint16_t>(vector[7]), static_cast<uint16_t>(vector[8]),
-                             static_cast<uint8_t>(vector[9]),  static_cast<uint8_t>(vector[10]),
-                             static_cast<uint16_t>(vector[11]),static_cast<uint16_t>(vector[12]),
-                             static_cast<uint16_t>(vector[13]),static_cast<int16_t>(vector[14]),  //edited 240404            
-                             static_cast<uint8_t>(vector[15]), static_cast<uint8_t>(vector[16]),
-                             static_cast<uint16_t>(vector[17]),static_cast<uint16_t>(vector[18]),
-                             static_cast<uint8_t>(vector[19]), static_cast<uint8_t>(vector[20]),
-                             static_cast<uint16_t>(vector[21]),static_cast<uint16_t>(vector[22]),
-                             static_cast<int16_t>(vector[23])
-                            }
-                           );  
-                      */     
-                     scanner->scan_update
+                 scanner->scan_update
                           ({
                              static_cast<uint16_t>(vector[1]), static_cast<uint16_t>(vector[2]),
                              static_cast<uint8_t>(vector[3]),  static_cast<uint8_t>(vector[4]),
@@ -225,13 +208,11 @@ case SET_SETPOINT:
                if (vector[5] == 0)
                {
                  scanner->hardware->move_scannerX(vector[6]);
-                // dac8563_2.writeA(vector[6]);
                } 
                else 
                if (vector[5] == 1)
                {
                  scanner->hardware->move_scannerY(vector[6]);
-               // dac8563_2.writeB(vector[6]);
                }
                break;
               }   

@@ -7,7 +7,7 @@ std::string  HARDWAREVERSION="1.0";
 //////////////////////////////////////////////
 
 std::string afc;  //dataout string
-Spi spi;
+// Spi spi;
 //LinearDriver linearDriver; //24/04/24
 //Decoder decoder(4, 5, 6); //24/04/24
 
@@ -60,6 +60,5 @@ uint8_t IPin    = 2; // ток
 //uint32_t DEBUG_LEVEL = 2;
 bool Z_STATE = false; //???
 bool ADC_IS_READY_TO_READ = true;
-//volatile int32_t current_channel = 0;
 
 critical_section_t criticalSection;

@@ -99,7 +99,6 @@ void RX_core::launchOnCore1()
   }//while
 }
 
-
 void RX_core::serialPrintBuffer(const uint16_t *const buf, int len)
 {
  if (flgDebugLevel<=DEBUG_LEVEL)
@@ -156,7 +155,6 @@ void RX_core::parse(std::vector<int32_t> &vec)
   getline(std::cin, s);
   // todo mb add const_cast
   Parser parser(s.data(), ',');
- // vec.clear();
   vectorSize = parser.parseInts(vec);
 }
 void RX_core::parse(std::vector<int32_t> &vec,std::vector<int32_t> &vparams)
@@ -165,7 +163,6 @@ void RX_core::parse(std::vector<int32_t> &vec,std::vector<int32_t> &vparams)
   getline(std::cin, s);
   // todo mb add const_cast
   Parser parser(s.data(), ',');
- // vec.clear();
   vectorSize = parser.parseInts(vec,vparams);
 }
 
