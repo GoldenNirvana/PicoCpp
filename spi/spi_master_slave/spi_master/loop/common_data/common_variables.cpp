@@ -10,9 +10,9 @@ std::string afc;  //dataout string
 Spi spi;
 LinearDriver linearDriver;
 Decoder decoder(4, 5, 6);
-Scanner  scanner;
-//HARDWARE hardware;
 
+//HARDWARE hardware;
+//Scanner *scanner;
 //int32_t  vector[16];  //datain
 std::vector<int32_t> vector;
 std::vector<int32_t> vupdateparams;

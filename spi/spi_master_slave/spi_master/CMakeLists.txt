@@ -6,6 +6,8 @@ add_executable(spi_master spi_master.cpp transceiver/rx_utils/parser.hpp utiliti
         utilities/base_types/io_ports.cpp utilities/base_types/io_ports.h 
         utilities/base_types/Point.cpp utilities/base_types/Point.hpp physical_devices/scanner.cpp physical_devices/scanner.hpp
         transceiver/rx_core.cpp transceiver/rx_core.hpp
+        loop/common_data/device_variables.hpp
+        loop/common_data/device_variables.cpp
         loop/common_data/common_variables.hpp
         loop/common_data/common_variables.cpp transceiver/rx_utils/parser.cpp
         loop/main_core.cpp loop/main_core.hpp utilities/hardcoded_functions.hpp

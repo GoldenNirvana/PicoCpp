@@ -4,6 +4,7 @@
 #include "../devices/ad5664.hpp"
 #include "../devices/DAC8563.hpp"
 #include "../physical_devices/LinearDriver.hpp"
+#include "../loop/common_data/device_variables.hpp"
 #include <ctime>
 #include <cstdint>
 #include <hardware/clocks.h>
@@ -52,7 +53,7 @@ private:
 
 public:
 
-   HARDWARE();//ConfigHardWare confighardware);
+   HARDWARE(ConfigHardWare confighardware);
   ~HARDWARE();
 
  void activateDark();

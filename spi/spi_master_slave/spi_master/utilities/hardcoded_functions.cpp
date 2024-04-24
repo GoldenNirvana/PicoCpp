@@ -12,8 +12,8 @@
 #define UART_TX_PIN 8
 #define UART_RX_PIN 9
 
-//HARDWARE::HARDWARE(ConfigHardWare confighardware) 
-HARDWARE::HARDWARE()
+HARDWARE::HARDWARE(ConfigHardWare confighardware) 
+/*HARDWARE::HARDWARE()
 {
   dac8563_1=new DAC8563(1); // DAC BIAS,SetPoint
   dac8563_2=new DAC8563(2); // DAC X,Y
@@ -38,7 +38,10 @@ HARDWARE::HARDWARE()
      io_ports.push_back(io2_2);
      io_ports.push_back(io3_0);
      io_ports.push_back(io3_1); 
-/* 
+
+   //  {1,2,116,7,10,17,PICO_DEFAULT_LED_PIN,23,11,12,12,14,15,26,27}
+   */
+ 
   dac8563_1=new DAC8563(confighardware.DACBSPT); // DAC BIAS,SetPoint
   dac8563_2=new DAC8563(confighardware.DACXY); // DAC X,Y
   dac8563_3=new DAC8563(confighardware.DAC);
@@ -62,7 +65,6 @@ HARDWARE::HARDWARE()
      io_ports.push_back(io2_2);
      io_ports.push_back(io3_0);
      io_ports.push_back(io3_1); 
-     */
 }
 
 HARDWARE::~HARDWARE()

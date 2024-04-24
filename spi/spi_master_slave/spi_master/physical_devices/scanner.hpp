@@ -7,6 +7,7 @@
 //#include "../physical_devices/LinearDriver.hpp"
 #include "../utilities/base_types/Point.hpp"
 #include "../loop/common_data/common_variables.hpp"
+#include "../loop/common_data/device_variables.hpp"
 #include "../utilities/hardcoded_functions.hpp"
 
 struct Config
@@ -120,7 +121,7 @@ private:
   std::vector<int32_t>  debugdata; 
   Point pos_, prev_point;
   Config conf_;
-  //ConfigHardWare _confighardware;
+  ConfigHardWare _confighardware;
 };
-
+extern Scanner *scanner;
 #endif

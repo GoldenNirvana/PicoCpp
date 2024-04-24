@@ -3,6 +3,7 @@
 #include <iostream>
 #include "../utilities/hardcoded_functions.hpp"
 #include "common_data/common_variables.hpp"
+#include "../physical_devices/scanner.hpp"
 #include "../utilities/debug_logger.hpp"
 #include <cmath>
 

@@ -5,7 +5,7 @@
 #include <string>
 #include "../../utilities/base_types/Spi.hpp"
 #include "../../physical_devices/LinearDriver.hpp"
-#include "../../physical_devices/scanner.hpp"
+//#include "../../physical_devices/scanner.hpp"
 #include "../../utilities/hardcoded_functions.hpp"
 //device
 #define SFM                      0
@@ -57,27 +57,8 @@
 #define LID_MOVE_TOZ0            84 // отвестись в безопасную начальную точку по Z
 #define portx                    0
 #define porty                    1
-/*
-struct ConfigHardWare
-{
-  uint8_t DACBSPT;// DAC8563
-  uint8_t DACXY;  // DAC8563
-  uint8_t DAC;    //dac8563_3
-  uint8_t BUSY;
-  uint8_t CONV;
-  uint8_t DEC;
-  uint8_t ResetPort;  
-  uint8_t LEDPort;
-  uint8_t RDBPort; 
-  uint8_t IO1_0;
-  uint8_t IO1_1;
-  uint8_t IO2_0;
-  uint8_t IO2_1;
-  uint8_t IO2_2;
-  uint8_t IO3_0;
-  uint8_t IO3_1; 
-};
-*/
+
+
 extern std::string  SOFTVERSION;
 extern std::string  HARDWAREVERSION;
 extern int16_t  ALGCODE;
@@ -85,7 +66,7 @@ extern uint32_t DEBUG_LEVEL;
 extern Spi      spi;
 extern LinearDriver linearDriver;
 extern Decoder decoder;
-extern Scanner  scanner;
+//extern Scanner *scanner;
 //extern ConfigHardWare confighardwareV0;
 //extern ConfigHardWare confighardwareV1;
 //extern HARDWARE *hardware;

@@ -4,9 +4,11 @@
 #include <cmath>
 #include <time.h>
 
+Scanner *scanner;
+
 Scanner::Scanner() : pos_({0, 0}), conf_({})
 {
-    hardware=new  HARDWARE();//confighardware);
+    hardware=new  HARDWARE(_confighardware);
 }
 
 Scanner::~Scanner()
