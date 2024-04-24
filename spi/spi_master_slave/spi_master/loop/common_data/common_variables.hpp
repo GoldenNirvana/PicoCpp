@@ -57,27 +57,9 @@
 #define LID_MOVE_TOZ0            84 // отвестись в безопасную начальную точку по Z
 #define portx                    0
 #define porty                    1
-
+/*
 struct ConfigHardWare
 {
-  /*
-  dac8563_1=new DAC8563(1); // DAC BIAS,SetPoint
-  dac8563_2=new DAC8563(2); // DAC X,Y
-  dac8563_3=new DAC8563(1);
-      busy=new InputPort(16); // FIXME TEMP!!!
-      conv=new OutputPort(7);
-       dec=new OutputPort(10);
- resetPort=new OutputPort(17); 
-   ledPort=new OutputPort(PICO_DEFAULT_LED_PIN);
-    rdbLed=new OutputPort(23); 
-     io1_0=new OutputPort(11);
-     io1_1=new OutputPort(12);
-     io2_0=new OutputPort(13);
-     io2_1=new OutputPort(14); 
-     io2_2=new OutputPort(15); 
-     io3_0=new OutputPort(26); //вытянуть сканнер
-     io3_1=new OutputPort(27); //втянуть сканнер
-   */  
   uint8_t DACBSPT;// DAC8563
   uint8_t DACXY;  // DAC8563
   uint8_t DAC;    //dac8563_3
@@ -95,7 +77,7 @@ struct ConfigHardWare
   uint8_t IO3_0;
   uint8_t IO3_1; 
 };
-
+*/
 extern std::string  SOFTVERSION;
 extern std::string  HARDWAREVERSION;
 extern int16_t  ALGCODE;
@@ -103,9 +85,9 @@ extern uint32_t DEBUG_LEVEL;
 extern Spi      spi;
 extern LinearDriver linearDriver;
 extern Decoder decoder;
-extern Scanner  *scanner;
-extern ConfigHardWare confighardwareV0;
-extern ConfigHardWare confighardwareV1;
+extern Scanner  scanner;
+//extern ConfigHardWare confighardwareV0;
+//extern ConfigHardWare confighardwareV1;
 //extern HARDWARE *hardware;
 
 extern std::string afc;

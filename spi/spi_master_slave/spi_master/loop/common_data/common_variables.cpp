@@ -10,8 +10,7 @@ std::string afc;  //dataout string
 Spi spi;
 LinearDriver linearDriver;
 Decoder decoder(4, 5, 6);
-
-Scanner  *scanner;
+Scanner  scanner;
 //HARDWARE hardware;
 
 //int32_t  vector[16];  //datain
@@ -21,8 +20,8 @@ std::vector<int32_t> vupdateparams;
 int32_t vectorSize;
 
 
-ConfigHardWare confighardwareV0;
-ConfigHardWare confighardwareV1;
+//ConfigHardWare confighardwareV0;
+//ConfigHardWare confighardwareV1;
 //HARDWARE hardware;
 
 //#warning REMOVE STATIC !!! side effects???
