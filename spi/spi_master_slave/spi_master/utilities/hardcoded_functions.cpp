@@ -15,9 +15,9 @@
 HARDWARE::HARDWARE(ConfigHardWare confighardware) 
 {
  dac8563_1=new DAC8563(confighardware.DACBSPT); // DAC BIAS,SetPoint
- dac8563_2=new DAC8563(confighardware.DACXY); // DAC X,Y
- dac8563_3=new DAC8563(confighardware.DAC);
-      busy=new InputPort(confighardware.BUSY); // FIXME TEMP!!!
+ dac8563_2=new DAC8563(confighardware.DACXY);   // DAC X,Y
+ dac8563_3=new DAC8563(confighardware.DACZ);    // DACZ
+      busy=new InputPort(confighardware.BUSY);  // FIXME TEMP!!!
       conv=new OutputPort(confighardware.CONV);
        dec=new OutputPort(confighardware.DEC);
  resetPort=new OutputPort(confighardware.ResetPort); 

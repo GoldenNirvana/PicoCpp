@@ -7,9 +7,9 @@
 
 struct ConfigHardWare
 {
-  uint8_t DACBSPT;// DAC8563 //BIAS SetPoint
-  uint8_t DACXY;  // DAC8563
-  uint8_t DAC;    //dac8563_3 ?
+  uint8_t DACBSPT;// DAC8563_1  BIAS SetPoint
+  uint8_t DACXY;  // DAC8563_2  XY
+  uint8_t DACZ;   // dac8563_3  Z
   uint8_t BUSY;
   uint8_t CONV;
   uint8_t DEC;
