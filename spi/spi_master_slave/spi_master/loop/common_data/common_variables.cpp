@@ -5,15 +5,13 @@ std::string  SOFTVERSION="24.04.19.01";;
 std::string  HARDWAREVERSION="1.0";
 // std::string  HARDWAREVERSION="2.0"; //new hardware
 //////////////////////////////////////////////
-
-std::string afc;  //dataout string
 // Spi spi;
 //LinearDriver linearDriver; //24/04/24
 //Decoder decoder(4, 5, 6); //24/04/24
 
+std::string afc;  //dataout string
 std::vector<int32_t> vector;
 std::vector<int32_t> vupdateparams;
-
 int32_t vectorSize;
 
 //#warning REMOVE STATIC !!! side effects???
@@ -38,8 +36,6 @@ bool SCANNER_PROTRACT = false;
 bool LOOP_FREEZE_UNFREEZE=false;
 bool TheadDone = false;
 bool DrawDone=true;
-
-
 //************************************************
 bool    flgParamsUpdated=false;
 bool    flgСritical_section=true;

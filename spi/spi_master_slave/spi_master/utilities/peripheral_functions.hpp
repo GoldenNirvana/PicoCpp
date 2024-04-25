@@ -5,9 +5,6 @@
 #include <hardware/clocks.h>
 
 // todo add command for reset all
-//void setDefaultSettings();
-
-//void set_io_value(int, int);
 
 [[noreturn]] void activateError();
 

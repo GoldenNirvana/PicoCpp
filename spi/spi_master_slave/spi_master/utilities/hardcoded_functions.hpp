@@ -19,7 +19,7 @@ private:
  DAC8563    *dac8563_1; // DAC BIAS,SetPoint
  DAC8563    *dac8563_2; // DAC X,Y
  DAC8563    *dac8563_3; // DAC Z
- InputPort  *busy; // FIXME TEMP!!!
+ InputPort  *busy;     // FIXME TEMP!!!
  OutputPort *conv;
  OutputPort *dec;
  OutputPort *resetPort; // FIXME TEMP
@@ -106,17 +106,17 @@ public:
   
   void retract();       // втянуть сканер
 
-  void retract(int16_t HeightJump); //втянуть на H
+  void retract(int16_t HeightJump); //втянуть на HeightJump
 
-  void protract();      // втянуть сканер
+  void protract();      // вытянуть сканер
  
  // void protract(uint16_t delay,int16_t DacZ0,int16_t HeightJump) ; //разморозить ПИД 
  
   void LOOP_freeze_unfreeze(int port, int flg);  
  
-  void freezeLOOP(uint16_t delay);    // заморизить ПИД
+  void freezeLOOP(uint16_t delay);    // заморозить ПИД
 
-  void unfreezeLOOP(uint16_t delay);  // разморизить ПИД
+  void unfreezeLOOP(uint16_t delay);  // разморозить ПИД
 
 };
 #endif

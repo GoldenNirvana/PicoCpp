@@ -7,9 +7,9 @@
 
 struct ConfigHardWare
 {
-  uint8_t DACBSPT;// DAC8563
+  uint8_t DACBSPT;// DAC8563 //BIAS SetPoint
   uint8_t DACXY;  // DAC8563
-  uint8_t DAC;    //dac8563_3
+  uint8_t DAC;    //dac8563_3 ?
   uint8_t BUSY;
   uint8_t CONV;
   uint8_t DEC;
@@ -21,8 +21,8 @@ struct ConfigHardWare
   uint8_t IO2_0;
   uint8_t IO2_1;
   uint8_t IO2_2;
-  uint8_t IO3_0;
-  uint8_t IO3_1; 
+  uint8_t IO3_0; //вытянуть сканнер
+  uint8_t IO3_1; //втянуть сканнер
 };
 extern Spi            spi;
 extern LinearDriver   linearDriver;
