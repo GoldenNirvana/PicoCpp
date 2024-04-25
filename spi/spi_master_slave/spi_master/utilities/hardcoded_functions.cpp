@@ -62,7 +62,7 @@ void setDefaultSettings()
   uint16_t ti=7<<8; //240403
   set_GainPID(ti);  //установить минимальное усиление 240209
   scanner.retract();// 240403
-  io3_1.enable();  //втянуть   240209
+ // io3_1.enable();  //втянуть   240209
  
   // init io_ports, mb  delete
   io_ports.push_back(io1_0);
