@@ -21,8 +21,8 @@ struct ConfigHardWare
   uint8_t IO2_0;
   uint8_t IO2_1;
   uint8_t IO2_2;
-  uint8_t IO3_0; //вытянуть сканнер
-  uint8_t IO3_1; //втянуть сканнер
+  uint8_t IO3_0; //заморозить сканнер=1; разморозить =0
+  uint8_t IO3_1; //втянуть    сканнер=1; вытянуть    =0
 };
 extern Spi            spi;
 extern LinearDriver   linearDriver;

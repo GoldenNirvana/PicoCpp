@@ -28,15 +28,15 @@ HARDWARE::HARDWARE(ConfigHardWare confighardware)
      io2_0=new OutputPort(confighardware.IO2_0);
      io2_1=new OutputPort(confighardware.IO2_1); 
      io2_2=new OutputPort(confighardware.IO2_2); 
-     io3_0=new OutputPort(confighardware.IO3_0); //вытянуть сканнер
-     io3_1=new OutputPort(confighardware.IO3_1); //втянуть сканнер
-     io_ports.push_back(io1_0);
+     io3_0=new OutputPort(confighardware.IO3_0); //вытянуть сканнер /втянуть сканнер
+     io3_1=new OutputPort(confighardware.IO3_1); /
+     io_ports.push_back(io1_0); //0
      io_ports.push_back(io1_1);
      io_ports.push_back(io2_0);
      io_ports.push_back(io2_1);
      io_ports.push_back(io2_2);
      io_ports.push_back(io3_0);
-     io_ports.push_back(io3_1); 
+     io_ports.push_back(io3_1); //6
 }
 
 HARDWARE::~HARDWARE()
@@ -69,14 +69,14 @@ void HARDWARE::set_io_value(int port, int value)
     binary[0] == '1' ? io1_1->enable() : io1_1->disable();
   } 
   else
-  if (port == 2) //gain
+  if (port == 2) //gain PID
   {
     std::string binary = std::bitset<3>(value).to_string();
     binary[2] == '1' ? io2_0->enable() : io2_0->disable();
     binary[1] == '1' ? io2_1->enable() : io2_1->disable();
     binary[0] == '1' ? io2_2->enable() : io2_2->disable();
   }
-  else if (port == 3)
+  else if (port == 3) //0 заморозить сканнер=1; разморозить =0
   {
     std::string binary = std::bitset<2>(value).to_string();
     binary[1] == '1' ? io3_0->enable() : io3_0->disable();
@@ -167,7 +167,6 @@ void HARDWARE::set_Freq(uint32_t freq)
   sleep_us(1);
   decoder.activePort(7); //240411  add
 }
-
 
 void HARDWARE::get_result_from_adc()
 {
@@ -300,7 +299,7 @@ void HARDWARE::set_SetPoint( int32_t SetPoint)
 {//  code  22, 2, 8, 0, 1, 0, value
   if (!flgVirtual)
   {
-     dac8563_1->writeA(SetPoint+ShiftDac);
+     dac8563_1->writeA(SetPoint+ShiftDac); // 240425 ?
   } 
   // отладка
   if  (flgDebug)
