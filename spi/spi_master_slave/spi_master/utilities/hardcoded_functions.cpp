@@ -29,7 +29,7 @@ HARDWARE::HARDWARE(ConfigHardWare confighardware)
      io2_1=new OutputPort(confighardware.IO2_1); 
      io2_2=new OutputPort(confighardware.IO2_2); 
      io3_0=new OutputPort(confighardware.IO3_0); //вытянуть сканнер /втянуть сканнер
-     io3_1=new OutputPort(confighardware.IO3_1); /
+     io3_1=new OutputPort(confighardware.IO3_1); 
      io_ports.push_back(io1_0); //0
      io_ports.push_back(io1_1);
      io_ports.push_back(io2_0);
