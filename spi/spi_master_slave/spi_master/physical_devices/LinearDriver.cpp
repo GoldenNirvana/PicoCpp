@@ -44,6 +44,8 @@ void LinearDriver::activate(int command, int freq, int p, int n, bool dir)  ///
   }
 
   ptrA->enable();
+  ptrB->enable(); //240401
+  sleep_ms(2); //240401
   for (int i = 0; i < n; ++i)
   {
     ptrB->disable();
