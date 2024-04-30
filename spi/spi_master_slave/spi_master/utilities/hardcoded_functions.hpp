@@ -30,8 +30,8 @@ private:
  OutputPort *io2_0;
  OutputPort *io2_1;
  OutputPort *io2_2;
- OutputPort *io3_0; //вытянуть сканнер
- OutputPort *io3_1; //втянуть сканнер
+ OutputPort *io3_0; //заморозить/разморозить
+ OutputPort *io3_1; //втянуть сканнер/вытянуть сканнер
 
  std::vector<OutputPort*> io_ports; 
  
