@@ -15,9 +15,9 @@
 HARDWARE::HARDWARE(ConfigHardWare confighardware) 
 {
  dac8563_1=new DAC8563(confighardware.DACBSPT); // DAC BIAS,SetPoint
- dac8563_2=new DAC8563(confighardware.DACXY); // DAC X,Y
+ dac8563_2=new DAC8563(confighardware.DACXY);   // DAC X,Y
  dac8563_3=new DAC8563(confighardware.DAC);
-      busy=new InputPort(confighardware.BUSY); // FIXME TEMP!!!
+      busy=new InputPort(confighardware.BUSY);  // FIXME TEMP!!!
       conv=new OutputPort(confighardware.CONV);
        dec=new OutputPort(confighardware.DEC);
  resetPort=new OutputPort(confighardware.ResetPort); 
@@ -28,8 +28,8 @@ HARDWARE::HARDWARE(ConfigHardWare confighardware)
      io2_0=new OutputPort(confighardware.IO2_0);
      io2_1=new OutputPort(confighardware.IO2_1); 
      io2_2=new OutputPort(confighardware.IO2_2); 
-     io3_0=new OutputPort(confighardware.IO3_0); //вытянуть/вытянуть сканнер
-     io3_1=new OutputPort(confighardware.IO3_1); //заморозить/разморозить ПИД 
+     io3_0=new OutputPort(confighardware.IO3_0);//заморозить/разморозить ПИД 
+     io3_1=new OutputPort(confighardware.IO3_1);//вытянуть/вытянуть сканнер
      io_ports.push_back(io1_0);
      io_ports.push_back(io1_1);
      io_ports.push_back(io2_0);
