@@ -14,6 +14,7 @@ Scanner::Scanner(ConfigHardWare _confighardware) : pos_({0, 0}), conf_({})
 Scanner::~Scanner()
 {
   move_to({0, 0}, 10);
+  delete(hardware);
 }
 void Scanner::sendStrData(std::string const& header)
 {

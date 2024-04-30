@@ -18,6 +18,7 @@ int start_app()
   
   MainCore mainCore;
   mainCore.loop();
+  delete(scanner);
   return 0;
 }
 
