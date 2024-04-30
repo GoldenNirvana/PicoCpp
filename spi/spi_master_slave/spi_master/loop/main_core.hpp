@@ -6,8 +6,7 @@ class MainCore
 {
 public:
 
-  MainCore();
-
+  MainCore() = default;
   void loop();
 
 private:

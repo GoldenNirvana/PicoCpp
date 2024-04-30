@@ -14,7 +14,6 @@
 
 void set_io_value(int port, int value)
 {
-    SET_IO_VALUE = false;
     if (port == 1)
     {
         std::string binary = std::bitset<2>(value).to_string();

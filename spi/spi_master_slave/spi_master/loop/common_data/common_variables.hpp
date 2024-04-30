@@ -13,7 +13,7 @@
 #define STM                      1
 #define SICMDC                   3  
 #define maxint16_t               32767
-#define minint16_t              -32768
+#define minint16_t              (-32768)
 
 #define ALGNONE                   0
 #define VersionCmd               10
@@ -61,7 +61,7 @@
 
 extern std::string  SOFTVERSION;
 extern std::string  HARDWAREVERSION;
-extern int16_t  ALGCODE;
+extern std::atomic<int16_t>  ALGCODE;
 extern uint32_t DEBUG_LEVEL;
 extern Spi      spi;
 extern LinearDriver linearDriver;
@@ -76,43 +76,21 @@ extern uint16_t spiBuf[8];
 
 extern std::vector<int32_t> vector;
 extern std::vector<int32_t> vupdateparams;
-extern int32_t vectorSize;
-
-extern bool AD9833_SENDER;
-extern bool AD8400_SENDER;
-extern bool AD8400_SET_GAIN;   // AD8400
-extern bool AD5664;            //
-
-extern bool ADC_ENABLE_DISABLE;//AD7606
-extern bool ADC_RESET;         //AD7606     
-extern bool ADC_READ_FOREVER;  //AD7606
-extern bool ADC_GET_VALUE;     //AD7606
-
-extern bool LID;
-extern bool SET_IO_VALUE;
-extern bool CONFIG_UPDATE;
-extern bool Z_STATE;
+extern std::atomic<bool> CONFIG_UPDATE;
 // add MF
-extern bool LOOP_FREEZE_UNFREEZE;
-extern bool STOP;
-extern bool PID_TURN_ON;
-extern bool SCANNER_RETRACT;
-extern bool SCANNER_PROTRACT;
+extern std::atomic<bool> STOP;
 extern std::atomic<bool> ADC_IS_READY_TO_READ;
 // service flags
-extern bool TheadDone;   //need dor synchronization with PC 
-extern bool DrawDone;
-extern bool flgParamsUpdated;
+extern std::atomic<bool> TheadDone;   //need dor synchronization with PC
+extern std::atomic<bool> DrawDone;
 extern bool flgDebug;
 extern bool flgVirtual;  // Virtual device for debuging and simulation
-extern bool flgСritical_section;
-extern bool flgUseUART;  //
 extern uint8_t ZPin;
 extern uint8_t AmplPin; //amplitude
 extern uint8_t IPin;    //current
 extern uint8_t flgDebugLevel; //  leveldebug
 extern int16_t ZValue; //for simulation
-extern int16_t SignalValue; //for simulation //  
+extern int16_t SignalValue; //for simulation //
 extern int16_t ZMaxValue;
 
 extern int32_t ShiftDac;
