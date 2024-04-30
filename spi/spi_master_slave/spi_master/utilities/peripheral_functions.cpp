@@ -51,7 +51,7 @@ void activateError()
 {
   while (true)
   {
-    ledPort->enable();
+    ledPort.enable();
     activateRed();
     sleep_ms(1000);
     ledPort.disable();
@@ -134,7 +134,7 @@ void dark()
 
 void activateGreen()
 {
-  rdbLed->disable();
+  rdbLed.disable();
   sleep_us(60);
   for (int i = 0; i < 8; ++i)
   {
@@ -155,7 +155,7 @@ void activateGreen()
 
 void activateRed()
 {
-  rdbLed->disable();
+  rdbLed.disable();
   sleep_us(60);
   for (int i = 0; i < 8; ++i)
   {
@@ -184,33 +184,33 @@ void activateRed()
 
 void activateBlue()
 {
-  rdbLed->disable();
+  rdbLed.disable();
   sleep_us(60);
   for (int i = 0; i < 16; ++i)
   {
-    rdbLed->enable();
+    rdbLed.enable();
     busy_wait_at_least_cycles(35);
-    rdbLed->disable();
+    rdbLed.disable();
     busy_wait_at_least_cycles(85);
   }
   for (int i = 0; i < 8; ++i)
   {
-    rdbLed->enable();
+    rdbLed.enable();
     busy_wait_at_least_cycles(85);
-    rdbLed->disable();
+    rdbLed.disable();
     busy_wait_at_least_cycles(35);
   }
 }
 
 void activateDark()
 {
-  rdbLed->disable();
+  rdbLed.disable();
   sleep_us(60);
   for (int i = 0; i < 24; ++i)
   {
-    rdbLed->enable();
+    rdbLed.enable();
     busy_wait_at_least_cycles(35);
-    rdbLed->disable();
+    rdbLed.disable();
     busy_wait_at_least_cycles(85);
   }
 }

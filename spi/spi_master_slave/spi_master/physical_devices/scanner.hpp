@@ -4,11 +4,7 @@
 #include <string>
 #include <vector>
 #include <random>
-//#include "../physical_devices/LinearDriver.hpp"
 #include "../utilities/base_types/Point.hpp"
-#include "../loop/common_data/common_variables.hpp"
-#include "../loop/common_data/device_variables.hpp"
-#include "../utilities/hardcoded_functions.hpp"
 
 struct Config
 {
@@ -48,8 +44,9 @@ struct ConfigCurrent
 
 class Scanner
 {
-private:
 
+private:
+  
   void stop_scan();         // возвращение сканера в  начальную точку скана
   
   void move_to(const Point &point, uint16_t delay);  // переместиться в начальную точку скана текущего скана
@@ -61,9 +58,7 @@ private:
 
 public:
 
-   HARDWARE *hardware;
-
-   Scanner(ConfigHardWare _confighardware);
+   Scanner();
 
   ~Scanner();
 
@@ -99,11 +94,25 @@ public:
 
   void LID_move_toZ0(int lid_name, int f, int p, int n, int dir);// отвестись в безопасную начальную точку по Z при старте и выходе из программы
   
-  void readADC();
-
-  void stopAll();
+  void readADC(); //чтение  ADC по таймеру
 
   void readDATALin();
+  
+  void scanner_retract_protract(int port, int flg);
+  
+  void retract();       // втянуть сканер
+
+  void retract(int16_t HeightJump); //втянуть на H
+
+  void protract();      // втянуть сканер
+ 
+  void protract(uint16_t delay,int16_t DacZ0,int16_t HeightJump) ; //разморозить ПИД 
+ 
+  void LOOP_freeze_unfreeze(int port, int flg);  
+ 
+  void freezeLOOP(uint16_t delay);    // заморизить ПИД
+
+  void unfreezeLOOP(uint16_t delay);  // разморизить ПИД
 
   bool getHoppingFlg(); // получить флаг сканирования прыжками
  
@@ -121,8 +130,6 @@ private:
   std::vector<int32_t>  debugdata; 
   Point pos_, prev_point;
   Config conf_;
-public:
- //  ConfigHardWare _confighardware;
 };
-extern Scanner *scanner;
+
 #endif

@@ -1,21 +1,19 @@
 #include "loop/common_data/common_variables.hpp"
 #include "loop/main_core.hpp"
 #include "utilities/hardcoded_functions.hpp"
-#include "physical_devices/scanner.hpp"
-#include <cstring>
+#include "utilities/peripheral_functions.hpp"
 uint32_t DEBUG_LEVEL = 2;
 
 int start_app()
 {
-  if (std::strcmp(HARDWAREVERSION.c_str(),"1.0")) { scanner=new  Scanner(confighardwarev0); }
-  else  { scanner=new  Scanner(confighardwarev1); }
-  scanner->hardware->setDefaultSettings();
+// mb need to delete crit_section
   critical_section_init(&criticalSection);
   if (!critical_section_is_initialized(&criticalSection))
   {
-     scanner->hardware->activateError();
+    activateError();
   }
-  
+  dark();
+  setDefaultSettings();
   MainCore mainCore;
   mainCore.loop();
   return 0;

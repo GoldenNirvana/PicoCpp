@@ -43,7 +43,7 @@ public:
 private:
   void DAC_WR_REG(uint8_t cmd_byte, uint16_t data_byte );
   void outPutValue(uint8_t cmd_byte,uint16_t input);
-  void writeValue(uint8_t cmd_byte, uint8_t mid, uint8_t last);
+  void writeValue( uint8_t cmd_byte, uint8_t mid, uint8_t last);
   void writeVoltage(int input);
 };
 

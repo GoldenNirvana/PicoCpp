@@ -1,8 +1,7 @@
 #include <cstring>
 #include "DAC8563.hpp"
 #include "../utilities/base_types/Spi.hpp"
-//#include "../loop/common_data/common_variables.hpp" //24/04/24
-#include "../loop/common_data/device_variables.hpp"
+#include "../loop/common_data/common_variables.hpp"
 
 DAC8563::DAC8563(int modeA1B1)
 {
