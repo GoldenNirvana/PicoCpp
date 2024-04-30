@@ -28,8 +28,8 @@ HARDWARE::HARDWARE(ConfigHardWare confighardware)
      io2_0=new OutputPort(confighardware.IO2_0);
      io2_1=new OutputPort(confighardware.IO2_1); 
      io2_2=new OutputPort(confighardware.IO2_2); 
-     io3_0=new OutputPort(confighardware.IO3_0); //вытянуть сканнер
-     io3_1=new OutputPort(confighardware.IO3_1); //втянуть сканнер
+     io3_0=new OutputPort(confighardware.IO3_0); //вытянуть/вытянуть сканнер
+     io3_1=new OutputPort(confighardware.IO3_1); //заморозить/разморозить ПИД 
      io_ports.push_back(io1_0);
      io_ports.push_back(io1_1);
      io_ports.push_back(io2_0);
@@ -111,7 +111,7 @@ void HARDWARE::setDefaultSettings()
   set_GainPID(ti);  //установить минимальное усиление 240209
   
   retract();// 240403 ???
-  io3_1->blink();  //втянуть   240209
+  //io3_1->blink();  //втянуть   240209
  
   init_DACSPB(2);//инициирование ЦАП1  SetPoint,BIAS
 
@@ -156,7 +156,7 @@ void HARDWARE::set_Freq(uint32_t freq)
   //logger(buf, 6);
 
   decoder.activePort(1);
-  sleep_us(1); // 240411 add
+  sleep_us(1);   // 240411 add
   Spi::setProperties(8, 1, 1);
   spi_write_blocking(spi_default, buf, 2);
     sleep_us(1); // 240411 add
