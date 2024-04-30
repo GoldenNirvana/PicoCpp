@@ -1,7 +1,6 @@
 #ifndef Parser_h
 #define Parser_h
 
-
 #include <cstddef>
 #include <cstdint>
 #include <vector>
@@ -9,31 +8,31 @@
 class Parser
 {
 public:
-  explicit Parser(char *data, char newDiv = ',');
+    explicit Parser(char *data, char newDiv = ',');
 
-  ~Parser();
+    ~Parser();
 
-  void clear();
+    void clear();
 
-  int amount();
+    int amount();
 
-  int split();
+    int split();
 
-  int16_t getInt(int num);
+    int16_t getInt(int num);
 
-  float getFloat(int num);
+    float getFloat(int num);
 
-  bool equals(int num, const char *comp);
+    bool equals(int num, const char *comp);
 
-  int32_t parseInts(std::vector<int32_t> &data);
-  
-  int32_t parseInts(std::vector<int32_t> &data,std::vector<int32_t> &uparams);
-  char *buf = NULL;
-  char **str = NULL;
+    int32_t parseInts(std::vector<int32_t> &data);
 
-  char *operator[](uint16_t idx);
-  char div;
-  
+    int32_t parseInts(std::vector<int32_t> &data, std::vector<int32_t> &uparams);
+    char *buf = nullptr;
+    char **str = nullptr;
+
+    char *operator[](uint16_t idx);
+    char div;
+
 private:
 };
 

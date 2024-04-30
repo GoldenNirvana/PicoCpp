@@ -18,9 +18,9 @@ std::vector<int32_t> vupdateparams;
 
 int32_t vectorSize;
 
-DAC8563 dac8563_1(1); // DAC BIAS,SetPoint
-DAC8563 dac8563_2(2); // DAC X,Y
-DAC8563 dac8563_3(1); // DAC Z
+DAC8563 dac8563_BIAS(1); // DAC BIAS,SetPoint
+DAC8563 dac8563_XY(2); // DAC X,Y
+DAC8563 dac8563_Z(1); // DAC Z
 //#warning REMOVE STATIC !!! side effects???
 uint16_t spiBuf[8];
 
@@ -65,7 +65,7 @@ uint8_t IPin    = 2; // ток
 
 //uint32_t DEBUG_LEVEL = 2;
 bool Z_STATE = false; //???
-bool ADC_IS_READY_TO_READ = true;
+std::atomic<bool> ADC_IS_READY_TO_READ = true;
 //volatile int32_t current_channel = 0;
 
 critical_section_t criticalSection;

@@ -1,7 +1,7 @@
 #include "main_core.hpp"
 #include <bitset>
 #include <iostream>
-#include "../utilities/peripheral_functions.hpp"
+#include "../utilities/led_controller.hpp"
 #include "../utilities/hardcoded_functions.hpp"
 #include "common_data/common_variables.hpp"
 #include "../utilities/debug_logger.hpp"

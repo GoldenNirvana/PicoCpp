@@ -4,7 +4,6 @@
 #include "../devices/ad5664.hpp"
 #include <ctime>
 
-// WARNING HARDCODED FUNCTIONS
 void setDefaultSettings();
 
 void GetSOFTHARDWAREVersion();

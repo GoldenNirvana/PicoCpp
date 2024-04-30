@@ -31,20 +31,20 @@
 class DAC8563  // DAC 
 {
 private:
-  int mode;
-  int port_;
+    int mode;
+    int port_;
 public:
-  DAC8563(int mode);
-  void begin();
-  void initialize(int port);
-  void writeA(int input);
-  void writeB(int input);
-  void setSpiProps();
+    DAC8563(int mode);
+    void begin();
+    void initialize(int port);
+    void writeA(int input);
+    void writeB(int input);
+    void setSpiProps();
 private:
-  void DAC_WR_REG(uint8_t cmd_byte, uint16_t data_byte );
-  void outPutValue(uint8_t cmd_byte,uint16_t input);
-  void writeValue( uint8_t cmd_byte, uint8_t mid, uint8_t last);
-  void writeVoltage(int input);
+    void DAC_WR_REG(uint8_t cmd_byte, uint16_t data_byte);
+    void outPutValue(uint8_t cmd_byte, uint16_t input);
+    void writeValue(uint8_t cmd_byte, uint8_t mid, uint8_t last);
+    void writeVoltage(int input);
 };
 
 #endif

@@ -7,6 +7,7 @@
 #include "../../physical_devices/LinearDriver.hpp"
 #include "../../physical_devices/scanner.hpp"
 #include "../../devices/DAC8563.hpp"
+#include <atomic>
 //device
 #define SFM                      0
 #define STM                      1
@@ -66,9 +67,9 @@ extern Spi      spi;
 extern LinearDriver linearDriver;
 extern Decoder decoder;
 extern Scanner scanner;
-extern DAC8563 dac8563_1;  // DAC BIas,SetPoint
-extern DAC8563 dac8563_2;  // DAC X,Y
-extern DAC8563 dac8563_3;  // DAC Z
+extern DAC8563 dac8563_BIAS;  // DAC BIas,SetPoint
+extern DAC8563 dac8563_XY;  // DAC X,Y
+extern DAC8563 dac8563_Z;  // DAC Z
 
 extern std::string afc;
 extern uint16_t spiBuf[8];
@@ -97,7 +98,7 @@ extern bool STOP;
 extern bool PID_TURN_ON;
 extern bool SCANNER_RETRACT;
 extern bool SCANNER_PROTRACT;
-extern bool ADC_IS_READY_TO_READ;
+extern std::atomic<bool> ADC_IS_READY_TO_READ;
 // service flags
 extern bool TheadDone;   //need dor synchronization with PC 
 extern bool DrawDone;
