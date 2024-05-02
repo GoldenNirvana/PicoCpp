@@ -7,10 +7,10 @@
 
 struct ConfigHardWare
 {
-  uint8_t DACBSPT;// DAC8563_1  BIAS SetPoint
-  uint8_t DACXY;  // DAC8563_2  XY
-  uint8_t DACZ;   // dac8563_3  Z
-  uint8_t BUSY;
+  uint8_t DACBSPTPort;// DAC8563_1  BIAS SetPoint
+  uint8_t DACXYPort;  // DAC8563_2  XY
+  uint8_t DACZPort;   // dac8563_3  Z
+  uint8_t BUSYPort;
   uint8_t CONV;
   uint8_t DEC;
   uint8_t ResetPort;  
@@ -18,11 +18,11 @@ struct ConfigHardWare
   uint8_t RDBPort; 
   uint8_t IO1_0;
   uint8_t IO1_1;
-  uint8_t IO2_0;
-  uint8_t IO2_1;
-  uint8_t IO2_2;
-  uint8_t IO3_0; //заморозить сканнер=1; разморозить =0
-  uint8_t IO3_1; //втянуть    сканнер=1; вытянуть    =0
+  uint8_t GainPID0;
+  uint8_t GainPID1;
+  uint8_t GainPID2;
+  uint8_t FreezePort; //заморозить сканнер=1; разморозить =0
+  uint8_t ProtractPort; //втянуть    сканнер=1; вытянуть    =0
 };
 extern Spi            spi;
 extern LinearDriver   linearDriver;

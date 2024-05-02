@@ -4,11 +4,7 @@
 #include <pico/critical_section.h>
 #include <string>
 #include <vector>
-//#include "../../utilities/base_types/Spi.hpp"
-//#include "../../physical_devices/LinearDriver.hpp"
-//#include "../../physical_devices/scanner.hpp"
-//#include "../../utilities/hardcoded_functions.hpp"
-//device
+
 #define SFM                      0
 #define STM                      1
 #define SICMDC                   3  
@@ -59,14 +55,11 @@
 #define portx                    0
 #define porty                    1
 
-
 extern std::string  SOFTVERSION;
 extern std::string  HARDWAREVERSION;
 extern int16_t  ALGCODE;
 extern uint32_t DEBUG_LEVEL;
-//extern Spi      spi;
-//extern LinearDriver linearDriver; //24/04/24
-//extern Decoder decoder;
+
 
 extern std::string afc;
 extern uint16_t spiBuf[8];
@@ -111,7 +104,12 @@ extern uint8_t flgDebugLevel; //  leveldebug
 extern int16_t ZValue; //for simulation
 extern int16_t SignalValue; //for simulation //  
 extern int16_t ZMaxValue;
+
 extern int32_t ShiftDac;
+//
+//extern volatile int32_t current_channel;
 extern critical_section_t criticalSection;
+
+
 
 #endif //PICO_EXAMPLES_COMMON_VARIABLES_HPP

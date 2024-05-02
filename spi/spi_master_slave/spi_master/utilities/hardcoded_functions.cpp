@@ -14,10 +14,10 @@
 
 HARDWARE::HARDWARE(ConfigHardWare confighardware) 
 {
- dac8563_1=new DAC8563(confighardware.DACBSPT); // DAC BIAS,SetPoint
- dac8563_2=new DAC8563(confighardware.DACXY);   // DAC X,Y
- dac8563_3=new DAC8563(confighardware.DACZ);    // DACZ
-      busy=new InputPort(confighardware.BUSY);  // FIXME TEMP!!!
+ dac8563_1=new DAC8563(confighardware.DACBSPTPort); // DAC BIAS,SetPoint
+ dac8563_2=new DAC8563(confighardware.DACXYPort);   // DAC X,Y
+ dac8563_3=new DAC8563(confighardware.DACZPort);    // DACZ
+      busy=new InputPort(confighardware.BUSYPort);  // FIXME TEMP!!!
       conv=new OutputPort(confighardware.CONV);
        dec=new OutputPort(confighardware.DEC);
  resetPort=new OutputPort(confighardware.ResetPort); 
@@ -25,18 +25,18 @@ HARDWARE::HARDWARE(ConfigHardWare confighardware)
     rdbLed=new OutputPort(confighardware.RDBPort); 
      io1_0=new OutputPort(confighardware.IO1_0);
      io1_1=new OutputPort(confighardware.IO1_1);
-     io2_0=new OutputPort(confighardware.IO2_0);
-     io2_1=new OutputPort(confighardware.IO2_1); 
-     io2_2=new OutputPort(confighardware.IO2_2); 
-     io3_0=new OutputPort(confighardware.IO3_0); //вытянуть сканнер /втянуть сканнер
-     io3_1=new OutputPort(confighardware.IO3_1); //заморозить/разморозить ПИД 
+     gainPID0=new OutputPort(confighardware.GainPID0);
+     gainPID1=new OutputPort(confighardware.GainPID1); 
+     gainPID2=new OutputPort(confighardware.GainPID2); 
+     freezeport=new OutputPort(confighardware.FreezePort);//заморозить/разморозить ПИД 
+     protractport=new OutputPort(confighardware.ProtractPort);//вытянуть сканнер /втянуть сканнер  
      io_ports.push_back(io1_0); //0
      io_ports.push_back(io1_1);
-     io_ports.push_back(io2_0);
-     io_ports.push_back(io2_1);
-     io_ports.push_back(io2_2);
-     io_ports.push_back(io3_0);
-     io_ports.push_back(io3_1); //6
+     io_ports.push_back(gainPID0);
+     io_ports.push_back(gainPID0);
+     io_ports.push_back(gainPID0);
+     io_ports.push_back(freezeport);
+     io_ports.push_back(protractport); //6
 }
 
 HARDWARE::~HARDWARE()
@@ -52,11 +52,11 @@ HARDWARE::~HARDWARE()
  delete(rdbLed);
  delete(io1_0);
  delete(io1_1);
- delete(io2_0);
- delete(io2_1);
- delete(io2_2);
- delete(io3_0);
- delete(io3_1);
+ delete(gainPID0);
+ delete(gainPID1);
+ delete(gainPID2);
+ delete(freezeport);
+ delete(protractport);
  io_ports.clear();
 }
 void HARDWARE::set_io_value(int port, int value)  
@@ -72,15 +72,15 @@ void HARDWARE::set_io_value(int port, int value)
   if (port == 2) //gain PID
   {
     std::string binary = std::bitset<3>(value).to_string();
-    binary[2] == '1' ? io2_0->enable() : io2_0->disable();
-    binary[1] == '1' ? io2_1->enable() : io2_1->disable();
-    binary[0] == '1' ? io2_2->enable() : io2_2->disable();
+    binary[2] == '1' ? gainPID0->enable() : gainPID0->disable();
+    binary[1] == '1' ? gainPID1->enable() : gainPID1->disable();
+    binary[0] == '1' ? gainPID2->enable() : gainPID2->disable();
   }
   else if (port == 3) //0 заморозить сканнер=1; разморозить =0
   {
     std::string binary = std::bitset<2>(value).to_string();
-    binary[1] == '1' ? io3_0->enable() : io3_0->disable();
-    binary[0] == '1' ? io3_1->enable() : io3_1->disable();
+    binary[1] == '1' ?   freezeport->enable() :   freezeport->disable();
+    binary[0] == '1' ? protractport->enable() : protractport->disable();
   }
 }
 void HARDWARE::setDefaultSettings()
@@ -445,7 +445,7 @@ void HARDWARE::scanner_retract_protract(int port, int flg)
 
 void HARDWARE::retract() //втянуть
 {
-  io3_1->enable();  //  port 6   элемент массива портов 
+  protractport->enable();  //  port 6   элемент массива портов 
 }
 void HARDWARE::retract(int16_t HeightJump) //втянуть на HeightJump
 {
@@ -455,7 +455,7 @@ void HARDWARE::retract(int16_t HeightJump) //втянуть на HeightJump
 
 void HARDWARE::protract() //вытянуть
 {
-  io3_1->disable();  //port 6
+  protractport->disable();  //port 6
 }
 /*
 void HARDWARE::protract(uint16_t delay,int16_t DacZ0,int16_t HeightJump) //вытянуть
@@ -473,13 +473,13 @@ void HARDWARE::LOOP_freeze_unfreeze(int port, int flg) // port virtual 5
 }
 void HARDWARE::freezeLOOP(uint16_t delay)    // заморозить ПИД
 {
-  io3_0->enable(); // 5 элемент массива портов ???
+  freezeport->enable(); // 5 элемент массива портов ???
   sleep_ms(delay);
 }
 
 void HARDWARE::unfreezeLOOP(uint16_t delay)  // разморозить ПИД
 {
-  io3_0->disable();  // 5 элемент массива портов ???
+  freezeport->disable();  // 5 элемент массива портов ???
   sleep_ms(delay);
 }
 void HARDWARE::activateError()
