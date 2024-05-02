@@ -50,10 +50,8 @@ void Scanner::sendStrData(std::string const& header,std::vector<int16_t> &data, 
   std::string afcc;
   afcc.clear();
   afcc=header;
-   //for (auto & element :data) 
   for (size_t j = 0; j < data.size(); ++j)
   {
- // afc +=',' + std::to_string(element);
    afcc +=',' + std::to_string(data[j]);
   }
   afcc +="\n";
@@ -218,20 +216,20 @@ struct Config
   {
     case 0://X+
     {
-      portfast = portx;
-      portslow = porty;
-      pos_fast = pos_.x;
-      pos_slow = pos_.y;
+       portfast = portx;
+       portslow = porty;
+       pos_fast = pos_.x;
+       pos_slow = pos_.y;
       nfastline = conf_.nPoints_x;
       nslowline = conf_.nPoints_y;
       break;
     }
     case 1: //Y+
     {
-      portfast = porty;
-      portslow = portx;
-      pos_fast = pos_.y;
-      pos_slow = pos_.x;
+       portfast = porty;
+       portslow = portx;
+       pos_fast = pos_.y;
+       pos_slow = pos_.x;
       nfastline = conf_.nPoints_y;
       nslowline = conf_.nPoints_x;
       break;
@@ -287,7 +285,6 @@ struct Config
         { pos_fast += reststepfast; }
         sleep_us(conf_.delayF);
       }
-
       //******************************************************************************
       sleep_us(conf_.pause);    // 50 CONST 50ms wait for start get data
       //*******************************************************************************
@@ -327,13 +324,7 @@ struct Config
         }
       }
     }
-// move  back  add 24/01/22 ////////////////////////////////////
-   /*
-    stepsx    = (uint16_t) conf_.betweenPoints_x*conf_.nPoints_x / conf_.diskretinstep;
-    stepsy    = (uint16_t) conf_.betweenPoints_y*conf_.nPoints_y / conf_.diskretinstep;
-    reststepx = (uint16_t) conf_.betweenPoints_x*conf_.nPoints_x % conf_.diskretinstep;
-    reststepy = (uint16_t) conf_.betweenPoints_y*conf_.nPoints_y % conf_.diskretinstep;
-   */
+
     switch (conf_.path)
     {
       case 0://X+
@@ -362,7 +353,6 @@ struct Config
       }
     }
  /////////////////////////////////////////////   
-   // for (uint32_t l = 0; l < stepfastline * nfastline; ++l) //com 240122   move  back
     for (uint32_t l = 0; l < stepsfastline; ++l) // move  back
     {
       if (!flgVirtual)
@@ -518,7 +508,6 @@ struct Config
 void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирование
 {
   const int8_t oneline=11;
-
   prev_point = pos_; //запоминание начальной точки скана
   vector_data.clear();
   if (flgDebug)
@@ -541,8 +530,6 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
   uint16_t reststepy;
   uint16_t nfastline, nslowline;
   uint16_t stepsslowline, stepsfastline;
-  //uint8_t  portx = 0;//1;
- // uint8_t  porty = 1;//2;
   uint8_t  portfast;
   uint8_t  portslow;
   uint16_t pos_fast;
@@ -679,7 +666,6 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
       }
     }
  /////////////////////////////////////////////   
-   // for (uint32_t l = 0; l < stepfastline * nfastline; ++l) //com 240122   move  back
     for (uint32_t l = 0; l < stepsfastline; ++l) // move  back
     {
       if (!flgVirtual)
@@ -849,7 +835,8 @@ struct Config
   uint8_t  flgAutoUpdateSPDelta;// обновление опоры , если изменение тока превысило порог 20
   uint16_t ThresholdAutoUpdate; //изменения опоры, если изменение тока превысило порог    21
   uint16_t KoeffCorrectISat;    // опора  %  от тока насыщения                            22
-  int16_t  SetPoint;            // опора  ток      
+  int16_t  SetPoint;            // опора  ток                                             23
+  uint16_t HopeDelayFP          // Задержка  в первой точке линии                         24  //add 24/05/02
 };
 */
   const int8_t oneline=11;
@@ -1094,7 +1081,6 @@ struct Config
       }
       else
       {
-      // uint16_t random_num =i;   
        ISatCur=ISatCur-int16_t(100*rand() % 5);// random_num;  //add 24/03/11
        vector_data.emplace_back(ISatCur);
       }
@@ -1152,7 +1138,6 @@ struct Config
       conf_.delayF               = vupdateparams[1];
       conf_.delayB               = vupdateparams[2];
       conf_.diskretinstep        = vupdateparams[3];
-      //if (flgDebug)
       sleep_ms(100);             //240314
       hardware->set_GainPID((uint16_t)vupdateparams[4]); //240320
       conf_.HopeDelay            = vupdateparams[5];
@@ -2088,14 +2073,14 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
         if (ln > 0) ldir = 1;
         ln = abs(ln);
         sleep_ms(100);
-      if (flgDebug)
-      {  
+       if (flgDebug)
+       {  
         for (int j =0; j <= 3; ++j)
         {
           debugdata.emplace_back(vupdateparams[j]);
         }
         sendStrData("code"+std::to_string(DEBUG)+"posXYZ parameters update",debugdata,100,true);
-      }   
+       }   
         vupdateparams.clear();
       }
       status = none;

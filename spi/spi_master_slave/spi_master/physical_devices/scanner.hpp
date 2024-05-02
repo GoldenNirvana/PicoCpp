@@ -35,9 +35,8 @@ struct Config
   uint16_t ThresholdAutoUpdate;//изменения опоры, если изменение тока превысило порог     21
   uint16_t KoeffCorrectISat;    // опора  %  от тока насыщения                            22
   int16_t  SetPoint;            // опора  ток                                             23
+  uint16_t HopeDelayFP;          // Задержка  в первой точке линии                         24  //add 24/05/02
 };
-
-
 
 struct ConfigCurrent
 {
@@ -51,9 +50,7 @@ class Scanner
 private:
 
   void stop_scan();         // возвращение сканера в  начальную точку скана
-  
   void move_to(const Point &point, uint16_t delay);  // переместиться в начальную точку скана текущего скана
-
   void sendStrData(std::string const& header,std::vector<int32_t>  &data, const uint16_t delay,const bool flg);
   void sendStrData(std::string const& header,std::vector<uint16_t> &data, const uint16_t delay,const bool flg);
   void sendStrData(std::string const& header,std::vector<int16_t>  &data, const uint16_t delay,const bool flg); //flg clear data

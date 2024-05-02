@@ -14,20 +14,20 @@
 
 HARDWARE::HARDWARE(ConfigHardWare confighardware) 
 {
- dacbsptport=new DAC8563(confighardware.DACBSPTPort); // DAC BIAS,SetPoint
-   dacxyport=new DAC8563(confighardware.DACXYPort);   // DAC X,Y
-    daczport=new DAC8563(confighardware.DACZPort);    // DACZ
-    busyport=new InputPort(confighardware.BUSYPort);  // FIXME TEMP!!!
-        conv=new OutputPort(confighardware.CONV);
-         dec=new OutputPort(confighardware.DEC);
-   resetport=new OutputPort(confighardware.ResetPort); 
-     ledPort=new OutputPort(PICO_DEFAULT_LED_PIN);
-      rdbLed=new OutputPort(confighardware.RDBPort); 
-       io1_0=new OutputPort(confighardware.IO1_0);
-       io1_1=new OutputPort(confighardware.IO1_1);
-    gainPID0=new OutputPort(confighardware.GainPID0);
-    gainPID1=new OutputPort(confighardware.GainPID1); 
-    gainPID2=new OutputPort(confighardware.GainPID2); 
+      dacbspt=new DAC8563(confighardware.DACBSPTPort); // DAC BIAS,SetPoint
+        dacxy=new DAC8563(confighardware.DACXYPort);   // DAC X,Y
+         dacz=new DAC8563(confighardware.DACZPort);    // DACZ
+     busyport=new InputPort(confighardware.BUSYPort);  // FIXME TEMP!!!
+         conv=new OutputPort(confighardware.CONV);
+          dec=new OutputPort(confighardware.DEC);
+    resetport=new OutputPort(confighardware.ResetPort); 
+      ledPort=new OutputPort(PICO_DEFAULT_LED_PIN);
+       rdbLed=new OutputPort(confighardware.RDBPort); 
+        io1_0=new OutputPort(confighardware.IO1_0);
+        io1_1=new OutputPort(confighardware.IO1_1);
+     gainPID0=new OutputPort(confighardware.GainPID0);
+     gainPID1=new OutputPort(confighardware.GainPID1); 
+     gainPID2=new OutputPort(confighardware.GainPID2); 
    freezeport=new OutputPort(confighardware.FreezePort);//заморозить/разморозить ПИД 
  protractport=new OutputPort(confighardware.ProtractPort);//вытянуть сканнер /втянуть сканнер  
      io_ports.push_back(io1_0); //0
@@ -41,9 +41,9 @@ HARDWARE::HARDWARE(ConfigHardWare confighardware)
 
 HARDWARE::~HARDWARE()
 {
- delete(dacbsptport);
- delete(dacxyport);
- delete(daczport);
+ delete(dacbspt);
+ delete(dacxy);
+ delete(dacz);
  delete(busyport);
  delete(conv);
  delete(dec);
@@ -182,9 +182,9 @@ void HARDWARE::init_SPI( uint8_t port ,uint8_t v2 ,uint8_t v3, uint8_t v4 )
  Spi::setProperties(v2, v3, v4);
 }
 
-void HARDWARE::init_DACSPB(uint8_t port) //  4 для подставки
+void HARDWARE::init_DACSPB(uint8_t spiport) //  4 для подставки
 {
-  dacbsptport->initialize(port); //code 23
+  dacbspt->initialize(spiport); //code 23
 /*
   afc.clear();
   afc = "code"+std::to_string(DEBUG)+ "debug Init DACSPB " + std::to_string(port);
@@ -195,12 +195,12 @@ void HARDWARE::init_DACSPB(uint8_t port) //  4 для подставки
  */ 
 }
 
-void HARDWARE::init_DACXY(uint8_t port)
+void HARDWARE::init_DACXY(uint8_t spiport) //spi port
 {
-  dacxyport->initialize(port); //code 27
-  dacxyport->setSpiProps();
-  dacxyport->writeA(0);
-  dacxyport->writeB(0);
+  dacxy->initialize(spiport); //code 27
+  dacxy->setSpiProps();
+  dacxy->writeA(0);
+  dacxy->writeB(0);
  /* afc.clear();
   afc ="code"+std::to_string(DEBUG)+ "debug Init DACXY 0,0 port=" + std::to_string(port);
   afc += +"\n";
@@ -210,9 +210,9 @@ void HARDWARE::init_DACXY(uint8_t port)
   */
 }
 
-void HARDWARE::init_DACZ(uint8_t port)
+void HARDWARE::init_DACZ(uint8_t spiport)
 {
-  daczport->initialize(port); //code 27
+  dacz->initialize(spiport); //code 27
   set_DACZ(0); 
  /*
   afc.clear();
@@ -225,11 +225,11 @@ void HARDWARE::init_DACZ(uint8_t port)
 }
 void HARDWARE::move_scannerX(int x)
 {
- dacxyport->writeA(x);
+ dacxy->writeA(x);
 }
 void HARDWARE::move_scannerY(int y)
 {
- dacxyport->writeB(y);
+ dacxy->writeB(y);
 
 }
 /*
@@ -255,7 +255,7 @@ void set_Bias(int8_t channel,int32_t Bias)
 //   code  22 , 2, 8, 0, 1, 1, value 
   if (!flgVirtual)
   { 
-     dacbsptport->writeB(Bias+ShiftDac);
+     dacbspt->writeB(Bias+ShiftDac);
   }	
   /*
  if  (flgDebug)
@@ -299,7 +299,7 @@ void HARDWARE::set_SetPoint( int32_t SetPoint)
 {//  code  22, 2, 8, 0, 1, 0, value
   if (!flgVirtual)
   {
-     dacbsptport->writeA(SetPoint+ShiftDac); // 240425 ?
+     dacbspt->writeA(SetPoint+ShiftDac); // 240425 ?
   } 
   // отладка
   if  (flgDebug)
@@ -386,16 +386,16 @@ void HARDWARE::set_DACZero()
 }
 void HARDWARE::set_DACXY(uint8_t channel, uint16_t value) 
 {
-  dacxyport->setSpiProps();
-  if (channel == 0)  dacxyport->writeA(value);
-  if (channel == 1)  dacxyport->writeB(value);
+  dacxy->setSpiProps();
+  if (channel == 0)  dacxy->writeA(value);
+  if (channel == 1)  dacxy->writeB(value);
   sleep_us(2);// 240405
 }
 
 void HARDWARE::set_DACZ(int16_t value) 
 {
-  daczport->setSpiProps(); 
-  daczport->writeA(int32_t(value)+ShiftDac);
+  dacz->setSpiProps(); 
+  dacz->writeA(int32_t(value)+ShiftDac);
   sleep_us(2);// 240405
 }
 
