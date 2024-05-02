@@ -15,21 +15,21 @@
 HARDWARE::HARDWARE(ConfigHardWare confighardware) 
 {
  dacbsptport=new DAC8563(confighardware.DACBSPTPort); // DAC BIAS,SetPoint
- dacxyport=new DAC8563(confighardware.DACXYPort);   // DAC X,Y
- daczport=new DAC8563(confighardware.DACZPort);    // DACZ
-  busyport=new InputPort(confighardware.BUSYPort);  // FIXME TEMP!!!
-      conv=new OutputPort(confighardware.CONV);
-       dec=new OutputPort(confighardware.DEC);
- resetport=new OutputPort(confighardware.ResetPort); 
-   ledPort=new OutputPort(PICO_DEFAULT_LED_PIN);
-    rdbLed=new OutputPort(confighardware.RDBPort); 
-     io1_0=new OutputPort(confighardware.IO1_0);
-     io1_1=new OutputPort(confighardware.IO1_1);
-     gainPID0=new OutputPort(confighardware.GainPID0);
-     gainPID1=new OutputPort(confighardware.GainPID1); 
-     gainPID2=new OutputPort(confighardware.GainPID2); 
-     freezeport=new OutputPort(confighardware.FreezePort);//заморозить/разморозить ПИД 
-     protractport=new OutputPort(confighardware.ProtractPort);//вытянуть сканнер /втянуть сканнер  
+   dacxyport=new DAC8563(confighardware.DACXYPort);   // DAC X,Y
+    daczport=new DAC8563(confighardware.DACZPort);    // DACZ
+    busyport=new InputPort(confighardware.BUSYPort);  // FIXME TEMP!!!
+        conv=new OutputPort(confighardware.CONV);
+         dec=new OutputPort(confighardware.DEC);
+   resetport=new OutputPort(confighardware.ResetPort); 
+     ledPort=new OutputPort(PICO_DEFAULT_LED_PIN);
+      rdbLed=new OutputPort(confighardware.RDBPort); 
+       io1_0=new OutputPort(confighardware.IO1_0);
+       io1_1=new OutputPort(confighardware.IO1_1);
+    gainPID0=new OutputPort(confighardware.GainPID0);
+    gainPID1=new OutputPort(confighardware.GainPID1); 
+    gainPID2=new OutputPort(confighardware.GainPID2); 
+   freezeport=new OutputPort(confighardware.FreezePort);//заморозить/разморозить ПИД 
+ protractport=new OutputPort(confighardware.ProtractPort);//вытянуть сканнер /втянуть сканнер  
      io_ports.push_back(io1_0); //0
      io_ports.push_back(io1_1);
      io_ports.push_back(gainPID0);
@@ -62,7 +62,7 @@ HARDWARE::~HARDWARE()
 void HARDWARE::set_io_value(int port, int value)  
 {
   SET_IO_VALUE = false;
-  if (port == 1)
+  if (port == 1) //????
   {
     std::string binary = std::bitset<2>(value).to_string();
     binary[1] == '1' ? io1_0->enable() : io1_0->disable();
@@ -348,7 +348,7 @@ void HARDWARE::set_GainPID(int gain)
   tiadd=(uint8_t)(gain&0x00FF);
   if (!flgVirtual) 
   {
-    set_io_value(2, ti); 
+    set_io_value(2, ti); //???????
     // отладка
     uint8_t intBuf[1]; 
     decoder.activePort(6);
