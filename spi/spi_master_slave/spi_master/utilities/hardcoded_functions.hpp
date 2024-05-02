@@ -16,13 +16,13 @@ class HARDWARE
 {
 // WARNING HARDCODED FUNCTIONS
 private:
- DAC8563    *dac8563_1; // DAC BIAS,SetPoint
- DAC8563    *dac8563_2; // DAC X,Y
- DAC8563    *dac8563_3; // DAC Z
- InputPort  *busy;     // FIXME TEMP!!!
+ DAC8563    *dacbsptport; // DAC BIAS,SetPoint
+ DAC8563    *dacxyport; // DAC X,Y
+ DAC8563    *daczport; // DAC Z
+ InputPort  *busyport;     // FIXME TEMP!!!
  OutputPort *conv;
  OutputPort *dec;
- OutputPort *resetPort; // FIXME TEMP
+ OutputPort *resetport; // FIXME TEMP
  OutputPort *ledPort;
  OutputPort *rdbLed;
  OutputPort *io1_0; 

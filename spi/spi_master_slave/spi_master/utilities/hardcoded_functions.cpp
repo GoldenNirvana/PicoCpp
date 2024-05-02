@@ -14,13 +14,13 @@
 
 HARDWARE::HARDWARE(ConfigHardWare confighardware) 
 {
- dac8563_1=new DAC8563(confighardware.DACBSPTPort); // DAC BIAS,SetPoint
- dac8563_2=new DAC8563(confighardware.DACXYPort);   // DAC X,Y
- dac8563_3=new DAC8563(confighardware.DACZPort);    // DACZ
-      busy=new InputPort(confighardware.BUSYPort);  // FIXME TEMP!!!
+ dacbsptport=new DAC8563(confighardware.DACBSPTPort); // DAC BIAS,SetPoint
+ dacxyport=new DAC8563(confighardware.DACXYPort);   // DAC X,Y
+ daczport=new DAC8563(confighardware.DACZPort);    // DACZ
+  busyport=new InputPort(confighardware.BUSYPort);  // FIXME TEMP!!!
       conv=new OutputPort(confighardware.CONV);
        dec=new OutputPort(confighardware.DEC);
- resetPort=new OutputPort(confighardware.ResetPort); 
+ resetport=new OutputPort(confighardware.ResetPort); 
    ledPort=new OutputPort(PICO_DEFAULT_LED_PIN);
     rdbLed=new OutputPort(confighardware.RDBPort); 
      io1_0=new OutputPort(confighardware.IO1_0);
@@ -41,13 +41,13 @@ HARDWARE::HARDWARE(ConfigHardWare confighardware)
 
 HARDWARE::~HARDWARE()
 {
- delete(dac8563_1);
- delete(dac8563_2);
- delete(dac8563_3);
- delete(busy);
+ delete(dacbsptport);
+ delete(dacxyport);
+ delete(daczport);
+ delete(busyport);
  delete(conv);
  delete(dec);
- delete(resetPort);
+ delete(resetport);
  delete(ledPort);
  delete(rdbLed);
  delete(io1_0);
@@ -91,19 +91,19 @@ void HARDWARE::setDefaultSettings()
   gpio_set_function(UART_TX_PIN, GPIO_FUNC_UART);
   gpio_set_function(UART_RX_PIN, GPIO_FUNC_UART);
 
-  gpio_pull_down(resetPort->getPort());
+  gpio_pull_down(resetport->getPort());
 
 //#warning should be undeleted
 //  RX_core rxCore;
 // fixme mb should add & before isr
-  gpio_set_irq_enabled_with_callback(busy->getPort(), GPIO_IRQ_EDGE_FALL, true, RX_core::comReceiveISR);
+  gpio_set_irq_enabled_with_callback(busyport->getPort(), GPIO_IRQ_EDGE_FALL, true, RX_core::comReceiveISR);
 
   multicore_launch_core1(RX_core::launchOnCore1);
 
   dec->enable();
   conv->enable();
-  resetPort->disable();
-  gpio_pull_down(resetPort->getPort());
+  resetport->disable();
+  gpio_pull_down(resetport->getPort());
   ledPort->enable();
   dark();
 
@@ -184,7 +184,7 @@ void HARDWARE::init_SPI( uint8_t port ,uint8_t v2 ,uint8_t v3, uint8_t v4 )
 
 void HARDWARE::init_DACSPB(uint8_t port) //  4 для подставки
 {
-  dac8563_1->initialize(port); //code 23
+  dacbsptport->initialize(port); //code 23
 /*
   afc.clear();
   afc = "code"+std::to_string(DEBUG)+ "debug Init DACSPB " + std::to_string(port);
@@ -197,10 +197,10 @@ void HARDWARE::init_DACSPB(uint8_t port) //  4 для подставки
 
 void HARDWARE::init_DACXY(uint8_t port)
 {
-  dac8563_2->initialize(port); //code 27
-  dac8563_2->setSpiProps();
-  dac8563_2->writeA(0);
-  dac8563_2->writeB(0);
+  dacxyport->initialize(port); //code 27
+  dacxyport->setSpiProps();
+  dacxyport->writeA(0);
+  dacxyport->writeB(0);
  /* afc.clear();
   afc ="code"+std::to_string(DEBUG)+ "debug Init DACXY 0,0 port=" + std::to_string(port);
   afc += +"\n";
@@ -212,7 +212,7 @@ void HARDWARE::init_DACXY(uint8_t port)
 
 void HARDWARE::init_DACZ(uint8_t port)
 {
-  dac8563_3->initialize(port); //code 27
+  daczport->initialize(port); //code 27
   set_DACZ(0); 
  /*
   afc.clear();
@@ -225,11 +225,11 @@ void HARDWARE::init_DACZ(uint8_t port)
 }
 void HARDWARE::move_scannerX(int x)
 {
- dac8563_2->writeA(x);
+ dacxyport->writeA(x);
 }
 void HARDWARE::move_scannerY(int y)
 {
- dac8563_2->writeB(y);
+ dacxyport->writeB(y);
 
 }
 /*
@@ -255,7 +255,7 @@ void set_Bias(int8_t channel,int32_t Bias)
 //   code  22 , 2, 8, 0, 1, 1, value 
   if (!flgVirtual)
   { 
-     dac8563_1->writeB(Bias+ShiftDac);
+     dacbsptport->writeB(Bias+ShiftDac);
   }	
   /*
  if  (flgDebug)
@@ -299,7 +299,7 @@ void HARDWARE::set_SetPoint( int32_t SetPoint)
 {//  code  22, 2, 8, 0, 1, 0, value
   if (!flgVirtual)
   {
-     dac8563_1->writeA(SetPoint+ShiftDac); // 240425 ?
+     dacbsptport->writeA(SetPoint+ShiftDac); // 240425 ?
   } 
   // отладка
   if  (flgDebug)
@@ -386,16 +386,16 @@ void HARDWARE::set_DACZero()
 }
 void HARDWARE::set_DACXY(uint8_t channel, uint16_t value) 
 {
-  dac8563_2->setSpiProps();
-  if (channel == 0)  dac8563_2->writeA(value);
-  if (channel == 1)  dac8563_2->writeB(value);
+  dacxyport->setSpiProps();
+  if (channel == 0)  dacxyport->writeA(value);
+  if (channel == 1)  dacxyport->writeB(value);
   sleep_us(2);// 240405
 }
 
 void HARDWARE::set_DACZ(int16_t value) 
 {
-  dac8563_3->setSpiProps(); 
-  dac8563_3->writeA(int32_t(value)+ShiftDac);
+  daczport->setSpiProps(); 
+  daczport->writeA(int32_t(value)+ShiftDac);
   sleep_us(2);// 240405
 }
 
