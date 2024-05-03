@@ -44,6 +44,8 @@
 #define FASTSCANNING             56
 #define SENDDATALIN              57  //данные линеализации
 #define ProtractAlgCode          61
+#define FreezePIDAlgCode         62
+#define UnFreezePIDAlgCode       63
 #define SPECTROSOPY_IV           65
 #define SPECTROSOPY_AIZ          66
 #define STOPCmd                  70

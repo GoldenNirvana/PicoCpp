@@ -203,12 +203,24 @@ case ProtractAlgCode:
                 scanner->hardware->protract(); 
                 break;
               } 
-case  RetractAlgCode:
+case RetractAlgCode:
               {
                 setAlgCodeNone();
                 scanner->hardware->retract();
                 break;
               }
+case FreezePIDAlgCode:
+              {
+                setAlgCodeNone();
+                scanner->hardware->freezeLOOP();
+                break;
+              }
+case UnFreezePIDAlgCode:
+              {
+                setAlgCodeNone();
+                scanner->hardware->unfreezeOOP();
+                break;
+              }              
 case SPECTROSOPY_IV:
               {
                 setAlgCodeNone();

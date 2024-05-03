@@ -1,13 +1,11 @@
-#include "hardcoded_functions.hpp"
 #include <pico/multicore.h>
 #include <iostream>
+#include <pico/multicore.h>
+#include <bitset>
 #include "../loop/common_data/common_variables.hpp"
 #include "../transceiver/rx_core.hpp"
 #include "../utilities/debug_logger.hpp"
-//#include "peripheral_functions.hpp"
-
-#include <pico/multicore.h>
-#include <bitset>
+#include "hardcoded_functions.hpp"
 
 #define UART_TX_PIN 8
 #define UART_RX_PIN 9
