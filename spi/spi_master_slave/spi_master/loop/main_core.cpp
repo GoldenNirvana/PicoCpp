@@ -212,13 +212,13 @@ case RetractAlgCode:
 case FreezePIDAlgCode:
               {
                 setAlgCodeNone();
-                scanner->hardware->freezeLOOP();
+                scanner->hardware->freezeLOOP(vector[1]);
                 break;
               }
 case UnFreezePIDAlgCode:
               {
                 setAlgCodeNone();
-                scanner->hardware->unfreezeOOP();
+                scanner->hardware->unfreezeLOOP(vector[1]);
                 break;
               }              
 case SPECTROSOPY_IV:
