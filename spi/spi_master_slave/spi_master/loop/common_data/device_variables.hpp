@@ -7,9 +7,12 @@
 
 struct ConfigHardWare
 {
-  uint8_t DACBSPTPort;  //1 DAC8563_1  BIAS SetPoint
-  uint8_t DACXYPort;    //2 DAC8563_2  XY
-  uint8_t DACZPort;     //1 dac8563_3  Z
+  uint8_t DACBiasSetPointPort;  //2 DAC8563_1  BIAS SetPoint
+  uint8_t DACBiasSetPointMode;  //1 DAC8563_1  BIAS SetPoint
+  uint8_t DACXYPort;    //3 DAC8563_2  XY
+  uint8_t DACXYMode;    //2 DAC8563_2  XY
+  uint8_t DACZPort;     //4 dac8563_3  Z
+  uint8_t DACZMode;     //1 DAC8563_2  XY
   uint8_t BUSYPort;     //16
   uint8_t CONV;         //7
   uint8_t DEC;          //10

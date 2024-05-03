@@ -6,9 +6,10 @@
 
 Scanner *scanner;
 
-Scanner::Scanner(ConfigHardWare _confighardware) : pos_({0, 0}), conf_({})
+Scanner::Scanner(ConfigHardWare confighardware) : pos_({0, 0}), conf_({})
 {
-  hardware=new  HARDWARE(_confighardware);
+//  _confighardware=confighardware;
+  hardware=new  HARDWARE(confighardware);
 }
 
 Scanner::~Scanner()
@@ -844,7 +845,7 @@ struct Config
   vector_data.clear();
   if (flgDebug)
   {
-   for (int j = 0; j <= 23; ++j)
+   for (int j = 0; j <= 24; ++j)
    {
     debugdata.emplace_back(vector[j]);
    }
@@ -1070,7 +1071,7 @@ struct Config
       }
      }   //next line 
  //  
-      sleep_ms(200);  //400
+      sleep_ms(conf_.HopeDelayFP);  //400
       sleep_us(conf_.pause);  
      
      if (!flgVirtual)  //read  Saturation Current
@@ -1115,8 +1116,7 @@ struct Config
       count0++;
      } 
      if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
-     
-      DrawDone = false;
+          DrawDone = false;
      if (flgСritical_section) critical_section_exit(&criticalSection);     
 //*****************************************************************
     sendStrData("code"+std::to_string(SCANNING),vector_data,60,true); //send data 60
@@ -1145,13 +1145,14 @@ struct Config
       conf_.flgAutoUpdateSP      = vupdateparams[7];; // автообновление опоры на каждой линии                     19
       conf_.flgAutoUpdateSPDelta = vupdateparams[8];; // обновление опоры , если изменение тока превысило порог 20
       conf_.ThresholdAutoUpdate  = vupdateparams[9];; // изменения опоры, если изменение тока превысило порог     21
-      conf_.KoeffCorrectISat     = vupdateparams[10]; // опора  %  от тока насыщения        
+      conf_.KoeffCorrectISat     = vupdateparams[10]; // опора  %  от тока насыщения  
+      conf_.HopeDelayFP          = vupdateparams[11]; //задержка в первой точке линии   // add 240503  
       ZJump=conf_.HopeZ;
       flgMaxJump=(ZJump==0);  
       if (flgDebug)
       { 
        sleep_ms(100);   
-       for (int j = 0; j <= 10; ++j)
+       for (int j = 0; j <= 11; ++j)
        {
         debugdata.emplace_back(vupdateparams[j]);
        }
@@ -1248,7 +1249,7 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
   vector_data.clear();
   if (flgDebug)
   {  
-   for (int j = 0; j <= 23; ++j)
+   for (int j = 0; j <= 24; ++j)
    {
     debugdata.emplace_back(vector[j]);
    }
@@ -1476,7 +1477,7 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
       sleep_us(conf_.delayB);
      }
     //
-      sleep_ms(200);  //400
+      sleep_ms(conf_.HopeDelayFP);// 240503
       sleep_us(conf_.pause);  
 
      if (!flgVirtual)  //read  Saturation Current
@@ -1541,23 +1542,25 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
       if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
        CONFIG_UPDATE              = false;
       if (flgСritical_section) critical_section_exit(&criticalSection);
-      conf_.delayF               = vector[1];
-      conf_.delayB               = vector[2];
-      conf_.diskretinstep        = vector[3];
-      hardware->set_GainPID((uint16_t)vector[4]);
-      conf_.HopeDelay            = vector[5];
-      conf_.HopeZ                = vector[6];
-      conf_.flgAutoUpdateSP      = vector[7];; // автообновление опоры на каждой линии                     19
-      conf_.flgAutoUpdateSPDelta = vector[8];; // обновление опоры , если изменение тока превысило порог 20
-      conf_.ThresholdAutoUpdate  = vector[9];; // изменения опоры, если изменение тока превысило порог     21
-      conf_.KoeffCorrectISat     = vector[10];  // опора  %  от тока насыщения        
+      conf_.delayF               = vupdateparams[1];
+      conf_.delayB               = vupdateparams[2];
+      conf_.diskretinstep        = vupdateparams[3];
+      sleep_ms(100);             //240314
+      hardware->set_GainPID((uint16_t)vupdateparams[4]); //240320
+      conf_.HopeDelay            = vupdateparams[5];
+      conf_.HopeZ                = vupdateparams[6];
+      conf_.flgAutoUpdateSP      = vupdateparams[7];; // автообновление опоры на каждой линии                     19
+      conf_.flgAutoUpdateSPDelta = vupdateparams[8];; // обновление опоры , если изменение тока превысило порог 20
+      conf_.ThresholdAutoUpdate  = vupdateparams[9];; // изменения опоры, если изменение тока превысило порог     21
+      conf_.KoeffCorrectISat     = vupdateparams[10]; // опора  %  от тока насыщения  
+      conf_.HopeDelayFP          = vupdateparams[11]; //задержка в первой точке линии   // add 240503  
       ZJump=conf_.HopeZ;   
       flgMaxJump=(conf_.HopeZ==0);
       ZJump=-conf_.HopeZ;
       sleep_ms(100);   
       if (flgDebug)
       {  
-       for (int j = 0; j <= 9; ++j)
+       for (int j = 0; j <= 11; ++j)
        {
         debugdata.emplace_back(vector[j]);
        }

@@ -4,11 +4,6 @@
 std::string  SOFTVERSION="24.05.02.01";;
 std::string  HARDWAREVERSION="0.1";
 // std::string  HARDWAREVERSION="2.0"; //new hardware
-//////////////////////////////////////////////
-// Spi spi;
-//LinearDriver linearDriver; //24/04/24
-//Decoder decoder(4, 5, 6); //24/04/24
-
 std::string afc;  //dataout string
 std::vector<int32_t> vector;
 std::vector<int32_t> vupdateparams;
@@ -31,8 +26,6 @@ bool ADC_GET_VALUE = false;
 bool CONFIG_UPDATE = false;
 bool LID = false;
 bool PID_TURN_ON = false;
-bool SCANNER_RETRACT = false;
-bool SCANNER_PROTRACT = false;
 bool LOOP_FREEZE_UNFREEZE=false;
 bool TheadDone = false;
 bool DrawDone=true;

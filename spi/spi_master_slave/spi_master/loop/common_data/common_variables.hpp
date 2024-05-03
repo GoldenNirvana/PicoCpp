@@ -36,14 +36,14 @@
 #define PARAMUPDATEDCmd          32
 #define TheadDoneCmd             33
 #define SetUseCritialSectAlgCode 34
-#define RetractAlCode            35
+#define RetractAlgCode           35
 #define RESONANCE                40  //AD9833 
 #define SCANNING                 50
 #define MOVE_TOX0Y0              51  //переместиться в начальную точку  скана из начальной точке предыдущего скана
 #define CONFIG_UPDATECmd         55
 #define FASTSCANNING             56
 #define SENDDATALIN              57  //данные линеализации
-#define SCANNER_RETRACT_PROTRACT 61
+#define ProtractAlgCode          61
 #define SPECTROSOPY_IV           65
 #define SPECTROSOPY_AIZ          66
 #define STOPCmd                  70
@@ -86,8 +86,6 @@ extern bool Z_STATE;
 extern bool LOOP_FREEZE_UNFREEZE;
 extern bool STOP;
 extern bool PID_TURN_ON;
-extern bool SCANNER_RETRACT;
-extern bool SCANNER_PROTRACT;
 extern bool ADC_IS_READY_TO_READ;
 // service flags
 extern bool TheadDone;   //need dor synchronization with PC 

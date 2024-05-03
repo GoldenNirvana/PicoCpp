@@ -14,22 +14,24 @@
 
 HARDWARE::HARDWARE(ConfigHardWare confighardware) 
 {
-      dacbspt=new DAC8563(confighardware.DACBSPTPort); // DAC BIAS,SetPoint
-        dacxy=new DAC8563(confighardware.DACXYPort);   // DAC X,Y
-         dacz=new DAC8563(confighardware.DACZPort);    // DACZ
-     busyport=new InputPort(confighardware.BUSYPort);  // FIXME TEMP!!!
-         conv=new OutputPort(confighardware.CONV);
-          dec=new OutputPort(confighardware.DEC);
-    resetport=new OutputPort(confighardware.ResetPort); 
+      _confighardware=confighardware;
+      dacbspt=new DAC8563(_confighardware.DACBiasSetPointMode); //set mode DAC BIAS,SetPoint
+        dacxy=new DAC8563(_confighardware.DACXYMode);   //set mode DAC X,Y
+         dacz=new DAC8563(_confighardware.DACZMode);    //set mode DACZ
+     busyport=new InputPort(_confighardware.BUSYPort);  // FIXME TEMP!!!
+         conv=new OutputPort(_confighardware.CONV);
+          dec=new OutputPort(_confighardware.DEC);
+    resetport=new OutputPort(_confighardware.ResetPort); 
       ledPort=new OutputPort(PICO_DEFAULT_LED_PIN);
-       rdbLed=new OutputPort(confighardware.RDBPort); 
-        io1_0=new OutputPort(confighardware.IO1_0);
-        io1_1=new OutputPort(confighardware.IO1_1);
-     gainPID0=new OutputPort(confighardware.GainPID0);
-     gainPID1=new OutputPort(confighardware.GainPID1); 
-     gainPID2=new OutputPort(confighardware.GainPID2); 
-   freezeport=new OutputPort(confighardware.FreezePort);//заморозить/разморозить ПИД 
- protractport=new OutputPort(confighardware.ProtractPort);//вытянуть сканнер /втянуть сканнер  
+       rdbLed=new OutputPort(_confighardware.RDBPort); 
+        io1_0=new OutputPort(_confighardware.IO1_0);
+        io1_1=new OutputPort(_confighardware.IO1_1);
+     gainPID0=new OutputPort(_confighardware.GainPID0);
+     gainPID1=new OutputPort(_confighardware.GainPID1); 
+     gainPID2=new OutputPort(_confighardware.GainPID2); 
+   freezeport=new OutputPort(_confighardware.FreezePort);//заморозить/разморозить ПИД 
+ protractport=new OutputPort(_confighardware.ProtractPort);//вытянуть сканнер /втянуть сканнер  
+  /*
      io_ports.push_back(io1_0); //0
      io_ports.push_back(io1_1);
      io_ports.push_back(gainPID0);
@@ -37,6 +39,7 @@ HARDWARE::HARDWARE(ConfigHardWare confighardware)
      io_ports.push_back(gainPID0);
      io_ports.push_back(freezeport);
      io_ports.push_back(protractport); //6
+  */   
 }
 
 HARDWARE::~HARDWARE()
@@ -57,8 +60,9 @@ HARDWARE::~HARDWARE()
  delete(gainPID2);
  delete(freezeport);
  delete(protractport);
- io_ports.clear();
+// io_ports.clear();
 }
+/*
 void HARDWARE::set_io_value(int port, int value)  
 {
   SET_IO_VALUE = false;
@@ -83,6 +87,7 @@ void HARDWARE::set_io_value(int port, int value)
     binary[0] == '1' ? protractport->enable() : protractport->disable();
   }
 }
+*/
 void HARDWARE::setDefaultSettings()
 {
   /// BASIC SETTINGS
@@ -112,13 +117,16 @@ void HARDWARE::setDefaultSettings()
   
   retract();        //втянуть 240403 ???
 //************************************************************* 
- // io3_1->blink();   //втянуть   240209  ?????
+//  init_DACSetPointBias(2);   //инициирование ЦАП1  SetPoint,BIAS
+// init_DACXY(3);    //инициирование ЦАП2  DACXY
+//  init_DACZ(4);    //инициирование ЦАП3  DACZ
+
+//240503 edited
+  init_DACSetPointBias(_confighardware.DACBiasSetPointPort);   //инициирование ЦАП1  SetPoint,BIAS
+
+  init_DACXY(_confighardware.DACXYPort);    //инициирование ЦАП2  DACXY
  
-  init_DACSPB(2);   //инициирование ЦАП1  SetPoint,BIAS
-
-  init_DACXY(3);    //инициирование ЦАП2  DACXY
-
-  init_DACZ(4);     //инициирование ЦАП3  DACZ
+  init_DACZ(_confighardware.DACZPort);      //инициирование ЦАП3  DACZ
   
 }
 
@@ -160,9 +168,9 @@ void HARDWARE::set_Freq(uint32_t freq)
   sleep_us(1); // 240411 add
   Spi::setProperties(8, 1, 1);
   spi_write_blocking(spi_default, buf, 2);
-    sleep_us(1); // 240411 add
+  sleep_us(1); // 240411 add
   spi_write_blocking(spi_default, buf + 2, 2);
-    sleep_us(1); // 240411 add
+  sleep_us(1); // 240411 add
   spi_write_blocking(spi_default, buf + 4, 2);
   sleep_us(1);
   decoder.activePort(7); //240411  add
@@ -182,7 +190,7 @@ void HARDWARE::init_SPI( uint8_t port ,uint8_t v2 ,uint8_t v3, uint8_t v4 )
  Spi::setProperties(v2, v3, v4);
 }
 
-void HARDWARE::init_DACSPB(uint8_t spiport) //  4 для подставки
+void HARDWARE::init_DACSetPointBias(uint8_t spiport) //  4 для подставки
 {
   dacbspt->initialize(spiport); //code 23
 /*
@@ -340,7 +348,7 @@ void HARDWARE::set_GainApmlMod(uint8_t gain)
   } 
 }
 
-void HARDWARE::set_GainPID(int gain)
+void HARDWARE::set_GainPID(uint16_t gain)
 {
   uint8_t ti;
   uint8_t tiadd;
@@ -348,7 +356,15 @@ void HARDWARE::set_GainPID(int gain)
   tiadd=(uint8_t)(gain&0x00FF);
   if (!flgVirtual) 
   {
-    set_io_value(2, ti); //???????
+  //  set_io_value(2, ti); //???????  //240503
+   /* std::string binary = std::bitset<3>(ti).to_string();
+    binary[2] == '1' ? gainPID0->enable() : gainPID0->disable();
+    binary[1] == '1' ? gainPID1->enable() : gainPID1->disable();
+    binary[0] == '1' ? gainPID2->enable() : gainPID2->disable();
+   */ 
+    (ti&0x04) == 1 ? gainPID0->enable() : gainPID0->disable();
+    (ti&0x02) == 1 ? gainPID1->enable() : gainPID1->disable();
+    (ti&0x01) == 1 ? gainPID2->enable() : gainPID2->disable();
     // отладка
     uint8_t intBuf[1]; 
     decoder.activePort(6);
@@ -416,6 +432,7 @@ uint16_t *HARDWARE::repeatTwoTimes()
   }
   return spiBuf;
 }
+/*
 void HARDWARE::scanner_retract_protract(int port, int flg) 
 // port  5  1- втянуть,     0-вытянуть
 // port  6  1- заморозить,  0-разморозить
@@ -442,7 +459,7 @@ void HARDWARE::scanner_retract_protract(int port, int flg)
   afc.clear();
   sleep_ms(100); 
  } 
-
+*/
 void HARDWARE::retract() //втянуть
 {
   protractport->enable();  //  port 6   элемент массива портов 
@@ -466,11 +483,13 @@ void HARDWARE::protract(uint16_t delay,int16_t DacZ0,int16_t HeightJump) //вы�
    ZMove(DacZ0,HeightJump,-20, delay);
 }
 */
+/*
 void HARDWARE::LOOP_freeze_unfreeze(int port, int flg) // port virtual 5
 {
 //flg == 1 ? io_ports[port - 1].enable() : io_ports[port - 1].disable();
  flg == 1 ? io_ports[port]->enable() : io_ports[port]->disable();
 }
+*/
 void HARDWARE::freezeLOOP(uint16_t delay)    // заморозить ПИД
 {
   freezeport->enable(); // 5 элемент массива портов ???
@@ -565,7 +584,6 @@ void HARDWARE::dark()
     sleep_ms(100);
   }
 }
-
 
 void HARDWARE::activateGreen()
 {
