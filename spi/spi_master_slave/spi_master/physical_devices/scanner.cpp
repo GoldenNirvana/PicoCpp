@@ -8,7 +8,6 @@ Scanner *scanner;
 
 Scanner::Scanner(ConfigHardWare confighardware) : pos_({0, 0}), conf_({})
 {
-//  _confighardware=confighardware;
   hardware=new  HARDWARE(confighardware);
 }
 

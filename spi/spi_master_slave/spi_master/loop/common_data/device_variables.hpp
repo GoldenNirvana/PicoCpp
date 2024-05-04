@@ -27,9 +27,21 @@ struct ConfigHardWare
   uint8_t FreezePort;   //26 заморозить сканнер=1; разморозить =0
   uint8_t ProtractPort; //27 втянуть    сканнер=1; вытянуть    =0
 };
+struct ConfigLinearDrive
+{
+  uint8_t XA_Port;     
+  uint8_t XB_Port;   
+  uint8_t YA_Port;    
+  uint8_t YB_Port;     
+  uint8_t ZA_Port;     
+  uint8_t ZB_Port;     
+
+};
 extern Spi            spi;
 extern LinearDriver   linearDriver;
 extern Decoder        decoder;
 extern ConfigHardWare confighardwarev0;
 extern ConfigHardWare confighardwarev1;
+extern ConfigLinearDrive configlineardrivev0;
+extern ConfigLinearDrive configlineardrivev1;
 #endif //PICO_EXAMPLES_DEVICE_VARIABLES_HPP
