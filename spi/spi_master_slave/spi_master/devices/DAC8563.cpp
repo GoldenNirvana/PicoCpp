@@ -1,7 +1,7 @@
-#include <cstring>
+//#include <cstring> //240503
 #include "DAC8563.hpp"
 #include "../utilities/base_types/Spi.hpp"
-#include "../loop/common_data/common_variables.hpp"
+#include "../loop/common_data/device_variables.hpp"
 
 DAC8563::DAC8563(int modeA1B1)
 {
@@ -52,15 +52,17 @@ void DAC8563::writeValue(uint8_t cmd_byte, uint8_t mid, uint8_t last)
 void DAC8563::initialize(int port)  //DAC
 {
   port_ = port;
-  DAC_WR_REG(CMD_RESET_ALL_REG, DATA_RESET_ALL_REG);      // reset
-  DAC_WR_REG(CMD_PWR_UP_A_B, DATA_PWR_UP_A_B);        // power up
-  DAC_WR_REG(CMD_INTERNAL_REF_EN, DATA_INTERNAL_REF_EN);      // enable internal reference
+  DAC_WR_REG(CMD_RESET_ALL_REG, DATA_RESET_ALL_REG);     // reset
+  DAC_WR_REG(CMD_PWR_UP_A_B, DATA_PWR_UP_A_B);           // power up
+  DAC_WR_REG(CMD_INTERNAL_REF_EN, DATA_INTERNAL_REF_EN); // enable internal reference
   if (mode == 1)
   {
     DAC_WR_REG(CMD_GAIN, DATA_GAIN_B2_A2);
-  } else if (mode == 2)
+  }
+  else
+  if (mode == 2)
   {
-    DAC_WR_REG(CMD_GAIN, DATA_GAIN_B1_A1);            // set multiplier TODO DAC 1 [-10..0]V
+    DAC_WR_REG(CMD_GAIN, DATA_GAIN_B1_A1);          // set multiplier TODO DAC 1 [-10..0]V
    // set multiplier TODO DAC 1 [-10..0]V
   }
   DAC_WR_REG(CMD_LDAC_DIS, DATA_LDAC_DIS);          // update the caches

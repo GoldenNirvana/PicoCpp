@@ -35,9 +35,8 @@ struct Config
   uint16_t ThresholdAutoUpdate;//изменения опоры, если изменение тока превысило порог     21
   uint16_t KoeffCorrectISat;    // опора  %  от тока насыщения                            22
   int16_t  SetPoint;            // опора  ток                                             23
+  uint16_t HopeDelayFP;         // Задержка  в первой точке линии                         24  //add 24/05/02
 };
-
-
 
 struct ConfigCurrent
 {
@@ -49,11 +48,9 @@ struct ConfigCurrent
 class Scanner
 {
 private:
-
+//  ConfigHardWare  _confighardware;
   void stop_scan();         // возвращение сканера в  начальную точку скана
-  
   void move_to(const Point &point, uint16_t delay);  // переместиться в начальную точку скана текущего скана
-
   void sendStrData(std::string const& header,std::vector<int32_t>  &data, const uint16_t delay,const bool flg);
   void sendStrData(std::string const& header,std::vector<uint16_t> &data, const uint16_t delay,const bool flg);
   void sendStrData(std::string const& header,std::vector<int16_t>  &data, const uint16_t delay,const bool flg); //flg clear data
@@ -63,7 +60,7 @@ public:
 
    HARDWARE *hardware;
 
-   Scanner(ConfigHardWare _confighardware);
+   Scanner(ConfigHardWare confighardware);
 
   ~Scanner();
 
@@ -98,7 +95,7 @@ public:
   void move_toX0Y0(uint16_t x, uint16_t y, uint16_t delay, int8_t flg); //переместиться в начальную точку скана из начальной точке предыдущего скана
 
   void LID_move_toZ0(int lid_name, int f, int p, int n, int dir);// отвестись в безопасную начальную точку по Z при старте и выходе из программы
-  
+
   void readADC();
 
   void stopAll();

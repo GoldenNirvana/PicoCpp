@@ -4,14 +4,15 @@
 
 class MainCore
 {
-public:
+ public:
 
   MainCore();
 
   void loop();
 
-private:
-
+ private:
+  
+  void setAlgCodeNone();
 };
 
 

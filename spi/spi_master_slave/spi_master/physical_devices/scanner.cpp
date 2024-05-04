@@ -6,9 +6,9 @@
 
 Scanner *scanner;
 
-Scanner::Scanner(ConfigHardWare _confighardware) : pos_({0, 0}), conf_({})
+Scanner::Scanner(ConfigHardWare confighardware) : pos_({0, 0}), conf_({})
 {
-  hardware=new  HARDWARE(_confighardware);
+  hardware=new  HARDWARE(confighardware);
 }
 
 Scanner::~Scanner()
@@ -50,10 +50,8 @@ void Scanner::sendStrData(std::string const& header,std::vector<int16_t> &data, 
   std::string afcc;
   afcc.clear();
   afcc=header;
-   //for (auto & element :data) 
   for (size_t j = 0; j < data.size(); ++j)
   {
- // afc +=',' + std::to_string(element);
    afcc +=',' + std::to_string(data[j]);
   }
   afcc +="\n";
@@ -218,20 +216,20 @@ struct Config
   {
     case 0://X+
     {
-      portfast = portx;
-      portslow = porty;
-      pos_fast = pos_.x;
-      pos_slow = pos_.y;
+       portfast = portx;
+       portslow = porty;
+       pos_fast = pos_.x;
+       pos_slow = pos_.y;
       nfastline = conf_.nPoints_x;
       nslowline = conf_.nPoints_y;
       break;
     }
     case 1: //Y+
     {
-      portfast = porty;
-      portslow = portx;
-      pos_fast = pos_.y;
-      pos_slow = pos_.x;
+       portfast = porty;
+       portslow = portx;
+       pos_fast = pos_.y;
+       pos_slow = pos_.x;
       nfastline = conf_.nPoints_y;
       nslowline = conf_.nPoints_x;
       break;
@@ -287,7 +285,6 @@ struct Config
         { pos_fast += reststepfast; }
         sleep_us(conf_.delayF);
       }
-
       //******************************************************************************
       sleep_us(conf_.pause);    // 50 CONST 50ms wait for start get data
       //*******************************************************************************
@@ -327,13 +324,7 @@ struct Config
         }
       }
     }
-// move  back  add 24/01/22 ////////////////////////////////////
-   /*
-    stepsx    = (uint16_t) conf_.betweenPoints_x*conf_.nPoints_x / conf_.diskretinstep;
-    stepsy    = (uint16_t) conf_.betweenPoints_y*conf_.nPoints_y / conf_.diskretinstep;
-    reststepx = (uint16_t) conf_.betweenPoints_x*conf_.nPoints_x % conf_.diskretinstep;
-    reststepy = (uint16_t) conf_.betweenPoints_y*conf_.nPoints_y % conf_.diskretinstep;
-   */
+
     switch (conf_.path)
     {
       case 0://X+
@@ -362,7 +353,6 @@ struct Config
       }
     }
  /////////////////////////////////////////////   
-   // for (uint32_t l = 0; l < stepfastline * nfastline; ++l) //com 240122   move  back
     for (uint32_t l = 0; l < stepsfastline; ++l) // move  back
     {
       if (!flgVirtual)
@@ -518,7 +508,6 @@ struct Config
 void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирование
 {
   const int8_t oneline=11;
-
   prev_point = pos_; //запоминание начальной точки скана
   vector_data.clear();
   if (flgDebug)
@@ -541,8 +530,6 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
   uint16_t reststepy;
   uint16_t nfastline, nslowline;
   uint16_t stepsslowline, stepsfastline;
-  //uint8_t  portx = 0;//1;
- // uint8_t  porty = 1;//2;
   uint8_t  portfast;
   uint8_t  portslow;
   uint16_t pos_fast;
@@ -679,7 +666,6 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
       }
     }
  /////////////////////////////////////////////   
-   // for (uint32_t l = 0; l < stepfastline * nfastline; ++l) //com 240122   move  back
     for (uint32_t l = 0; l < stepsfastline; ++l) // move  back
     {
       if (!flgVirtual)
@@ -849,7 +835,8 @@ struct Config
   uint8_t  flgAutoUpdateSPDelta;// обновление опоры , если изменение тока превысило порог 20
   uint16_t ThresholdAutoUpdate; //изменения опоры, если изменение тока превысило порог    21
   uint16_t KoeffCorrectISat;    // опора  %  от тока насыщения                            22
-  int16_t  SetPoint;            // опора  ток      
+  int16_t  SetPoint;            // опора  ток                                             23
+  uint16_t HopeDelayFP          // Задержка  в первой точке линии                         24  //add 24/05/02
 };
 */
   const int8_t oneline=11;
@@ -857,7 +844,7 @@ struct Config
   vector_data.clear();
   if (flgDebug)
   {
-   for (int j = 0; j <= 23; ++j)
+   for (int j = 0; j <= 24; ++j)
    {
     debugdata.emplace_back(vector[j]);
    }
@@ -1083,7 +1070,7 @@ struct Config
       }
      }   //next line 
  //  
-      sleep_ms(200);  //400
+      sleep_ms(conf_.HopeDelayFP);  //400
       sleep_us(conf_.pause);  
      
      if (!flgVirtual)  //read  Saturation Current
@@ -1094,7 +1081,6 @@ struct Config
       }
       else
       {
-      // uint16_t random_num =i;   
        ISatCur=ISatCur-int16_t(100*rand() % 5);// random_num;  //add 24/03/11
        vector_data.emplace_back(ISatCur);
       }
@@ -1129,8 +1115,7 @@ struct Config
       count0++;
      } 
      if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
-     
-      DrawDone = false;
+          DrawDone = false;
      if (flgСritical_section) critical_section_exit(&criticalSection);     
 //*****************************************************************
     sendStrData("code"+std::to_string(SCANNING),vector_data,60,true); //send data 60
@@ -1152,7 +1137,6 @@ struct Config
       conf_.delayF               = vupdateparams[1];
       conf_.delayB               = vupdateparams[2];
       conf_.diskretinstep        = vupdateparams[3];
-      //if (flgDebug)
       sleep_ms(100);             //240314
       hardware->set_GainPID((uint16_t)vupdateparams[4]); //240320
       conf_.HopeDelay            = vupdateparams[5];
@@ -1160,13 +1144,14 @@ struct Config
       conf_.flgAutoUpdateSP      = vupdateparams[7];; // автообновление опоры на каждой линии                     19
       conf_.flgAutoUpdateSPDelta = vupdateparams[8];; // обновление опоры , если изменение тока превысило порог 20
       conf_.ThresholdAutoUpdate  = vupdateparams[9];; // изменения опоры, если изменение тока превысило порог     21
-      conf_.KoeffCorrectISat     = vupdateparams[10]; // опора  %  от тока насыщения        
+      conf_.KoeffCorrectISat     = vupdateparams[10]; // опора  %  от тока насыщения  
+      conf_.HopeDelayFP          = vupdateparams[11]; //задержка в первой точке линии   // add 240503  
       ZJump=conf_.HopeZ;
       flgMaxJump=(ZJump==0);  
       if (flgDebug)
       { 
        sleep_ms(100);   
-       for (int j = 0; j <= 10; ++j)
+       for (int j = 0; j <= 11; ++j)
        {
         debugdata.emplace_back(vupdateparams[j]);
        }
@@ -1263,7 +1248,7 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
   vector_data.clear();
   if (flgDebug)
   {  
-   for (int j = 0; j <= 23; ++j)
+   for (int j = 0; j <= 24; ++j)
    {
     debugdata.emplace_back(vector[j]);
    }
@@ -1491,7 +1476,7 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
       sleep_us(conf_.delayB);
      }
     //
-      sleep_ms(200);  //400
+      sleep_ms(conf_.HopeDelayFP);// 240503
       sleep_us(conf_.pause);  
 
      if (!flgVirtual)  //read  Saturation Current
@@ -1556,23 +1541,25 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
       if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
        CONFIG_UPDATE              = false;
       if (flgСritical_section) critical_section_exit(&criticalSection);
-      conf_.delayF               = vector[1];
-      conf_.delayB               = vector[2];
-      conf_.diskretinstep        = vector[3];
-      hardware->set_GainPID((uint16_t)vector[4]);
-      conf_.HopeDelay            = vector[5];
-      conf_.HopeZ                = vector[6];
-      conf_.flgAutoUpdateSP      = vector[7];; // автообновление опоры на каждой линии                     19
-      conf_.flgAutoUpdateSPDelta = vector[8];; // обновление опоры , если изменение тока превысило порог 20
-      conf_.ThresholdAutoUpdate  = vector[9];; // изменения опоры, если изменение тока превысило порог     21
-      conf_.KoeffCorrectISat     = vector[10];  // опора  %  от тока насыщения        
+      conf_.delayF               = vupdateparams[1];
+      conf_.delayB               = vupdateparams[2];
+      conf_.diskretinstep        = vupdateparams[3];
+      sleep_ms(100);             //240314
+      hardware->set_GainPID((uint16_t)vupdateparams[4]); //240320
+      conf_.HopeDelay            = vupdateparams[5];
+      conf_.HopeZ                = vupdateparams[6];
+      conf_.flgAutoUpdateSP      = vupdateparams[7];; // автообновление опоры на каждой линии                     19
+      conf_.flgAutoUpdateSPDelta = vupdateparams[8];; // обновление опоры , если изменение тока превысило порог 20
+      conf_.ThresholdAutoUpdate  = vupdateparams[9];; // изменения опоры, если изменение тока превысило порог     21
+      conf_.KoeffCorrectISat     = vupdateparams[10]; // опора  %  от тока насыщения  
+      conf_.HopeDelayFP          = vupdateparams[11]; //задержка в первой точке линии   // add 240503  
       ZJump=conf_.HopeZ;   
       flgMaxJump=(conf_.HopeZ==0);
       ZJump=-conf_.HopeZ;
       sleep_ms(100);   
       if (flgDebug)
       {  
-       for (int j = 0; j <= 9; ++j)
+       for (int j = 0; j <= 11; ++j)
        {
         debugdata.emplace_back(vector[j]);
        }
@@ -2088,14 +2075,14 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
         if (ln > 0) ldir = 1;
         ln = abs(ln);
         sleep_ms(100);
-      if (flgDebug)
-      {  
+       if (flgDebug)
+       {  
         for (int j =0; j <= 3; ++j)
         {
           debugdata.emplace_back(vupdateparams[j]);
         }
         sendStrData("code"+std::to_string(DEBUG)+"posXYZ parameters update",debugdata,100,true);
-      }   
+       }   
         vupdateparams.clear();
       }
       status = none;

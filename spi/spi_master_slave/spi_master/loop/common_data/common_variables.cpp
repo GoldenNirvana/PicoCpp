@@ -1,28 +1,13 @@
 #include "common_variables.hpp"
 
 //////////////////////////////////////////////
-std::string  SOFTVERSION="24.04.19.01";;
-std::string  HARDWAREVERSION="1.0";
+std::string  SOFTVERSION="24.05.02.01";;
+std::string  HARDWAREVERSION="0.1";
 // std::string  HARDWAREVERSION="2.0"; //new hardware
-//////////////////////////////////////////////
-
 std::string afc;  //dataout string
-Spi spi;
-LinearDriver linearDriver;
-Decoder decoder(4, 5, 6);
-
-//HARDWARE hardware;
-//Scanner *scanner;
-//int32_t  vector[16];  //datain
 std::vector<int32_t> vector;
 std::vector<int32_t> vupdateparams;
-
 int32_t vectorSize;
-
-
-//ConfigHardWare confighardwareV0;
-//ConfigHardWare confighardwareV1;
-//HARDWARE hardware;
 
 //#warning REMOVE STATIC !!! side effects???
 uint16_t spiBuf[8];
@@ -41,13 +26,9 @@ bool ADC_GET_VALUE = false;
 bool CONFIG_UPDATE = false;
 bool LID = false;
 bool PID_TURN_ON = false;
-bool SCANNER_RETRACT = false;
-bool SCANNER_PROTRACT = false;
 bool LOOP_FREEZE_UNFREEZE=false;
 bool TheadDone = false;
 bool DrawDone=true;
-
-
 //************************************************
 bool    flgParamsUpdated=false;
 bool    flgСritical_section=true;
@@ -68,6 +49,5 @@ uint8_t IPin    = 2; // ток
 //uint32_t DEBUG_LEVEL = 2;
 bool Z_STATE = false; //???
 bool ADC_IS_READY_TO_READ = true;
-//volatile int32_t current_channel = 0;
 
 critical_section_t criticalSection;

@@ -33,26 +33,25 @@ void RX_core::comReceiveISR(uint a, uint32_t b)
   ADC_IS_READY_TO_READ = true;
 }
 void RX_core::launchOnCore1()
-{
-  
+{ 
    while (true)
   {
     parse(vector,vupdateparams); //wait for data ! парсинг входящих данных из ПК 
     if (vector.size()!=0)
    {
-     if (flgСritical_section) critical_section_enter_blocking(&criticalSection); //added 24/03/11
+     if (flgСritical_section) critical_section_enter_blocking(&criticalSection); 
     switch (vector[0])
     {
       case 11: ///????
         ADC_RESET = true;
         break;
-      case VirtualCmd : //флаг симуляции работы микрокотроллера      
+      case VirtualCmd : //флаг симуляции работы микроконтроллера      
         flgVirtual=(bool)vector[1];
         break;
-      case DebugLevelCmd: // флаг вывода отладочной инофрмации debug level =2;  =3 запрет вывода!
+      case DebugLevelCmd: // флаг вывода отладочной информации debug level =2;  =3 запрет вывода!
         flgDebugLevel=vector[1];
         break;    
-      case DebugCmd: // флаг вывода отладочной инофрмации debug level =2;  =3 запрет вывода!
+      case DebugCmd: // флаг вывода отладочной информации  =1, нет =0
         flgDebug=boolean(vector[1]);
         afc.clear();
         afc = "code"+std::to_string(DEBUG)+"debug Set Debug "+ std::to_string(flgDebug);
@@ -68,14 +67,14 @@ void RX_core::launchOnCore1()
       case ADC_GET_VALUECmd:            
         ADC_GET_VALUE = true;// прочитатать сигналы АЦП      
         break;
-      case TheadDoneCmd: // mf  
+      case TheadDoneCmd:
         TheadDone = true;
         break;
-      case DRAWDONECmd: // mf  
+      case DRAWDONECmd: 
         DrawDone = true;
         break;  
       case STOPCmd:
-        STOP=true; //stopAll(); stop the active algorithm 
+        STOP=true; // stop the active algorithm 
         break; 
       default: 
       {
@@ -99,7 +98,6 @@ void RX_core::launchOnCore1()
    }
   }//while
 }
-
 
 void RX_core::serialPrintBuffer(const uint16_t *const buf, int len)
 {
@@ -157,7 +155,6 @@ void RX_core::parse(std::vector<int32_t> &vec)
   getline(std::cin, s);
   // todo mb add const_cast
   Parser parser(s.data(), ',');
- // vec.clear();
   vectorSize = parser.parseInts(vec);
 }
 void RX_core::parse(std::vector<int32_t> &vec,std::vector<int32_t> &vparams)
@@ -166,7 +163,6 @@ void RX_core::parse(std::vector<int32_t> &vec,std::vector<int32_t> &vparams)
   getline(std::cin, s);
   // todo mb add const_cast
   Parser parser(s.data(), ',');
- // vec.clear();
   vectorSize = parser.parseInts(vec,vparams);
 }
 

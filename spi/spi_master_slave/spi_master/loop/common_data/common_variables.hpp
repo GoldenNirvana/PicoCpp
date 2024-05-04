@@ -4,11 +4,7 @@
 #include <pico/critical_section.h>
 #include <string>
 #include <vector>
-#include "../../utilities/base_types/Spi.hpp"
-#include "../../physical_devices/LinearDriver.hpp"
-//#include "../../physical_devices/scanner.hpp"
-//#include "../../utilities/hardcoded_functions.hpp"
-//device
+
 #define SFM                      0
 #define STM                      1
 #define SICMDC                   3  
@@ -40,14 +36,16 @@
 #define PARAMUPDATEDCmd          32
 #define TheadDoneCmd             33
 #define SetUseCritialSectAlgCode 34
-#define RetractAlCode            35
+#define RetractAlgCode           35
 #define RESONANCE                40  //AD9833 
 #define SCANNING                 50
 #define MOVE_TOX0Y0              51  //переместиться в начальную точку  скана из начальной точке предыдущего скана
 #define CONFIG_UPDATECmd         55
 #define FASTSCANNING             56
 #define SENDDATALIN              57  //данные линеализации
-#define SCANNER_RETRACT_PROTRACT 61
+#define ProtractAlgCode          61
+#define FreezePIDAlgCode         62
+#define UnFreezePIDAlgCode       63
 #define SPECTROSOPY_IV           65
 #define SPECTROSOPY_AIZ          66
 #define STOPCmd                  70
@@ -59,14 +57,11 @@
 #define portx                    0
 #define porty                    1
 
-
 extern std::string  SOFTVERSION;
 extern std::string  HARDWAREVERSION;
 extern int16_t  ALGCODE;
 extern uint32_t DEBUG_LEVEL;
-extern Spi      spi;
-extern LinearDriver linearDriver;
-extern Decoder decoder;
+
 
 extern std::string afc;
 extern uint16_t spiBuf[8];
@@ -93,8 +88,6 @@ extern bool Z_STATE;
 extern bool LOOP_FREEZE_UNFREEZE;
 extern bool STOP;
 extern bool PID_TURN_ON;
-extern bool SCANNER_RETRACT;
-extern bool SCANNER_PROTRACT;
 extern bool ADC_IS_READY_TO_READ;
 // service flags
 extern bool TheadDone;   //need dor synchronization with PC 
@@ -111,8 +104,12 @@ extern uint8_t flgDebugLevel; //  leveldebug
 extern int16_t ZValue; //for simulation
 extern int16_t SignalValue; //for simulation //  
 extern int16_t ZMaxValue;
+
 extern int32_t ShiftDac;
+//
 //extern volatile int32_t current_channel;
 extern critical_section_t criticalSection;
+
+
 
 #endif //PICO_EXAMPLES_COMMON_VARIABLES_HPP

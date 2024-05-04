@@ -2,6 +2,7 @@
 #include <iostream>
 #include "LinearDriver.hpp"
 #include "../loop/common_data/common_variables.hpp"//add mf 231101
+#include "../loop/common_data/device_variables.hpp"
 
 LinearDriver::LinearDriver() : x_a(OutputPort(18)), x_b(OutputPort(19)), y_a(OutputPort(20)),
                                y_b(OutputPort(21)), z_a(OutputPort(22)), z_b(OutputPort(28))

@@ -7,6 +7,13 @@
 #include "../utilities/debug_logger.hpp"
 #include <cmath>
 
+void  MainCore::setAlgCodeNone()
+{
+  if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
+   ALGCODE=ALGNONE;
+  if (flgСritical_section) critical_section_exit(&criticalSection);    
+}
+
 void MainCore::loop()
 {
  
@@ -18,61 +25,44 @@ void MainCore::loop()
 case   ALGNONE:{break;}
 case RESONANCE:
               {
-               if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
-                ALGCODE=ALGNONE;
-               if (flgСritical_section) critical_section_exit(&criticalSection);
+               setAlgCodeNone();
                scanner->start_frqscan();
                break;
               }
 case APPROACH:{
-                if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
-                 ALGCODE=ALGNONE;
-                if (flgСritical_section) critical_section_exit(&criticalSection);
-               scanner->hardware->blue();
+                setAlgCodeNone();
+                scanner->hardware->blue();
                 scanner->approacphm(vector);
-               scanner->hardware->green();
+                scanner->hardware->green();
               //  dark();
                 break;
               }
 case TESTMOVER:{
-                if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
-                 ALGCODE=ALGNONE;
-                if (flgСritical_section) critical_section_exit(&criticalSection);
-             //   blue();
-                scanner->testpiezomover(vector);
-                //green();
-              //  dark();
-                break;
+                 setAlgCodeNone();
+                 scanner->testpiezomover(vector);
+                 break;
                }
 case FREQ_SET:{
-                if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
-                 ALGCODE=ALGNONE;
-                if (flgСritical_section) critical_section_exit(&criticalSection);
+                setAlgCodeNone();
                 scanner->hardware->set_Freq((uint16_t) vector[1]);              
                 break;
               }
 case LID_MOVE_UNTIL_STOP:
               {
-                if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
-                 ALGCODE=ALGNONE;
-                if (flgСritical_section) critical_section_exit(&criticalSection);
+                setAlgCodeNone();
                 scanner->positioningXYZ(vector);               
                 break;
               }
 case MOVE_TOX0Y0:
               {
-                if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
-                 ALGCODE=ALGNONE;
-                if (flgСritical_section) critical_section_exit(&criticalSection);
+                setAlgCodeNone();
                 scanner->move_toX0Y0(vector[1], vector[2], vector[3],vector[4]);
                 break; 
               }     
 case LID_MOVE_TOZ0:
               {
-               if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
-                ALGCODE=ALGNONE;
-               if (flgСritical_section) critical_section_exit(&criticalSection);
-               scanner->LID_move_toZ0(vector[1], vector[2], vector[3], vector[4], vector[5]);
+                setAlgCodeNone();
+                scanner->LID_move_toZ0(vector[1], vector[2], vector[3], vector[4], vector[5]);
                break; 
               }            
 case SCANNING:
@@ -80,24 +70,7 @@ case SCANNING:
                 if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
                  ALGCODE=ALGNONE;
                  DrawDone=true;
-                /* scanner.scan_update
-                          ({
-                             static_cast<uint16_t>(vector[1]), static_cast<uint16_t>(vector[2]),
-                             static_cast<uint8_t>(vector[3]),  static_cast<uint8_t>(vector[4]),
-                             static_cast<uint16_t>(vector[5]), static_cast<uint16_t>(vector[6]),
-                             static_cast<uint16_t>(vector[7]), static_cast<uint16_t>(vector[8]),
-                             static_cast<uint8_t>(vector[9]),  static_cast<uint8_t>(vector[10]),
-                             static_cast<uint16_t>(vector[11]),static_cast<uint16_t>(vector[12]),
-                             static_cast<uint16_t>(vector[13]),static_cast<int16_t>(vector[14]),  //edited 240404            
-                             static_cast<uint8_t>(vector[15]), static_cast<uint8_t>(vector[16]),
-                             static_cast<uint16_t>(vector[17]),static_cast<uint16_t>(vector[18]),
-                             static_cast<uint8_t>(vector[19]), static_cast<uint8_t>(vector[20]),
-                             static_cast<uint16_t>(vector[21]),static_cast<uint16_t>(vector[22]),
-                             static_cast<int16_t>(vector[23])
-                            }
-                           );  
-                      */     
-                     scanner->scan_update
+                 scanner->scan_update
                           ({
                              static_cast<uint16_t>(vector[1]), static_cast<uint16_t>(vector[2]),
                              static_cast<uint8_t>(vector[3]),  static_cast<uint8_t>(vector[4]),
@@ -131,115 +104,87 @@ case SCANNING:
               }
 case SENDDATALIN:
               {
-                if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
-                 ALGCODE=ALGNONE;
-                if (flgСritical_section)critical_section_exit(&criticalSection);
+                setAlgCodeNone();
                 scanner->readDATALin();
                 break;
               }              
 case FASTSCANNING:
               {
-                if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
-                 ALGCODE=ALGNONE;
-                if (flgСritical_section) critical_section_exit(&criticalSection);
+                setAlgCodeNone();
                 scanner->start_fastscan(vector);  
                 break; 
               }   
 
 case SET_PID_GAIN:
               {
-                critical_section_enter_blocking(&criticalSection);
-                 ALGCODE=ALGNONE;
-                critical_section_exit(&criticalSection);
+                setAlgCodeNone();
                 scanner->hardware->set_GainPID((uint16_t)vector[1]);  
                 break; 
               }  
 case SET_AMPLMOD_GAIN: // усиление раскачка зонда 
               {
-                if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
-                 ALGCODE=ALGNONE;
-                if (flgСritical_section) critical_section_exit(&criticalSection);
-                 scanner->hardware->set_GainApmlMod((uint8_t)vector[1]);
+                setAlgCodeNone();
+                scanner->hardware->set_GainApmlMod((uint8_t)vector[1]);
                 break;
               }   
 case InitDAC_BIAS_SET_POINT:
               {
-                if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
-                 ALGCODE=ALGNONE;
-                if (flgСritical_section) critical_section_exit(&criticalSection);
-                if (!flgVirtual)   scanner->hardware->init_DACSPB(vector[1]);       
+                setAlgCodeNone();
+                if (!flgVirtual)   scanner->hardware->init_DACSetPointBias(vector[1]);       
                 break;         
               }   
 case InitDAC_Z:
               {
-                if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
-                 ALGCODE=ALGNONE;
-                if (flgСritical_section) critical_section_exit(&criticalSection);
+                setAlgCodeNone();
                 if (!flgVirtual)   scanner->hardware->init_DACZ(vector[1]);       
                 break;         
               }   
 case InitDAC_XY:
               {
-                if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
-                 ALGCODE=ALGNONE;
-                if (flgСritical_section) critical_section_exit(&criticalSection);
-                 scanner->hardware->init_DACXY(vector[1]);
+                setAlgCodeNone();
+                scanner->hardware->init_DACXY(vector[1]);
                 break; 
               } 
 case SetDACZeroCmd:
               {
-                if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
-                 ALGCODE=ALGNONE;
-                if (flgСritical_section) critical_section_exit(&criticalSection);
-                 scanner->hardware->set_DACZero();
+                setAlgCodeNone();
+                scanner->hardware->set_DACZero();
                 break;
               } 
 case SET_BIAS:
               {
-                if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
-                 ALGCODE=ALGNONE;
-                if (flgСritical_section) critical_section_exit(&criticalSection);
-                 scanner->hardware->set_Bias(vector[1]);
+                setAlgCodeNone();
+                scanner->hardware->set_Bias(vector[1]);
                 break;
               }               
 case SET_SETPOINT:
               {
-                if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
-                 ALGCODE=ALGNONE;
-                if (flgСritical_section) critical_section_exit(&criticalSection);
-                 scanner->hardware->set_SetPoint(vector[1]);
+                setAlgCodeNone();
+                scanner->hardware->set_SetPoint(vector[1]);
                 break; 
               }   
   case SET_Z: { 
-                if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
-                 ALGCODE=ALGNONE;
-                if (flgСritical_section) critical_section_exit(&criticalSection);
-                 scanner->hardware->set_DACZ(vector[1]);
+                setAlgCodeNone();
+                scanner->hardware->set_DACZ(vector[1]);
                 break;
               }     
  case SET_XY: {
-                if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
-                 ALGCODE=ALGNONE;
-                if (flgСritical_section) critical_section_exit(&criticalSection);
-               scanner->hardware->init_SPI(vector[1],vector[2],vector[3],vector[4]);//29, 3, 8, 0, 1, 1, value	
-               if (vector[5] == 0)
-               {
+                setAlgCodeNone();
+                scanner->hardware->init_SPI(vector[1],vector[2],vector[3],vector[4]);//29, 3, 8, 0, 1, 1, value	
+                if (vector[5] == 0)
+                {
                  scanner->hardware->move_scannerX(vector[6]);
-                // dac8563_2.writeA(vector[6]);
-               } 
-               else 
-               if (vector[5] == 1)
-               {
+                } 
+                else 
+                if (vector[5] == 1)
+                {
                  scanner->hardware->move_scannerY(vector[6]);
-               // dac8563_2.writeB(vector[6]);
-               }
-               break;
+                }
+                break;
               }   
 case ADC_READCmd: //TIMER
               {
-                if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
-                 ALGCODE=ALGNONE;
-                if (flgСritical_section) critical_section_exit(&criticalSection);
+                setAlgCodeNone();
                 if (ADC_IS_READY_TO_READ)
                 {
                  scanner->readADC();
@@ -248,82 +193,58 @@ case ADC_READCmd: //TIMER
               }    
 case GET_CURRENTX0Y0:
               {
-                if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
-                 ALGCODE=ALGNONE;
-                if (flgСritical_section) critical_section_exit(&criticalSection);
+                setAlgCodeNone();
                 scanner->getX0Y0();
                 break;
               }   
-case SCANNER_RETRACT_PROTRACT:
+case ProtractAlgCode:
               {
-                if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
-                 ALGCODE=ALGNONE;
-                if (flgСritical_section) critical_section_exit(&criticalSection);
-                scanner->hardware->scanner_retract_protract(vector[1],vector[2]); //int port=6 , int flg
-                // vector[2] == 1 ? io_ports[vector[1]].enable() : io_ports[vector[1]].disable();
+                setAlgCodeNone();
+                scanner->hardware->protract(); 
                 break;
               } 
+case RetractAlgCode:
+              {
+                setAlgCodeNone();
+                scanner->hardware->retract();
+                break;
+              }
+case FreezePIDAlgCode:
+              {
+                setAlgCodeNone();
+                scanner->hardware->freezeLOOP(vector[1]);
+                break;
+              }
+case UnFreezePIDAlgCode:
+              {
+                setAlgCodeNone();
+                scanner->hardware->unfreezeLOOP(vector[1]);
+                break;
+              }              
 case SPECTROSOPY_IV:
               {
-                if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
-                 ALGCODE=ALGNONE;
-                if (flgСritical_section) critical_section_exit(&criticalSection);
+                setAlgCodeNone();
                 scanner->spectroscopyIV(vector);
                 break;
               }  
 case SPECTROSOPY_AIZ:
               {
-                if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
-                 ALGCODE=ALGNONE;
-                if (flgСritical_section) critical_section_exit(&criticalSection);
+                setAlgCodeNone();
                 scanner->spectroscopyAIZ(vector);
                 break;
               }  
-case  RetractAlCode:
-              {
-                if (flgСritical_section) critical_section_enter_blocking(&criticalSection); 
-                 ALGCODE=ALGNONE; 
-                if (flgСritical_section) critical_section_exit(&criticalSection);  
-                scanner->hardware->retract();
-                break;
-              }
 case VersionCmd:
               {
-                if (flgСritical_section) critical_section_enter_blocking(&criticalSection); 
-                 ALGCODE=ALGNONE; 
-                if (flgСritical_section) critical_section_exit(&criticalSection);  
-                 scanner->hardware->GetSOFTHARDWAREVersion();
+                setAlgCodeNone();
+                scanner->hardware->GetSOFTHARDWAREVersion();
                 break;
               }               
-
 default:      {/*activateError();*/  break;}                                                                                                                                            
    }
   }
 
 /*
-    if (LOOP_FREEZE_UNFREEZE) //заморозить- разморозить ПИД ??????????
-    {  
-      LOOP_FREEZE_UNFREEZE = false;
-      scanner.LOOP_freeze_unfreeze(vector[1],vector[2]); 
-      //vector[2] == 1 ? io_ports[vector[1] - 1].enable() : io_ports[vector[1] - 1].disable();
-      continue;
-    }
-    // управление пьезодвижителем
-    if (LID)       
-    {
-      LID = false;
-      static uint16_t inBuf[5]; // f, p, n, d
-      for (int j = 0; j < 5; ++j)
-      {
-        inBuf[j] = vector[j];
-        if (flgDebugLevel <= DEBUG_LEVEL) std::cout << inBuf[j] << ' ';
-      }
-      linearDriver.activate(inBuf[0], inBuf[1], inBuf[2], abs(inBuf[3]), inBuf[4]);
-      if (flgDebugLevel <= DEBUG_LEVEL) std::cout << "debug LID_IS_READY\n";
-      continue;
-    }
-
-  
+   
  /// MAIN SPI 
  
     if (AD5664)
@@ -370,19 +291,6 @@ default:      {/*activateError();*/  break;}
       resetPort.enable();
       sleep_us(10);
       resetPort.disable();
-      continue;
-    }
-  
-    if (SCANNER_RETRACT)
-    {
-      scanner.retract();
-      SCANNER_RETRACT = false;
-      continue;
-    }
-    if (SCANNER_PROTRACT)
-    {
-      scanner.protract();
-      SCANNER_PROTRACT = false;
       continue;
     }
      */
