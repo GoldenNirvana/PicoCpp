@@ -2,7 +2,8 @@
 #define PICO_EXAMPLES_DEVICE_VARIABLES_HPP
 #include <pico.h>
 #include "../../utilities/base_types/Spi.hpp"
-#include "../../physical_devices/LinearDriver.hpp"
+#include "../../utilities/base_types/decoder.hpp"
+//#include "../../physical_devices/LinearDriver.hpp"
 
 
 struct ConfigHardWare
@@ -37,11 +38,11 @@ struct ConfigLinearDrive
   uint8_t ZB_Port;     
 
 };
-extern Spi            spi;
-extern LinearDriver   linearDriver;
-extern Decoder        decoder;
-extern ConfigHardWare confighardwarev0;
-extern ConfigHardWare confighardwarev1;
+extern Spi               spi;
+//extern LinearDriver      *linearDriver;
+extern Decoder           decoder;
+extern ConfigHardWare    confighardwarev0;
+extern ConfigHardWare    confighardwarev1;
 extern ConfigLinearDrive configlineardrivev0;
 extern ConfigLinearDrive configlineardrivev1;
 #endif //PICO_EXAMPLES_DEVICE_VARIABLES_HPP

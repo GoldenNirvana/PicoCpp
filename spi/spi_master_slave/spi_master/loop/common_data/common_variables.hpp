@@ -59,8 +59,8 @@
 
 extern std::string  SOFTVERSION;
 extern std::string  HARDWAREVERSION;
-extern int16_t  ALGCODE;
-extern uint32_t DEBUG_LEVEL;
+extern int16_t      ALGCODE;
+extern uint32_t     DEBUG_LEVEL;
 
 
 extern std::string afc;
@@ -104,12 +104,8 @@ extern uint8_t flgDebugLevel; //  leveldebug
 extern int16_t ZValue; //for simulation
 extern int16_t SignalValue; //for simulation //  
 extern int16_t ZMaxValue;
-
 extern int32_t ShiftDac;
-//
+
 //extern volatile int32_t current_channel;
 extern critical_section_t criticalSection;
-
-
-
 #endif //PICO_EXAMPLES_COMMON_VARIABLES_HPP

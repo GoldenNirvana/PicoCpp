@@ -1,16 +1,17 @@
 #ifndef PICO_EXAMPLES_HARDCODED_FUNCTIONS_HPP
 #define PICO_EXAMPLES_HARDCODED_FUNCTIONS_HPP
 #include <vector>
+#include "../utilities/base_types/io_ports.h"
 #include "../devices/ad5664.hpp"
 #include "../devices/DAC8563.hpp"
-#include "../physical_devices/LinearDriver.hpp"
+
+#include "../physical_devices/LinearDriver.hpp"  //240505
 #include "../loop/common_data/device_variables.hpp"
+#include "../loop/common_data/common_variables.hpp"
 #include <ctime>
 #include <cstdint>
 #include <hardware/clocks.h>
 
-
-//ConfigHardWare confighardware;
 
 class HARDWARE
 {
@@ -54,7 +55,7 @@ private:
  void activateBlue();
 
 public:
-
+ LinearDriver      *linearDriver;
    HARDWARE(ConfigHardWare confighardware);
 
   ~HARDWARE();
