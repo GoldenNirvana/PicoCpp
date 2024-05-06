@@ -1996,6 +1996,8 @@ void Scanner::LID_move_toZ0(int lid_name, int f, int p, int n, int dir)  //от�
 {
  if (!flgVirtual)
  {
+    if (std::strcmp(HARDWAREVERSION.c_str(),"0.1")) { hardware->linearDriver=new LinearDriver(true,configlineardrivev0); } //250506
+    else                                            { hardware->linearDriver=new LinearDriver(true,configlineardrivev1); }
   hardware->retract();  //втянуть сканер
   sleep_ms(50);
   if (!flgVirtual) hardware->linearDriver->activate(lid_name, f, p, std::abs(n), dir);
@@ -2008,6 +2010,7 @@ void Scanner::LID_move_toZ0(int lid_name, int f, int p, int n, int dir)  //от�
     debugdata.emplace_back(dir);
     sendStrData("code"+std::to_string(DEBUG)+" autorising done ",debugdata,100,true);
    } 
+    delete(hardware->linearDriver); 
 }
 void Scanner::positioningXYZ(std::vector<int32_t> &vector)
 {
@@ -2222,6 +2225,7 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
  if (flgСritical_section) critical_section_exit(&criticalSection);
   sendStrData("code"+std::to_string(END)+"end");
    hardware->dark();
+   delete(hardware->linearDriver);
 }
 
  int16_t  Scanner::ZMove( int16_t Z0, int16_t dZ, int16_t stepsize, uint16_t delay )   // stepsize=+-1  sign  -> dir 
@@ -2799,6 +2803,7 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
   TheadDone = false;
  if (flgСritical_section) critical_section_exit(&criticalSection);
   sendStrData("code"+std::to_string(END)+"end");
+  delete(hardware->linearDriver);
 }
 
 void Scanner::testpiezomover(std::vector<int32_t> &vector)
@@ -3085,6 +3090,7 @@ void Scanner::testpiezomover(std::vector<int32_t> &vector)
   TheadDone = false;
  if (flgСritical_section) critical_section_exit(&criticalSection);
   sendStrData("code"+std::to_string(END)+"end");
+  delete(hardware->linearDriver);
  }   //test mover
 
 void Scanner::start_frqscan()

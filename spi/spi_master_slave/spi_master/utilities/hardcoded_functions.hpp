@@ -1,6 +1,10 @@
 #ifndef PICO_EXAMPLES_HARDCODED_FUNCTIONS_HPP
 #define PICO_EXAMPLES_HARDCODED_FUNCTIONS_HPP
 #include <vector>
+#include <ctime>
+#include <cstdint>
+#include <hardware/clocks.h>
+
 #include "../utilities/base_types/io_ports.h"
 #include "../devices/ad5664.hpp"
 #include "../devices/DAC8563.hpp"
@@ -8,9 +12,6 @@
 #include "../physical_devices/LinearDriver.hpp"  //240505
 #include "../loop/common_data/device_variables.hpp"
 #include "../loop/common_data/common_variables.hpp"
-#include <ctime>
-#include <cstdint>
-#include <hardware/clocks.h>
 
 
 class HARDWARE
@@ -18,8 +19,8 @@ class HARDWARE
 // WARNING HARDCODED FUNCTIONS
 private:
  DAC8563    *dacbspt; // DAC BIAS,SetPoint
- DAC8563    *dacxy; // DAC X,Y
- DAC8563    *dacz; // DAC Z
+ DAC8563    *dacxy;   // DAC X,Y
+ DAC8563    *dacz;    // DAC Z
  InputPort  *busyport;     // FIXME TEMP!!!
  OutputPort *conv;
  OutputPort *dec;
@@ -31,7 +32,7 @@ private:
  OutputPort *gainPID0;
  OutputPort *gainPID1;
  OutputPort *gainPID2;
- OutputPort *freezeport; //заморозить/разморозить
+ OutputPort *freezeport;   //заморозить/разморозить
  OutputPort *protractport; //втянуть сканнер/вытянуть сканнер
 
  ConfigHardWare  _confighardware;
@@ -55,7 +56,8 @@ private:
  void activateBlue();
 
 public:
- LinearDriver      *linearDriver;
+   LinearDriver      *linearDriver;
+
    HARDWARE(ConfigHardWare confighardware);
 
   ~HARDWARE();
