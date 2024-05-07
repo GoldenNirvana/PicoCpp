@@ -23,6 +23,21 @@ void MainCore::loop()
     switch (ALGCODE)
     {
 case   ALGNONE:{break;}
+case VersionCmd:
+              {
+                setAlgCodeNone();
+                scanner->hardware->GetSOFTHARDWAREVersion();
+                break;
+              } 
+case ChangeHardWare:
+              {
+                setAlgCodeNone();
+                delete(scanner);
+                if (vector[1]==0) { scanner=new  Scanner(confighardwarev0); }
+                else              { scanner=new  Scanner(confighardwarev1); }
+                scanner->hardware->setDefaultSettings();
+                break;
+              } 
 case RESONANCE:
               {
                setAlgCodeNone();
@@ -233,12 +248,7 @@ case SPECTROSOPY_AIZ:
                 scanner->spectroscopyAIZ(vector);
                 break;
               }  
-case VersionCmd:
-              {
-                setAlgCodeNone();
-                scanner->hardware->GetSOFTHARDWAREVersion();
-                break;
-              }               
+              
 default:      {/*activateError();*/  break;}                                                                                                                                            
    }
   }

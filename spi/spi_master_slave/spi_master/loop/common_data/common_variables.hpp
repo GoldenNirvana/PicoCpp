@@ -13,6 +13,7 @@
 
 #define ALGNONE                   0
 #define VersionCmd               10
+#define ChangeHardWare           11
 #define ADC_READCmd              12  //AD7606 timer
 #define DebugCmd                 13
 #define VirtualCmd               14
@@ -58,7 +59,7 @@
 #define porty                    1
 
 extern std::string  SOFTVERSION;
-extern std::string  HARDWAREVERSION;
+extern std::string  HARDWAREVERSION;  ///  {0,1,....} or {0.1, 1.1...} 
 extern int16_t      ALGCODE;
 extern uint32_t     DEBUG_LEVEL;
 

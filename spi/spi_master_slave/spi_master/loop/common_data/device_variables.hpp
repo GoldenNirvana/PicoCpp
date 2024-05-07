@@ -36,7 +36,6 @@ struct ConfigLinearDrive
   uint8_t YB_Port;     
   uint8_t ZA_Port;     
   uint8_t ZB_Port;     
-
 };
 extern Spi               spi;
 //extern LinearDriver      *linearDriver;
