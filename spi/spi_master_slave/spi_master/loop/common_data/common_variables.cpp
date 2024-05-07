@@ -1,7 +1,7 @@
 #include "common_variables.hpp"
 
 //////////////////////////////////////////////
-std::string  SOFTVERSION="24.05.02.01";;
+std::string  SOFTVERSION="24.05.06.01 HW pointer";;
 std::string  HARDWAREVERSION="0.1";
 // std::string  HARDWAREVERSION="2.0"; //new hardware
 std::string afc;  //dataout string
