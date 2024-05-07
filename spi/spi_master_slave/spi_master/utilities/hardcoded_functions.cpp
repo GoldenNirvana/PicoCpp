@@ -38,8 +38,14 @@ HARDWARE::HARDWARE(ConfigHardWare confighardware)
      io_ports.push_back(gainPID0);
      io_ports.push_back(freezeport);
      io_ports.push_back(protractport); //6
-  */   
-}
+  */  
+  afc.clear();
+  afc = "code"+std::to_string(DEBUG)+ " " + std::to_string(_confighardware.DACBiasSetPointMode);
+  afc += +"\n";
+  std::cout << afc;
+  afc.clear();
+  sleep_ms(100);
+ }
 
 HARDWARE::~HARDWARE()
 {

@@ -1,8 +1,10 @@
+#include <cstring>
+
 #include "loop/common_data/common_variables.hpp"
 #include "loop/main_core.hpp"
 #include "utilities/hardcoded_functions.hpp"
 #include "physical_devices/scanner.hpp"
-#include <cstring>
+
 uint32_t DEBUG_LEVEL = 2;
 
 int start_app()
