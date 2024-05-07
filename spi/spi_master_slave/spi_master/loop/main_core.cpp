@@ -29,7 +29,7 @@ case VersionCmd:
                 scanner->hardware->GetSOFTHARDWAREVersion();
                 break;
               } 
- case ChangeHardWare:
+case ChangeHardWare:
               {
                 setAlgCodeNone();
                 delete(scanner);
