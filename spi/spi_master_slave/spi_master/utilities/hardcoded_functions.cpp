@@ -18,6 +18,7 @@ HARDWARE::HARDWARE(ConfigHardWare confighardware)
       dacbspt=new DAC8563(_confighardware.DACBiasSetPointMode); //set mode DAC BIAS,SetPoint
         dacxy=new DAC8563(_confighardware.DACXYMode);   //set mode DAC X,Y
          dacz=new DAC8563(_confighardware.DACZMode);    //set mode DAC Z  
+     busyport=new InputPort(_confighardware.BUSYPort);
          conv=new OutputPort(_confighardware.CONV);
           dec=new OutputPort(_confighardware.DEC);
     resetport=new OutputPort(_confighardware.ResetPort); 
