@@ -14,7 +14,6 @@ Scanner::Scanner(ConfigHardWare confighardware) : pos_({0, 0}), conf_({})
 Scanner::~Scanner()
 {
   move_to({0, 0}, 10);
-  //if (hardware->linearDriver!=0) delete(hardware->linearDriver);
   delete(hardware);
 }
 void Scanner::sendStrData(std::string const& header)
