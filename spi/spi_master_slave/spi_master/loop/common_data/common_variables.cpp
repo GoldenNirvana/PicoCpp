@@ -1,8 +1,8 @@
 #include "common_variables.hpp"
 
 //////////////////////////////////////////////
-std::string  SOFTVERSION="24.04.19.01";;
-std::string  HARDWAREVERSION="1.0";
+std::string  SOFTVERSION="24.04.19.01 wwwcode";
+std::string  HARDWAREVERSION="0.1";
 // std::string  HARDWAREVERSION="2.0"; //new hardware
 //////////////////////////////////////////////
 
