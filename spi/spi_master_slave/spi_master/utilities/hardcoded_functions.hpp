@@ -101,6 +101,8 @@ public:
  void set_DACZ(int16_t value); 
 
  void set_DACZero();
+
+ void reset_ADCPort();
  
  void move_scannerX(int x);
 

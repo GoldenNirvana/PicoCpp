@@ -41,18 +41,21 @@ void RX_core::launchOnCore1()
    {
      if (flgСritical_section) critical_section_enter_blocking(&criticalSection); 
     switch (vector[0])
-    {
-      case 11: ///????
-        ADC_RESET = true;
-        break;
+    { 
       case VirtualCmd : //флаг симуляции работы микроконтроллера      
         flgVirtual=(bool)vector[1];
+        afc.clear();
+        afc = "code"+std::to_string(DEBUG)+" virtual "+ std::to_string(flgVirtual);
+        afc += +"\n";
+        std::cout << afc;
+        afc.clear();
+        sleep_ms(100); 
         break;
       case DebugLevelCmd: // флаг вывода отладочной информации debug level =2;  =3 запрет вывода!
         flgDebugLevel=vector[1];
         break;    
       case DebugCmd: // флаг вывода отладочной информации  =1, нет =0
-        flgDebug=boolean(vector[1]);
+        flgDebug=(bool)(vector[1]);
         afc.clear();
         afc = "code"+std::to_string(DEBUG)+"debug Set Debug "+ std::to_string(flgDebug);
         afc += +"\n";

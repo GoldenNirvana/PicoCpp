@@ -38,6 +38,7 @@
 #define TheadDoneCmd             33
 #define SetUseCritialSectAlgCode 34
 #define RetractAlgCode           35
+#define ADC_RESET                36
 #define RESONANCE                40  //AD9833 
 #define SCANNING                 50
 #define MOVE_TOX0Y0              51  //переместиться в начальную точку  скана из начальной точке предыдущего скана
@@ -55,6 +56,7 @@
 #define TESTMOVER                76
 #define LID_MOVE_UNTIL_STOP      80
 #define LID_MOVE_TOZ0            84 // отвестись в безопасную начальную точку по Z
+
 #define portx                    0
 #define porty                    1
 
@@ -77,7 +79,7 @@ extern bool AD8400_SET_GAIN;   // AD8400
 extern bool AD5664;            //
 
 extern bool ADC_ENABLE_DISABLE;//AD7606
-extern bool ADC_RESET;         //AD7606     
+//extern bool ADC_RESET;         //AD7606     
 extern bool ADC_READ_FOREVER;  //AD7606
 extern bool ADC_GET_VALUE;     //AD7606
 

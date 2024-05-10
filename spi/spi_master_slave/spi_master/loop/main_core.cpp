@@ -38,6 +38,16 @@ case ChangeHardWare:
                 scanner->hardware->setDefaultSettings();
                 break;
               } 
+case ADC_RESET:
+              {
+               setAlgCodeNone();
+               scanner->hardware->reset_ADCPort();
+               /*.enable();
+               sleep_us(10);
+               resetPort.disable();
+               */
+               break;
+              }              
 case RESONANCE:
               {
                setAlgCodeNone();
@@ -295,7 +305,9 @@ default:      {/*activateError();*/  break;}
       }
       continue;
     }
-    if (ADC_RESET)
+    */
+  /*
+  if (ADC_RESET)
     {
       ADC_RESET = false;
       resetPort.enable();
@@ -303,7 +315,7 @@ default:      {/*activateError();*/  break;}
       resetPort.disable();
       continue;
     }
-     */
+   */ 
 }
 
 MainCore::MainCore()

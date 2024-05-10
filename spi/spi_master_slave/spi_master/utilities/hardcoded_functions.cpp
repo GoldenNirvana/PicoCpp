@@ -96,6 +96,12 @@ void HARDWARE::set_io_value(int port, int value)
   }
 }
 */
+void HARDWARE::reset_ADCPort()
+{
+  resetport->enable();
+  sleep_us(10);
+  resetport->disable();
+}
 void HARDWARE::setDefaultSettings()
 {
   /// BASIC SETTINGS
