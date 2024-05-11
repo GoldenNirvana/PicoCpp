@@ -5,7 +5,7 @@
 #include "utilities/hardcoded_functions.hpp"
 #include "physical_devices/scanner.hpp"
 
-uint32_t DEBUG_LEVEL = 3;
+uint32_t DEBUG_LEVEL = 2;
 
 int start_app()
 {

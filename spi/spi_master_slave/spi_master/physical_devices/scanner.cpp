@@ -2044,7 +2044,7 @@ void Scanner::LID_move_toZ0(int lid_name, int f, int p, int n, int dir)  //от�
     debugdata.emplace_back(dir);
     sendStrData("code"+std::to_string(DEBUG)+" autorising done ",debugdata,100,true);
    } 
-    delete(hardware->linearDriver); 
+  if (!flgVirtual) delete(hardware->linearDriver); 
 }
 void Scanner::positioningXYZ(std::vector<int32_t> &vector)
 {

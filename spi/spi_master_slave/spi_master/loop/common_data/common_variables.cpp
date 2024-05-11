@@ -34,7 +34,7 @@ bool    flgParamsUpdated=false;
 bool    flgСritical_section=true;
 bool    flgDebug=false;
 bool    flgVirtual = false;     // флаг симуляции работа микроконтроллера
-uint8_t flgDebugLevel = 2;      // уровень отладки
+uint8_t flgDebugLevel = 3;      // уровень отладки
 bool    flgUseUART = false;     // использовать UART для передачи данных
 //данные для симуляции 
 int16_t ZValue      = maxint16_t;

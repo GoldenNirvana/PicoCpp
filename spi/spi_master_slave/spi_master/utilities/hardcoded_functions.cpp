@@ -151,7 +151,7 @@ void HARDWARE::GetSOFTHARDWAREVersion()
   afc.clear();
  // std::string date;
  // date=version;
-  afc = "code"+std::to_string(VersionCmd)+" version soft "+ SOFTVERSION+", hardware "+HARDWAREVERSION;
+  afc = "code"+std::to_string(VersionCmd)+"soft "+ SOFTVERSION+", hardware "+HARDWAREVERSION;
   afc += +"\n";
   std::cout << afc;
   afc.clear();
