@@ -2259,7 +2259,7 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
  if (flgСritical_section) critical_section_exit(&criticalSection);
   sendStrData("code"+std::to_string(END)+"end");
    hardware->dark();
-   delete(hardware->linearDriver);
+ if (!flgVirtual) delete(hardware->linearDriver);
 }
 
  int16_t  Scanner::DACZMove( int16_t Z0, int16_t dZ, int16_t stepsize, uint16_t delay )   // stepsize=+-1  sign  -> dir 
@@ -3124,7 +3124,7 @@ void Scanner::testpiezomover(std::vector<int32_t> &vector)
   TheadDone = false;
  if (flgСritical_section) critical_section_exit(&criticalSection);
   sendStrData("code"+std::to_string(END)+"end");
-  delete(hardware->linearDriver);
+  if (!flgVirtual) delete(hardware->linearDriver);
  }   //test mover
 
 void Scanner::start_frqscan()
