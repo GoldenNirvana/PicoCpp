@@ -3,8 +3,8 @@
 
 #include <string>
 #include <vector>
-#include <random>
-//#include "../physical_devices/LinearDriver.hpp"
+//#include <random>
+#include "../physical_devices/LinearDriver.hpp" //24/05/06
 #include "../utilities/base_types/Point.hpp"
 #include "../loop/common_data/common_variables.hpp"
 #include "../loop/common_data/device_variables.hpp"
@@ -84,7 +84,7 @@ public:
 
   void spectroscopyIV(std::vector<int32_t> &vector);  // спектроскопия I-V
 
-  int16_t ZMove( int16_t Z0, int16_t dZ, int16_t stepsize, uint16_t delay );   // stepsize=+-1  sign  -> dir 
+  int16_t DACZMove( int16_t Z0, int16_t dZ, int16_t stepsize, uint16_t delay );   // stepsize=+-1  sign  -> dir 
 
   void spectroscopyAIZV0(std::vector<int32_t> &vector); // спектроскопия Ampl-Z 
 

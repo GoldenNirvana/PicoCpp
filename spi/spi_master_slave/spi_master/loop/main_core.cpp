@@ -23,6 +23,31 @@ void MainCore::loop()
     switch (ALGCODE)
     {
 case   ALGNONE:{break;}
+case VersionCmd:
+              {
+                setAlgCodeNone();
+                scanner->hardware->GetSOFTHARDWAREVersion();
+                break;
+              } 
+case ChangeHardWare:
+              {
+                setAlgCodeNone();
+                delete(scanner);
+                if (vector[1]==0) { scanner=new  Scanner(confighardwarev0); }
+                else              { scanner=new  Scanner(confighardwarev1); }
+                scanner->hardware->setDefaultSettings();
+                break;
+              } 
+case ADC_RESET:
+              {
+               setAlgCodeNone();
+               scanner->hardware->reset_ADCPort();
+               /*.enable();
+               sleep_us(10);
+               resetPort.disable();
+               */
+               break;
+              }              
 case RESONANCE:
               {
                setAlgCodeNone();
@@ -233,12 +258,7 @@ case SPECTROSOPY_AIZ:
                 scanner->spectroscopyAIZ(vector);
                 break;
               }  
-case VersionCmd:
-              {
-                setAlgCodeNone();
-                scanner->hardware->GetSOFTHARDWAREVersion();
-                break;
-              }               
+              
 default:      {/*activateError();*/  break;}                                                                                                                                            
    }
   }
@@ -285,7 +305,9 @@ default:      {/*activateError();*/  break;}
       }
       continue;
     }
-    if (ADC_RESET)
+    */
+  /*
+  if (ADC_RESET)
     {
       ADC_RESET = false;
       resetPort.enable();
@@ -293,7 +315,7 @@ default:      {/*activateError();*/  break;}
       resetPort.disable();
       continue;
     }
-     */
+   */ 
 }
 
 MainCore::MainCore()

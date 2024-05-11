@@ -13,6 +13,7 @@
 
 #define ALGNONE                   0
 #define VersionCmd               10
+#define ChangeHardWare           11
 #define ADC_READCmd              12  //AD7606 timer
 #define DebugCmd                 13
 #define VirtualCmd               14
@@ -37,6 +38,7 @@
 #define TheadDoneCmd             33
 #define SetUseCritialSectAlgCode 34
 #define RetractAlgCode           35
+#define ADC_RESET                36
 #define RESONANCE                40  //AD9833 
 #define SCANNING                 50
 #define MOVE_TOX0Y0              51  //переместиться в начальную точку  скана из начальной точке предыдущего скана
@@ -54,13 +56,14 @@
 #define TESTMOVER                76
 #define LID_MOVE_UNTIL_STOP      80
 #define LID_MOVE_TOZ0            84 // отвестись в безопасную начальную точку по Z
+
 #define portx                    0
 #define porty                    1
 
 extern std::string  SOFTVERSION;
-extern std::string  HARDWAREVERSION;
-extern int16_t  ALGCODE;
-extern uint32_t DEBUG_LEVEL;
+extern std::string  HARDWAREVERSION;  ///  {0,1,....} or {0.1, 1.1...} 
+extern int16_t      ALGCODE;
+extern uint32_t     DEBUG_LEVEL;
 
 
 extern std::string afc;
@@ -76,7 +79,7 @@ extern bool AD8400_SET_GAIN;   // AD8400
 extern bool AD5664;            //
 
 extern bool ADC_ENABLE_DISABLE;//AD7606
-extern bool ADC_RESET;         //AD7606     
+//extern bool ADC_RESET;         //AD7606     
 extern bool ADC_READ_FOREVER;  //AD7606
 extern bool ADC_GET_VALUE;     //AD7606
 
@@ -104,12 +107,8 @@ extern uint8_t flgDebugLevel; //  leveldebug
 extern int16_t ZValue; //for simulation
 extern int16_t SignalValue; //for simulation //  
 extern int16_t ZMaxValue;
-
 extern int32_t ShiftDac;
-//
+
 //extern volatile int32_t current_channel;
 extern critical_section_t criticalSection;
-
-
-
 #endif //PICO_EXAMPLES_COMMON_VARIABLES_HPP

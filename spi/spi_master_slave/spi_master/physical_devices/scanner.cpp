@@ -106,7 +106,7 @@ void Scanner::readDATALin()
    } 
 //  sendStrData("debug liny ",data_LinY,400,false);
 }
-  
+  /*
 void Scanner::readADC()
 {
   if (!flgVirtual)
@@ -141,7 +141,42 @@ void Scanner::readADC()
         sendStrData("code"+std::to_string(ADC_READCmd),debugdata,100,true);     
   }
 }
-
+*/
+void Scanner::readADC()
+{
+  if (!flgVirtual)
+  {
+     hardware->getValuesFromAdc();
+  // auto ptr = hardware->getValuesFromAdc();
+  //logger(ptr, 8);
+   ZValue = (int16_t)spiBuf[ZPin];
+      switch (vector[1]) //прибор
+   {
+        case SFM: //SFM=0
+                {
+                 SignalValue = (int16_t) spiBuf[AmplPin];
+                 break;  
+                } 
+        case STM://STM=1
+     case SICMDC://SICMDC=3  
+                {
+                 SignalValue = (int16_t) spiBuf[IPin];
+                 break;  
+                } 
+   }         
+        debugdata.emplace_back(ZValue);
+        debugdata.emplace_back(SignalValue);
+        debugdata.emplace_back(vector[1]);
+        sendStrData("code"+std::to_string(ADC_READCmd),debugdata,100,true);
+  } 
+  else
+  {
+        debugdata.emplace_back(ZValue);
+        debugdata.emplace_back(SignalValue);
+        debugdata.emplace_back(vector[1]);
+        sendStrData("code"+std::to_string(ADC_READCmd),debugdata,100,true);     
+  }
+}
 bool Scanner::getHoppingFlg() //получить флаг установлен ли флаг сканирования прыжками
 {
   return (bool)conf_.flgHoping;
@@ -1017,7 +1052,7 @@ struct Config
       if (!flgVirtual)
       {
         hardware->retract(); //втянуться на макс
-        ZMove(DACZ0,DACZ0,-10, 0); // обнуление DACZ   //240405
+        DACZMove(DACZ0,DACZ0,-10, 0); // обнуление DACZ   //240405
         DACZ0=0;
       } 
       sleep_us(50);
@@ -1224,7 +1259,7 @@ struct Config
   if (!flgVirtual)
   {
    hardware->protract();// protract(30,DACZ0,DACZ0); 
-   ZMove(DACZ0,DACZ0,-20, 30);//вытянуть            !!!!!!!!!!!!!!!!!!!!!!!!!!
+   DACZMove(DACZ0,DACZ0,-20, 30);//вытянуть            !!!!!!!!!!!!!!!!!!!!!!!!!!
   }
   sleep_ms(1000);
   int16_t count = 0;
@@ -1431,7 +1466,7 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
       if (!flgVirtual)
       {
         hardware->retract(); //втянуться на макс
-        ZMove(DACZ0,DACZ0,-10, 0); // обнуление DACZ  //09 240405
+        DACZMove(DACZ0,DACZ0,-10, 0); // обнуление DACZ  //09 240405
         DACZ0=0;
       } 
       sleep_us(50);
@@ -1650,7 +1685,7 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
   if (!flgVirtual)
   {
    hardware->protract();
-   ZMove(DACZ0,DACZ0,-20,30); //вытянуть -20??
+   DACZMove(DACZ0,DACZ0,-20,30); //вытянуть -20??
   }
   sleep_ms(1000);
 
@@ -1995,9 +2030,11 @@ void Scanner::LID_move_toZ0(int lid_name, int f, int p, int n, int dir)  //от�
 {
  if (!flgVirtual)
  {
+    if (std::strcmp(HARDWAREVERSION.c_str(),"0.1")) { hardware->linearDriver=new LinearDriver(true,configlineardrivev0); } //250506
+    else                                            { hardware->linearDriver=new LinearDriver(true,configlineardrivev1); }
   hardware->retract();  //втянуть сканер
   sleep_ms(50);
-  if (!flgVirtual) linearDriver.activate(lid_name, f, p, std::abs(n), dir);
+  if (!flgVirtual) hardware->linearDriver->activate(lid_name, f, p, std::abs(n), dir);
   hardware->protract();  //вытянуть сканер
  } 
   sleep_ms(1000);
@@ -2007,6 +2044,7 @@ void Scanner::LID_move_toZ0(int lid_name, int f, int p, int n, int dir)  //от�
     debugdata.emplace_back(dir);
     sendStrData("code"+std::to_string(DEBUG)+" autorising done ",debugdata,100,true);
    } 
+  if (!flgVirtual) delete(hardware->linearDriver); 
 }
 void Scanner::positioningXYZ(std::vector<int32_t> &vector)
 {
@@ -2058,7 +2096,14 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
                  break;
                 }     
      }
-   }  
+   } 
+   if (!flgVirtual)
+   { 
+    if (std::strcmp(HARDWAREVERSION.c_str(),"0.1")) { hardware->linearDriver=new LinearDriver(false,configlineardrivev0); } //250506
+    else                                            { hardware->linearDriver=new LinearDriver(false,configlineardrivev1); }
+   } 
+
+
   if (lid_name == 90 || lid_name == 95) //X,Y
   {
     while (!STOP) //LID_MOVE_UNTIL_STOP)
@@ -2088,7 +2133,7 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
       status = none;
       if (!flgVirtual) //add mf
       {
-        linearDriver.activate(lid_name, f, p, std::abs(ln), ldir);
+        hardware->linearDriver->activate(lid_name, f, p, std::abs(ln), ldir);
       } 
       else  {    }
       debugdata.emplace_back(status);
@@ -2167,7 +2212,7 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
            break;
         }
        }
-        linearDriver.activate(lid_name, f, p, std::abs(ln), ldir);
+        hardware->linearDriver->activate(lid_name, f, p, std::abs(ln), ldir);
       } 
       else //virtual
       {
@@ -2214,9 +2259,10 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
  if (flgСritical_section) critical_section_exit(&criticalSection);
   sendStrData("code"+std::to_string(END)+"end");
    hardware->dark();
+ if (!flgVirtual) delete(hardware->linearDriver);
 }
 
- int16_t  Scanner::ZMove( int16_t Z0, int16_t dZ, int16_t stepsize, uint16_t delay )   // stepsize=+-1  sign  -> dir 
+ int16_t  Scanner::DACZMove( int16_t Z0, int16_t dZ, int16_t stepsize, uint16_t delay )   // stepsize=+-1  sign  -> dir 
 	{
     //  dacZ    0  втянут
     //     -32768  вытянут
@@ -2315,7 +2361,7 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
     Z0=(int16_t) spiBuf[ZPin];
     hardware->retract();
     sleep_ms(50);
-    deltaZ=ZMove(0,Z0-abs(ZStart),-10,delay);
+    deltaZ=DACZMove(0,Z0-abs(ZStart),-10,delay);
   }
 
 //////////////////////////////////////
@@ -2365,7 +2411,7 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
       break; 
      }
    };
-    deltaZ = ZMove(deltaZ, ZStep, -1, MicrostepDelay); //-1
+    deltaZ = DACZMove(deltaZ, ZStep, -1, MicrostepDelay); //-1
     Zt=Zt+ZStep;
   }  // for    i
     NPoints= k / 3;
@@ -2397,7 +2443,7 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
      vectorA_Z.emplace_back(SignalValue);
      vectorA_Z.emplace_back(Zt);
      vectorA_Z.emplace_back(-1);
-     deltaZ = ZMove( deltaZ, ZStep, 1, MicrostepDelay); 
+     deltaZ = DACZMove( deltaZ, ZStep, 1, MicrostepDelay); 
      Zt=Zt-ZStep;
   } //i
   sendStrData("code"+std::to_string(SPECTROSOPY_AIZ),vectorA_Z,100,true); 
@@ -2407,7 +2453,7 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
  // if (deltaZ>0) dir=-10; //-1
  // else
   dir= 10;  //1
-  deltaZ = ZMove(deltaZ, dlt, dir, MicrostepDelay );
+  deltaZ = DACZMove(deltaZ, dlt, dir, MicrostepDelay );
  } //j
  /////////////////////////////////////////  
  // разморозка состояния pid
@@ -2415,7 +2461,7 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
   {
     hardware->protract();
     sleep_ms(400);
-    ZMove(deltaZ,abs(deltaZ),10,delay);
+    DACZMove(deltaZ,abs(deltaZ),10,delay);
   }
  //////////////////////////////////////////
     int16_t count = 0;
@@ -2469,7 +2515,7 @@ void Scanner::spectroscopyIV(std::vector<int32_t> &vector)
     Z0=(int16_t) spiBuf[ZPin];
     hardware->retract();
     sleep_ms(50);
-    ZMove(0,Z0,-10,delay);
+    DACZMove(0,Z0,-10,delay);
   }
 
 ////////////////////////////////////////////////////
@@ -2558,7 +2604,7 @@ void Scanner::spectroscopyIV(std::vector<int32_t> &vector)
   {
     hardware->protract();
     sleep_ms(400);
-    ZMove(-Z0,abs(Z0),10,delay);
+    DACZMove(-Z0,abs(Z0),10,delay);
   }
 /////////////////////////////////////////////  
    int16_t count = 0;
@@ -2642,7 +2688,12 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
   buf_status.push_back(SignalValue);
 
   sendStrData( "code"+std::to_string(APPROACH),buf_status,100,false);
-
+  if (!flgVirtual)
+  {
+   if (std::strcmp(HARDWAREVERSION.c_str(),"0.1")) { hardware->linearDriver=new LinearDriver(true,configlineardrivev0); } //250506
+   else                                            { hardware->linearDriver=new LinearDriver(true,configlineardrivev1); }
+  } 
+  
   while (true)
   { 
     sleep_ms(INTDELAY);
@@ -2765,7 +2816,7 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
     {
       hardware->retract();  //втянуть сканнер
       sleep_ms(SCANNERDECAY);
-      linearDriver.activate(99, freq, scv, std::abs(NSTEPS), NSTEPS > 0);
+      hardware->linearDriver->activate(99, freq, scv, std::abs(NSTEPS), NSTEPS > 0);
       hardware->protract(); //вытянуть
     }
   } //while
@@ -2786,6 +2837,7 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
   TheadDone = false;
  if (flgСritical_section) critical_section_exit(&criticalSection);
   sendStrData("code"+std::to_string(END)+"end");
+ if (!flgVirtual) delete(hardware->linearDriver);
 }
 
 void Scanner::testpiezomover(std::vector<int32_t> &vector)
@@ -2834,8 +2886,12 @@ void Scanner::testpiezomover(std::vector<int32_t> &vector)
      buf_status.push_back(0); //cycle nmb
      buf_status.push_back(0);
      sendStrData( "code"+std::to_string(TESTMOVER),buf_status,100,true);
+    if (!flgVirtual)
+    {
+     if (std::strcmp(HARDWAREVERSION.c_str(),"0.1")) { hardware->linearDriver=new LinearDriver(true,configlineardrivev0); } //250506
+     else                                            { hardware->linearDriver=new LinearDriver(true,configlineardrivev1); }
+    } 
     // проверить, в воротах ли Z
-
     step = NSTEPS;          // NSTEPS > 0 - сближение
    // Идти вниз до мин. точки
      while ( ZValue > GATE_Z_MIN )          // ZMin < Z < ZMax означает, что Z  в воротах
@@ -2855,7 +2911,7 @@ void Scanner::testpiezomover(std::vector<int32_t> &vector)
         {
           hardware->retract();  //втянуть сканнер
           sleep_ms(SCANNERDECAY);
-          linearDriver.activate(99, freq, scv, std::abs(step), step > 0);
+          hardware->linearDriver->activate(99, freq, scv, std::abs(step), step > 0);
           hardware->protract(); //вытянуть
           sleep_ms(INTDELAY);
         }  
@@ -2898,7 +2954,7 @@ void Scanner::testpiezomover(std::vector<int32_t> &vector)
         {
           hardware->retract();  //втянуть сканнер
           sleep_ms(SCANNERDECAY);
-          linearDriver.activate(99, freq, scv, std::abs(step), step > 0);
+          hardware->linearDriver->activate(99, freq, scv, std::abs(step), step > 0);
           hardware->protract(); //вытянуть
           sleep_ms(INTDELAY);
           hardware->getValuesFromAdc(); 
@@ -2930,7 +2986,7 @@ void Scanner::testpiezomover(std::vector<int32_t> &vector)
          {
           hardware->retract();  //втянуть сканнер
           sleep_ms(SCANNERDECAY);
-          linearDriver.activate(99, freq, scv, std::abs(step), step > 0);
+          hardware->linearDriver->activate(99, freq, scv, std::abs(step), step > 0);
           hardware->protract(); //вытянуть
           sleep_ms(INTDELAY);
           hardware->getValuesFromAdc(); 
@@ -2998,7 +3054,7 @@ void Scanner::testpiezomover(std::vector<int32_t> &vector)
             {
                hardware->retract();  //втянуть сканнер
                sleep_ms(SCANNERDECAY);
-               linearDriver.activate(99, freq, scv, std::abs(step), step > 0);
+               hardware->linearDriver->activate(99, freq, scv, std::abs(step), step > 0);
                hardware->protract(); //вытянуть
                sleep_ms(INTDELAY);
                hardware->getValuesFromAdc(); 
@@ -3031,7 +3087,7 @@ void Scanner::testpiezomover(std::vector<int32_t> &vector)
               {
                hardware->retract();  //втянуть сканнер
                sleep_ms(SCANNERDECAY);
-               linearDriver.activate(99, freq, scv, std::abs(step), step > 0);
+               hardware->linearDriver->activate(99, freq, scv, std::abs(step), step > 0);
                hardware->protract(); //вытянуть
                sleep_ms(INTDELAY);
                hardware->getValuesFromAdc(); 
@@ -3068,6 +3124,7 @@ void Scanner::testpiezomover(std::vector<int32_t> &vector)
   TheadDone = false;
  if (flgСritical_section) critical_section_exit(&criticalSection);
   sendStrData("code"+std::to_string(END)+"end");
+  if (!flgVirtual) delete(hardware->linearDriver);
  }   //test mover
 
 void Scanner::start_frqscan()

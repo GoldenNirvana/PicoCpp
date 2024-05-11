@@ -1,7 +1,7 @@
 #include "common_variables.hpp"
 
 //////////////////////////////////////////////
-std::string  SOFTVERSION="24.05.06.01 HW pointer";;
+std::string  SOFTVERSION="24.05.07.01 HW2 pointer";
 std::string  HARDWAREVERSION="0.1";
 // std::string  HARDWAREVERSION="2.0"; //new hardware
 std::string afc;  //dataout string
@@ -20,7 +20,7 @@ bool AD8400_SET_GAIN = false;
 bool AD5664 = false;
 bool SET_IO_VALUE = false;
 bool ADC_ENABLE_DISABLE = false;
-bool ADC_RESET = false;
+//bool ADC_RESET = false;
 bool ADC_READ_FOREVER = false;
 bool ADC_GET_VALUE = false;
 bool CONFIG_UPDATE = false;
@@ -34,7 +34,7 @@ bool    flgParamsUpdated=false;
 bool    flgСritical_section=true;
 bool    flgDebug=false;
 bool    flgVirtual = false;     // флаг симуляции работа микроконтроллера
-uint8_t flgDebugLevel = 2;      // уровень отладки
+uint8_t flgDebugLevel = 3;      // уровень отладки
 bool    flgUseUART = false;     // использовать UART для передачи данных
 //данные для симуляции 
 int16_t ZValue      = maxint16_t;

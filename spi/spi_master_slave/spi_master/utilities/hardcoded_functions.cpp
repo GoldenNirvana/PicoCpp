@@ -1,7 +1,7 @@
 #include "hardcoded_functions.hpp"
 #include <pico/multicore.h>
 #include <iostream>
-#include "../loop/common_data/common_variables.hpp"
+//#include "../loop/common_data/common_variables.hpp"
 #include "../transceiver/rx_core.hpp"
 #include "../utilities/debug_logger.hpp"
 #include "peripheral_functions.hpp"
@@ -17,8 +17,8 @@ HARDWARE::HARDWARE(ConfigHardWare confighardware)
       _confighardware=confighardware;
       dacbspt=new DAC8563(_confighardware.DACBiasSetPointMode); //set mode DAC BIAS,SetPoint
         dacxy=new DAC8563(_confighardware.DACXYMode);   //set mode DAC X,Y
-         dacz=new DAC8563(_confighardware.DACZMode);    //set mode DACZ
-     busyport=new InputPort(_confighardware.BUSYPort);  // FIXME TEMP!!!
+         dacz=new DAC8563(_confighardware.DACZMode);    //set mode DAC Z  
+     busyport=new InputPort(_confighardware.BUSYPort);
          conv=new OutputPort(_confighardware.CONV);
           dec=new OutputPort(_confighardware.DEC);
     resetport=new OutputPort(_confighardware.ResetPort); 
@@ -39,8 +39,15 @@ HARDWARE::HARDWARE(ConfigHardWare confighardware)
      io_ports.push_back(gainPID0);
      io_ports.push_back(freezeport);
      io_ports.push_back(protractport); //6
-  */   
-}
+  
+  afc.clear();
+  afc = "code"+std::to_string(DEBUG)+ " " + std::to_string(_confighardware.DACBiasSetPointMode);
+  afc += +"\n";
+  std::cout << afc;
+  afc.clear();
+  sleep_ms(100);
+   */ 
+ }
 
 HARDWARE::~HARDWARE()
 {
@@ -60,6 +67,7 @@ HARDWARE::~HARDWARE()
  delete(gainPID2);
  delete(freezeport);
  delete(protractport);
+ if (linearDriver!=0) delete(linearDriver);
 // io_ports.clear();
 }
 /*
@@ -88,6 +96,12 @@ void HARDWARE::set_io_value(int port, int value)
   }
 }
 */
+void HARDWARE::reset_ADCPort()
+{
+  resetport->enable();
+  sleep_us(10);
+  resetport->disable();
+}
 void HARDWARE::setDefaultSettings()
 {
   /// BASIC SETTINGS
@@ -103,7 +117,7 @@ void HARDWARE::setDefaultSettings()
 // fixme mb should add & before isr
   gpio_set_irq_enabled_with_callback(busyport->getPort(), GPIO_IRQ_EDGE_FALL, true, RX_core::comReceiveISR);
 
-  multicore_launch_core1(RX_core::launchOnCore1);
+  multicore_launch_core1(RX_core::launchOnCore1); // 240508 ??
 
   dec->enable();
   conv->enable();
@@ -137,7 +151,7 @@ void HARDWARE::GetSOFTHARDWAREVersion()
   afc.clear();
  // std::string date;
  // date=version;
-  afc = "code"+std::to_string(VersionCmd)+" version soft "+ SOFTVERSION+", hardware "+HARDWAREVERSION;
+  afc = "code"+std::to_string(VersionCmd)+"soft "+ SOFTVERSION+", hardware "+HARDWAREVERSION;
   afc += +"\n";
   std::cout << afc;
   afc.clear();
@@ -200,7 +214,7 @@ void HARDWARE::init_DACSetPointBias(uint8_t spiport) //  4 для подстав
   std::cout << afc;
   afc.clear();
   sleep_ms(100);
- */ 
+ */
 }
 
 void HARDWARE::init_DACXY(uint8_t spiport) //spi port
@@ -357,14 +371,17 @@ void HARDWARE::set_GainPID(uint16_t gain)
   if (!flgVirtual) 
   {
   //  set_io_value(2, ti); //???????  //240503
-   /* std::string binary = std::bitset<3>(ti).to_string();
+   
+    std::string binary = std::bitset<3>(ti).to_string();
     binary[2] == '1' ? gainPID0->enable() : gainPID0->disable();
     binary[1] == '1' ? gainPID1->enable() : gainPID1->disable();
     binary[0] == '1' ? gainPID2->enable() : gainPID2->disable();
-   */ 
+   
+   /* 
     (ti&0x04) == 1 ? gainPID0->enable() : gainPID0->disable();
     (ti&0x02) == 1 ? gainPID1->enable() : gainPID1->disable();
     (ti&0x01) == 1 ? gainPID2->enable() : gainPID2->disable();
+   */ 
     // отладка
     uint8_t intBuf[1]; 
     decoder.activePort(6);
