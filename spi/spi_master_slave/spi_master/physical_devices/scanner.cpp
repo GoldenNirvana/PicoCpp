@@ -2837,7 +2837,7 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
   TheadDone = false;
  if (flgСritical_section) critical_section_exit(&criticalSection);
   sendStrData("code"+std::to_string(END)+"end");
-  delete(hardware->linearDriver);
+ if (!flgVirtual) delete(hardware->linearDriver);
 }
 
 void Scanner::testpiezomover(std::vector<int32_t> &vector)
