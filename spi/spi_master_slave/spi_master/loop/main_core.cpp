@@ -32,10 +32,11 @@ case VersionCmd:
 case ChangeHardWare:
               {
                 setAlgCodeNone();
-                delete(scanner);
+               /* delete(scanner);
                 if (vector[1]==0) { scanner=new  Scanner(confighardwarev0); }
                 else              { scanner=new  Scanner(confighardwarev1); }
                 scanner->hardware->setDefaultSettings();
+                */
                 break;
               } 
 case ADC_RESET:
