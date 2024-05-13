@@ -4,6 +4,7 @@
 #include <pico/critical_section.h>
 #include <string>
 #include <vector>
+#include <atomic>
 
 #define SFM                      0
 #define STM                      1
@@ -62,7 +63,8 @@
 
 extern std::string  SOFTVERSION;
 extern std::string  HARDWAREVERSION;  ///  {0,1,....} or {0.1, 1.1...} 
-extern int16_t      ALGCODE;
+extern std::atomic<int16_t>      ALGCODE;
+//extern int16_t      ALGCODE;
 extern uint32_t     DEBUG_LEVEL;
 
 
@@ -85,16 +87,24 @@ extern bool ADC_GET_VALUE;     //AD7606
 
 extern bool LID;
 extern bool SET_IO_VALUE;
-extern bool CONFIG_UPDATE;
 extern bool Z_STATE;
 // add MF
-extern bool LOOP_FREEZE_UNFREEZE;
+extern bool CONFIG_UPDATE;
 extern bool STOP;
-extern bool PID_TURN_ON;
-extern bool ADC_IS_READY_TO_READ;
-// service flags
 extern bool TheadDone;   //need dor synchronization with PC 
 extern bool DrawDone;
+/*
+extern std::atomic<bool> CONFIG_UPDATE;
+extern std::atomic<bool> STOP;
+extern std::atomic<bool> TheadDone;   //need dor synchronization with PC 
+extern std::atomic<bool> DrawDone;
+*/
+extern bool PID_TURN_ON;
+extern bool ADC_IS_READY_TO_READ;
+extern bool LOOP_FREEZE_UNFREEZE;
+
+// service flags
+
 extern bool flgParamsUpdated;
 extern bool flgDebug;
 extern bool flgVirtual;  // Virtual device for debuging and simulation
