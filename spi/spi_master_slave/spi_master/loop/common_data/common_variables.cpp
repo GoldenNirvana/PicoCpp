@@ -19,11 +19,16 @@ bool TheadDone = false;
 bool DrawDone=true;
 bool CONFIG_UPDATE = false;
 */
+std::atomic<bool> CONFIG_UPDATE;
+std::atomic<bool> STOP;
+std::atomic<bool> TheadDone;   //need dor synchronization with PC 
+std::atomic<bool> DrawDone;
+/*
 bool STOP = false;   // cmd stop algorithms
 bool TheadDone = false;
 bool DrawDone=true;
 bool CONFIG_UPDATE = false;
-
+*/
 bool AD9833_SENDER = false;
 bool AD8400_SENDER = false;
 bool AD8400_SET_GAIN = false;
@@ -34,11 +39,9 @@ bool ADC_ENABLE_DISABLE = false;
 bool ADC_READ_FOREVER = false;
 bool ADC_GET_VALUE = false;
 
-bool LID = false;
-bool PID_TURN_ON = false;
-bool LOOP_FREEZE_UNFREEZE=false;
-
-
+//bool LID = false;
+//bool PID_TURN_ON = false;
+//bool LOOP_FREEZE_UNFREEZE=false;
 
 //************************************************
 bool    flgParamsUpdated=false;
@@ -59,6 +62,6 @@ uint8_t IPin    = 2; // ток
 
 //uint32_t DEBUG_LEVEL = 2;
 bool Z_STATE = false; //???
-bool ADC_IS_READY_TO_READ = true;
+std::atomic<bool> ADC_IS_READY_TO_READ = true;
 
 critical_section_t criticalSection;

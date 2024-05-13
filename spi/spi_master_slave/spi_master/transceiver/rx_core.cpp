@@ -39,7 +39,7 @@ void RX_core::launchOnCore1()
     parse(vector,vupdateparams); //wait for data ! парсинг входящих данных из ПК 
     if (vector.size()!=0)
    {
-     if (flgСritical_section) critical_section_enter_blocking(&criticalSection); 
+   //  if (flgСritical_section) critical_section_enter_blocking(&criticalSection); 
     switch (vector[0])
     { 
       case VirtualCmd : //флаг симуляции работы микроконтроллера      
@@ -86,7 +86,7 @@ void RX_core::launchOnCore1()
         break;
       }  
      }   
-     if (flgСritical_section) critical_section_exit(&criticalSection);
+  //   if (flgСritical_section) critical_section_exit(&criticalSection);
     
     continue;
    } 
@@ -94,9 +94,7 @@ void RX_core::launchOnCore1()
    {
     if (vupdateparams[0]==CONFIG_UPDATECmd)
     {
-      if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
-       CONFIG_UPDATE = true;
-      if (flgСritical_section) critical_section_exit(&criticalSection);
+      CONFIG_UPDATE = true;
     } 
    }
   }//while

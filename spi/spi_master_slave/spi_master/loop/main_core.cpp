@@ -9,10 +9,7 @@
 
 void  MainCore::setAlgCodeNone()
 {
- // ALGCODE=ALGNONE;
-  if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
-   ALGCODE=ALGNONE;
-  if (flgСritical_section) critical_section_exit(&criticalSection);    
+ ALGCODE=ALGNONE;
 }
 
 void MainCore::loop()
@@ -93,10 +90,11 @@ case LID_MOVE_TOZ0:
                break; 
               }            
 case SCANNING:
-              {
+              { 
+                ALGCODE=ALGNONE;
+                DrawDone=true;
                 if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
-                 ALGCODE=ALGNONE;
-                 DrawDone=true;
+                
                  scanner->scan_update
                           ({
                              static_cast<uint16_t>(vector[1]), static_cast<uint16_t>(vector[2]),
@@ -124,9 +122,7 @@ case SCANNING:
                                               if (!scanner->getLinearFlg()) {scanner->start_hopingscan(vector);   }
                                               else                         {scanner->start_hopingscanlin(vector);}
                                              }
-                if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
-                 DrawDone=true;
-                if (flgСritical_section)critical_section_exit(&criticalSection); 
+                DrawDone=true;
                 break; 
               }
 case SENDDATALIN:
