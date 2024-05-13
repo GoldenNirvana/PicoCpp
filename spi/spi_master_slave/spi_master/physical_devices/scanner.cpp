@@ -106,42 +106,7 @@ void Scanner::readDATALin()
    } 
 //  sendStrData("debug liny ",data_LinY,400,false);
 }
-  /*
-void Scanner::readADC()
-{
-  if (!flgVirtual)
-  {
-   auto ptr = hardware->getValuesFromAdc();
-  //logger(ptr, 8);
-   ZValue = (int16_t) ptr[ZPin];
-      switch (vector[1]) //прибор
-   {
-        case SFM: //SFM=0
-                {
-                 SignalValue = (int16_t) ptr[AmplPin];
-                 break;  
-                } 
-        case STM://STM=1
-     case SICMDC://SICMDC=3  
-                {
-                 SignalValue = (int16_t) ptr[IPin];
-                 break;  
-                } 
-   }         
-        debugdata.emplace_back(ZValue);
-        debugdata.emplace_back(SignalValue);
-        debugdata.emplace_back(vector[1]);
-        sendStrData("code"+std::to_string(ADC_READCmd),debugdata,100,true);
-  } 
-  else
-  {
-        debugdata.emplace_back(ZValue);
-        debugdata.emplace_back(SignalValue);
-        debugdata.emplace_back(vector[1]);
-        sendStrData("code"+std::to_string(ADC_READCmd),debugdata,100,true);     
-  }
-}
-*/
+
 void Scanner::readADC()
 {
   if (!flgVirtual)
@@ -464,7 +429,7 @@ struct Config
      } 
       sendStrData("code"+std::to_string(PARAMUPDATEDCmd)); //!!!!!!!!!!!!!!!!!240314
     }
-    if (STOP)   // stop
+    if (STOP)  
     {
       STOP = false;
       sleep_ms(200);
@@ -1244,7 +1209,7 @@ struct Config
     sleep_ms(100);
     count++;
   } 
-   TheadDone = false;
+  TheadDone = false;
   conf_.flgHoping=0;
   sendStrData("code"+std::to_string(END)+"end");
  // activateDark();
@@ -1271,8 +1236,6 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
   uint16_t reststepy;
   uint16_t nfastline, nslowline;
   uint16_t stepsslowline, stepsfastline;
- // uint8_t  portx = 0;// 1;
- // uint8_t  porty = 1;// 2;
   uint8_t  portfast;
   uint8_t  portslow;
   uint16_t pos_fast;
@@ -1484,7 +1447,6 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
       else { pos_fast -= reststepfast; }
       sleep_us(conf_.delayB);
      }
-    //
       sleep_ms(conf_.HopeDelayFP);// 240503
       sleep_us(conf_.pause);  
 
@@ -1523,8 +1485,6 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
      }   
      vector_data.emplace_back(round(conf_.SetPoint));
      int16_t count0 = 0;
-    // 
- 
      while ((!DrawDone) || (count0<20) )//ожидание ответа ПК для синхронизации
      {
       sleep_ms(10);
@@ -1536,7 +1496,7 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
 //********************************************************
     if (STOP)  // stop
     {
-        STOP = false;
+      STOP = false;
       sleep_ms(300);
       sendStrData("code"+std::to_string(STOPPED)+"stopped");
       break;
@@ -1629,9 +1589,7 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
       {
         ZCur=(int16_t)round(conf_.SetPoint);
       } 
-   } // slow line
-
-   
+   } // slow line 
  // blue();
   switch (conf_.path)
   {
@@ -1663,7 +1621,7 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
     sleep_ms(100);
     count++;
   } 
-   TheadDone = false;
+  TheadDone = false;
   conf_.flgHoping=0;
   sendStrData("code"+std::to_string(END)+"end");
   hardware->activateDark();
@@ -1775,7 +1733,6 @@ void Scanner::start_fastscan(std::vector<int32_t> &vector)
 //******************************************************************************
          sleep_us(conf_.pause);    // 50 CONST 50ms wait for start get data
 //******************************************************************************     
-
         if (!flgVirtual)
         {
           hardware->getValuesFromAdc();
@@ -1839,10 +1796,10 @@ void Scanner::start_fastscan(std::vector<int32_t> &vector)
     if (conf_.flgOneFrame == 1) 
     { 
       STOP = true;
-     };
+    };
   } 
 //  blue();
-    STOP=false;
+   STOP=false;
    switch (conf_.path)
   {
     case 0:
@@ -1873,7 +1830,7 @@ void Scanner::start_fastscan(std::vector<int32_t> &vector)
 
 void Scanner::stop_scan()
 {
-   if (flgDebug) 
+  if (flgDebug) 
   {
    debugdata.emplace_back(prev_point.x);
    debugdata.emplace_back(prev_point.y);
@@ -1881,7 +1838,7 @@ void Scanner::stop_scan()
    debugdata.emplace_back(pos_.y);
    sendStrData("code"+std::to_string(DEBUG)+" stopscan parameters",debugdata,100,true);
    sleep_ms(400);
-   }
+  }
   move_to(prev_point, 10);
   debugdata.clear();
   if (flgDebug) 
@@ -1891,7 +1848,7 @@ void Scanner::stop_scan()
    debugdata.emplace_back(pos_.x);
    debugdata.emplace_back(pos_.y);
    sendStrData("code"+std::to_string(DEBUG)+" stopscan parameters",debugdata,100,true);
-   }
+  }
 }
 
 void Scanner::scan_update(const Config &config)
@@ -1911,6 +1868,7 @@ Point Scanner::getX0Y0()
 
 void Scanner::move_toX0Y0(uint16_t x, uint16_t y, uint16_t delay, int8_t flg)
  //переместиться в начальную точку  скана из начальной точке предыдущего скана
+ //flg=1 Hoping
 {
   Point pointX0Y0;
   pointX0Y0.x = (uint16_t) (x);
@@ -1932,7 +1890,7 @@ void Scanner::move_toX0Y0(uint16_t x, uint16_t y, uint16_t delay, int8_t flg)
     sleep_ms(100);
   }
   move_to(pointX0Y0, delay);
- if (flg==1)
+  if (flg==1)
   {
     hardware->protract();
     sleep_ms(delay);
@@ -1951,8 +1909,6 @@ void Scanner::move_toX0Y0(uint16_t x, uint16_t y, uint16_t delay, int8_t flg)
 
 void Scanner::move_to(const Point &point, uint16_t delay)
 {
- // uint8_t  portx = 0;//1;
-//  uint8_t  porty = 1;//2;
   if (!flgVirtual)
   {
     while (pos_.x < point.x)
@@ -2313,7 +2269,6 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
     sleep_ms(50);
     deltaZ=DACZMove(0,Z0-abs(ZStart),-10,delay);
   }
-
 //////////////////////////////////////
   sleep_ms(200);      
  for(int16_t j=0; j<NCurves; j++)    
@@ -2341,7 +2296,6 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
      case STM:   
      case SICMDC:  { SignalValue=ZMaxValue-abs(deltaZ);/*ZMaxValue-dacZ*/ break;}  
     } 
-
    }
      vectorA_Z.emplace_back(SignalValue); 
      vectorA_Z.emplace_back(Zt);
@@ -2370,7 +2324,6 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
   for(int16_t i=NPoints; i>=1; i--)  // отвод
   {
     sleep_ms(delay); 
-
    if (!flgVirtual)
    {
        hardware->getValuesFromAdc(); 
@@ -2465,10 +2418,9 @@ void Scanner::spectroscopyIV(std::vector<int32_t> &vector)
     sleep_ms(50);
     DACZMove(0,Z0,-10,delay);
   }
-
 ////////////////////////////////////////////////////
   sleep_ms(300);
- // установка начального значения напряжения
+// установка начального значения напряжения
       int16_t kk;
       int32_t dlt;
       int16_t nstep;
@@ -2477,7 +2429,6 @@ void Scanner::spectroscopyIV(std::vector<int32_t> &vector)
       dacU=UBackup;//+ShiftDAC; //240206
       UStart=UStart;//+ShiftDAC;
       step=-start_step;
-
 //  снятие ВАХ
  for (j=0; j<UCurves; j++)
  {
@@ -2519,7 +2470,6 @@ void Scanner::spectroscopyIV(std::vector<int32_t> &vector)
        dacU+=UStep;
       }
       sleep_ms(100);
-
       sendStrData("code"+std::to_string(SPECTROSOPY_IV),vectorI_V,100,true); //65 
   //move to start point
   }// j Curves  
@@ -2788,9 +2738,7 @@ void Scanner::testpiezomover(std::vector<int32_t> &vector)
   int16_t  freq, scv;//
   int16_t  NSTEPS,NCYCLES;
   uint16_t INTDELAY, SCANNERDECAY;
- 
-
- // SET VALUE FROM RX_CORE
+  // SET VALUE FROM RX_CORE
          GATE_Z_MAX     =(int16_t) vector[1]; // max
          GATE_Z_MIN     =(int16_t) vector[2]; // min
          NSTEPS         =abs((int16_t) vector[3]); // steps 
@@ -2798,8 +2746,7 @@ void Scanner::testpiezomover(std::vector<int32_t> &vector)
          INTDELAY       =(uint16_t)vector[5]; // initdelay
          SCANNERDECAY   =(uint16_t)vector[6]; // scannerDelay 
          freq           =(int16_t) vector[7]; // freq
-         scv            =(int16_t) vector[8]; // scv
-       
+         scv            =(int16_t) vector[8]; // scv  
     //     flgDev         =(int16_t) vector[9];//  0= SFM, 1=STM ;SICMAC-2; SICMDC-3;  device type
  if (flgDebug)
  {
