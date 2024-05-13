@@ -11,8 +11,8 @@ int32_t vectorSize;
 
 //#warning REMOVE STATIC !!! side effects???
 uint16_t spiBuf[8];
-std::atomic<int16_t>      ALGCODE;
-//int16_t ALGCODE=0;   
+//std::atomic<int16_t>      ALGCODE;
+int16_t ALGCODE=0;   
 /*
 bool STOP = false;   // cmd stop algorithms
 bool TheadDone = false;
