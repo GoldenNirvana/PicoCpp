@@ -9,28 +9,7 @@
 
 void  MainCore::setAlgCodeNone()
 {
- ALGCODE=ALGNONE;
-}
-MainCore::MainCore()
-{
- multicore_launch_core1(launchOnCore1); 
-}
-
-void MainCore::parse(std::vector<int32_t> &vec)
-{
-  std::string s;
-  getline(std::cin, s);
-  // todo mb add const_cast
-  Parser parser(s.data(), ',');
-  vectorSize = parser.parseInts(vec);
-}
-void MainCore::parse(std::vector<int32_t> &vec,std::vector<int32_t> &vparams)
-{
-  std::string s;
-  getline(std::cin, s);
-  // todo mb add const_cast
-  Parser parser(s.data(), ',');
-  vectorSize = parser.parseInts(vec,vparams);
+   ALGCODE=ALGNONE;
 }
 
 void MainCore::launchOnCore1()
@@ -40,7 +19,6 @@ void MainCore::launchOnCore1()
     parse(vector,vupdateparams); //wait for data ! парсинг входящих данных из ПК 
     if (vector.size()!=0)
    {
-     if (flgСritical_section) critical_section_enter_blocking(&criticalSection); 
     switch (vector[0])
     {
      /* case  ADC_RESET: 
@@ -85,21 +63,18 @@ void MainCore::launchOnCore1()
         break;
       }  
      }   
-     if (flgСritical_section) critical_section_exit(&criticalSection);
-    
     continue;
    } 
    if (vupdateparams.size()!=0)  
    {
     if (vupdateparams[0]==CONFIG_UPDATECmd)
     {
-      if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
        CONFIG_UPDATE = true;
-      if (flgСritical_section) critical_section_exit(&criticalSection);
     } 
    }
   }//while
 }
+
 void MainCore::loop()
 {
  
@@ -124,25 +99,23 @@ case ChangeHardWare:
                 std::cout << afc;
                 afc.clear();
                 sleep_ms(100);
-                  switch (vector[1])
+               // delete(scanner);
+               // if (std::strcmp(HARDWAREVERSION.c_str(),"0.1")) { scanner=new  Scanner(confighardwarev0); }
+               // else                                            { scanner=new  Scanner(confighardwarev1); }
+                switch (vector[1])
                  {       
                     case 0:   { scanner=new  Scanner(confighardwarev0); break; }
                     case 1:   { scanner=new  Scanner(confighardwarev1); break; }
                   } 
                scanner->hardware->setDefaultSettings();
-              // scanner->hardware->GetSOFTHARDWAREVersion();
                break;
               } 
 case ADC_RESET:
               {
-               setAlgCodeNone();
-               scanner->hardware->reset_ADCPort();
-               /*.enable();
-               sleep_us(10);
-               resetPort.disable();
-               */
-               break;
-              }              
+                setAlgCodeNone();
+              //  scanner->hardware->ADC_reset();
+                break;
+              }               
 case RESONANCE:
               {
                setAlgCodeNone();
@@ -186,11 +159,10 @@ case LID_MOVE_TOZ0:
                break; 
               }            
 case SCANNING:
-              { 
-                ALGCODE=ALGNONE;
-                DrawDone=true;
+              {
                 if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
-                
+                 ALGCODE=ALGNONE;
+                 DrawDone=true;
                  scanner->scan_update
                           ({
                              static_cast<uint16_t>(vector[1]), static_cast<uint16_t>(vector[2]),
@@ -218,7 +190,9 @@ case SCANNING:
                                               if (!scanner->getLinearFlg()) {scanner->start_hopingscan(vector);   }
                                               else                         {scanner->start_hopingscanlin(vector);}
                                              }
-                DrawDone=true;
+                if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
+                 DrawDone=true;
+                if (flgСritical_section)critical_section_exit(&criticalSection); 
                 break; 
               }
 case SENDDATALIN:
@@ -356,59 +330,26 @@ case SPECTROSOPY_AIZ:
 default:      {/*activateError();*/  break;}                                                                                                                                            
    }
   }
-
-/*
-   
- /// MAIN SPI 
- 
-    if (AD5664)
-    {
-      AD5664 = false;
-      AD56X4Class::setChannel(AD56X4_SETMODE_INPUT, vector[6], vector[5]);
-      AD56X4Class::updateChannel(vector[6]);
-      continue;
-    }
-    if (AD9833_SENDER)
-    {
-      AD9833_SENDER = false;
-      uint8_t buf[6];
-      for (int j = 0; j < 6; ++j)
-      {
-        buf[j] = vector[5 + j];
-      }
-      spi_write_blocking(spi_default, buf, 6);
-      continue;
-    }
-    if (AD8400_SENDER)
-    {
-      AD8400_SENDER = false;
-      uint8_t inBuf[1];
-      inBuf[0] = vector[5];
-      spi_write_blocking(spi_default, inBuf, 1);
-      continue;
-    }
-    if (ADC_ENABLE_DISABLE)
-    {
-      ADC_ENABLE_DISABLE = false;
-      if (vector[5] == 1)
-      {
-        ADC_READ_FOREVER = false;
-      } else if (vector[5] == 0)
-      {
-        ADC_READ_FOREVER = true;
-      }
-      continue;
-    }
-    */
-  /*
-  if (ADC_RESET)
-    {
-      ADC_RESET = false;
-      resetPort.enable();
-      sleep_us(10);
-      resetPort.disable();
-      continue;
-    }
-   */ 
 }
 
+MainCore::MainCore()
+{
+ multicore_launch_core1(launchOnCore1); 
+}
+
+void MainCore::parse(std::vector<int32_t> &vec)
+{
+  std::string s;
+  getline(std::cin, s);
+  // todo mb add const_cast
+  Parser parser(s.data(), ',');
+  vectorSize = parser.parseInts(vec);
+}
+void MainCore::parse(std::vector<int32_t> &vec,std::vector<int32_t> &vparams)
+{
+  std::string s;
+  getline(std::cin, s);
+  // todo mb add const_cast
+  Parser parser(s.data(), ',');
+  vectorSize = parser.parseInts(vec,vparams);
+}

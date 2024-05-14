@@ -117,7 +117,7 @@ void HARDWARE::setDefaultSettings()
 // fixme mb should add & before isr
   gpio_set_irq_enabled_with_callback(busyport->getPort(), GPIO_IRQ_EDGE_FALL, true, RX_core::comReceiveISR);
 
-  multicore_launch_core1(RX_core::launchOnCore1); // 240508 ??
+ // multicore_launch_core1(RX_core::launchOnCore1); // 240508 ??
 
   dec->enable();
   conv->enable();

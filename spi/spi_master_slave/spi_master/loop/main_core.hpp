@@ -1,6 +1,10 @@
 #ifndef PICO_EXAMPLES_MAIN_CORE_HPP
 #define PICO_EXAMPLES_MAIN_CORE_HPP
-
+#include <pico/multicore.h>
+#include "pico/util/queue.h"
+#include <pico/critical_section.h>
+#include "../transceiver/rx_utils/parser.hpp"
+#include <vector>
 
 class MainCore
 {
