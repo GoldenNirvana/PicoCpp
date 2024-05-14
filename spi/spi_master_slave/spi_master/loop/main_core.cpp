@@ -98,16 +98,29 @@ case ChangeHardWare:
                 afc += +"\n";
                 std::cout << afc;
                 afc.clear();
-                sleep_ms(100);
-               // delete(scanner);
-               // if (std::strcmp(HARDWAREVERSION.c_str(),"0.1")) { scanner=new  Scanner(confighardwarev0); }
-               // else                                            { scanner=new  Scanner(confighardwarev1); }
-                switch (vector[1])
-                 {       
+                sleep_ms(100);       
+                if (HARDWAREVERSION_I!= (int8_t)vector[1])                                  
+                { 
+                  HARDWAREVERSION_I= (int8_t)vector[1];   
+                  switch (HARDWAREVERSION_I)
+                  {       
                     case 0:   { scanner=new  Scanner(confighardwarev0); break; }
                     case 1:   { scanner=new  Scanner(confighardwarev1); break; }
                   } 
-               scanner->hardware->setDefaultSettings();
+                 scanner->hardware->setDefaultSettings();
+                }
+                else
+                {
+                 /* if (scanner!=nullptr) delete(scanner);
+                  HARDWAREVERSION_I= (uint8_t)vector[1];   
+                  switch (HARDWAREVERSION_I)
+                  {       
+                    case 0:   { scanner=new  Scanner(confighardwarev0); break; }
+                    case 1:   { scanner=new  Scanner(confighardwarev1); break; }
+                  } 
+                  scanner->hardware->setDefaultSettings();
+                  */
+                }
                break;
               } 
 case ADC_RESET:
@@ -341,7 +354,6 @@ void MainCore::parse(std::vector<int32_t> &vec)
 {
   std::string s;
   getline(std::cin, s);
-  // todo mb add const_cast
   Parser parser(s.data(), ',');
   vectorSize = parser.parseInts(vec);
 }
@@ -349,7 +361,6 @@ void MainCore::parse(std::vector<int32_t> &vec,std::vector<int32_t> &vparams)
 {
   std::string s;
   getline(std::cin, s);
-  // todo mb add const_cast
   Parser parser(s.data(), ',');
   vectorSize = parser.parseInts(vec,vparams);
 }

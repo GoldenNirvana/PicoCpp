@@ -151,12 +151,11 @@ void HARDWARE::GetSOFTHARDWAREVersion()
   afc.clear();
  // std::string date;
  // date=version;
-  afc = "code"+std::to_string(VersionCmd)+"soft "+ SOFTVERSION+", hardware "+HARDWAREVERSION;
+  afc = "code"+std::to_string(VersionCmd)+"soft "+ SOFTVERSION+", hardware "+std::to_string(HARDWAREVERSION_I);
   afc += +"\n";
   std::cout << afc;
   afc.clear();
   sleep_ms(100);
-
 }
 
 void HARDWARE::set_Freq(uint32_t freq)
