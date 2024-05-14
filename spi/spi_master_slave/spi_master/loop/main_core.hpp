@@ -11,7 +11,9 @@ class MainCore
   void loop();
 
  private:
-  
+  static void parse(std::vector<int32_t> &vec);
+  static void parse(std::vector<int32_t> &vec,std::vector<int32_t> &vparams);
+  static void launchOnCore1();
   void setAlgCodeNone();
 };
 
