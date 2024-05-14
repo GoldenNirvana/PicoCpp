@@ -11,6 +11,27 @@ void  MainCore::setAlgCodeNone()
 {
  ALGCODE=ALGNONE;
 }
+MainCore::MainCore()
+{
+ multicore_launch_core1(launchOnCore1); 
+}
+
+void MainCore::parse(std::vector<int32_t> &vec)
+{
+  std::string s;
+  getline(std::cin, s);
+  // todo mb add const_cast
+  Parser parser(s.data(), ',');
+  vectorSize = parser.parseInts(vec);
+}
+void MainCore::parse(std::vector<int32_t> &vec,std::vector<int32_t> &vparams)
+{
+  std::string s;
+  getline(std::cin, s);
+  // todo mb add const_cast
+  Parser parser(s.data(), ',');
+  vectorSize = parser.parseInts(vec,vparams);
+}
 
 void MainCore::launchOnCore1()
 { 
@@ -391,7 +412,3 @@ default:      {/*activateError();*/  break;}
    */ 
 }
 
-MainCore::MainCore()
-{
-
-}
