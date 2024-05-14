@@ -30,12 +30,20 @@ case VersionCmd:
 case ChangeHardWare:
               {
                 setAlgCodeNone();
-               /* delete(scanner);
-                if (vector[1]==0) { scanner=new  Scanner(confighardwarev0); }
-                else              { scanner=new  Scanner(confighardwarev1); }
-                scanner->hardware->setDefaultSettings();
-                */
-                break;
+                afc.clear();
+                afc ="code"+std::to_string(DEBUG)+ "debug hardware "+ std::to_string(vector[1]);
+                afc += +"\n";
+                std::cout << afc;
+                afc.clear();
+                sleep_ms(100);
+                  switch (vector[1])
+                 {       
+                    case 0:   { scanner=new  Scanner(confighardwarev0); break; }
+                    case 1:   { scanner=new  Scanner(confighardwarev1); break; }
+                  } 
+               scanner->hardware->setDefaultSettings();
+              // scanner->hardware->GetSOFTHARDWAREVersion();
+               break;
               } 
 case ADC_RESET:
               {

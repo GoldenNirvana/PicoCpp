@@ -131,9 +131,9 @@ void HARDWARE::setDefaultSettings()
   
   retract();        //втянуть 240403 ???
 //************************************************************* 
-//  init_DACSetPointBias(2);   //инициирование ЦАП1  SetPoint,BIAS
-// init_DACXY(3);    //инициирование ЦАП2  DACXY
-//  init_DACZ(4);    //инициирование ЦАП3  DACZ
+//  init_DACSetPointBias(2); //инициирование ЦАП1  SetPoint,BIAS
+//  init_DACXY(3);           //инициирование ЦАП2  DACXY
+//  init_DACZ(4);            //инициирование ЦАП3  DACZ
 
 //240503 edited
   init_DACSetPointBias(_confighardware.DACBiasSetPointPort);   //инициирование ЦАП1  SetPoint,BIAS
