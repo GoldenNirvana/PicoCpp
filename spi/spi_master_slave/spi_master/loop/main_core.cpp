@@ -107,7 +107,7 @@ case ChangeHardWare:
                     case 0:   { scanner=new  Scanner(confighardwarev0); break; }
                     case 1:   { scanner=new  Scanner(confighardwarev1); break; }
                   } 
-                 scanner->hardware->setDefaultSettings();
+                  if (scanner!=nullptr) scanner->hardware->setDefaultSettings();
                 }
                 else
                 {
