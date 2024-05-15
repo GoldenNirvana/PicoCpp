@@ -94,7 +94,7 @@ case ChangeHardWare:
               {
                 setAlgCodeNone();
                 afc.clear();
-                afc ="code"+std::to_string(DEBUG)+ "debug hardware "+ std::to_string(vector[1]);
+                afc ="code"+std::to_string(ChangeHardWare)+ " hardware "+ std::to_string(vector[1]);
                 afc += +"\n";
                 std::cout << afc;
                 afc.clear();
@@ -111,7 +111,7 @@ case ChangeHardWare:
                   else
                   {
                    afc.clear();
-                   afc ="code"+std::to_string(DEBUG)+ "error new scanner create "+std:to_string(HARDWAREVERSION_I); ;
+                   afc ="code"+std::to_string(ChangeHardWare)+ "error new scanner create "+std:to_string(HARDWAREVERSION_I);
                    std::cout << afc;
                    afc.clear();
                    sleep_ms(100); 
@@ -360,6 +360,7 @@ MainCore::MainCore()
   {       
     case 0:   { scanner=new  Scanner(confighardwarev0); break; }
     case 1:   { scanner=new  Scanner(confighardwarev1); break; }
+    case-1:   {break;} 
   } 
   if (scanner!=nullptr) scanner->hardware->setDefaultSettings(); 
 }
