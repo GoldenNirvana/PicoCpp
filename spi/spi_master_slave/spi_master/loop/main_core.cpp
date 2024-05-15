@@ -347,7 +347,13 @@ default:      {/*activateError();*/  break;}
 
 MainCore::MainCore()
 {
- multicore_launch_core1(launchOnCore1); 
+   multicore_launch_core1(launchOnCore1);
+   switch (HARDWAREVERSION_I)
+  {       
+    case 0:   { scanner=new  Scanner(confighardwarev0); break; }
+    case 1:   { scanner=new  Scanner(confighardwarev1); break; }
+  } 
+ scanner->hardware->setDefaultSettings(); 
 }
 
 void MainCore::parse(std::vector<int32_t> &vec)
