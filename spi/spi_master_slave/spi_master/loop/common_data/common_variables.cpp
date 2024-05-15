@@ -3,8 +3,8 @@
 //////////////////////////////////////////////
 std::string  SOFTVERSION="24.05.07.01 HW2 pointer";
 std::string  HARDWAREVERSION="0.1";
-//int8_t       HARDWAREVERSION_I=0;
-int8_t       HARDWAREVERSION_I=-1;
+int8_t       HARDWAREVERSION_I=0;
+//int8_t       HARDWAREVERSION_I=-1;
 // std::string  HARDWAREVERSION="2.0"; //new hardware
 std::string afc;  //dataout string
 std::vector<int32_t> vector;
