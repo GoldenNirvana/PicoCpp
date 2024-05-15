@@ -98,7 +98,7 @@ case ChangeHardWare:
                 afc += +"\n";
                 std::cout << afc;
                 afc.clear();
-                sleep_ms(100);       
+                sleep_ms(300);       
                 if (HARDWAREVERSION_I!= (int8_t)vector[1])                                  
                 { 
                   HARDWAREVERSION_I= (int8_t)vector[1];   
@@ -108,6 +108,14 @@ case ChangeHardWare:
                     case 1:   { scanner=new  Scanner(confighardwarev1); break; }
                   } 
                   if (scanner!=nullptr) scanner->hardware->setDefaultSettings();
+                  else
+                  {
+                   afc.clear();
+                   afc ="code"+std::to_string(DEBUG)+ "error new scanner create "+std:to_string(HARDWAREVERSION_I); ;
+                   std::cout << afc;
+                   afc.clear();
+                   sleep_ms(100); 
+                  }
                 }
                 else
                 {
