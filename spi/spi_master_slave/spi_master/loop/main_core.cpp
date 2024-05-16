@@ -16,6 +16,14 @@ void MainCore::loop()
     switch (ALGCODE)
     {
 case   ALGNONE:{break;}
+case VersionCmd:
+              {
+                if (flgСritical_section) critical_section_enter_blocking(&criticalSection); 
+                 ALGCODE=ALGNONE; 
+                if (flgСritical_section) critical_section_exit(&criticalSection);  
+                GetSOFTHARDWAREVersion();
+                break;
+              }   
 case RESONANCE:
               {
                if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
@@ -286,15 +294,7 @@ case  RetractAlCode:
                 if (flgСritical_section) critical_section_exit(&criticalSection);  
                 scanner.retract();
                 break;
-              }
-case VersionCmd:
-              {
-                if (flgСritical_section) critical_section_enter_blocking(&criticalSection); 
-                 ALGCODE=ALGNONE; 
-                if (flgСritical_section) critical_section_exit(&criticalSection);  
-                GetSOFTHARDWAREVersion();
-                break;
-              }               
+              }           
 
 default:      {/*activateError();*/  break;}                                                                                                                                            
    }
