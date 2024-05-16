@@ -111,7 +111,7 @@ case ChangeHardWare:
                   else
                   {
                    afc.clear();
-                   afc ="code"+std::to_string(ChangeHardWare)+ "error new scanner create "+std:to_string(HARDWAREVERSION_I);
+                   afc ="code"+std::to_string(ChangeHardWare)+ "error new scanner create "+std::to_string(HARDWAREVERSION_I);
                    std::cout << afc;
                    afc.clear();
                    sleep_ms(100); 
