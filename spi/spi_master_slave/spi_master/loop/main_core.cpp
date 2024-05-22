@@ -86,13 +86,13 @@ void MainCore::loop()
 case   ALGNONE:{break;}
 case VersionCmd:
               {
-                setAlgCodeNone();
+                ALGCODE=ALGNONE;
                 scanner->hardware->GetSOFTHARDWAREVersion();
                 break;
               } 
 case ChangeHardWare:
               {
-                setAlgCodeNone();
+                ALGCODE=ALGNONE;
                 afc.clear();
                 afc ="code"+std::to_string(ChangeHardWare)+ " hardware "+ std::to_string(vector[1]);
                 afc += +"\n";
@@ -133,18 +133,19 @@ case ChangeHardWare:
               } 
 case ADC_RESET:
               {
-                setAlgCodeNone();
+             
+                
               //  scanner->hardware->ADC_reset();
                 break;
               }               
 case RESONANCE:
               {
-               setAlgCodeNone();
+               ALGCODE=ALGNONE;
                scanner->start_frqscan();
                break;
               }
 case APPROACH:{
-                setAlgCodeNone();
+                ALGCODE=ALGNONE;
                 scanner->hardware->blue();
                 scanner->approacphm(vector);
                 scanner->hardware->green();
@@ -152,30 +153,30 @@ case APPROACH:{
                 break;
               }
 case TESTMOVER:{
-                 setAlgCodeNone();
+                 ALGCODE=ALGNONE;
                  scanner->testpiezomover(vector);
                  break;
                }
 case FREQ_SET:{
-                setAlgCodeNone();
+                ALGCODE=ALGNONE;
                 scanner->hardware->set_Freq((uint16_t) vector[1]);              
                 break;
               }
 case LID_MOVE_UNTIL_STOP:
               {
-                setAlgCodeNone();
+                ALGCODE=ALGNONE;
                 scanner->positioningXYZ(vector);               
                 break;
               }
 case MOVE_TOX0Y0:
               {
-                setAlgCodeNone();
+                ALGCODE=ALGNONE;
                 scanner->move_toX0Y0(vector[1], vector[2], vector[3],vector[4]);
                 break; 
               }     
 case LID_MOVE_TOZ0:
               {
-                setAlgCodeNone();
+                ALGCODE=ALGNONE;
                 scanner->LID_move_toZ0(vector[1], vector[2], vector[3], vector[4], vector[5]);
                break; 
               }            
@@ -218,72 +219,72 @@ case SCANNING:
               }
 case SENDDATALIN:
               {
-                setAlgCodeNone();
+                ALGCODE=ALGNONE;
                 scanner->readDATALin();
                 break;
               }              
 case FASTSCANNING:
               {
-                setAlgCodeNone();
+                ALGCODE=ALGNONE;
                 scanner->start_fastscan(vector);  
                 break; 
               }   
 
 case SET_PID_GAIN:
               {
-                setAlgCodeNone();
+                ALGCODE=ALGNONE;
                 scanner->hardware->set_GainPID((uint16_t)vector[1]);  
                 break; 
               }  
 case SET_AMPLMOD_GAIN: // усиление раскачка зонда 
               {
-                setAlgCodeNone();
+                ALGCODE=ALGNONE;
                 scanner->hardware->set_GainApmlMod((uint8_t)vector[1]);
                 break;
               }   
 case InitDAC_BIAS_SET_POINT:
               {
-                setAlgCodeNone();
+                ALGCODE=ALGNONE;
                 if (!flgVirtual)   scanner->hardware->init_DACSetPointBias(vector[1]);       
                 break;         
               }   
 case InitDAC_Z:
               {
-                setAlgCodeNone();
+                ALGCODE=ALGNONE;
                 if (!flgVirtual)   scanner->hardware->init_DACZ(vector[1]);       
                 break;         
               }   
 case InitDAC_XY:
               {
-                setAlgCodeNone();
+                ALGCODE=ALGNONE;
                 scanner->hardware->init_DACXY(vector[1]);
                 break; 
               } 
 case SetDACZeroCmd:
               {
-                setAlgCodeNone();
+                ALGCODE=ALGNONE;
                 scanner->hardware->set_DACZero();
                 break;
               } 
 case SET_BIAS:
               {
-                setAlgCodeNone();
+                ALGCODE=ALGNONE;
                 scanner->hardware->set_Bias(vector[1]);
                 break;
               }               
 case SET_SETPOINT:
               {
-                setAlgCodeNone();
+                ALGCODE=ALGNONE;
                 scanner->hardware->set_SetPoint(vector[1]);
                 break; 
               }   
   case SET_Z: { 
-                setAlgCodeNone();
+                ALGCODE=ALGNONE;
                 scanner->hardware->set_DACZ(vector[1]);
                 break;
               }     
  case SET_XY: {
-                setAlgCodeNone();
+                ALGCODE=ALGNONE;
                 scanner->hardware->init_SPI(vector[1],vector[2],vector[3],vector[4]);//29, 3, 8, 0, 1, 1, value	
                 if (vector[5] == 0)
                 {
@@ -298,7 +299,7 @@ case SET_SETPOINT:
               }   
 case ADC_READCmd: //TIMER
               {
-                setAlgCodeNone();
+                ALGCODE=ALGNONE;
                 if (ADC_IS_READY_TO_READ)
                 {
                  scanner->readADC();
@@ -307,43 +308,43 @@ case ADC_READCmd: //TIMER
               }    
 case GET_CURRENTX0Y0:
               {
-                setAlgCodeNone();
+                ALGCODE=ALGNONE;
                 scanner->getX0Y0();
                 break;
               }   
 case ProtractAlgCode:
               {
-                setAlgCodeNone();
+                ALGCODE=ALGNONE;
                 scanner->hardware->protract(); 
                 break;
               } 
 case RetractAlgCode:
               {
-                setAlgCodeNone();
+                ALGCODE=ALGNONE;
                 scanner->hardware->retract();
                 break;
               }
 case FreezePIDAlgCode:
               {
-                setAlgCodeNone();
+                ALGCODE=ALGNONE;
                 scanner->hardware->freezeLOOP(vector[1]);
                 break;
               }
 case UnFreezePIDAlgCode:
               {
-                setAlgCodeNone();
+                ALGCODE=ALGNONE;
                 scanner->hardware->unfreezeLOOP(vector[1]);
                 break;
               }              
 case SPECTROSOPY_IV:
               {
-                setAlgCodeNone();
+                ALGCODE=ALGNONE;
                 scanner->spectroscopyIV(vector);
                 break;
               }  
 case SPECTROSOPY_AIZ:
               {
-                setAlgCodeNone();
+                ALGCODE=ALGNONE;
                 scanner->spectroscopyAIZ(vector);
                 break;
               }  
