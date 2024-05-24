@@ -2,7 +2,7 @@
 #include <iostream>
 #include "LinearDriver.hpp"
 
-LinearDriver::LinearDriver(bool flgOnlyZ, ConfigLinearDrive configlineardrive)
+LinearDriverBase::LinearDriverBase(bool flgOnlyZ, ConfigLinearDrive configlineardrive)
 // : x_a(OutputPort(18)), x_b(OutputPort(19)), y_a(OutputPort(20)),
 //                               y_b(OutputPort(21)), z_a(OutputPort(22)), z_b(OutputPort(28))
 {
@@ -31,7 +31,7 @@ LinearDriver::LinearDriver(bool flgOnlyZ, ConfigLinearDrive configlineardrive)
    z_b->disable();
   }
 }
-LinearDriver::~LinearDriver()
+LinearDriverBase::~LinearDriverBase()
 {
   if (!_flgOnlyZ)
   {
@@ -43,8 +43,21 @@ LinearDriver::~LinearDriver()
    delete(z_a);
    delete(z_b);
 }
+/*
+LinearDriverPico2040::LinearDriverPico2040(bool flgOnlyZ, ConfigLinearDrive configlineardrive)
+{
+ LinearDriverBase.LinearDriverBase(flgOnlyZ,configlineardrive);
+}
 
-void LinearDriver::activate(int command, int freq, int p, int n, bool dir)  ///
+ LinearDriverMotherBoard::~LinearDriverMotherBoard()
+ {}
+
+ LinearDriverMotherBoard::LinearDriverMotherBoard(bool flgOnlyZ, ConfigLinearDrive configlineardrive)
+ {
+  LinearDriverBase.LinearDriverBase(flgOnlyZ,configlineardrive);
+ }
+ */
+void LinearDriverBase::activate(int command, int freq, int p, int n, bool dir)  ///
 {
    if (flgDebugLevel<=DEBUG_LEVEL) std::cout << "From activate command = " << command << '\n';
   OutputPort *ptrA = x_a;
@@ -91,3 +104,59 @@ void LinearDriver::activate(int command, int freq, int p, int n, bool dir)  ///
   }
 }
 
+/*
+ LinearDriverPico2040::~LinearDriverPico2040()
+ {}
+ LinearDriverPico2040::LinearDriverPico2040(bool flgOnlyZ, ConfigLinearDrive configlineardrive)
+ {
+  
+ }
+ */
+/*
+void LinearDriverPico2040::activate(int command, int freq, int p, int n, bool dir)  ///
+{
+   if (flgDebugLevel<=DEBUG_LEVEL) std::cout << "From activate command = " << command << '\n';
+  OutputPort *ptrA = x_a;
+  OutputPort *ptrB = x_b;
+  if (command == 90)
+  {
+    ptrA = x_a;
+    ptrB = x_b;
+  }
+  if (command == 95)
+  {
+    ptrA = y_a;
+    ptrB = y_b;
+  } else if (command == 99)
+  {
+    ptrA = z_a;
+    ptrB = z_b;
+  }
+  double t_abs =(double)(1000000 / freq);        // 2000                     // mf 23108
+  double t_low =(double)(p * t_abs / 1000);  //  750 * 2000 / 1000000 = 1.5 // mf 23108
+  double t_high = t_abs - t_low;    // 2 - 1.5 = 0.5
+
+  if (dir)
+  {
+    std::swap(ptrA, ptrB);
+  }
+
+  ptrA->enable();
+  ptrB->enable(); //240401
+  sleep_ms(2); //240401
+  for (int i = 0; i < n; ++i)
+  {
+    ptrB->disable();
+    sleep_us(t_low);
+    ptrB->enable();
+    sleep_us(t_high);
+  }
+  ptrA->disable();
+  ptrB->disable();
+
+  if (dir)
+  {
+    std::swap(ptrA, ptrB);
+  }
+}
+*/

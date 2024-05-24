@@ -56,7 +56,7 @@ private:
  void activateBlue();
 
 public:
-   LinearDriver      *linearDriver;
+   LinearDriverBase  *linearDriver;
 
    HARDWARE(ConfigHardWare confighardware);
 

@@ -6,9 +6,9 @@
 #include "../loop/common_data/common_variables.hpp"   //add mf 231101 240505
 
 
-class LinearDriver
+class LinearDriverBase
 {
- private:
+ protected:
   bool    _flgOnlyZ; 
   ConfigLinearDrive _configlineardrive;
   OutputPort *x_a;
@@ -18,10 +18,26 @@ class LinearDriver
   OutputPort *z_a;
   OutputPort *z_b;
  public:
-  LinearDriver(bool flgOnlyZ,ConfigLinearDrive configlineardrive);
- ~LinearDriver();
+  LinearDriverBase(bool flgOnlyZ,ConfigLinearDrive configlineardrive);
+  virtual ~LinearDriverBase();
   void activate(int command, int freq, int p, int n, bool dir);
 };
+/*
+class LinearDriverPico2040: public LinearDriverBase
+{
+ public:
+  LinearDriverPico2040(bool flgOnlyZ,ConfigLinearDrive configlineardrive);//:LinearDriverBase(flgOnlyZ,configlineardrive){};
+  ~LinearDriverPico2040();
+ void activate(int command, int freq, int p, int n, bool dir);
+};
 
-
+class LinearDriverMotherBoard: public LinearDriverBase
+{
+ public:
+   LinearDriverMotherBoard(bool flgOnlyZ,ConfigLinearDrive configlineardrive);// 
+  // :LinearDriverBase(flgOnlyZ,configlineardrive){};
+  ~LinearDriverMotherBoard();
+ void activate(int command, int freq, int p, int n, bool dir);
+};
+*/
 #endif
