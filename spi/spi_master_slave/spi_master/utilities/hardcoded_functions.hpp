@@ -101,7 +101,9 @@ public:
  void set_DACZ(int16_t value); 
 
  void set_DACZero();
-
+ 
+// virtual void SetPIDMode(uint8_t mode)=0;
+ 
  void reset_ADCPort();
  
  void move_scannerX(int x);

@@ -1944,8 +1944,8 @@ void Scanner::LID_move_toZ0(int lid_name, int f, int p, int n, int dir)  //от�
 {
  if (!flgVirtual)
  {
-    if (std::strcmp(HARDWAREVERSION.c_str(),"0.1")) {  hardware->linearDriver=new LinearDriverBase(true,configlineardrivev0); } //250506
-    else                                            {  hardware->linearDriver=new LinearDriverBase(true,configlineardrivev1); }
+    if (std::strcmp(HARDWAREVERSION.c_str(),"0.1")) {  hardware->linearDriver=new LinearDriverPico2040(true,configlineardrivev0); } //250506
+    else                                            {  hardware->linearDriver=new LinearDriverMotherBoard(true,configlineardrivev1); }
   hardware->retract();  //втянуть сканер
   sleep_ms(50);
   if (!flgVirtual) hardware->linearDriver->activate(lid_name, f, p, std::abs(n), dir);
@@ -2013,8 +2013,8 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
    } 
    if (!flgVirtual)
    { 
-    if (std::strcmp(HARDWAREVERSION.c_str(),"0.1")) { hardware->linearDriver=new LinearDriverBase(false,configlineardrivev0); } //250506
-    else                                            { hardware->linearDriver=new LinearDriverBase(false,configlineardrivev1); }
+    if (std::strcmp(HARDWAREVERSION.c_str(),"0.1")) { hardware->linearDriver=new LinearDriverPico2040(false,configlineardrivev0); } //250506
+    else                                            { hardware->linearDriver=new LinearDriverMotherBoard(false,configlineardrivev1); }
    } 
 
 
@@ -2586,8 +2586,8 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
   sendStrData( "code"+std::to_string(APPROACH),buf_status,100,false);
   if (!flgVirtual)
   {
-   if (std::strcmp(HARDWAREVERSION.c_str(),"0.1")) { hardware->linearDriver=new LinearDriverBase(true,configlineardrivev0); } //250506
-   else                                            { hardware->linearDriver=new LinearDriverBase(true,configlineardrivev1); }
+   if (std::strcmp(HARDWAREVERSION.c_str(),"0.1")) { hardware->linearDriver=new LinearDriverPico2040(true,configlineardrivev0); } //250506
+   else                                            { hardware->linearDriver=new LinearDriverMotherBoard(true,configlineardrivev1); }
   } 
   
   while (true)
@@ -2775,8 +2775,8 @@ void Scanner::testpiezomover(std::vector<int32_t> &vector)
      sendStrData( "code"+std::to_string(TESTMOVER),buf_status,100,true);
     if (!flgVirtual)
     {
-     if (std::strcmp(HARDWAREVERSION.c_str(),"0.1")) { hardware->linearDriver=new LinearDriverBase(true,configlineardrivev0); } //250506
-     else                                            { hardware->linearDriver=new LinearDriverBase(true,configlineardrivev1); }
+     if (std::strcmp(HARDWAREVERSION.c_str(),"0.1")) { hardware->linearDriver=new LinearDriverPico2040(true,configlineardrivev0); } //250506
+     else                                            { hardware->linearDriver=new LinearDriverMotherBoard(true,configlineardrivev1); }
     } 
     // проверить, в воротах ли Z
     step = NSTEPS;          // NSTEPS > 0 - сближение

@@ -18,26 +18,25 @@ class LinearDriverBase
   OutputPort *z_a;
   OutputPort *z_b;
  public:
-  LinearDriverBase(bool flgOnlyZ,ConfigLinearDrive configlineardrive);
-  virtual ~LinearDriverBase();
+  //LinearDriverBase(bool flgOnlyZ,ConfigLinearDrive configlineardrive);
+  ~LinearDriverBase();
   void activate(int command, int freq, int p, int n, bool dir);
 };
-/*
+
 class LinearDriverPico2040: public LinearDriverBase
 {
  public:
-  LinearDriverPico2040(bool flgOnlyZ,ConfigLinearDrive configlineardrive);//:LinearDriverBase(flgOnlyZ,configlineardrive){};
-  ~LinearDriverPico2040();
- void activate(int command, int freq, int p, int n, bool dir);
+  LinearDriverPico2040(bool flgOnlyZ,ConfigLinearDrive configlineardrive);//:LinearDriverBase(flgOnlyZ,configlineardrive);
+ // ~LinearDriverPico2040();
+  void activate(int command, int freq, int p, int n, bool dir);
 };
 
 class LinearDriverMotherBoard: public LinearDriverBase
 {
  public:
    LinearDriverMotherBoard(bool flgOnlyZ,ConfigLinearDrive configlineardrive);// 
-  // :LinearDriverBase(flgOnlyZ,configlineardrive){};
-  ~LinearDriverMotherBoard();
- void activate(int command, int freq, int p, int n, bool dir);
+ //    ~LinearDriverMotherBoard();
+  void activate(int command, int freq, int p, int n, bool dir);
 };
-*/
+
 #endif
