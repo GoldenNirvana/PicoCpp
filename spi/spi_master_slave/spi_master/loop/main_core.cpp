@@ -59,7 +59,7 @@ void MainCore::launchOnCore1()
       default: 
       {
          if (vector[0]>=0 && vector[0]<100)  {ALGCODE=(int16_t)vector[0]; }
-                                       else ALGCODE=0;
+                                       else   ALGCODE=ALGNONE;
         break;
       }  
      }   
