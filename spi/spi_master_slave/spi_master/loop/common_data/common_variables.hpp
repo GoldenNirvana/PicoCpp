@@ -60,7 +60,7 @@
 
 extern std::string  SOFTVERSION;
 extern std::string  HARDWAREVERSION;
-std::atomic<int16_t>  ALGCODE;
+extern int16_t  ALGCODE;
 extern uint32_t DEBUG_LEVEL;
 extern Spi      spi;
 extern LinearDriver linearDriver;
@@ -92,16 +92,13 @@ extern bool SET_IO_VALUE;
 ;
 extern bool Z_STATE;
 // add MF
-extern std::atomic<bool> CONFIG_UPDATE;
-extern std::atomic<bool> STOP;
-extern std::atomic<bool> TheadDone;   //need dor synchronization with PC 
-extern std::atomic<bool> DrawDone;
-extern std::atomic<bool> ADC_IS_READY_TO_READ;
-//extern bool STOP;
-//extern bool ADC_IS_READY_TO_READ;
-//extern bool CONFIG_UPDATE
-//extern bool TheadDone;   //need dor synchronization with PC 
-//extern bool DrawDone;
+extern bool STOP;
+extern bool ADC_IS_READY_TO_READ;
+extern bool CONFIG_UPDATE;
+extern bool TheadDone;   //need dor synchronization with PC 
+extern bool DrawDone;
+
+
 extern bool LOOP_FREEZE_UNFREEZE;
 extern bool PID_TURN_ON;
 extern bool SCANNER_RETRACT;
