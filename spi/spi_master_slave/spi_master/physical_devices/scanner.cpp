@@ -1993,8 +1993,7 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
     }
     sendStrData("code"+std::to_string(DEBUG)+" parameters posisionXYZ ",debugdata,100,true);
    } 
- if (!flgVirtual)
- {}
+
    if (!flgVirtual) 
    {
         hardware->getValuesFromAdc();
