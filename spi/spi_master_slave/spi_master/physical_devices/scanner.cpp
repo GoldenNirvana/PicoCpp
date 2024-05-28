@@ -703,7 +703,9 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
        }
        sendStrData("code"+std::to_string(DEBUG)+ " parameters update",debugdata,100,true);
       } 
+      if (flgСritical_section)  critical_section_enter_blocking(&criticalSection); 
       vupdateparams.clear();
+      if (flgСritical_section)  critical_section_exit(&criticalSection);  
     }
     if (STOP)   // stop
     {
@@ -2040,7 +2042,9 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
         }
         sendStrData("code"+std::to_string(DEBUG)+"posXYZ parameters update",debugdata,100,true);
        }   
-        vupdateparams.clear();
+       if (flgСritical_section)  critical_section_enter_blocking(&criticalSection); 
+       vupdateparams.clear();
+       if (flgСritical_section)  critical_section_exit(&criticalSection);  
       }
       status = none;
       if (!flgVirtual) //add mf
@@ -2908,7 +2912,9 @@ testpiezomover(std::vector<int32_t> &vector)
         }
         sendStrData("code"+std::to_string(DEBUG)+" test piezo parameters update",debugdata,200,true);
        } 
-        vupdateparams.clear();
+       if (flgСritical_section)  critical_section_enter_blocking(&criticalSection); 
+       vupdateparams.clear();
+       if (flgСritical_section)  critical_section_exit(&criticalSection);  
        }
        i++;
       }//while cyclecount
