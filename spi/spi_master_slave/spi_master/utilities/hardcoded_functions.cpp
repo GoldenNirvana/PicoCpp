@@ -102,7 +102,9 @@ void HARDWARE::reset_ADCPort()
   sleep_us(10);
   resetport->disable();
 }
-void HARDWARE::setDefaultSettings()
+void HARDWARE::
+
+setDefaultSettings()
 {
   /// BASIC SETTINGS
   uart_init(uart1, 115200);

@@ -2736,7 +2736,8 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
  if (!flgVirtual) delete(hardware->linearDriver);
 }
 
-void Scanner::testpiezomover(std::vector<int32_t> &vector)
+void Scanner::
+testpiezomover(std::vector<int32_t> &vector)
 {
   int8_t   flgstop;  //=1  stop
    int16_t  step,Z0;
