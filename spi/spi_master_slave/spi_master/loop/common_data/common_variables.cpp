@@ -12,11 +12,11 @@ std::vector<int32_t> vupdateparams;
 int32_t vectorSize;
 uint16_t spiBuf[8];
 std::atomic<int16_t>      ALGCODE;
-std::atomic<bool> CONFIG_UPDATE;
-std::atomic<bool> STOP;
-std::atomic<bool> TheadDone;   //need dor synchronization with PC 
-std::atomic<bool> DrawDone;
+std::atomic<bool> STOP = false;   // cmd stop algorithms
+std::atomic<bool> TheadDone = false;
+std::atomic<bool> DrawDone=true;
 std::atomic<bool> ADC_IS_READY_TO_READ = true;
+std::atomic<bool> CONFIG_UPDATE = false;
 bool AD9833_SENDER = false;
 bool AD8400_SENDER = false;
 bool AD8400_SET_GAIN = false;
