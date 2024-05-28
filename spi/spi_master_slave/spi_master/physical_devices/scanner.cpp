@@ -2077,7 +2077,10 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
        }
        sendStrData("code"+std::to_string(DEBUG)+" parameters posistionXYZ update",debugdata,100,true);
       } 
+      // vupdateparams.clear();
+      if (flgСritical_section)  critical_section_enter_blocking(&criticalSection); 
        vupdateparams.clear();
+      if (flgСritical_section)  critical_section_exit(&criticalSection); 
       }
       status = none;
       if (!flgVirtual) 
@@ -2629,7 +2632,10 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
        }
        sendStrData("code"+std::to_string(DEBUG)+" parameters update",debugdata,200,true);
       } 
+      //vupdateparams.clear();
+      if (flgСritical_section)  critical_section_enter_blocking(&criticalSection); 
       vupdateparams.clear();
+     if (flgСritical_section)  critical_section_exit(&criticalSection); 
     }
  
     if (!flgVirtual) // get values
