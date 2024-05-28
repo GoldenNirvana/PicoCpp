@@ -3,6 +3,7 @@
 
 #include <pico/critical_section.h>
 #include <string>
+#include <atomic>
 #include "../../utilities/base_types/Spi.hpp"
 #include "../../physical_devices/LinearDriver.hpp"
 #include "../../physical_devices/scanner.hpp"
@@ -60,7 +61,7 @@
 
 extern std::string  SOFTVERSION;
 extern std::string  HARDWAREVERSION;
-extern int16_t  ALGCODE;
+
 extern uint32_t DEBUG_LEVEL;
 extern Spi      spi;
 extern LinearDriver linearDriver;
@@ -92,11 +93,12 @@ extern bool SET_IO_VALUE;
 ;
 extern bool Z_STATE;
 // add MF
-extern bool STOP;
-extern bool ADC_IS_READY_TO_READ;
-extern bool CONFIG_UPDATE;
-extern bool TheadDone;   //need dor synchronization with PC 
-extern bool DrawDone;
+extern std::atomic<int16_t>  ALGCODE;
+extern std::atomic<bool> STOP;
+extern std::atomic<bool> ADC_IS_READY_TO_READ;
+extern std::atomic<bool> CONFIG_UPDATE;
+extern std::atomic<bool> TheadDone;   //need dor synchronization with PC 
+extern std::atomic<bool> DrawDone;
 
 
 extern bool LOOP_FREEZE_UNFREEZE;

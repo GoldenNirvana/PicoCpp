@@ -24,8 +24,12 @@ DAC8563 dac8563_3(1); // DAC Z
 //#warning REMOVE STATIC !!! side effects???
 uint16_t spiBuf[8];
 
-int16_t ALGCODE=0;   
-bool STOP = false;   // cmd stop algorithms
+std::atomic<int16_t> ALGCODE=0;   
+std::atomic<bool> STOP = false;   // cmd stop algorithms
+std::atomic<bool> TheadDone = false;
+std::atomic<bool> DrawDone=true;
+std::atomic<bool> ADC_IS_READY_TO_READ = true;
+
 bool AD9833_SENDER = false;
 bool AD8400_SENDER = false;
 bool AD8400_SET_GAIN = false;
@@ -41,8 +45,6 @@ bool PID_TURN_ON = false;
 bool SCANNER_RETRACT = false;
 bool SCANNER_PROTRACT = false;
 bool LOOP_FREEZE_UNFREEZE=false;
-bool TheadDone = false;
-bool DrawDone=true;
 
 
 //************************************************
@@ -65,7 +67,7 @@ uint8_t IPin    = 2; // ток
 
 //uint32_t DEBUG_LEVEL = 2;
 bool Z_STATE = false; //???
-bool ADC_IS_READY_TO_READ = true;
+
 //volatile int32_t current_channel = 0;
 
 critical_section_t criticalSection;
