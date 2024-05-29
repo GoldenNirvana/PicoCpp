@@ -25,7 +25,7 @@ struct ConfigHardWare
   uint8_t GainPID2;     //15
   uint8_t FreezePort;   //26 заморозить сканнер=1; разморозить =0
   uint8_t ProtractPort; //27 втянуть    сканнер=1; вытянуть    =0
-
+// add new
   uint8_t ModulateUPort;    //28 вкл модуляцию U
   uint8_t SD_1Port;         //11 порты  настройки СД
   uint8_t SD_2Port;         //12 порты  настройки СД
@@ -39,10 +39,7 @@ struct ConfigLinearDrive
   uint8_t YA_Port;    
   uint8_t YB_Port;     
   uint8_t ZA_Port;     
-  uint8_t ZB_Port; 
-  uint8_t ZTurn_on_Port;   
-  uint8_t XTurn_on_Port;   
-  uint8_t YTurn_on_Port;     
+  uint8_t ZB_Port;    
 };
 struct ConfigLinearDriveNew
 {
