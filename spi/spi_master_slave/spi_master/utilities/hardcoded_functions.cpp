@@ -24,30 +24,18 @@ HARDWARE::HARDWARE(ConfigHardWare confighardware)
     resetport=new OutputPort(_confighardware.ResetPort); 
       ledPort=new OutputPort(PICO_DEFAULT_LED_PIN);
        rdbLed=new OutputPort(_confighardware.RDBPort); 
-        io1_0=new OutputPort(_confighardware.IO1_0);
-        io1_1=new OutputPort(_confighardware.IO1_1);
      gainPID0=new OutputPort(_confighardware.GainPID0);
      gainPID1=new OutputPort(_confighardware.GainPID1); 
      gainPID2=new OutputPort(_confighardware.GainPID2); 
    freezeport=new OutputPort(_confighardware.FreezePort);//заморозить/разморозить ПИД 
  protractport=new OutputPort(_confighardware.ProtractPort);//вытянуть сканнер /втянуть сканнер  
-  /*
-     io_ports.push_back(io1_0); //0
-     io_ports.push_back(io1_1);
-     io_ports.push_back(gainPID0);
-     io_ports.push_back(gainPID0);
-     io_ports.push_back(gainPID0);
-     io_ports.push_back(freezeport);
-     io_ports.push_back(protractport); //6
-  
-  afc.clear();
-  afc = "code"+std::to_string(DEBUG)+ " " + std::to_string(_confighardware.DACBiasSetPointMode);
-  afc += +"\n";
-  std::cout << afc;
-  afc.clear();
-  sleep_ms(100);
-   */ 
- }
+//new ports for motherboard 
+    modulateuport=new OutputPort(_confighardware.ModulateUPort);       // вкл=1; выкд=0 модуляцию U  
+        i_stmport=new OutputPort(_confighardware.SD_1Port);            // порты  настройки СД I_STM=1; 0 =др
+       sensorport=new OutputPort(_confighardware.SD_2Port);            // порты  настройки СД Cantilever=0; 1-Piezo
+     signloopport=new OutputPort(_confighardware.SignLoopPort);        // знак ПИД // 0=+ ; 1=-
+integrator_inport=new OutputPort(_confighardware.Interator_InPort);// выбор вход сигнала на ПИД из1-SD; 0=ПТН(I) 
+}
 
 HARDWARE::~HARDWARE()
 {
@@ -60,13 +48,18 @@ HARDWARE::~HARDWARE()
  delete(resetport);
  delete(ledPort);
  delete(rdbLed);
- delete(io1_0);
- delete(io1_1);
  delete(gainPID0);
  delete(gainPID1);
  delete(gainPID2);
  delete(freezeport);
  delete(protractport);
+ // add new
+ delete(modulateuport);
+ delete(i_stmport);
+ delete(sensorport);
+ delete(signloopport);
+ delete(integrator_inport);
+ 
  if (linearDriver!=0) delete(linearDriver);
 // io_ports.clear();
 }
@@ -518,6 +511,59 @@ void HARDWARE::unfreezeLOOP(uint16_t delay)  // разморозить ПИД
 {
   freezeport->disable();  // 5 элемент массива портов ???
   sleep_ms(delay);
+}
+// add new 240529
+void HARDWARE::setLoopSign(int8_t value)
+{
+  switch (value)
+ {
+   case 0:{signloopport->disable(); break;}
+   case 1:{signloopport->enable(); break;}
+ }
+}
+
+void HARDWARE::setSignal_In_Loop(int8_t value)
+{
+    switch (value)
+ {
+  case 0:{integrator_inport->disable(); break;}
+  case 1:{integrator_inport->enable(); break;} // I_STM
+ }
+} 
+void HARDWARE::useSDModulateI_STM(int8_t value)
+{ 
+  switch (value)
+ {
+  case 0:{i_stmport->disable(); break;} 
+  case 1:{i_stmport->enable(); break;}//SD ->Loop use модуляцию I_STM
+ }
+}
+ 
+void HARDWARE::setSensor(int8_t value)
+{
+   switch (value)
+ {
+  case 0:{sensorport->disable(); break;}// cantilever
+  case 1:{sensorport->enable();  break;}// piezo
+ }
+} 
+
+void HARDWARE::setModulateU(int8_t value)
+{
+  switch (value)
+ {
+  case 0:{modulateuport->disable(); break;}
+  case 1:{modulateuport->enable(); break;}// вкл модуляцию U
+ }
+}
+
+void HARDWARE::init_commutation(uint8_t sensor ,uint8_t loopsign ,uint8_t signal_in_loop , uint8_t usemod_i_stm,uint8_t usemod_u)
+{
+ setLoopSign(loopsign);
+ setSignal_In_Loop(signal_in_loop);
+ setModulateU(usemod_u);
+ setSensor(sensor); //sensor =
+ useSDModulateI_STM(usemod_i_stm);
 }
 void HARDWARE::activateError()
 {

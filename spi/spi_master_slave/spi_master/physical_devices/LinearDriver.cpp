@@ -4,6 +4,10 @@
 
 LinearDriverBase::~LinearDriverBase()
 {
+}
+
+LinearDriverPico2040::~LinearDriverPico2040()
+{
   if (!_flgOnlyZ)
   {
    delete(x_a);
@@ -12,7 +16,7 @@ LinearDriverBase::~LinearDriverBase()
    delete(y_b);
   }; 
    delete(z_a);
-   delete(z_b);
+   delete(z_b);  
 }
 
 LinearDriverPico2040::LinearDriverPico2040(bool flgOnlyZ, ConfigLinearDrive configlineardrive)
@@ -42,92 +46,38 @@ LinearDriverPico2040::LinearDriverPico2040(bool flgOnlyZ, ConfigLinearDrive conf
    z_b->disable();
   }
 }
-/*
- LinearDriverPico2040::~LinearDriverPico2040()
- {}
-*/
- LinearDriverMotherBoard::LinearDriverMotherBoard(bool flgOnlyZ, ConfigLinearDrive configlineardrive)
+LinearDriverMotherBoard::~LinearDriverMotherBoard()
+{
+   delete(z_a);
+   delete(z_b); 
+   delete(turnon_x);  
+   delete(turnon_y);  
+   delete(turnon_z);  
+}
+ LinearDriverMotherBoard::LinearDriverMotherBoard(ConfigLinearDriveNew configlineardrive)
  {
   _configlineardrive=configlineardrive;
-  _flgOnlyZ=flgOnlyZ;
-  if (!_flgOnlyZ)
-  {
-   x_a=new OutputPort(_configlineardrive.XA_Port); 
-   x_b=new OutputPort(_configlineardrive.XB_Port); 
-   y_a=new OutputPort(_configlineardrive.YA_Port); 
-   y_b=new OutputPort(_configlineardrive.YB_Port); 
-   z_a=new OutputPort(_configlineardrive.ZA_Port); 
-   z_b=new OutputPort(_configlineardrive.ZB_Port);  
-   x_a->disable();
-   x_b->disable();
-   y_a->disable();
-   y_b->disable();
+        z_a=new OutputPort(_configlineardrive.A_Port); 
+        z_b=new OutputPort(_configlineardrive.B_Port); 
+   turnon_x=new OutputPort(_configlineardrive.XTurn_on_Port); 
+   turnon_y=new OutputPort(_configlineardrive.YTurn_on_Port); 
+   turnon_z=new OutputPort(_configlineardrive.ZTurn_on_Port); 
    z_a->disable();
    z_b->disable();
-  }
-  else
-  {
-   z_a=new OutputPort(_configlineardrive.ZA_Port); 
-   z_b=new OutputPort(_configlineardrive.ZB_Port);  
-   z_a->disable();
-   z_b->disable();
-  }
+   turnon_x->disable();
+   turnon_y->disable();
+   turnon_z->disable();
  }
 
 void LinearDriverBase::activate(int command, int freq, int p, int n, bool dir)  ///
 {
-  /*
-   if (flgDebugLevel<=DEBUG_LEVEL) std::cout << "From activate command = " << command << '\n';
-  OutputPort *ptrA = x_a;
-  OutputPort *ptrB = x_b;
-  if (command == 90)
-  {
-    ptrA = x_a;
-    ptrB = x_b;
-  }
-  if (command == 95)
-  {
-    ptrA = y_a;
-    ptrB = y_b;
-  } else if (command == 99)
-  {
-    ptrA = z_a;
-    ptrB = z_b;
-  }
-  double t_abs =(double)(1000000 / freq);        // 2000                     // mf 23108
-  double t_low =(double)(p * t_abs / 1000);  //  750 * 2000 / 1000000 = 1.5 // mf 23108
-  double t_high = t_abs - t_low;    // 2 - 1.5 = 0.5
-
-  if (dir)
-  {
-    std::swap(ptrA, ptrB);
-  }
-
-  ptrA->enable();
-  ptrB->enable(); //240401
-  sleep_ms(2); //240401
-  for (int i = 0; i < n; ++i)
-  {
-    ptrB->disable();
-    sleep_us(t_low);
-    ptrB->enable();
-    sleep_us(t_high);
-  }
-  ptrA->disable();
-  ptrB->disable();
-
-  if (dir)
-  {
-    std::swap(ptrA, ptrB);
-  }
-  */
+  
 }
 
 void LinearDriverPico2040::activate(int command, int freq, int p, int n, bool dir)  ///
 {
-   if (flgDebugLevel<=DEBUG_LEVEL) std::cout << "From activate command = " << command << '\n';
-  OutputPort *ptrA = x_a;
-  OutputPort *ptrB = x_b;
+  OutputPort *ptrA = z_a;
+  OutputPort *ptrB = z_b;
   if (command == 90)
   {
     ptrA = x_a;
@@ -169,24 +119,29 @@ void LinearDriverPico2040::activate(int command, int freq, int p, int n, bool di
     std::swap(ptrA, ptrB);
   }
 }
+
 void LinearDriverMotherBoard::activate(int command, int freq, int p, int n, bool dir)  ///
 {
-   if (flgDebugLevel<=DEBUG_LEVEL) std::cout << "From activate command = " << command << '\n';
-  OutputPort *ptrA = x_a;
-  OutputPort *ptrB = x_b;
-  if (command == 90)
+  OutputPort *ptrA = z_a; 
+  OutputPort *ptrB = z_b;
+  if (command == 90)//x
   {
-    ptrA = x_a;
-    ptrB = x_b;
+   turnon_x->enable();
+   turnon_y->disable();
+   turnon_z->disable();
   }
-  if (command == 95)
+  if (command == 95)//y
   {
-    ptrA = y_a;
-    ptrB = y_b;
-  } else if (command == 99)
+   turnon_y->enable();
+   turnon_x->disable();
+   turnon_z->disable();
+  }
+  else
+  if (command == 99)//z
   {
-    ptrA = z_a;
-    ptrB = z_b;
+   turnon_z->enable();
+   turnon_x->disable();
+   turnon_y->disable(); 
   }
   double t_abs =(double)(1000000 / freq);        // 2000                     // mf 23108
   double t_low =(double)(p * t_abs / 1000);  //  750 * 2000 / 1000000 = 1.5 // mf 23108
@@ -198,8 +153,8 @@ void LinearDriverMotherBoard::activate(int command, int freq, int p, int n, bool
   }
 
   ptrA->enable();
-  ptrB->enable(); //240401
-  sleep_ms(2); //240401
+  ptrB->enable(); 
+  sleep_ms(2); 
   for (int i = 0; i < n; ++i)
   {
     ptrB->disable();

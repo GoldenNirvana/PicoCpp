@@ -17,13 +17,6 @@ int start_app()
   {
     scanner->hardware->activateError();
   }
-/*
-  critical_section_init(&criticalSection);
-  if (!critical_section_is_initialized(&criticalSection))
-  {
-   // scanner->hardware->activateError();
-  }
-*/  
   MainCore mainCore;
   mainCore.loop();
   if (scanner!=nullptr) delete(scanner);

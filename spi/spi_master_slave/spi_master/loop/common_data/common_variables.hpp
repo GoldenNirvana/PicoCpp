@@ -40,6 +40,7 @@
 #define SetUseCritialSectAlgCode 34
 #define RetractAlgCode           35
 #define ADC_RESET                36
+#define INITCOMMMUTATION         37
 #define RESONANCE                40  //AD9833 
 #define SCANNING                 50
 #define MOVE_TOX0Y0              51  //переместиться в начальную точку  скана из начальной точке предыдущего скана
@@ -57,7 +58,13 @@
 #define TESTMOVER                76
 #define LID_MOVE_UNTIL_STOP      80
 #define LID_MOVE_TOZ0            84 // отвестись в безопасную начальную точку по Z
-
+/*
+#define MODULATEUCMD             85
+#define I_STMCMD                 86
+#define SENSORCMD                87
+#define SIGNLOOPCMD              88
+#define INTEGRATORIN             89
+*/
 #define portx                    0
 #define porty                    1
 

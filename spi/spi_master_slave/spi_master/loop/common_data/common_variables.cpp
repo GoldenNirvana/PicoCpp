@@ -1,8 +1,8 @@
 #include "common_variables.hpp"
 
 //////////////////////////////////////////////
-std::string  SOFTVERSION="24.05.07.01 HWA pointer";
-std::string  HARDWAREVERSION="0.1";
+std::string  SOFTVERSION="24.05.29.01 HWA MB pointer";
+std::string  HARDWAREVERSION="1.1";
 int8_t       HARDWAREVERSION_I=0;
 //int8_t       HARDWAREVERSION_I=-1;
 // std::string  HARDWAREVERSION="2.0"; //new hardware

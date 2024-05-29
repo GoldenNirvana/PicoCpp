@@ -27,13 +27,16 @@ private:
  OutputPort *resetport; // FIXME TEMP
  OutputPort *ledPort;
  OutputPort *rdbLed;
- OutputPort *io1_0; 
- OutputPort *io1_1;
  OutputPort *gainPID0;
  OutputPort *gainPID1;
  OutputPort *gainPID2;
  OutputPort *freezeport;   //заморозить/разморозить
  OutputPort *protractport; //втянуть сканнер/вытянуть сканнер
+ OutputPort *modulateuport;// вкл модуляцию U
+ OutputPort *i_stmport;    // порты  настройки СД читать I_STM
+ OutputPort *sensorport;   // порты  настройки выбор сенсора
+ OutputPort *signloopport;// знак ПИД
+ OutputPort *integrator_inport;// выбор вход сигнала на ПИД из Сд или ПТН(I)
 
  ConfigHardWare  _confighardware;
 
@@ -121,9 +124,18 @@ public:
  void freezeLOOP(uint16_t delay);    // заморозить ПИД
 
  void unfreezeLOOP(uint16_t delay);  // разморозить ПИД 
+// add new 240529
+ void init_commutation(uint8_t sensor ,uint8_t loopsign ,uint8_t signal_in_loop , uint8_t usemod_i_stm,uint8_t usemod_u);
 
- // void protract(uint16_t delay,int16_t DacZ0,int16_t HeightJump) ; //разморозить ПИД 
+ void setLoopSign(int8_t value);
  
- // void LOOP_freeze_unfreeze(int port, int flg);  
+ void setSignal_In_Loop(int8_t value);
+ 
+ void useSDModulateI_STM(int8_t value);
+ 
+ void setSensor(int8_t value);
+
+ void setModulateU(int8_t value);
+
 };
 #endif
