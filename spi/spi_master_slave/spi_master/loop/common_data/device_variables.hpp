@@ -25,10 +25,11 @@ struct ConfigHardWare
   uint8_t GainPID2;     //15
   uint8_t FreezePort;   //26 заморозить сканнер=1; разморозить =0
   uint8_t ProtractPort; //27 втянуть    сканнер=1; вытянуть    =0
-  uint8_t ModulateUPort;    //28  вкл модуляцию U
+
+  uint8_t ModulateUPort;    //28 вкл модуляцию U
   uint8_t SD_1Port;         //11 порты  настройки СД
   uint8_t SD_2Port;         //12 порты  настройки СД
-  uint8_t SignLoopPort;     //8 знак ПИД
+  uint8_t SignLoopPort;     //8  знак ПИД
   uint8_t Interator_InPort; //13 выбор вход сигнала на ПИД из Сд или ПТН(I)
 };
 struct ConfigLinearDrive
