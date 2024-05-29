@@ -30,6 +30,7 @@ HARDWARE::HARDWARE(ConfigHardWare confighardware)
    freezeport=new OutputPort(_confighardware.FreezePort);//заморозить/разморозить ПИД 
  protractport=new OutputPort(_confighardware.ProtractPort);//вытянуть сканнер /втянуть сканнер  
 //new ports for motherboard 
+
     modulateuport=new OutputPort(_confighardware.ModulateUPort);       // вкл=1; выкд=0 модуляцию U  
         i_stmport=new OutputPort(_confighardware.SD_1Port);            // порты  настройки СД I_STM=1; 0 =др
        sensorport=new OutputPort(_confighardware.SD_2Port);            // порты  настройки СД Cantilever=0; 1-Piezo
@@ -365,12 +366,10 @@ void HARDWARE::set_GainPID(uint16_t gain)
   if (!flgVirtual) 
   {
   //  set_io_value(2, ti); //???????  //240503
-   
     std::string binary = std::bitset<3>(ti).to_string();
     binary[2] == '1' ? gainPID0->enable() : gainPID0->disable();
     binary[1] == '1' ? gainPID1->enable() : gainPID1->disable();
     binary[0] == '1' ? gainPID2->enable() : gainPID2->disable();
-   
    /* 
     (ti&0x04) == 1 ? gainPID0->enable() : gainPID0->disable();
     (ti&0x02) == 1 ? gainPID1->enable() : gainPID1->disable();
