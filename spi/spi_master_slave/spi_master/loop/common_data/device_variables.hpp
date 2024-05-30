@@ -59,11 +59,20 @@ struct ConfigLinearDrive
   uint8_t ZA_Port;     
   uint8_t ZB_Port;     
 };
+struct ConfigLinearDriveNew
+{
+  uint8_t A_Port;     
+  uint8_t B_Port;   
+  uint8_t XTURN_OnPort;    
+  uint8_t YB_Port;     
+  uint8_t ZA_Port;     
+  uint8_t ZB_Port;     
+};
 extern Spi               spi;
 //extern LinearDriver      *linearDriver;
 extern Decoder           decoder;
 extern ConfigHardWare    confighardwarev0;
 extern ConfigHardWareNew confighardwarev1;
 extern ConfigLinearDrive configlineardrivev0;
-extern ConfigLinearDrive configlineardrivev1;
+extern ConfigLinearDriveNew configlineardrivev1;
 #endif //PICO_EXAMPLES_DEVICE_VARIABLES_HPP
