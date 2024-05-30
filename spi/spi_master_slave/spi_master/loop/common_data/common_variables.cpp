@@ -3,6 +3,7 @@
 //////////////////////////////////////////////
 std::string  SOFTVERSION="24.05.28.01 wwwcodeA";
 std::string  HARDWAREVERSION="0.1";
+uint16_t HARDWAREVERSION_I=0;
 // std::string  HARDWAREVERSION="2.0"; //new hardware
 //////////////////////////////////////////////
 
