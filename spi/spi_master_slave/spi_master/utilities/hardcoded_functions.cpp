@@ -31,6 +31,14 @@ HARDWARE::HARDWARE(ConfigHardWare confighardware)
      gainPID2=new OutputPort(_confighardware.GainPID2); 
    freezeport=new OutputPort(_confighardware.FreezePort);//заморозить/разморозить ПИД 
  protractport=new OutputPort(_confighardware.ProtractPort);//вытянуть сканнер /втянуть сканнер  
+//
+
+    modulateuport=new OutputPort(_confighardware.ModulateUPort);   // вкл=1; выкд=0 модуляцию U  
+         i_stmport=new OutputPort(_confighardware.SD_1Port);        // порты  настройки СД I_STM=1; 0 =др
+        sensorport=new OutputPort(_confighardware.SD_2Port);        // порты  настройки СД Cantilever=0; 1-Piezo
+      signloopport=new OutputPort(_confighardware.SignLoopPort);    // знак ПИД // 0=+ ; 1=-
+ integrator_inport=new OutputPort(_confighardware.Interator_InPort);// выбор вход сигнала на ПИД из1-SD; 0=ПТН(I) 
+}
   /*
      io_ports.push_back(io1_0); //0
      io_ports.push_back(io1_1);
@@ -66,7 +74,15 @@ HARDWARE::HARDWARE(ConfigHardWareNew confighardware)
      gainPID1=new OutputPort(_confighardware.GainPID1); 
      gainPID2=new OutputPort(_confighardware.GainPID2); 
    freezeport=new OutputPort(_confighardware.FreezePort);//заморозить/разморозить ПИД 
- protractport=new OutputPort(_confighardware.ProtractPort);//вытянуть сканнер /втянуть сканнер  
+ protractport=new OutputPort(_confighardware.ProtractPort);//вытянуть сканнер /втянуть сканнер 
+ //
+    modulateuport=new OutputPort(_confighardware.ModulateUPort);   // вкл=1; выкд=0 модуляцию U  
+         i_stmport=new OutputPort(_confighardware.SD_1Port);        // порты  настройки СД I_STM=1; 0 =др
+        sensorport=new OutputPort(_confighardware.SD_2Port);        // порты  настройки СД Cantilever=0; 1-Piezo
+      signloopport=new OutputPort(_confighardware.SignLoopPort);    // знак ПИД // 0=+ ; 1=-
+ integrator_inport=new OutputPort(_confighardware.Interator_InPort);// выбор вход сигнала на ПИД из1-SD; 0=ПТН(I) 
+}
+
  }
 
 HARDWARE::~HARDWARE()

@@ -34,6 +34,13 @@ private:
  OutputPort *gainPID2;
  OutputPort *freezeport;   //заморозить/разморозить
  OutputPort *protractport; //втянуть сканнер/вытянуть сканнер
+ // add
+ OutputPort *modulateuport;// вкл модуляцию U
+ OutputPort *i_stmport;    // порты  настройки СД читать I_STM
+ OutputPort *sensorport;   // порты  настройки выбор сенсора
+ OutputPort *signloopport;// знак ПИД
+ OutputPort *integrator_inport;// выбор вход сигнала на ПИД из Сд или ПТН(I)
+
 
  ConfigHardWare  _confighardware;
 
