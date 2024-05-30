@@ -1946,13 +1946,14 @@ void Scanner::move_to(const Point &point, uint16_t delay)
 
 void Scanner::LID_move_toZ0(int lid_name, int f, int p, int n, int dir)  //отвестись в безопасную начальную точку по Z
 {
+ // sleep_ms(1000);
  if (!flgVirtual)
  {
     if (HARDWAREVERSION_I==0) {  hardware->linearDriver=new LinearDriverPico2040(true,configlineardrivev0); } //250506
     else                      {  hardware->linearDriver=new LinearDriverMotherBoard(configlineardrivev1); }
   hardware->retract();  //втянуть сканер
   sleep_ms(50);
-  if (!flgVirtual) hardware->linearDriver->activate(lid_name, f, p, std::abs(n), dir);
+  if (!flgVirtual)  hardware->linearDriver->activate(lid_name, f, p, std::abs(n), dir);
   hardware->protract();  //вытянуть сканер
  } 
   sleep_ms(1000);
