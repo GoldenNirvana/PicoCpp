@@ -30,7 +30,7 @@ struct ConfigHardWare
 };
 struct ConfigHardWareNew:public ConfigHardWare
 {
-  /*
+  
   uint8_t DACBiasSetPointPort;  //2 DAC8563_1  BIAS SetPoint
   uint8_t DACBiasSetPointMode;  //1 DAC8563_1  BIAS SetPoint
   uint8_t DACXYPort;    //3 DAC8563_2  XY
@@ -43,14 +43,14 @@ struct ConfigHardWareNew:public ConfigHardWare
   uint8_t ResetPort;    //17
   uint8_t LEDPort;      //PICO_DEFAULT_LED_PIN
   uint8_t RDBPort;      //23
-  uint8_t IO1_0;        //11
-  uint8_t IO1_1;        //12
+ // uint8_t IO1_0;        //11
+ // uint8_t IO1_1;        //12
   uint8_t GainPID0;     //13
   uint8_t GainPID1;     //14
   uint8_t GainPID2;     //15
   uint8_t FreezePort;   //26 заморозить сканнер=1; разморозить =0
   uint8_t ProtractPort; //27 втянуть    сканнер=1; вытянуть    =0
-  */
+
   uint8_t ModulateUPort;   // вкл=1; выкд=0 модуляцию U  
   uint8_t SD_1Port;        // порты  настройки СД I_STM=1; 0 =др
   uint8_t SD_2Port;        // порты  настройки СД Cantilever=0; 1-Piezo
