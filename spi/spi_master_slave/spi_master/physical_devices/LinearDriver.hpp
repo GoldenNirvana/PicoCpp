@@ -9,6 +9,10 @@ class LinearDriverBase
  protected:
   OutputPort *z_a;
   OutputPort *z_b;
+  OutputPort *y_a;
+  OutputPort *y_b;
+  OutputPort *x_a;
+  OutputPort *x_b;
  public:
   LinearDriverBase();
   ~LinearDriverBase();
@@ -19,10 +23,10 @@ class LinearDriverPico2040: public LinearDriverBase
 {protected: 
   bool    _flgOnlyZ; 
   ConfigLinearDrive _configlineardrive;
-  OutputPort *y_a;
-  OutputPort *y_b;
-  OutputPort *x_a;
-  OutputPort *x_b;
+ // OutputPort *y_a;
+ // OutputPort *y_b;
+//  OutputPort *x_a;
+ // OutputPort *x_b;
  public:
    LinearDriverPico2040(bool flgOnlyZ,ConfigLinearDrive configlineardrive);
   ~LinearDriverPico2040();
