@@ -30,6 +30,7 @@ struct ConfigHardWare
 };
 struct ConfigHardWareNew:public ConfigHardWare
 {
+  /*
   uint8_t DACBiasSetPointPort;  //2 DAC8563_1  BIAS SetPoint
   uint8_t DACBiasSetPointMode;  //1 DAC8563_1  BIAS SetPoint
   uint8_t DACXYPort;    //3 DAC8563_2  XY
@@ -49,7 +50,14 @@ struct ConfigHardWareNew:public ConfigHardWare
   uint8_t GainPID2;     //15
   uint8_t FreezePort;   //26 заморозить сканнер=1; разморозить =0
   uint8_t ProtractPort; //27 втянуть    сканнер=1; вытянуть    =0
+  */
+  uint8_t ModulateUPort;   // вкл=1; выкд=0 модуляцию U  
+  uint8_t SD_1Port;        // порты  настройки СД I_STM=1; 0 =др
+  uint8_t SD_2Port;        // порты  настройки СД Cantilever=0; 1-Piezo
+  uint8_t SignLoopPort;    // знак ПИД // 0=+ ; 1=-
+  uint8_t Interator_InPort;// выбор вход сигнала на ПИД из1-SD; 0=ПТН(I) 
 };
+
 struct ConfigLinearDrive
 {
   uint8_t XA_Port;     

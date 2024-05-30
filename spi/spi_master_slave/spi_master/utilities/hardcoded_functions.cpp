@@ -31,31 +31,8 @@ HARDWARE::HARDWARE(ConfigHardWare confighardware)
      gainPID2=new OutputPort(_confighardware.GainPID2); 
    freezeport=new OutputPort(_confighardware.FreezePort);//заморозить/разморозить ПИД 
  protractport=new OutputPort(_confighardware.ProtractPort);//вытянуть сканнер /втянуть сканнер  
-//
-
-    modulateuport=new OutputPort(_confighardware.ModulateUPort);   // вкл=1; выкд=0 модуляцию U  
-         i_stmport=new OutputPort(_confighardware.SD_1Port);        // порты  настройки СД I_STM=1; 0 =др
-        sensorport=new OutputPort(_confighardware.SD_2Port);        // порты  настройки СД Cantilever=0; 1-Piezo
-      signloopport=new OutputPort(_confighardware.SignLoopPort);    // знак ПИД // 0=+ ; 1=-
- integrator_inport=new OutputPort(_confighardware.Interator_InPort);// выбор вход сигнала на ПИД из1-SD; 0=ПТН(I) 
 }
-  /*
-     io_ports.push_back(io1_0); //0
-     io_ports.push_back(io1_1);
-     io_ports.push_back(gainPID0);
-     io_ports.push_back(gainPID0);
-     io_ports.push_back(gainPID0);
-     io_ports.push_back(freezeport);
-     io_ports.push_back(protractport); //6
-  
-  afc.clear();
-  afc = "code"+std::to_string(DEBUG)+ " " + std::to_string(_confighardware.DACBiasSetPointMode);
-  afc += +"\n";
-  std::cout << afc;
-  afc.clear();
-  sleep_ms(100);
-   */ 
- }
+ 
 HARDWARE::HARDWARE(ConfigHardWareNew confighardware) 
 {
       _confighardware=confighardware;
@@ -75,7 +52,7 @@ HARDWARE::HARDWARE(ConfigHardWareNew confighardware)
      gainPID2=new OutputPort(_confighardware.GainPID2); 
    freezeport=new OutputPort(_confighardware.FreezePort);//заморозить/разморозить ПИД 
  protractport=new OutputPort(_confighardware.ProtractPort);//вытянуть сканнер /втянуть сканнер 
- //
+
     modulateuport=new OutputPort(_confighardware.ModulateUPort);   // вкл=1; выкд=0 модуляцию U  
          i_stmport=new OutputPort(_confighardware.SD_1Port);        // порты  настройки СД I_STM=1; 0 =др
         sensorport=new OutputPort(_confighardware.SD_2Port);        // порты  настройки СД Cantilever=0; 1-Piezo
