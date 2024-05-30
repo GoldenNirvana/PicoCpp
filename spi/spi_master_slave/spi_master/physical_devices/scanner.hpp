@@ -62,6 +62,8 @@ public:
 
    Scanner(ConfigHardWare confighardware);
 
+   Scanner(ConfigHardWareNew confighardware);
+
   ~Scanner();
 
   void start_scan(std::vector<int32_t> &vector);

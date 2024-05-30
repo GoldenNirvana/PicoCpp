@@ -48,6 +48,42 @@ HARDWARE::HARDWARE(ConfigHardWare confighardware)
   sleep_ms(100);
    */ 
  }
+HARDWARE::HARDWARE(ConfigHardWareNew confighardware) 
+{
+      _confighardware=confighardware;
+      dacbspt=new DAC8563(_confighardware.DACBiasSetPointMode); //set mode DAC BIAS,SetPoint
+        dacxy=new DAC8563(_confighardware.DACXYMode);   //set mode DAC X,Y
+         dacz=new DAC8563(_confighardware.DACZMode);    //set mode DAC Z  
+     busyport=new InputPort(_confighardware.BUSYPort);
+         conv=new OutputPort(_confighardware.CONV);
+          dec=new OutputPort(_confighardware.DEC);
+    resetport=new OutputPort(_confighardware.ResetPort); 
+      ledPort=new OutputPort(PICO_DEFAULT_LED_PIN);
+       rdbLed=new OutputPort(_confighardware.RDBPort); 
+        io1_0=new OutputPort(_confighardware.IO1_0);
+        io1_1=new OutputPort(_confighardware.IO1_1);
+     gainPID0=new OutputPort(_confighardware.GainPID0);
+     gainPID1=new OutputPort(_confighardware.GainPID1); 
+     gainPID2=new OutputPort(_confighardware.GainPID2); 
+   freezeport=new OutputPort(_confighardware.FreezePort);//заморозить/разморозить ПИД 
+ protractport=new OutputPort(_confighardware.ProtractPort);//вытянуть сканнер /втянуть сканнер  
+  /*
+     io_ports.push_back(io1_0); //0
+     io_ports.push_back(io1_1);
+     io_ports.push_back(gainPID0);
+     io_ports.push_back(gainPID0);
+     io_ports.push_back(gainPID0);
+     io_ports.push_back(freezeport);
+     io_ports.push_back(protractport); //6
+  
+  afc.clear();
+  afc = "code"+std::to_string(DEBUG)+ " " + std::to_string(_confighardware.DACBiasSetPointMode);
+  afc += +"\n";
+  std::cout << afc;
+  afc.clear();
+  sleep_ms(100);
+   */ 
+ }
 
 HARDWARE::~HARDWARE()
 {

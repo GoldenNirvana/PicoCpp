@@ -60,6 +60,8 @@ public:
 
    HARDWARE(ConfigHardWare confighardware);
 
+   HARDWARE(ConfigHardWareNew confighardware);
+
   ~HARDWARE();
 
  void activateDark();
