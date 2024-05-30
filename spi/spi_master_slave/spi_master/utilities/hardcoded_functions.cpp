@@ -60,7 +60,7 @@ HARDWARE::HARDWARE(ConfigHardWareNew confighardware)
  integrator_inport=new OutputPort(_confighardware.Interator_InPort);// выбор вход сигнала на ПИД из1-SD; 0=ПТН(I) 
 }
 
- }
+
 
 HARDWARE::~HARDWARE()
 {
