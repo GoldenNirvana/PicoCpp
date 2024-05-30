@@ -2593,8 +2593,11 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
   sendStrData( "code"+std::to_string(APPROACH),buf_status,100,false);
   if (!flgVirtual)
   {
-   if (HARDWAREVERSION_I==0) { hardware->linearDriver=new LinearDriverPico2040(true,configlineardrivev0); } //250506
-   else                      { hardware->linearDriver=new LinearDriverMotherBoard(configlineardrivev1); }
+   if (HARDWAREVERSION_I==0) 
+   { 
+     hardware->linearDriver=new LinearDriverPico2040(true,configlineardrivev0); 
+   } //250506
+   else { hardware->linearDriver=new LinearDriverMotherBoard(configlineardrivev1); }
   } 
   
   while (true)

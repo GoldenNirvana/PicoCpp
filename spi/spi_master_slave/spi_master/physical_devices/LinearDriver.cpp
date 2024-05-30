@@ -100,9 +100,10 @@ LinearDriverMotherBoard::~LinearDriverMotherBoard()
    turnon_y->disable();
    turnon_z->disable();
  }
-
+/*
 void LinearDriverBase::activate(int command, int freq, int p, int n, bool dir)  ///
 {
+ 
   OutputPort *ptrA = z_a;
   OutputPort *ptrB = z_b;
   if (command == 90)
@@ -147,9 +148,10 @@ void LinearDriverBase::activate(int command, int freq, int p, int n, bool dir)  
   {
     std::swap(ptrA, ptrB);
   }
+ 
 }
-
-void LinearDriverPico2040::activate(int command, int freq, int p, int n, bool dir)  ///
+*/
+void LinearDriverPico2040::activate(int command, int freq, int p, int n, bool dir)  const ///
 {
   OutputPort *ptrA = z_a;
   OutputPort *ptrB = z_b;
@@ -197,7 +199,7 @@ void LinearDriverPico2040::activate(int command, int freq, int p, int n, bool di
   }
 }
 
-void LinearDriverMotherBoard::activate(int command, int freq, int p, int n, bool dir)  ///
+void LinearDriverMotherBoard::activate(int command, int freq, int p, int n, bool dir) const ///
 {
   OutputPort *ptrA = z_a; 
   OutputPort *ptrB = z_b;

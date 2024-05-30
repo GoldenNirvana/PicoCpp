@@ -4,33 +4,36 @@
 #include "../utilities/base_types/Decoder.hpp"
 #include "../loop/common_data/device_variables.hpp"
 #include "../loop/common_data/common_variables.hpp"   //add mf 231101 240505
+
 class LinearDriverBase
 {
  protected:
   OutputPort *z_a;
   OutputPort *z_b;
+  /*
   OutputPort *y_a;
   OutputPort *y_b;
   OutputPort *x_a;
   OutputPort *x_b;
+  */
  public:
-  LinearDriverBase();
-  ~LinearDriverBase();
-  void activate(int command, int freq, int p, int n, bool dir);
+   LinearDriverBase();
+  virtual ~LinearDriverBase();
+   virtual void activate(int command, int freq, int p, int n, bool dir) const;
 };
 
 class LinearDriverPico2040: public LinearDriverBase
 {protected: 
   bool    _flgOnlyZ; 
   ConfigLinearDrive _configlineardrive;
- // OutputPort *y_a;
- // OutputPort *y_b;
-//  OutputPort *x_a;
- // OutputPort *x_b;
+  OutputPort *y_a;
+  OutputPort *y_b;
+  OutputPort *x_a;
+  OutputPort *x_b;
  public:
-   LinearDriverPico2040(bool flgOnlyZ,ConfigLinearDrive configlineardrive);
+   LinearDriverPico2040(bool flgOnlyZ,ConfigLinearDrive configlineardrive);  
   ~LinearDriverPico2040();
-  void activate(int command, int freq, int p, int n, bool dir);
+   void activate(int command, int freq, int p, int n, bool dir) const override;
 };
 
 class LinearDriverMotherBoard: public LinearDriverBase
@@ -44,7 +47,7 @@ class LinearDriverMotherBoard: public LinearDriverBase
  public:
    LinearDriverMotherBoard(ConfigLinearDriveNew configlineardrive);// 
    ~LinearDriverMotherBoard();
-  void activate(int command, int freq, int p, int n, bool dir);
+  void activate(int command, int freq, int p, int n, bool dir) const override;
 };
 
 /*
