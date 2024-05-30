@@ -63,7 +63,7 @@
 
 extern std::string  SOFTVERSION;
 extern std::string  HARDWAREVERSION;  ///  {0,1,....} or {0.1, 1.1...} 
-extern int8_t      HARDWAREVERSION_I;
+extern int8_t       HARDWAREVERSION_I;
 extern std::atomic<int16_t>      ALGCODE;
 extern uint32_t     DEBUG_LEVEL;
 extern std::string afc;

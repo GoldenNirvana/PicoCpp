@@ -67,22 +67,6 @@ HARDWARE::HARDWARE(ConfigHardWareNew confighardware)
      gainPID2=new OutputPort(_confighardware.GainPID2); 
    freezeport=new OutputPort(_confighardware.FreezePort);//заморозить/разморозить ПИД 
  protractport=new OutputPort(_confighardware.ProtractPort);//вытянуть сканнер /втянуть сканнер  
-  /*
-     io_ports.push_back(io1_0); //0
-     io_ports.push_back(io1_1);
-     io_ports.push_back(gainPID0);
-     io_ports.push_back(gainPID0);
-     io_ports.push_back(gainPID0);
-     io_ports.push_back(freezeport);
-     io_ports.push_back(protractport); //6
-  
-  afc.clear();
-  afc = "code"+std::to_string(DEBUG)+ " " + std::to_string(_confighardware.DACBiasSetPointMode);
-  afc += +"\n";
-  std::cout << afc;
-  afc.clear();
-  sleep_ms(100);
-   */ 
  }
 
 HARDWARE::~HARDWARE()
