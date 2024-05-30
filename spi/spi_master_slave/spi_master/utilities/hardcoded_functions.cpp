@@ -35,28 +35,29 @@ HARDWARE::HARDWARE(ConfigHardWare confighardware)
  
 HARDWARE::HARDWARE(ConfigHardWareNew confighardware) 
 {
-      _confighardware=confighardware;
-      dacbspt=new DAC8563(_confighardware.DACBiasSetPointMode); //set mode DAC BIAS,SetPoint
-        dacxy=new DAC8563(_confighardware.DACXYMode);   //set mode DAC X,Y
-         dacz=new DAC8563(_confighardware.DACZMode);    //set mode DAC Z  
-     busyport=new InputPort(_confighardware.BUSYPort);
-         conv=new OutputPort(_confighardware.CONV);
-          dec=new OutputPort(_confighardware.DEC);
-    resetport=new OutputPort(_confighardware.ResetPort); 
+     // _confighardware=confighardware;
+      dacbspt=new DAC8563(confighardware.DACBiasSetPointMode); //set mode DAC BIAS,SetPoint
+        dacxy=new DAC8563(confighardware.DACXYMode);   //set mode DAC X,Y
+         dacz=new DAC8563(confighardware.DACZMode);    //set mode DAC Z  
+     busyport=new InputPort(confighardware.BUSYPort);
+         conv=new OutputPort(confighardware.CONV);
+          dec=new OutputPort(confighardware.DEC);
+    resetport=new OutputPort(confighardware.ResetPort); 
       ledPort=new OutputPort(PICO_DEFAULT_LED_PIN);
-       rdbLed=new OutputPort(_confighardware.RDBPort); 
+       rdbLed=new OutputPort(confighardware.RDBPort); 
       //  io1_0=new OutputPort(_confighardware.IO1_0);
      //   io1_1=new OutputPort(_confighardware.IO1_1);
-     gainPID0=new OutputPort(_confighardware.GainPID0);
-     gainPID1=new OutputPort(_confighardware.GainPID1); 
-     gainPID2=new OutputPort(_confighardware.GainPID2); 
-   freezeport=new OutputPort(_confighardware.FreezePort);//заморозить/разморозить ПИД 
- protractport=new OutputPort(_confighardware.ProtractPort);//вытянуть сканнер /втянуть сканнер 
-modulateuport=new OutputPort(_confighardware.ModulateUPort);   // вкл=1; выкд=0 модуляцию U  
-    i_stmport=new OutputPort(_confighardware.SD_1Port);        // порты  настройки СД I_STM=1; 0 =др
-  sensorport=new OutputPort(_confighardware.SD_2Port);        // порты  настройки СД Cantilever=0; 1-Piezo
-  signloopport=new OutputPort(_confighardware.SignLoopPort);    // знак ПИД // 0=+ ; 1=-
- integrator_inport=new OutputPort(_confighardware.Interator_InPort);// выбор вход сигнала на ПИД из1-SD; 0=ПТН(I) 
+     gainPID0=new OutputPort(confighardware.GainPID0);
+     gainPID1=new OutputPort(confighardware.GainPID1); 
+     gainPID2=new OutputPort(confighardware.GainPID2); 
+   freezeport=new OutputPort(confighardware.FreezePort);//заморозить/разморозить ПИД 
+ protractport=new OutputPort(confighardware.ProtractPort);//вытянуть сканнер /втянуть сканнер 
+
+modulateuport=new OutputPort(confighardware.ModulateUPort);   // вкл=1; выкд=0 модуляцию U  
+    i_stmport=new OutputPort(confighardware.SD_1Port);        // порты  настройки СД I_STM=1; 0 =др
+  sensorport=new OutputPort(confighardware.SD_2Port);        // порты  настройки СД Cantilever=0; 1-Piezo
+  signloopport=new OutputPort(confighardware.SignLoopPort);    // знак ПИД // 0=+ ; 1=-
+ integrator_inport=new OutputPort(confighardware.Interator_InPort);// выбор вход сигнала на ПИД из1-SD; 0=ПТН(I) 
 }
 
 

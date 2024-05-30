@@ -30,7 +30,6 @@ struct ConfigHardWare
 };
 struct ConfigHardWareNew:public ConfigHardWare
 {
-  
   uint8_t DACBiasSetPointPort;  //2 DAC8563_1  BIAS SetPoint
   uint8_t DACBiasSetPointMode;  //1 DAC8563_1  BIAS SetPoint
   uint8_t DACXYPort;    //3 DAC8563_2  XY
@@ -79,8 +78,8 @@ struct ConfigLinearDriveNew
 extern Spi               spi;
 //extern LinearDriver      *linearDriver;
 extern Decoder           decoder;
-extern ConfigHardWare    confighardwarev0;
-extern ConfigHardWareNew confighardwarev1;
-extern ConfigLinearDrive configlineardrivev0;
+extern ConfigHardWare       confighardwarev0;
+extern ConfigHardWareNew    confighardwarev1;
+extern ConfigLinearDrive    configlineardrivev0;
 extern ConfigLinearDriveNew configlineardrivev1;
 #endif //PICO_EXAMPLES_DEVICE_VARIABLES_HPP
