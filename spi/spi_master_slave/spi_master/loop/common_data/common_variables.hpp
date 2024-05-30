@@ -60,6 +60,7 @@
 
 extern std::string  SOFTVERSION;
 extern std::string  HARDWAREVERSION;
+extern uint16_t HARDWAREVERSION_I;
 extern int16_t  ALGCODE;
 extern uint32_t DEBUG_LEVEL;
 extern Spi      spi;
