@@ -104,11 +104,18 @@ case ChangeHardWare:
                   HARDWAREVERSION_I= (int8_t)vector[1];   
                   switch (HARDWAREVERSION_I)
                   {       
-                    case 0:   { scanner=new  Scanner(confighardwarev0); break; }
-                    case 1:   { scanner=new  Scanner(confighardwarev1); break; }
+                    case 0:{
+                             scanner=new  Scanner(confighardwarev0); 
+                             scanner->hardware->setDefaultSettings(confighardwarev0.DACBiasSetPointPort,confighardwarev0.DACXYPort,confighardwarev0.DACZPort);                 
+                             break; 
+                           }
+                    case 1:{
+                             scanner=new  Scanner(confighardwarev1);
+                             scanner->hardware->setDefaultSettings(confighardwarev1.DACBiasSetPointPort,confighardwarev1.DACXYPort,confighardwarev1.DACZPort);
+                             break;
+                           }
                   } 
-                  if (scanner!=nullptr) scanner->hardware->setDefaultSettings();
-                  else
+                  if (scanner==nullptr) 
                   {
                    afc.clear();
                    afc ="code"+std::to_string(ChangeHardWare)+ "error new scanner create "+std::to_string(HARDWAREVERSION_I);
@@ -357,13 +364,27 @@ default:      {/*activateError();*/  break;}
 MainCore::MainCore()
 {
    multicore_launch_core1(launchOnCore1);
-  switch (HARDWAREVERSION_I)
-  {       
-    case 0:   { scanner=new  Scanner(confighardwarev0); break; }
-    case 1:   { scanner=new  Scanner(confighardwarev1); break; }
-    case-1:   {break;} 
-  } 
-  if (scanner!=nullptr) scanner->hardware->setDefaultSettings(); 
+   switch (HARDWAREVERSION_I)
+   {       
+    case 0:{
+            scanner=new  Scanner(confighardwarev0); 
+            scanner->hardware->setDefaultSettings(confighardwarev0.DACBiasSetPointPort,confighardwarev0.DACXYPort,confighardwarev0.DACZPort);                 
+            break; 
+           }
+    case 1:{
+            scanner=new  Scanner(confighardwarev1);
+            scanner->hardware->setDefaultSettings(confighardwarev1.DACBiasSetPointPort,confighardwarev1.DACXYPort,confighardwarev1.DACZPort);
+            break;
+           }
+   } 
+   if (scanner==nullptr) 
+   {
+     afc.clear();
+     afc ="code"+std::to_string(ChangeHardWare)+ "error new scanner create "+std::to_string(HARDWAREVERSION_I);
+     std::cout << afc;
+     afc.clear();
+     sleep_ms(100); 
+   }
 }
 
 void MainCore::parse(std::vector<int32_t> &vec)

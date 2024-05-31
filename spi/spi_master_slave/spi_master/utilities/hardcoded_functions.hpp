@@ -32,19 +32,16 @@ private:
  OutputPort *gainPID0;
  OutputPort *gainPID1;
  OutputPort *gainPID2;
- OutputPort *freezeport;   //заморозить/разморозить
- OutputPort *protractport; //втянуть сканнер/вытянуть сканнер
+ OutputPort *freezeport;       // заморозить/разморозить
+ OutputPort *protractport;     // втянуть сканнер/вытянуть сканнер
  // add
- OutputPort *modulateuport;// вкл модуляцию U
- OutputPort *i_stmport;    // порты  настройки СД читать I_STM
- OutputPort *sensorport;   // порты  настройки выбор сенсора
- OutputPort *signloopport;// знак ПИД
+ OutputPort *modulateuport;    // вкл модуляцию U
+ OutputPort *i_stmport;        // порты  настройки СД читать I_STM
+ OutputPort *sensorport;       // порты  настройки выбор сенсора
+ OutputPort *signloopport;     // знак ПИД
  OutputPort *integrator_inport;// выбор вход сигнала на ПИД из Сд или ПТН(I)
 
-
- ConfigHardWare  _confighardware;
-
- //std::vector<OutputPort*> io_ports; 
+ //ConfigHardWare  _confighardware;
  
  uint16_t *repeatTwoTimes(); 
 
@@ -82,9 +79,9 @@ public:
  void dark();
 
 [[noreturn]] void activateError();
-
- void setDefaultSettings();
-
+ //инициирование ЦАП1  SetPoint,BIAS
+ void setDefaultSettings( uint8_t dacBiasSetPointPort, uint8_t  dacXYPort, uint8_t dacZPort);   
+ 
  void GetSOFTHARDWAREVersion();
 
  void set_Freq(uint32_t freq);       //установка заданной частоты генератора

@@ -2405,7 +2405,7 @@ void Scanner::spectroscopyIV(std::vector<int32_t> &vector)
 		UStart	      	=           vector[3]; // V начальное значение    
 		UStep		        =           vector[4]; // V шаг 
   	delay           = (int16_t) vector[5]; // задержка в точке измерения
-    flgDev          = (int8_t)  vector[6]; // прибор
+    flgDev          = (int8_t)  vector[6]; // прибор not use
     UBackup         = (int16_t) vector[7]; // V текущее значение напряжения 
 //start
  if (flgDebug)

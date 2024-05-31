@@ -14,7 +14,7 @@
 
 HARDWARE::HARDWARE(ConfigHardWare confighardware) 
 {
-      _confighardware=confighardware;
+   /*   _confighardware=confighardware;
       dacbspt=new DAC8563(_confighardware.DACBiasSetPointMode); //set mode DAC BIAS,SetPoint
         dacxy=new DAC8563(_confighardware.DACXYMode);   //set mode DAC X,Y
          dacz=new DAC8563(_confighardware.DACZMode);    //set mode DAC Z  
@@ -31,6 +31,23 @@ HARDWARE::HARDWARE(ConfigHardWare confighardware)
      gainPID2=new OutputPort(_confighardware.GainPID2); 
    freezeport=new OutputPort(_confighardware.FreezePort);//заморозить/разморозить ПИД 
  protractport=new OutputPort(_confighardware.ProtractPort);//вытянуть сканнер /втянуть сканнер  
+ */
+      dacbspt=new DAC8563(confighardware.DACBiasSetPointMode); //set mode DAC BIAS,SetPoint
+        dacxy=new DAC8563(confighardware.DACXYMode);   //set mode DAC X,Y
+         dacz=new DAC8563(confighardware.DACZMode);    //set mode DAC Z  
+     busyport=new InputPort(confighardware.BUSYPort);
+         conv=new OutputPort(confighardware.CONV);
+          dec=new OutputPort(confighardware.DEC);
+    resetport=new OutputPort(confighardware.ResetPort); 
+      ledPort=new OutputPort(PICO_DEFAULT_LED_PIN);
+       rdbLed=new OutputPort(confighardware.RDBPort); 
+        io1_0=new OutputPort(confighardware.IO1_0);
+        io1_1=new OutputPort(confighardware.IO1_1);
+     gainPID0=new OutputPort(confighardware.GainPID0);
+     gainPID1=new OutputPort(confighardware.GainPID1); 
+     gainPID2=new OutputPort(confighardware.GainPID2); 
+   freezeport=new OutputPort(confighardware.FreezePort);//заморозить/разморозить ПИД 
+ protractport=new OutputPort(confighardware.ProtractPort);//вытянуть сканнер /втянуть сканнер  
 }
  
 HARDWARE::HARDWARE(ConfigHardWareNew confighardware) 
@@ -140,9 +157,7 @@ void HARDWARE::reset_ADCPort()
   sleep_us(10);
   resetport->disable();
 }
-void HARDWARE::
-
-setDefaultSettings()
+void HARDWARE::setDefaultSettings( uint8_t dacBiasSetPointPort, uint8_t  dacXYPort, uint8_t dacZPort)  
 {
   /// BASIC SETTINGS
   uart_init(uart1, 115200);
@@ -176,11 +191,11 @@ setDefaultSettings()
 //  init_DACZ(4);            //инициирование ЦАП3  DACZ
 
 //240503 edited
-  init_DACSetPointBias(_confighardware.DACBiasSetPointPort);   //инициирование ЦАП1  SetPoint,BIAS
+  init_DACSetPointBias(dacBiasSetPointPort);   //инициирование ЦАП1  SetPoint,BIAS
 
-  init_DACXY(_confighardware.DACXYPort);    //инициирование ЦАП2  DACXY
+  init_DACXY(dacXYPort);    //инициирование ЦАП2  DACXY
  
-  init_DACZ(_confighardware.DACZPort);      //инициирование ЦАП3  DACZ
+  init_DACZ(dacZPort);      //инициирование ЦАП3  DACZ
   
 }
 
