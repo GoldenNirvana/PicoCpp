@@ -35,8 +35,8 @@ HARDWARE::HARDWARE(ConfigHardWare confighardware)
  
 HARDWARE::HARDWARE(ConfigHardWareNew confighardware) 
 {
-      _confighardware=confighardware;
-  /*    dacbspt=new DAC8563(confighardware.DACBiasSetPointMode); //set mode DAC BIAS,SetPoint
+  //    _confighardware=confighardware;
+      dacbspt=new DAC8563(confighardware.DACBiasSetPointMode); //set mode DAC BIAS,SetPoint
         dacxy=new DAC8563(confighardware.DACXYMode);   //set mode DAC X,Y
          dacz=new DAC8563(confighardware.DACZMode);    //set mode DAC Z  
      busyport=new InputPort(confighardware.BUSYPort);
@@ -58,8 +58,8 @@ modulateuport=new OutputPort(confighardware.ModulateUPort);   // вкл=1; вы�
   sensorport=new OutputPort(confighardware.SD_2Port);        // порты  настройки СД Cantilever=0; 1-Piezo
   signloopport=new OutputPort(confighardware.SignLoopPort);    // знак ПИД // 0=+ ; 1=-
  integrator_inport=new OutputPort(confighardware.Interator_InPort);// выбор вход сигнала на ПИД из1-SD; 0=ПТН(I) 
- */
  
+ /*
       dacbspt=new DAC8563(_confighardware.DACBiasSetPointMode); //set mode DAC BIAS,SetPoint
         dacxy=new DAC8563(_confighardware.DACXYMode);   //set mode DAC X,Y
          dacz=new DAC8563(_confighardware.DACZMode);    //set mode DAC Z  
@@ -82,6 +82,7 @@ modulateuport=new OutputPort(_confighardware.ModulateUPort);   // вкл=1; вы
   sensorport=new OutputPort(_confighardware.SD_2Port);        // порты  настройки СД Cantilever=0; 1-Piezo
   signloopport=new OutputPort(_confighardware.SignLoopPort);    // знак ПИД // 0=+ ; 1=-
  integrator_inport=new OutputPort(_confighardware.Interator_InPort);// выбор вход сигнала на ПИД из1-SD; 0=ПТН(I) 
+ */
 }
 
 
