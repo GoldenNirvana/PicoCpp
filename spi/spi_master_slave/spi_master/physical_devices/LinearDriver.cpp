@@ -24,7 +24,7 @@ LinearDriverPico2040::~LinearDriverPico2040()
 
 LinearDriverPico2040::LinearDriverPico2040(bool flgOnlyZ, ConfigLinearDrive configlineardrive)
 {
-  _configlineardrive=configlineardrive;
+ // _configlineardrive=configlineardrive;
   _flgOnlyZ=flgOnlyZ;
   if  (flgDebug)
   {
@@ -37,23 +37,36 @@ LinearDriverPico2040::LinearDriverPico2040(bool flgOnlyZ, ConfigLinearDrive conf
   }
   if (!_flgOnlyZ)
   {
+    /*
    x_a=new OutputPort(_configlineardrive.XA_Port); 
    x_b=new OutputPort(_configlineardrive.XB_Port); 
    y_a=new OutputPort(_configlineardrive.YA_Port); 
    y_b=new OutputPort(_configlineardrive.YB_Port); 
    z_a=new OutputPort(_configlineardrive.ZA_Port); 
    z_b=new OutputPort(_configlineardrive.ZB_Port);  
+   */
+   x_a=new OutputPort(configlineardrive.XA_Port); 
+   x_b=new OutputPort(configlineardrive.XB_Port); 
+   y_a=new OutputPort(configlineardrive.YA_Port); 
+   y_b=new OutputPort(configlineardrive.YB_Port); 
+   z_a=new OutputPort(configlineardrive.ZA_Port); 
+   z_b=new OutputPort(configlineardrive.ZB_Port);  
    x_a->disable();
    x_b->disable();
    y_a->disable();
    y_b->disable();
    z_a->disable();
    z_b->disable();
+
   }
   else
   {
+    /*
    z_a=new OutputPort(_configlineardrive.ZA_Port); 
    z_b=new OutputPort(_configlineardrive.ZB_Port);  
+   */
+   z_a=new OutputPort(configlineardrive.ZA_Port); 
+   z_b=new OutputPort(configlineardrive.ZB_Port);  
    z_a->disable();
    z_b->disable();
   }
@@ -77,12 +90,19 @@ LinearDriverMotherBoard::~LinearDriverMotherBoard()
    afc.clear();
    sleep_ms(100); 
   }
-  _configlineardrive=configlineardrive;
+ // _configlineardrive=configlineardrive;
+ /*
         z_a=new OutputPort(_configlineardrive.A_Port); 
         z_b=new OutputPort(_configlineardrive.B_Port); 
    turnon_x=new OutputPort(_configlineardrive.XTurn_on_Port); 
    turnon_y=new OutputPort(_configlineardrive.YTurn_on_Port); 
    turnon_z=new OutputPort(_configlineardrive.ZTurn_on_Port); 
+   */
+        z_a=new OutputPort(configlineardrive.A_Port); 
+        z_b=new OutputPort(configlineardrive.B_Port); 
+   turnon_x=new OutputPort(configlineardrive.XTurn_on_Port); 
+   turnon_y=new OutputPort(configlineardrive.YTurn_on_Port); 
+   turnon_z=new OutputPort(configlineardrive.ZTurn_on_Port); 
    z_a->disable();
    z_b->disable();
    turnon_x->disable();
