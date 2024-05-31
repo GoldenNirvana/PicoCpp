@@ -41,13 +41,9 @@ private:
  OutputPort *signloopport;     // знак ПИД
  OutputPort *integrator_inport;// выбор вход сигнала на ПИД из Сд или ПТН(I)
 
- //ConfigHardWare  _confighardware;
- 
  uint16_t *repeatTwoTimes(); 
 
  void get_result_from_adc();       // чтение АЦП
- 
-// void set_io_value(int, int);
 
  void set_clock_enable();
  
@@ -130,6 +126,5 @@ public:
 
  // void protract(uint16_t delay,int16_t DacZ0,int16_t HeightJump) ; //разморозить ПИД 
  
- // void LOOP_freeze_unfreeze(int port, int flg);  
 };
 #endif

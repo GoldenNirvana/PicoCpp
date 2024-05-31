@@ -10,12 +10,6 @@ class LinearDriverBase
  protected:
   OutputPort *z_a;
   OutputPort *z_b;
-  /*
-  OutputPort *y_a;
-  OutputPort *y_b;
-  OutputPort *x_a;
-  OutputPort *x_b;
-  */
  public:
    LinearDriverBase();
    virtual ~LinearDriverBase();
@@ -45,45 +39,8 @@ class LinearDriverMotherBoard: public LinearDriverBase
  protected:
   ConfigLinearDriveNew _configlineardrive;
  public:
-   LinearDriverMotherBoard(ConfigLinearDriveNew configlineardrive);// 
+   LinearDriverMotherBoard(ConfigLinearDriveNew configlineardrive);
    ~LinearDriverMotherBoard();
    void activate(int command, int freq, int p, int n, bool dir) const override;
 };
-
-/*
-
-
-class LinearDriverBase
-{
- protected:
-  bool    _flgOnlyZ; 
-  ConfigLinearDrive _configlineardrive;
-  OutputPort *x_a;
-  OutputPort *x_b;
-  OutputPort *y_a;
-  OutputPort *y_b;
-  OutputPort *z_a;
-  OutputPort *z_b;
- public:
-  //LinearDriverBase(bool flgOnlyZ,ConfigLinearDrive configlineardrive);
-  ~LinearDriverBase();
-  void activate(int command, int freq, int p, int n, bool dir);
-};
-
-class LinearDriverPico2040: public LinearDriverBase
-{
- public:
-  LinearDriverPico2040(bool flgOnlyZ,ConfigLinearDrive configlineardrive);//:LinearDriverBase(flgOnlyZ,configlineardrive);
- // ~LinearDriverPico2040();
-  void activate(int command, int freq, int p, int n, bool dir);
-};
-
-class LinearDriverMotherBoard: public LinearDriverBase
-{
- public:
-   LinearDriverMotherBoard(bool flgOnlyZ,ConfigLinearDrive configlineardrive);// 
- //    ~LinearDriverMotherBoard();
-  void activate(int command, int freq, int p, int n, bool dir);
-};
-*/
 #endif

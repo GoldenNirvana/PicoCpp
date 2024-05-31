@@ -11,7 +11,7 @@
 #include "../utilities/hardcoded_functions.hpp"
 #include "../utilities/debug_logger.hpp"
 
-#warning DO NOT SLEEP IN THIS FUNC !!!
+//#warning DO NOT SLEEP IN THIS FUNC !!!
 
 void RX_core::comReceiveISR(uint a, uint32_t b)
 {
@@ -39,7 +39,6 @@ void RX_core::launchOnCore1()
     parse(vector,vupdateparams); //wait for data ! парсинг входящих данных из ПК 
     if (vector.size()!=0)
    {
-   //  if (flgСritical_section) critical_section_enter_blocking(&criticalSection); 
     switch (vector[0])
     { 
       case VirtualCmd : //флаг симуляции работы микроконтроллера      
@@ -86,9 +85,7 @@ void RX_core::launchOnCore1()
         break;
       }  
      }   
-  //   if (flgСritical_section) critical_section_exit(&criticalSection);
-    
-    continue;
+     continue;
    } 
    if (vupdateparams.size()!=0)  
    {

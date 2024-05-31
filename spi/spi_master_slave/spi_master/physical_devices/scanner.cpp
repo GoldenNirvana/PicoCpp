@@ -1949,20 +1949,20 @@ void Scanner::LID_move_toZ0(int lid_name, int f, int p, int n, int dir)  //от�
  // sleep_ms(1000);
  if (!flgVirtual)
  {
-    if (HARDWAREVERSION_I==0) {  hardware->linearDriver=new LinearDriverPico2040(true,configlineardrivev0); } //250506
-    else                      {  hardware->linearDriver=new LinearDriverMotherBoard(configlineardrivev1); }
+   if (HARDWAREVERSION_I==0) {  hardware->linearDriver=new LinearDriverPico2040(true,configlineardrivev0); } //250506
+   else                      {  hardware->linearDriver=new LinearDriverMotherBoard(configlineardrivev1); }
   hardware->retract();  //втянуть сканер
   sleep_ms(50);
   if (!flgVirtual)  hardware->linearDriver->activate(lid_name, f, p, std::abs(n), dir);
   hardware->protract();  //вытянуть сканер
  } 
   sleep_ms(1000);
-   if (flgDebug)
-   {  
-    debugdata.emplace_back(n);
-    debugdata.emplace_back(dir);
-    sendStrData("code"+std::to_string(DEBUG)+" autorising done ",debugdata,100,true);
-   } 
+ if (flgDebug)
+ {  
+  debugdata.emplace_back(n);
+  debugdata.emplace_back(dir);
+  sendStrData("code"+std::to_string(DEBUG)+" autorising done ",debugdata,100,true);
+ } 
   if (!flgVirtual) delete(hardware->linearDriver); 
 }
 void Scanner::positioningXYZ(std::vector<int32_t> &vector)
@@ -2006,11 +2006,11 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
         switch(flgDev)
      {
        case SFM:{
-                SignalValue = (int16_t)spiBuf[AmplPin];
-                break;
+                 SignalValue = (int16_t)spiBuf[AmplPin];
+                 break;
                 }
        case STM:         
-      case SICMDC:{
+    case SICMDC:{
                  SignalValue = (int16_t)spiBuf[IPin];
                  break;
                 }     
@@ -2018,8 +2018,8 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
    } 
    if (!flgVirtual)
    { 
-    if (HARDWAREVERSION_I==0) { hardware->linearDriver=new LinearDriverPico2040(false,configlineardrivev0); } //250506
-    else                      { hardware->linearDriver=new LinearDriverMotherBoard(configlineardrivev1); }
+    if (HARDWAREVERSION_I==0) { hardware->linearDriver=new LinearDriverPico2040(false,configlineardrivev0);} //250506
+    else                      { hardware->linearDriver=new LinearDriverMotherBoard(configlineardrivev1);   }
    } 
 
 
@@ -2037,14 +2037,14 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
         if (ln > 0) ldir = 1;
         ln = abs(ln);
         sleep_ms(100);
-       if (flgDebug)
-       {  
-        for (int j =0; j <= 3; ++j)
-        {
+        if (flgDebug)
+        {  
+         for (int j =0; j <= 3; ++j)
+         {
           debugdata.emplace_back(vupdateparams[j]);
-        }
-        sendStrData("code"+std::to_string(DEBUG)+"posXYZ parameters update",debugdata,100,true);
-       }   
+         }
+         sendStrData("code"+std::to_string(DEBUG)+"posXYZ parameters update",debugdata,100,true);
+        }   
         vupdateparams.clear();
       }
       status = none;
@@ -2068,20 +2068,20 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
       if (CONFIG_UPDATE)
       { 
         CONFIG_UPDATE = false;
-                ln =  (int16_t)vector[1];
-        GATE_Z_MAX = (uint16_t)vector[2];
-        GATE_Z_MIN = (uint16_t)vector[3];
+                   ln = (int16_t)vector[1];
+           GATE_Z_MAX = (uint16_t)vector[2];
+           GATE_Z_MIN = (uint16_t)vector[3];
         ldir = 0;
         if (ln > 0) ldir = 1;
         sleep_ms(100);
-      if (flgDebug)
-      {  
-       for (int j = 0; j <= 3; ++j)
-       {
-         debugdata.emplace_back(vector[j]);
-       }
-       sendStrData("code"+std::to_string(DEBUG)+" parameters posistionXYZ update",debugdata,100,true);
-      } 
+        if (flgDebug)
+        {  
+         for (int j = 0; j <= 3; ++j)
+         {
+          debugdata.emplace_back(vector[j]);
+         }
+         sendStrData("code"+std::to_string(DEBUG)+" parameters posistionXYZ update",debugdata,100,true);
+        } 
       // vupdateparams.clear();
       if (flgСritical_section)  critical_section_enter_blocking(&criticalSection); 
        vupdateparams.clear();
@@ -2102,9 +2102,8 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
     case SICMDC:{
                  SignalValue = (int16_t)spiBuf[IPin];
                  break;
-                }
-      
-        }
+                } 
+       }
         // check if z > <
        if (flgSICMPrePos!=1)
        {
@@ -2126,8 +2125,8 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
        {
         if (abs(SignalValue)>200) 
         {
-           status = ok;
-           break;
+         status = ok;
+         break;
         }
        }
         hardware->linearDriver->activate(lid_name, f, p, std::abs(ln), ldir);
@@ -2172,7 +2171,7 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
   } 
   TheadDone = false;
   sendStrData("code"+std::to_string(END)+"end");
-   hardware->dark();
+  hardware->dark();
  if (!flgVirtual) delete(hardware->linearDriver);
 }
 
@@ -2284,11 +2283,10 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
  Zt=-abs(ZStart);
   for(int16_t i=0; i<NPoints; i++)     //сближение
   {
-    sleep_ms(delay);  
+   sleep_ms(delay);  
    if (!flgVirtual) 
    {  
-      hardware->getValuesFromAdc(); 
-     
+      hardware->getValuesFromAdc();   
         switch (flgModa)
     {
      case SFM:     { SignalValue=(int16_t)spiBuf[AmplPin]; break;}  
@@ -2334,8 +2332,8 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
     sleep_ms(delay); 
    if (!flgVirtual)
    {
-       hardware->getValuesFromAdc(); 
-       switch (flgModa)
+      hardware->getValuesFromAdc(); 
+      switch (flgModa)
     {
      case SFM:    { SignalValue=(int16_t)spiBuf[AmplPin]; break;}  
      case STM: 
@@ -2448,15 +2446,15 @@ void Scanner::spectroscopyIV(std::vector<int32_t> &vector)
         step=start_step;
 	      dlt=-dlt;
       }
-        nstep=dlt / start_step;
-        rest=dlt%start_step;
+      nstep=dlt / start_step;
+      rest=dlt%start_step;
       for (kk=0; kk<nstep; kk++)
       {
        if (!flgVirtual) hardware->set_Bias(dacU);    
        sleep_ms(10);   
        dacU+=step;
       } 
-       dacU+=rest;
+      dacU+=rest;
       if (!flgVirtual) hardware->set_Bias(dacU);         
       sleep_ms(10);  
       for(i=0; i<UPoints; i++)
@@ -2500,11 +2498,10 @@ void Scanner::spectroscopyIV(std::vector<int32_t> &vector)
   }
     dacU+=rest;
   if (!flgVirtual) hardware->set_Bias(dacU);  
-    sleep_ms(10);
-  
+  sleep_ms(10);  
   if (!flgVirtual) hardware->set_Bias(UBackup);  //240206
-    sleep_ms(10);
-///////////////////////////////////////////////
+  sleep_ms(10);
+ ///////////////////////////////////////////////
  //  if(!flgVirtual)  unfreezeLOOP(500); //240322
   if (!flgVirtual)
   {
@@ -2566,7 +2563,6 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
   hardware->set_SetPoint(SET_POINT); 
   if (flgDev!=SFM) hardware->set_Bias(Bias);  
   hardware->set_GainPID((uint16_t)GAIN); //240320
-
   if (!flgVirtual)
   {
     hardware->getValuesFromAdc(); 
@@ -2594,11 +2590,8 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
   sendStrData( "code"+std::to_string(APPROACH),buf_status,100,false);
   if (!flgVirtual)
   {
-   if (HARDWAREVERSION_I==0) 
-   { 
-     hardware->linearDriver=new LinearDriverPico2040(true,configlineardrivev0); 
-   } //250506
-   else { hardware->linearDriver=new LinearDriverMotherBoard(configlineardrivev1); }
+   if (HARDWAREVERSION_I==0) { hardware->linearDriver=new LinearDriverPico2040(true,configlineardrivev0);}
+   else                      { hardware->linearDriver=new LinearDriverMotherBoard(configlineardrivev1);  }
   } 
   
   while (true)
@@ -2640,8 +2633,7 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
        }
        sendStrData("code"+std::to_string(DEBUG)+" parameters update",debugdata,200,true);
       } 
-      //vupdateparams.clear();
-      if (flgСritical_section)  critical_section_enter_blocking(&criticalSection); 
+     if (flgСritical_section)  critical_section_enter_blocking(&criticalSection); 
       vupdateparams.clear();
      if (flgСritical_section)  critical_section_exit(&criticalSection); 
     }
@@ -2748,7 +2740,7 @@ void Scanner::
 testpiezomover(std::vector<int32_t> &vector)
 {
   int8_t   flgstop;  //=1  stop
-   int16_t  step,Z0;
+  int16_t  step,Z0;
   int16_t  GATE_Z_MAX, GATE_Z_MIN;
   int16_t  freq, scv;//
   int16_t  NSTEPS,NCYCLES;
@@ -2790,8 +2782,8 @@ testpiezomover(std::vector<int32_t> &vector)
      sendStrData( "code"+std::to_string(TESTMOVER),buf_status,100,true);
     if (!flgVirtual)
     {
-     if (HARDWAREVERSION_I==0) { hardware->linearDriver=new LinearDriverPico2040(true,configlineardrivev0); } //250506
-     else                      { hardware->linearDriver=new LinearDriverMotherBoard(configlineardrivev1); }
+     if (HARDWAREVERSION_I==0) { hardware->linearDriver=new LinearDriverPico2040(true,configlineardrivev0);} //250506
+     else                      { hardware->linearDriver=new LinearDriverMotherBoard(configlineardrivev1);  }
     } 
     // проверить, в воротах ли Z
     step = NSTEPS;          // NSTEPS > 0 - сближение

@@ -186,11 +186,6 @@ void HARDWARE::setDefaultSettings( uint8_t dacBiasSetPointPort, uint8_t  dacXYPo
   
   retract();        //втянуть 240403 ???
 //************************************************************* 
-//  init_DACSetPointBias(2); //инициирование ЦАП1  SetPoint,BIAS
-//  init_DACXY(3);           //инициирование ЦАП2  DACXY
-//  init_DACZ(4);            //инициирование ЦАП3  DACZ
-
-//240503 edited
   init_DACSetPointBias(dacBiasSetPointPort);   //инициирование ЦАП1  SetPoint,BIAS
 
   init_DACXY(dacXYPort);    //инициирование ЦАП2  DACXY
@@ -201,11 +196,7 @@ void HARDWARE::setDefaultSettings( uint8_t dacBiasSetPointPort, uint8_t  dacXYPo
 
 void HARDWARE::GetSOFTHARDWAREVersion()
 {
- //time_t now = time(0);
-// char* version = ctime(&now);
   afc.clear();
- // std::string date;
- // date=version;
   afc = "code"+std::to_string(VersionCmd)+"soft "+ SOFTVERSION+", hardware "+std::to_string(HARDWAREVERSION_I);
   afc += +"\n";
   std::cout << afc;
@@ -308,25 +299,7 @@ void HARDWARE::move_scannerY(int y)
  dacxy->writeB(y);
 
 }
-/*
-void set_Bias(int8_t channel,int32_t Bias)
-{
-//   code  22 , 2, 8, 0, 1, 1, value 
-  if (!flgVirtual)
-  {  if (channel == 0)
-      {
-        dac8563_1.writeA(Bias+ShiftDac);
-      }
-      else 
-      if (channel == 1)
-      {
-        dac8563_1.writeB(Bias+ShiftDac);
-      }	
-  }
-}
-*/
- 
- void HARDWARE::set_Bias(int32_t Bias)
+void HARDWARE::set_Bias(int32_t Bias)
 {
 //   code  22 , 2, 8, 0, 1, 1, value 
   if (!flgVirtual)
@@ -345,31 +318,6 @@ void set_Bias(int8_t channel,int32_t Bias)
  }
  */
 }   
-/*
-
-void set_SetPoint(int8_t channel, int32_t SetPoint)
-{//  code  22, 2, 8, 0, 1, 0, value
-  if (!flgVirtual)
-  {
-    if (channel == 0)
-   {
-     dac8563_1.writeA(SetPoint+ShiftDac);
-   }
-   else 
-   if (channel == 1)
-   {
-     dac8563_1.writeB(SetPoint+ShiftDac);
-   }	
-  } 
-  // отладка
-  afc.clear();
-  afc = "debug SetPoint " + std::to_string(channel) + ',' + std::to_string(SetPoint);
-  afc += +"\n";
-  std::cout << afc;
-  afc.clear();
-  sleep_ms(100); 
-}
-*/
 
 void HARDWARE::set_SetPoint( int32_t SetPoint)
 {//  code  22, 2, 8, 0, 1, 0, value
@@ -503,34 +451,7 @@ uint16_t *HARDWARE::repeatTwoTimes()
   }
   return spiBuf;
 }
-/*
-void HARDWARE::scanner_retract_protract(int port, int flg) 
-// port  5  1- втянуть,     0-вытянуть
-// port  6  1- заморозить,  0-разморозить
- {
-  afc.clear();
-  if (flg == 0)
-  {     
-     switch (port)
-   {  
-   case 5: { io_ports[port]->enable();  afc = " scanner retract " + std::to_string(port); break;}
-   case 6: { io_ports[port]->enable();  afc = " PID unfreeze "    + std::to_string(port); break;}
-   }
-  }
-  else 
-  {
-     switch (port)
-   {  
-   case 5: { io_ports[port]->disable();  afc = " scanner protract " + std::to_string(port); break;}
-   case 6: { io_ports[port]->disable();  afc = " PID  freeze "      + std::to_string(port); break;}
-   }
-  } 
-  afc += +"\n";
-  std::cout << afc;
-  afc.clear();
-  sleep_ms(100); 
- } 
-*/
+
 void HARDWARE::retract() //втянуть
 {
   protractport->enable();  //  port 6   элемент массива портов 
@@ -554,13 +475,7 @@ void HARDWARE::protract(uint16_t delay,int16_t DacZ0,int16_t HeightJump) //вы�
    ZMove(DacZ0,HeightJump,-20, delay);
 }
 */
-/*
-void HARDWARE::LOOP_freeze_unfreeze(int port, int flg) // port virtual 5
-{
-//flg == 1 ? io_ports[port - 1].enable() : io_ports[port - 1].disable();
- flg == 1 ? io_ports[port]->enable() : io_ports[port]->disable();
-}
-*/
+
 void HARDWARE::freezeLOOP(uint16_t delay)    // заморозить ПИД
 {
   freezeport->enable(); // 5 элемент массива портов ???
@@ -667,7 +582,6 @@ void HARDWARE::activateGreen()
     rdbLed->disable();
     busy_wait_at_least_cycles(35);
   }
-
   for (int i = 0; i < 16; ++i)
   {
     rdbLed->enable();
@@ -688,7 +602,6 @@ void HARDWARE::activateRed()
     rdbLed->disable();
     busy_wait_at_least_cycles(85);
   }
-
   for (int i = 0; i < 8; ++i)
   {
     rdbLed->enable();
@@ -696,7 +609,6 @@ void HARDWARE::activateRed()
     rdbLed->disable();
     busy_wait_at_least_cycles(35);
   }
-
   for (int i = 0; i < 8; ++i)
   {
     rdbLed->enable();
