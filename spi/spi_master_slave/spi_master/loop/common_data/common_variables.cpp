@@ -1,7 +1,7 @@
 #include "common_variables.hpp"
 
 //////////////////////////////////////////////
-std::string  SOFTVERSION="24.05.31.01 HWAMB L pointer";
+std::string  SOFTVERSION="24.05.31.01 HWAMB";
 std::string  HARDWAREVERSION="0.1";
 int8_t       HARDWAREVERSION_I=0;
 //int8_t       HARDWAREVERSION_I=-1;
