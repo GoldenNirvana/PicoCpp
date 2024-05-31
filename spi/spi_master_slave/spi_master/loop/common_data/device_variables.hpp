@@ -28,7 +28,7 @@ struct ConfigHardWare
   uint8_t FreezePort;   //26 заморозить сканнер=1; разморозить =0
   uint8_t ProtractPort; //27 втянуть    сканнер=1; вытянуть    =0
 };
-struct ConfigHardWareNew:public ConfigHardWare
+struct ConfigHardWareNew
 {
   uint8_t DACBiasSetPointPort;  //2 DAC8563_1  BIAS SetPoint
   uint8_t DACBiasSetPointMode;  //1 DAC8563_1  BIAS SetPoint
