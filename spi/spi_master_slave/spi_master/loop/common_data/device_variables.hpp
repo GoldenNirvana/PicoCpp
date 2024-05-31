@@ -72,9 +72,9 @@ struct ConfigLinearDriveNew
   uint8_t B_Port;   
   uint8_t XTurn_on_Port;    
   uint8_t YTurn_on_Port;     
-  uint8_t ZTurn_on_Port;     
-    
+  uint8_t ZTurn_on_Port;        
 };
+
 extern Spi               spi;
 //extern LinearDriver      *linearDriver;
 extern Decoder           decoder;

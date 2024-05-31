@@ -3,17 +3,6 @@
 #include "LinearDriver.hpp"
 LinearDriverBase::LinearDriverBase()
 {
- /*
-  if  (flgDebug)
-  {
-   afc.clear();
-   afc ="code"+std::to_string(DEBUG)+ "Pico2040-0 ";
-   afc += +"\n";
-   std::cout << afc;
-   afc.clear();
-   sleep_ms(100); 
-  }
- */
 }
   
 LinearDriverBase::~LinearDriverBase()

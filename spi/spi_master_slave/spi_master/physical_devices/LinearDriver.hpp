@@ -18,7 +18,7 @@ class LinearDriverBase
   */
  public:
    LinearDriverBase();
-  virtual ~LinearDriverBase();
+   virtual ~LinearDriverBase();
    virtual void activate(int command, int freq, int p, int n, bool dir) const;
 };
 
@@ -47,7 +47,7 @@ class LinearDriverMotherBoard: public LinearDriverBase
  public:
    LinearDriverMotherBoard(ConfigLinearDriveNew configlineardrive);// 
    ~LinearDriverMotherBoard();
-  void activate(int command, int freq, int p, int n, bool dir) const override;
+   void activate(int command, int freq, int p, int n, bool dir) const override;
 };
 
 /*
