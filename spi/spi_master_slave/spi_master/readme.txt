@@ -1,3 +1,7 @@
+// 24/06/01
+ добавлена Init communication
+ и добавлена Default init comm в hardware default setting
+ Решить вопрос с портами IO1.0 IO1.1!!!!
 //24/05/30
 drive работает резонанс - малая амплитуда
 проблема может быть с MB setdefault!!

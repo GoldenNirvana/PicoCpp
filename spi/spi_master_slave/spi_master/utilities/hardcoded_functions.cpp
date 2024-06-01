@@ -41,8 +41,8 @@ HARDWARE::HARDWARE(ConfigHardWare confighardware)
     resetport=new OutputPort(confighardware.ResetPort); 
       ledPort=new OutputPort(PICO_DEFAULT_LED_PIN);
        rdbLed=new OutputPort(confighardware.RDBPort); 
-        io1_0=new OutputPort(confighardware.IO1_0);
-        io1_1=new OutputPort(confighardware.IO1_1);
+        io1_0=new OutputPort(confighardware.IO1_0); //??
+        io1_1=new OutputPort(confighardware.IO1_1); //?
      gainPID0=new OutputPort(confighardware.GainPID0);
      gainPID1=new OutputPort(confighardware.GainPID1); 
      gainPID2=new OutputPort(confighardware.GainPID2); 
@@ -67,13 +67,13 @@ HARDWARE::HARDWARE(ConfigHardWareNew confighardware)
      gainPID0=new OutputPort(confighardware.GainPID0);
      gainPID1=new OutputPort(confighardware.GainPID1); 
      gainPID2=new OutputPort(confighardware.GainPID2); 
-   freezeport=new OutputPort(confighardware.FreezePort);//заморозить/разморозить ПИД 
+   freezeport=new OutputPort(confighardware.FreezePort);  //заморозить/разморозить ПИД 
  protractport=new OutputPort(confighardware.ProtractPort);//вытянуть сканнер /втянуть сканнер 
-
-modulateuport=new OutputPort(confighardware.ModulateUPort);   // вкл=1; выкд=0 модуляцию U  
-    i_stmport=new OutputPort(confighardware.SD_1Port);        // порты  настройки СД I_STM=1; 0 =др
-  sensorport=new OutputPort(confighardware.SD_2Port);        // порты  настройки СД Cantilever=0; 1-Piezo
-  signloopport=new OutputPort(confighardware.SignLoopPort);    // знак ПИД // 0=+ ; 1=-
+//add new ports
+     modulateuport=new OutputPort(confighardware.ModulateUPort);   // вкл=1; выкд=0 модуляцию U  
+         i_stmport=new OutputPort(confighardware.SD_1Port);        // порты  настройки СД I_STM=1; 0 =др
+        sensorport=new OutputPort(confighardware.SD_2Port);        // порты  настройки СД Cantilever=0; 1-Piezo
+      signloopport=new OutputPort(confighardware.SignLoopPort);    // знак ПИД // 0=+ ; 1=-
  integrator_inport=new OutputPort(confighardware.Interator_InPort);// выбор вход сигнала на ПИД из1-SD; 0=ПТН(I) 
  
  /*
@@ -102,26 +102,32 @@ modulateuport=new OutputPort(_confighardware.ModulateUPort);   // вкл=1; вы
  */
 }
 
-
-
 HARDWARE::~HARDWARE()
 {
- delete(dacbspt);
- delete(dacxy);
- delete(dacz);
- delete(busyport);
- delete(conv);
- delete(dec);
- delete(resetport);
- delete(ledPort);
- delete(rdbLed);
- delete(io1_0);
- delete(io1_1);
- delete(gainPID0);
- delete(gainPID1);
- delete(gainPID2);
- delete(freezeport);
- delete(protractport);
+    delete(dacbspt);
+    delete(dacxy);
+    delete(dacz);
+    delete(busyport);
+    delete(conv);
+    delete(dec);
+    delete(resetport);
+    delete(ledPort);
+    delete(rdbLed);
+    delete(io1_0); //??
+    delete(io1_1); //??
+    delete(gainPID0);
+    delete(gainPID1);
+    delete(gainPID2);
+    delete(freezeport);
+    delete(protractport);
+   if (HARDWAREVERSION_I>0)
+   {       
+     delete(modulateuport);
+     delete(i_stmport);
+     delete(sensorport);
+     delete(signloopport);
+     delete(integrator_inport);
+   }
  if (linearDriver!=0) delete(linearDriver);
 // io_ports.clear();
 }
