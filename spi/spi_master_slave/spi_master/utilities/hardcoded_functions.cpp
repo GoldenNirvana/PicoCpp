@@ -186,6 +186,17 @@ void HARDWARE::setDefaultSettings( uint8_t dacBiasSetPointPort, uint8_t  dacXYPo
   
   retract();        //втянуть 240403 ???
 //************************************************************* 
+ // init_commutation(sensor,loopsign,signal_in_loop,usemod_i_stm,usemod_u);
+ /*
+    default afm probe
+    sensor=1
+    signLoop:=1;     // -1
+    useModU:=0;      //use mod U;
+    useSD_ISTM:=0;   //use mod I
+    signalInLoop:=1; //sd
+  */  
+  init_commutation(1 , 1 , 1 , 0, 0);  //afm
+
   init_DACSetPointBias(dacBiasSetPointPort);   //инициирование ЦАП1  SetPoint,BIAS
 
   init_DACXY(dacXYPort);    //инициирование ЦАП2  DACXY
