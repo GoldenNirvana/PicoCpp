@@ -201,8 +201,10 @@ void HARDWARE::setDefaultSettings( uint8_t dacBiasSetPointPort, uint8_t  dacXYPo
     useSD_ISTM:=0;   //use mod I
     signalInLoop:=1; //sd
   */  
-  init_commutation(1 , 1 , 1 , 0, 0);  //afm
-
+   if (HARDWAREVERSION_I>0) //Mother board
+   {  
+    init_commutation(1 , 1 , 1 , 0, 0);  //afm
+   }
   init_DACSetPointBias(dacBiasSetPointPort);   //инициирование ЦАП1  SetPoint,BIAS
 
   init_DACXY(dacXYPort);    //инициирование ЦАП2  DACXY
