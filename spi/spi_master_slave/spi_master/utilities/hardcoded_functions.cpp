@@ -242,7 +242,14 @@ void HARDWARE::get_result_from_adc()
   sleep_us(10);
   conv->enable();
 }
-
+void HARDWARE::init_commutation(uint8_t sensor ,uint8_t loopsign ,uint8_t signal_in_loop , uint8_t usemod_i_stm,uint8_t usemod_u)
+{
+ setLoopSign(loopsign);
+ setSignal_In_Loop(signal_in_loop);
+ setModulateU(usemod_u);
+ setSensor(sensor); //sensor =
+ useSDModulateI_STM(usemod_i_stm);
+}
 void HARDWARE::init_SPI( uint8_t port ,uint8_t v2 ,uint8_t v3, uint8_t v4 )
 {
  decoder.activePort(port);
