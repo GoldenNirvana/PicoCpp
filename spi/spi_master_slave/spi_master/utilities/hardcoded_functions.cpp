@@ -216,7 +216,7 @@ void HARDWARE::setDefaultSettings( uint8_t dacBiasSetPointPort, uint8_t  dacXYPo
 void HARDWARE::GetSOFTHARDWAREVersion()
 {
   afc.clear();
-  afc = "code"+std::to_string(VersionCmd)+"soft "+ SOFTVERSION+" softhardware ver"
+  afc = "code"+std::to_string(VersionCmd)+"soft "+ SOFTVERSION+" softhardware ver"+SoftHARDWAREVERSION
   +", hardware "+std::to_string(HARDWAREVERSION);
   afc += +"\n";
   std::cout << afc;
