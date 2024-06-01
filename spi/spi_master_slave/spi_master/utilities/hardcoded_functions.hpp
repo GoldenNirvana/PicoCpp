@@ -82,6 +82,16 @@ public:
 
  void set_Freq(uint32_t freq);       //установка заданной частоты генератора
 
+ void setLoopSign(int8_t value);
+
+ void setSignal_In_Loop(int8_t value);
+ 
+ void useSDModulateI_STM(int8_t value);
+ 
+ void setSensor(int8_t value);
+ 
+ void setModulateU(int8_t value);
+
  void init_commutation(uint8_t sensor ,uint8_t loopsign ,uint8_t signal_in_loop , uint8_t usemod_i_stm,uint8_t usemod_u);
  
  void init_SPI(uint8_t port ,uint8_t v2 ,uint8_t v3, uint8_t v4); //инициирование SPI

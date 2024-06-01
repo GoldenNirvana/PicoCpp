@@ -242,6 +242,50 @@ void HARDWARE::get_result_from_adc()
   sleep_us(10);
   conv->enable();
 }
+void HARDWARE::setLoopSign(int8_t value)
+{
+  switch (value)
+ {
+   case 0:{signloopport->disable(); break;}
+   case 1:{signloopport->enable(); break;}
+ }
+}
+
+void HARDWARE::setSignal_In_Loop(int8_t value)
+{
+    switch (value)
+ {
+  case 0:{integrator_inport->disable(); break;}
+  case 1:{integrator_inport->enable(); break;} // I_STM
+ }
+} 
+void HARDWARE::useSDModulateI_STM(int8_t value)
+{ 
+  switch (value)
+ {
+  case 0:{i_stmport->disable(); break;} 
+  case 1:{i_stmport->enable(); break;}//SD ->Loop use модуляцию I_STM
+ }
+}
+ 
+void HARDWARE::setSensor(int8_t value)
+{
+   switch (value)
+ {
+  case 0:{sensorport->disable(); break;}// cantilever
+  case 1:{sensorport->enable();  break;}// piezo
+ }
+} 
+
+void HARDWARE::setModulateU(int8_t value)
+{
+  switch (value)
+ {
+  case 0:{modulateuport->disable(); break;}
+  case 1:{modulateuport->enable(); break;}// вкл модуляцию U
+ }
+}
+
 void HARDWARE::init_commutation(uint8_t sensor ,uint8_t loopsign ,uint8_t signal_in_loop , uint8_t usemod_i_stm,uint8_t usemod_u)
 {
  setLoopSign(loopsign);
