@@ -99,10 +99,10 @@ case ChangeHardWare:
                 std::cout << afc;
                 afc.clear();
                 sleep_ms(300);       
-                if (HARDWAREVERSION_I!= (int8_t)vector[1])                                  
+                if (HARDWAREVERSION!= (int8_t)vector[1])                                  
                 { 
-                  HARDWAREVERSION_I= (int8_t)vector[1];   
-                  switch (HARDWAREVERSION_I)
+                  HARDWAREVERSION= (int8_t)vector[1];   
+                  switch (HARDWAREVERSION)
                   {       
                     case 0:{
                              scanner=new  Scanner(confighardwarev0); 
@@ -118,7 +118,7 @@ case ChangeHardWare:
                   if (scanner==nullptr) 
                   {
                    afc.clear();
-                   afc ="code"+std::to_string(ChangeHardWare)+ "error new scanner create "+std::to_string(HARDWAREVERSION_I);
+                   afc ="code"+std::to_string(ChangeHardWare)+ "error new scanner create "+std::to_string(HARDWAREVERSION);
                    std::cout << afc;
                    afc.clear();
                    sleep_ms(100); 
@@ -371,14 +371,14 @@ default:      {/*activateError();*/  break;}
 MainCore::MainCore()
 {
    multicore_launch_core1(launchOnCore1);
-   switch (HARDWAREVERSION_I)
+   switch (HARDWAREVERSION)
    {       
     case 0:{
             scanner=new  Scanner(confighardwarev0); 
             scanner->hardware->setDefaultSettings(confighardwarev0.DACBiasSetPointPort,confighardwarev0.DACXYPort,confighardwarev0.DACZPort);                 
             break; 
            }
-    case 1:{
+    case 1:{ //MotherBoard
             scanner=new  Scanner(confighardwarev1);
             scanner->hardware->setDefaultSettings(confighardwarev1.DACBiasSetPointPort,confighardwarev1.DACXYPort,confighardwarev1.DACZPort);
             break;
@@ -387,7 +387,7 @@ MainCore::MainCore()
    if (scanner==nullptr) 
    {
      afc.clear();
-     afc ="code"+std::to_string(ChangeHardWare)+ "error new scanner create "+std::to_string(HARDWAREVERSION_I);
+     afc ="code"+std::to_string(ChangeHardWare)+ "error new scanner create "+std::to_string(HARDWAREVERSION);
      std::cout << afc;
      afc.clear();
      sleep_ms(100); 

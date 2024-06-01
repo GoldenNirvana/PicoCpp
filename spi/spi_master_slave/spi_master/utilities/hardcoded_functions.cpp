@@ -120,7 +120,7 @@ HARDWARE::~HARDWARE()
     delete(gainPID2);
     delete(freezeport);
     delete(protractport);
-   if (HARDWAREVERSION_I>0)
+   if (HARDWAREVERSION==1)
    {       
      delete(modulateuport);
      delete(i_stmport);
@@ -195,13 +195,13 @@ void HARDWARE::setDefaultSettings( uint8_t dacBiasSetPointPort, uint8_t  dacXYPo
  // init_commutation(sensor,loopsign,signal_in_loop,usemod_i_stm,usemod_u);
  /*
     default afm probe
-    sensor=1
+    sensor=1  
     signLoop:=1;     // -1
     useModU:=0;      //use mod U;
     useSD_ISTM:=0;   //use mod I
     signalInLoop:=1; //sd
   */  
-   if (HARDWAREVERSION_I>0) //Mother board
+   if (HARDWAREVERSION==1) //Mother board
    {  
     init_commutation(1 , 1 , 1 , 0, 0);  //afm
    }
@@ -216,7 +216,8 @@ void HARDWARE::setDefaultSettings( uint8_t dacBiasSetPointPort, uint8_t  dacXYPo
 void HARDWARE::GetSOFTHARDWAREVersion()
 {
   afc.clear();
-  afc = "code"+std::to_string(VersionCmd)+"soft "+ SOFTVERSION+", hardware "+std::to_string(HARDWAREVERSION_I);
+  afc = "code"+std::to_string(VersionCmd)+"soft "+ SOFTVERSION+" softhardware ver"
+  +", hardware "+std::to_string(HARDWAREVERSION);
   afc += +"\n";
   std::cout << afc;
   afc.clear();
