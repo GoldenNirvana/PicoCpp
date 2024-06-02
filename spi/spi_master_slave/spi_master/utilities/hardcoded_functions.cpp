@@ -32,7 +32,7 @@ HARDWARE::HARDWARE(ConfigHardWare confighardware)
    freezeport=new OutputPort(_confighardware.FreezePort);//заморозить/разморозить ПИД 
  protractport=new OutputPort(_confighardware.ProtractPort);//вытянуть сканнер /втянуть сканнер  
  */
-      dacbspt=new DAC8563(confighardware.DACBiasSetPointMode); //set mode DAC BIAS,SetPoint
+      dacbvspt=new DAC8563(confighardware.DACBiasVSetPointMode); //set mode DAC BIAS,SetPoint
         dacxy=new DAC8563(confighardware.DACXYMode);   //set mode DAC X,Y
          dacz=new DAC8563(confighardware.DACZMode);    //set mode DAC Z  
      busyport=new InputPort(confighardware.BUSYPort);
@@ -53,7 +53,7 @@ HARDWARE::HARDWARE(ConfigHardWare confighardware)
 HARDWARE::HARDWARE(ConfigHardWareNew confighardware) 
 {
   //    _confighardware=confighardware;
-      dacbspt=new DAC8563(confighardware.DACBiasSetPointMode); //set mode DAC BIAS,SetPoint
+      dacbvspt=new DAC8563(confighardware.DACBiasVSetPointMode); //set mode DAC BIAS,SetPoint
         dacxy=new DAC8563(confighardware.DACXYMode);   //set mode DAC X,Y
          dacz=new DAC8563(confighardware.DACZMode);    //set mode DAC Z  
      busyport=new InputPort(confighardware.BUSYPort);
@@ -104,7 +104,7 @@ modulateuport=new OutputPort(_confighardware.ModulateUPort);   // вкл=1; вы
 
 HARDWARE::~HARDWARE()
 {
-    delete(dacbspt);
+    delete(dacbvspt);
     delete(dacxy);
     delete(dacz);
     delete(busyport);
@@ -163,7 +163,7 @@ void HARDWARE::reset_ADCPort()
   sleep_us(10);
   resetport->disable();
 }
-void HARDWARE::setDefaultSettings( uint8_t dacBiasSetPointPort, uint8_t  dacXYPort, uint8_t dacZPort)  
+void HARDWARE::setDefaultSettings( uint8_t dacBiasVSetPointPort, uint8_t  dacXYPort, uint8_t dacZPort)  
 {
   /// BASIC SETTINGS
   uart_init(uart1, 115200);
@@ -192,20 +192,20 @@ void HARDWARE::setDefaultSettings( uint8_t dacBiasSetPointPort, uint8_t  dacXYPo
   
   retract();        //втянуть 240403 ???
 //************************************************************* 
- // init_commutation(sensor,loopsign,signal_in_loop,usemod_i_stm,usemod_u);
+ // init_commutation(sensor,signloop,signal_to_loop,usemod_i_stm,usemod_u);
  /*
     default afm probe
-    probe ->sensor=1
-    signLoop:=1;     // -1
-    useModU:=0;      //use mod U;
-    useSD_ISTM:=0;   //use mod I
-    signalToLoop:=1; //sd
+    sensor=1   probe=1;  cantilever =0
+    signLoop:=1;       // 1= -1 ; 0 = +1
+    usemod_u:=0;       // use mod U; not=0
+    usemod_i_stm:=0;   // use mod I  not=0
+    signal_to_loop:=1; // sd->to loop =1
   */  
    if (HARDWAREVERSION==1) //Mother board
    {  
     init_commutation(1 , 1 , 1 , 0, 0);  //afm
    }
-  init_DACSetPointBias(dacBiasSetPointPort);   //инициирование ЦАП1  SetPoint,BIAS
+  init_DACSetPointBiasV(dacBiasVSetPointPort);   //инициирование ЦАП1  SetPoint,BIAS
 
   init_DACXY(dacXYPort);    //инициирование ЦАП2  DACXY
  
@@ -311,7 +311,7 @@ void HARDWARE::init_commutation(uint8_t sensor ,uint8_t loopsign ,uint8_t signal
  setLoopSign(loopsign);
  setSignal_In_Loop(signal_in_loop);
  setModulateU(usemod_u);
- setSensor(sensor); //sensor =
+ setSensor(sensor); 
  useSDModulateI_STM(usemod_i_stm);
 }
 void HARDWARE::init_SPI( uint8_t port ,uint8_t v2 ,uint8_t v3, uint8_t v4 )
@@ -320,9 +320,9 @@ void HARDWARE::init_SPI( uint8_t port ,uint8_t v2 ,uint8_t v3, uint8_t v4 )
  Spi::setProperties(v2, v3, v4);
 }
 
-void HARDWARE::init_DACSetPointBias(uint8_t spiport) //  4 для подставки
+void HARDWARE::init_DACSetPointBiasV(uint8_t spiport) //  4 для подставки
 {
-  dacbspt->initialize(spiport); //code 23
+  dacbvspt->initialize(spiport); //code 23
 /*
   afc.clear();
   afc = "code"+std::to_string(DEBUG)+ "debug Init DACSPB " + std::to_string(port);
@@ -370,12 +370,12 @@ void HARDWARE::move_scannerY(int y)
  dacxy->writeB(y);
 
 }
-void HARDWARE::set_Bias(int32_t Bias)
+void HARDWARE::set_BiasV(int32_t BiasV)
 {
 //   code  22 , 2, 8, 0, 1, 1, value 
   if (!flgVirtual)
   { 
-     dacbspt->writeB(Bias+ShiftDac);
+     dacbvspt->writeB(BiasV+ShiftDac);
   }	
   /*
  if  (flgDebug)
@@ -394,7 +394,7 @@ void HARDWARE::set_SetPoint( int32_t SetPoint)
 {//  code  22, 2, 8, 0, 1, 0, value
   if (!flgVirtual)
   {
-     dacbspt->writeA(SetPoint+ShiftDac); // 240425 ?
+     dacbvspt->writeA(SetPoint+ShiftDac); // 240425 ?
   } 
   // отладка
   if  (flgDebug)

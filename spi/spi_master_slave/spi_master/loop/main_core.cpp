@@ -106,12 +106,12 @@ case ChangeHardWare:
                   {       
                     case 0:{
                              scanner=new  Scanner(confighardwarev0); 
-                             scanner->hardware->setDefaultSettings(confighardwarev0.DACBiasSetPointPort,confighardwarev0.DACXYPort,confighardwarev0.DACZPort);                 
+                             scanner->hardware->setDefaultSettings(confighardwarev0.DACBiasVSetPointPort,confighardwarev0.DACXYPort,confighardwarev0.DACZPort);                 
                              break; 
                            }
                     case 1:{
                              scanner=new  Scanner(confighardwarev1);
-                             scanner->hardware->setDefaultSettings(confighardwarev1.DACBiasSetPointPort,confighardwarev1.DACXYPort,confighardwarev1.DACZPort);
+                             scanner->hardware->setDefaultSettings(confighardwarev1.DACBiasVSetPointPort,confighardwarev1.DACXYPort,confighardwarev1.DACZPort);
                              break;
                            }
                   } 
@@ -259,7 +259,7 @@ case INITCOMMMUTATION:
 case InitDAC_BIAS_SET_POINT:
               {
                 ALGCODE=ALGNONE;
-                if (!flgVirtual)   scanner->hardware->init_DACSetPointBias(vector[1]);       
+                if (!flgVirtual)   scanner->hardware->init_DACSetPointBiasV(vector[1]);       
                 break;         
               }   
 case InitDAC_Z:
@@ -283,7 +283,7 @@ case SetDACZeroCmd:
 case SET_BIAS:
               {
                 ALGCODE=ALGNONE;
-                scanner->hardware->set_Bias(vector[1]);
+                scanner->hardware->set_BiasV(vector[1]);
                 break;
               }               
 case SET_SETPOINT:
@@ -375,12 +375,12 @@ MainCore::MainCore()
    {       
     case 0:{
             scanner=new  Scanner(confighardwarev0); 
-            scanner->hardware->setDefaultSettings(confighardwarev0.DACBiasSetPointPort,confighardwarev0.DACXYPort,confighardwarev0.DACZPort);                 
+            scanner->hardware->setDefaultSettings(confighardwarev0.DACBiasVSetPointPort,confighardwarev0.DACXYPort,confighardwarev0.DACZPort);                 
             break; 
            }
     case 1:{ //MotherBoard
             scanner=new  Scanner(confighardwarev1);
-            scanner->hardware->setDefaultSettings(confighardwarev1.DACBiasSetPointPort,confighardwarev1.DACXYPort,confighardwarev1.DACZPort);
+            scanner->hardware->setDefaultSettings(confighardwarev1.DACBiasVSetPointPort,confighardwarev1.DACXYPort,confighardwarev1.DACZPort);
             break;
            }
    } 

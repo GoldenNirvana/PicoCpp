@@ -2450,16 +2450,16 @@ void Scanner::spectroscopyIV(std::vector<int32_t> &vector)
       rest=dlt%start_step;
       for (kk=0; kk<nstep; kk++)
       {
-       if (!flgVirtual) hardware->set_Bias(dacU);    
+       if (!flgVirtual) hardware->set_BiasV(dacU);    
        sleep_ms(10);   
        dacU+=step;
       } 
       dacU+=rest;
-      if (!flgVirtual) hardware->set_Bias(dacU);         
+      if (!flgVirtual) hardware->set_BiasV(dacU);         
       sleep_ms(10);  
       for(i=0; i<UPoints; i++)
       {
-       if (!flgVirtual) {hardware->set_Bias(dacU); }
+       if (!flgVirtual) {hardware->set_BiasV(dacU); }
        sleep_ms(delay);
        if (!flgVirtual)
        {
@@ -2492,14 +2492,14 @@ void Scanner::spectroscopyIV(std::vector<int32_t> &vector)
   nstep=dlt/start_step;
   for (kk=0; kk<nstep; kk++)
   {
-   if (!flgVirtual) hardware->set_Bias(dacU);  
+   if (!flgVirtual) hardware->set_BiasV(dacU);  
    sleep_ms(10);
    dacU+=step;
   }
     dacU+=rest;
-  if (!flgVirtual) hardware->set_Bias(dacU);  
+  if (!flgVirtual) hardware->set_BiasV(dacU);  
   sleep_ms(10);  
-  if (!flgVirtual) hardware->set_Bias(UBackup);  //240206
+  if (!flgVirtual) hardware->set_BiasV(UBackup);  //240206
   sleep_ms(10);
  ///////////////////////////////////////////////
  //  if(!flgVirtual)  unfreezeLOOP(500); //240322
@@ -2561,7 +2561,7 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
   sendStrData("code"+std::to_string(DEBUG)+" approach parameters  ",debugdata,100,true);
  } 
   hardware->set_SetPoint(SET_POINT); 
-  if (flgDev!=SFM) hardware->set_Bias(Bias);  
+  if (flgDev!=SFM) hardware->set_BiasV(Bias);  
   hardware->set_GainPID((uint16_t)GAIN); //240320
   if (!flgVirtual)
   {

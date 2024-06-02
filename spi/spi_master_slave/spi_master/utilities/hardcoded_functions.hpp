@@ -18,7 +18,7 @@ class HARDWARE
 {
 // WARNING HARDCODED FUNCTIONS
 private:
- DAC8563    *dacbspt; // DAC BIAS,SetPoint
+ DAC8563    *dacbvspt; // DAC BIAS,SetPoint
  DAC8563    *dacxy;   // DAC X,Y
  DAC8563    *dacz;    // DAC Z
  InputPort  *busyport;     // FIXME TEMP!!!
@@ -36,10 +36,10 @@ private:
  OutputPort *protractport;     // втянуть сканнер/вытянуть сканнер
  // add
  OutputPort *modulateuport;    // вкл модуляцию U
- OutputPort *i_stmport;        // порты  настройки СД читать I_STM
+ OutputPort *i_stmport;        // порты  настройки СД читать modulalate signal I_STM
  OutputPort *sensorport;       // порты  настройки выбор сенсора
  OutputPort *signloopport;     // знак ПИД
- OutputPort *integrator_inport;// выбор вход сигнала на ПИД из Сд или ПТН(I)
+ OutputPort *integrator_inport;// выбор вход сигнала вход. на ПИД из Сд или ПТН(I)
 
  uint16_t *repeatTwoTimes(); 
 
@@ -76,7 +76,7 @@ public:
 
 [[noreturn]] void activateError();
  //инициирование ЦАП1  SetPoint,BIAS
- void setDefaultSettings( uint8_t dacBiasSetPointPort, uint8_t  dacXYPort, uint8_t dacZPort);   
+ void setDefaultSettings( uint8_t dacBiasVSetPointPort, uint8_t  dacXYPort, uint8_t dacZPort);   
  
  void GetSOFTHARDWAREVersion();
 
@@ -96,13 +96,13 @@ public:
  
  void init_SPI(uint8_t port ,uint8_t v2 ,uint8_t v3, uint8_t v4); //инициирование SPI
 
- void init_DACSetPointBias(uint8_t spiport);  //инициирование ЦАП1  SetPoint,BIAS
+ void init_DACSetPointBiasV(uint8_t spiport);  //инициирование ЦАП1  SetPoint,BIASV
 
  void init_DACXY(uint8_t spiport);   //инициирование ЦАП2  XY
 
  void init_DACZ(uint8_t spiport);    //инициирование ЦАП2  Z
 
- void set_Bias(int32_t Bias);        //установка заданного значения напряжения
+ void set_BiasV(int32_t BiasV);      //установка заданного значения напряжения
 
  void set_SetPoint(int32_t SetPoint);//установка заданной опроры для ПИД
 

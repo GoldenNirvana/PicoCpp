@@ -8,8 +8,8 @@
 
 struct ConfigHardWare
 {
-  uint8_t DACBiasSetPointPort;  //2 DAC8563_1  BIAS SetPoint
-  uint8_t DACBiasSetPointMode;  //1 DAC8563_1  BIAS SetPoint
+  uint8_t DACBiasVSetPointPort;  //2 DAC8563_1  BIAS SetPoint
+  uint8_t DACBiasVSetPointMode;  //1 DAC8563_1  BIAS SetPoint
   uint8_t DACXYPort;    //3 DAC8563_2  XY
   uint8_t DACXYMode;    //2 DAC8563_2  XY
   uint8_t DACZPort;     //4 dac8563_3  Z
@@ -30,8 +30,8 @@ struct ConfigHardWare
 };
 struct ConfigHardWareNew
 {
-  uint8_t DACBiasSetPointPort;  //2 DAC8563_1  BIAS SetPoint
-  uint8_t DACBiasSetPointMode;  //1 DAC8563_1  BIAS SetPoint
+  uint8_t DACBiasVSetPointPort;  //2 DAC8563_1  BIAS SetPoint
+  uint8_t DACBiasVSetPointMode;  //1 DAC8563_1  BIAS SetPoint
   uint8_t DACXYPort;    //3 DAC8563_2  XY
   uint8_t DACXYMode;    //2 DAC8563_2  XY
   uint8_t DACZPort;     //4 dac8563_3  Z
