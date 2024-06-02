@@ -195,11 +195,11 @@ void HARDWARE::setDefaultSettings( uint8_t dacBiasSetPointPort, uint8_t  dacXYPo
  // init_commutation(sensor,loopsign,signal_in_loop,usemod_i_stm,usemod_u);
  /*
     default afm probe
-    sensor=1  
+    probe ->sensor=1
     signLoop:=1;     // -1
     useModU:=0;      //use mod U;
     useSD_ISTM:=0;   //use mod I
-    signalInLoop:=1; //sd
+    signalToLoop:=1; //sd
   */  
    if (HARDWAREVERSION==1) //Mother board
    {  
