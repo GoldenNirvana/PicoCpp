@@ -1,3 +1,6 @@
+//240603
+  изменения GainPID для MB
+  
 // 24/06/01
  добавлена Init communication
  и добавлена Default init comm в hardware default setting

@@ -2280,7 +2280,7 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
   sleep_ms(200);      
  for(int16_t j=0; j<NCurves; j++)    
  {
- Zt=-abs(ZStart);
+  Zt=-abs(ZStart);
   for(int16_t i=0; i<NPoints; i++)     //сближение
   {
    sleep_ms(delay);  

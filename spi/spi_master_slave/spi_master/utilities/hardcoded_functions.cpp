@@ -439,17 +439,17 @@ void HARDWARE::set_GainPID(uint16_t gain)
 {
   uint8_t ti;
   uint8_t tiadd;
-  ti=(uint8_t)(gain>>8);
-  tiadd=(uint8_t)(gain&0x00FF);
-  if (!flgVirtual) 
+  if (HARDWAREVERSION==0)
   {
-  //  set_io_value(2, ti); //???????  //240503
-   
+   ti=(uint8_t)(gain>>8);
+   tiadd=(uint8_t)(gain&0x00FF);
+  if (!flgVirtual) 
+  {  
     std::string binary = std::bitset<3>(ti).to_string();
     binary[2] == '1' ? gainPID0->enable() : gainPID0->disable();
     binary[1] == '1' ? gainPID1->enable() : gainPID1->disable();
     binary[0] == '1' ? gainPID2->enable() : gainPID2->disable();
-   
+  
    /* 
     (ti&0x04) == 1 ? gainPID0->enable() : gainPID0->disable();
     (ti&0x02) == 1 ? gainPID1->enable() : gainPID1->disable();
@@ -464,11 +464,27 @@ void HARDWARE::set_GainPID(uint16_t gain)
     intBuf[0] = tiadd;
     spi_write_blocking(spi_default, intBuf, 1); 
     decoder.activePort(7);
+   }
+   else  //add 240603
+   {
+    ti=(uint8_t)gain;
+    if (!flgVirtual) 
+    {  
+     std::string binary = std::bitset<3>(ti).to_string();
+     binary[2] == '1' ? gainPID0->enable() : gainPID0->disable();
+     binary[1] == '1' ? gainPID1->enable() : gainPID1->disable();
+     binary[0] == '1' ? gainPID2->enable() : gainPID2->disable();
+    } 
+   } 
   } 
   if (flgDebug)  
   {
    afc.clear();
-   afc = "code"+std::to_string(DEBUG)+"debug PID Gain "+ std::to_string(ti)+' '+ std::to_string(tiadd);
+   if (HARDWAREVERSION==0)
+   {
+     afc = "code"+std::to_string(DEBUG)+"debug PID Gain "+ std::to_string(ti)+' '+ std::to_string(tiadd);
+   }
+   else afc = "code"+std::to_string(DEBUG)+"debug PID Gain "+ std::to_string(ti);
    afc += +"\n";
    std::cout << afc;
    afc.clear();
