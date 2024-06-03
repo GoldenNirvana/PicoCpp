@@ -1,9 +1,9 @@
 #include "common_variables.hpp"
 
 //////////////////////////////////////////////
-std::string  SOFTVERSION="24.05.31.01 HWAMB";
+std::string  SOFTVERSION="24.06.03.0 HWAMB";
 std::string  SoftHARDWAREVERSION="0.1";
-int8_t       HARDWAREVERSION=0;   // PICo=0 ; MotherBoard=1
+int8_t       HARDWAREVERSION=0;   // PICO=0 ; MotherBoard=1
 //int8_t       HARDWAREVERSION_I=-1;
 // std::string  HARDWAREVERSION="2.0"; //new hardware
 std::string afc;  //dataout string
