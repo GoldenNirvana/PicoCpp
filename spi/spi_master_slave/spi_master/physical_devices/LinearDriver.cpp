@@ -11,13 +11,10 @@ LinearDriverBase::~LinearDriverBase()
 
 LinearDriverPico2040::~LinearDriverPico2040()
 {
-  //if (!_flgOnlyZ)
- // {
    delete(x_a);
    delete(x_b);
    delete(y_a);
    delete(y_b);
- // }; 
    delete(z_a);
    delete(z_b);  
 }
@@ -35,8 +32,6 @@ LinearDriverPico2040::LinearDriverPico2040(bool flgOnlyZ, ConfigLinearDrive conf
    afc.clear();
    sleep_ms(100); 
   }
- // if (!_flgOnlyZ)
-  {
    x_a=new OutputPort(_configlineardrive.XA_Port); 
    x_b=new OutputPort(_configlineardrive.XB_Port); 
    y_a=new OutputPort(_configlineardrive.YA_Port); 
@@ -49,16 +44,6 @@ LinearDriverPico2040::LinearDriverPico2040(bool flgOnlyZ, ConfigLinearDrive conf
    y_b->disable();
    z_a->disable();
    z_b->disable();
-  }
- /*
-  else
-  {
-   z_a=new OutputPort(_configlineardrive.ZA_Port); 
-   z_b=new OutputPort(_configlineardrive.ZB_Port);  
-   z_a->disable();
-   z_b->disable();
-  }
-  */
 }
 LinearDriverMotherBoard::~LinearDriverMotherBoard()
 {
@@ -85,13 +70,6 @@ LinearDriverMotherBoard::~LinearDriverMotherBoard()
    turnon_x=new OutputPort(_configlineardrive.XTurn_on_Port); 
    turnon_y=new OutputPort(_configlineardrive.YTurn_on_Port); 
    turnon_z=new OutputPort(_configlineardrive.ZTurn_on_Port); 
-   /*
-        z_a=new OutputPort(configlineardrive.A_Port); 
-        z_b=new OutputPort(configlineardrive.B_Port); 
-   turnon_x=new OutputPort(configlineardrive.XTurn_on_Port); 
-   turnon_y=new OutputPort(configlineardrive.YTurn_on_Port); 
-   turnon_z=new OutputPort(configlineardrive.ZTurn_on_Port); 
-   */
    z_a->disable();
    z_b->disable();
    turnon_x->disable();
