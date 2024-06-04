@@ -1946,8 +1946,10 @@ void Scanner::LID_move_toZ0(int lid_name, int freq, int scv, int n, int dir)  //
  // sleep_ms(1000);
  if (!flgVirtual)
  {
+   /*
    if (HARDWAREVERSION==0) {  hardware->linearDriver=new LinearDriverPico2040(true,configlineardrivev0); } //250506
    else                    {  hardware->linearDriver=new LinearDriverMotherBoard(configlineardrivev1); }
+   */
   hardware->retract();  //втянуть сканер
   sleep_ms(50);
   if (!flgVirtual)  hardware->linearDriver->activate(lid_name, freq, scv, std::abs(n), dir);
@@ -2012,13 +2014,15 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
                  break;
                 }     
      }
-   } 
+   }
+    /* 
    if (!flgVirtual)
    { 
+   
     if (HARDWAREVERSION==0) { hardware->linearDriver=new LinearDriverPico2040(false,configlineardrivev0);} //250506
     else                    { hardware->linearDriver=new LinearDriverMotherBoard(configlineardrivev1);   }
    } 
-
+ */
 
   if (lid_name == 90 || lid_name == 95) //X,Y
   {
@@ -2583,11 +2587,12 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
   buf_status.push_back(SignalValue);
 
   sendStrData( "code"+std::to_string(APPROACH),buf_status,100,false);
-  if (!flgVirtual)
+ /* if (!flgVirtual)
   {
    if (HARDWAREVERSION==0) { hardware->linearDriver=new LinearDriverPico2040(true,configlineardrivev0);}
    else                    { hardware->linearDriver=new LinearDriverMotherBoard(configlineardrivev1);  }
-  } 
+  }
+*/
   while (true)
   { 
     sleep_ms(INTDELAY);
@@ -2776,8 +2781,9 @@ testpiezomover(std::vector<int32_t> &vector)
      sendStrData( "code"+std::to_string(TESTMOVER),buf_status,100,true);
     if (!flgVirtual)
     {
-     if (HARDWAREVERSION==0) { hardware->linearDriver=new LinearDriverPico2040(true,configlineardrivev0);} //250506
+     /*if (HARDWAREVERSION==0) { hardware->linearDriver=new LinearDriverPico2040(true,configlineardrivev0);} //250506
      else                    { hardware->linearDriver=new LinearDriverMotherBoard(configlineardrivev1);  }
+     */
     } 
     // проверить, в воротах ли Z
     step = NSTEPS;          // NSTEPS > 0 - сближение

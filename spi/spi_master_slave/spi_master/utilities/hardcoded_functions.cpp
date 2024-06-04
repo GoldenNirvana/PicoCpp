@@ -48,8 +48,11 @@ HARDWARE::HARDWARE(ConfigHardWare confighardware)
      gainPID2=new OutputPort(confighardware.GainPID2); 
    freezeport=new OutputPort(confighardware.FreezePort);//заморозить/разморозить ПИД 
  protractport=new OutputPort(confighardware.ProtractPort);//вытянуть сканнер /втянуть сканнер  
+  if (!flgVirtual)
+  {
+    linearDriver=new LinearDriverPico2040(true,configlineardrivev0);   
+  }
 }
- 
 HARDWARE::HARDWARE(ConfigHardWareNew confighardware) 
 {
   //    _confighardware=confighardware;
@@ -100,6 +103,10 @@ modulateuport=new OutputPort(_confighardware.ModulateUPort);   // вкл=1; вы
   signloopport=new OutputPort(_confighardware.SignLoopPort);    // знак ПИД // 0=+ ; 1=-
  integrator_inport=new OutputPort(_confighardware.Interator_InPort);// выбор вход сигнала на ПИД из1-SD; 0=ПТН(I) 
  */
+  if (!flgVirtual)
+  {
+   linearDriver=new LinearDriverMotherBoard(configlineardrivev1);  
+  }
 }
 
 HARDWARE::~HARDWARE()
