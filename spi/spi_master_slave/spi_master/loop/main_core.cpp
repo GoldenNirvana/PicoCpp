@@ -224,18 +224,31 @@ case SCANNING:
                 if (flgСritical_section)critical_section_exit(&criticalSection); 
                 break; 
               }
+case FASTSCANNING:
+              {
+                ALGCODE=ALGNONE;
+                scanner->start_fastscan(vector);  
+                break; 
+              }  
+case SPECTROSOPY_IV:
+              {
+                ALGCODE=ALGNONE;
+                scanner->spectroscopyIV(vector);
+                break;
+              }  
+case SPECTROSOPY_AIZ:
+              {
+                ALGCODE=ALGNONE;
+                scanner->spectroscopyAIZ(vector);
+                break;
+              }                
 case SENDDATALIN:
               {
                 ALGCODE=ALGNONE;
                 scanner->readDATALin();
                 break;
               }              
-case FASTSCANNING:
-              {
-                ALGCODE=ALGNONE;
-                scanner->start_fastscan(vector);  
-                break; 
-              }   
+ 
 
 case SET_PID_GAIN:
               {
@@ -349,20 +362,7 @@ case UnFreezePIDAlgCode:
                 ALGCODE=ALGNONE;
                 scanner->hardware->unfreezeLOOP(vector[1]);
                 break;
-              }              
-case SPECTROSOPY_IV:
-              {
-                ALGCODE=ALGNONE;
-                scanner->spectroscopyIV(vector);
-                break;
-              }  
-case SPECTROSOPY_AIZ:
-              {
-                ALGCODE=ALGNONE;
-                scanner->spectroscopyAIZ(vector);
-                break;
-              }  
-              
+              }                           
 default:      {/*activateError();*/  break;}                                                                                                                                            
    }
   }

@@ -443,8 +443,8 @@ void HARDWARE::set_GainPID(uint16_t gain)
   {
    ti=(uint8_t)(gain>>8);
    tiadd=(uint8_t)(gain&0x00FF);
-  if (!flgVirtual) 
-  {  
+   if (!flgVirtual) 
+   {  
     std::string binary = std::bitset<3>(ti).to_string();
     binary[2] == '1' ? gainPID0->enable() : gainPID0->disable();
     binary[1] == '1' ? gainPID1->enable() : gainPID1->disable();

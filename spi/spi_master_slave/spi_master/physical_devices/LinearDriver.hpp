@@ -3,7 +3,7 @@
 #include <cstring>
 #include "../utilities/base_types/Decoder.hpp"
 #include "../loop/common_data/device_variables.hpp"
-#include "../loop/common_data/common_variables.hpp"   //add mf 231101 240505
+#include "../loop/common_data/common_variables.hpp"   
 
 class LinearDriverBase
 {

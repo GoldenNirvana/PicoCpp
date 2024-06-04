@@ -116,7 +116,6 @@ void Scanner::readADC()
   if (!flgVirtual)
   {
      hardware->getValuesFromAdc();
-  // auto ptr = hardware->getValuesFromAdc();
   //logger(ptr, 8);
    ZValue = (int16_t)spiBuf[ZPin];
       switch (vector[1]) //прибор
@@ -146,7 +145,7 @@ void Scanner::readADC()
         sendStrData("code"+std::to_string(ADC_READCmd),debugdata,100,true);     
   }
 }
-bool Scanner::getHoppingFlg() //получить флаг установлен ли флаг сканирования прыжками
+bool Scanner::getHoppingFlg() //получить флаг- установлен ли флаг сканирования прыжками
 {
   return (bool)conf_.flgHoping;
 }
@@ -326,7 +325,6 @@ struct Config
         }
       }
     }
-
     switch (conf_.path)
     {
       case 0://X+
@@ -1865,7 +1863,6 @@ Point Scanner::getX0Y0()
   sleep_ms(200);
   debugdata.emplace_back(pos_.x);
   debugdata.emplace_back(pos_.y);
-//   std::string str="code"+std::to_string(GET_CURRENTX0Y0);
   sendStrData("code"+std::to_string(GET_CURRENTX0Y0),debugdata,100,true);
   return pos_;
 }
@@ -1944,7 +1941,7 @@ void Scanner::move_to(const Point &point, uint16_t delay)
   }
 }
 
-void Scanner::LID_move_toZ0(int lid_name, int f, int p, int n, int dir)  //отвестись в безопасную начальную точку по Z
+void Scanner::LID_move_toZ0(int lid_name, int freq, int scv, int n, int dir)  //отвестись в безопасную начальную точку по Z
 {
  // sleep_ms(1000);
  if (!flgVirtual)
@@ -1953,7 +1950,7 @@ void Scanner::LID_move_toZ0(int lid_name, int f, int p, int n, int dir)  //от�
    else                    {  hardware->linearDriver=new LinearDriverMotherBoard(configlineardrivev1); }
   hardware->retract();  //втянуть сканер
   sleep_ms(50);
-  if (!flgVirtual)  hardware->linearDriver->activate(lid_name, f, p, std::abs(n), dir);
+  if (!flgVirtual)  hardware->linearDriver->activate(lid_name, freq, scv, std::abs(n), dir);
   hardware->protract();  //вытянуть сканер
  } 
   sleep_ms(1000);
@@ -1976,12 +1973,12 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
   const int touch = 2;
   int16_t ln;  
   bool ldir;
-  int16_t p,f;
+  int16_t freq, scv;
   uint16_t flgDev;
  // SET VALUE FROM RX_CORE
           lid_name=(uint8_t)vector[1]; //  int lid_name
-                 f=vector[2]; //  int f
-                 p=vector[3]; //  int p
+              freq=vector[2]; 
+               scv=vector[3]; 
                 ln=abs((int16_t)vector[4]); //  int nsteps
               ldir=(bool)vector[5]; //  int dir
         GATE_Z_MAX=(uint16_t)vector[6]; //  int Z gate max
@@ -2050,7 +2047,7 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
       status = none;
       if (!flgVirtual) //add mf
       {
-        hardware->linearDriver->activate(lid_name, f, p, std::abs(ln), ldir);
+        hardware->linearDriver->activate(lid_name, freq, scv, std::abs(ln), ldir);
       } 
       else  {    }
       debugdata.emplace_back(status);
@@ -2064,7 +2061,6 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
     status = none;
     while (!STOP) //(LID_MOVE_UNTIL_STOP)
     {
-    //   Z_STATE = true;  // 231215 ????
       if (CONFIG_UPDATE)
       { 
         CONFIG_UPDATE = false;
@@ -2129,7 +2125,7 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
          break;
         }
        }
-        hardware->linearDriver->activate(lid_name, f, p, std::abs(ln), ldir);
+        hardware->linearDriver->activate(lid_name, freq, scv, std::abs(ln), ldir);
       } 
       else //virtual
       {
@@ -2432,7 +2428,7 @@ void Scanner::spectroscopyIV(std::vector<int32_t> &vector)
       int16_t nstep;
       int16_t rest;    
       start_step=100;
-      dacU=UBackup;//+ShiftDAC; //240206
+      dacU=UBackup; //+ShiftDAC; //240206
       UStart=UStart;//+ShiftDAC;
       step=-start_step;
 //  снятие ВАХ
@@ -2548,7 +2544,6 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
   scv            =(int16_t) vector[9]; // scv
   flgDev         =(int16_t) vector[10];//  0= SFM, 1=STM ;SICMAC-2; SICMDC-3;  device type
   Bias           =(int16_t) vector[11];// Voltage need for STM,SICM
-
  //need to add channel Bias ????
  //need to add channel SetPoint ????
  // ZValue=-1000;
@@ -2593,7 +2588,6 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
    if (HARDWAREVERSION==0) { hardware->linearDriver=new LinearDriverPico2040(true,configlineardrivev0);}
    else                    { hardware->linearDriver=new LinearDriverMotherBoard(configlineardrivev1);  }
   } 
-  
   while (true)
   { 
     sleep_ms(INTDELAY);
@@ -2950,8 +2944,8 @@ testpiezomover(std::vector<int32_t> &vector)
             }   
             else
             {
-                sleep_ms(INTDELAY);
-                ZValue=ZValue-step*100;
+              sleep_ms(INTDELAY);
+              ZValue=ZValue-step*100;
             }     
               buf_status.push_back(ZValue);
               buf_status.push_back(step);
@@ -3025,7 +3019,6 @@ void Scanner::start_frqscan()
   int16_t  delay;
   uint32_t freqstart;
   int16_t  npoint;
-  // n, start_freq, step, delay
     npoint=vector[1];
  freqstart=(uint32_t)vector[2];
   freqstep=(uint32_t)vector[3];

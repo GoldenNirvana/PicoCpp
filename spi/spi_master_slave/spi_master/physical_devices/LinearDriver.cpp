@@ -37,7 +37,6 @@ LinearDriverPico2040::LinearDriverPico2040(bool flgOnlyZ, ConfigLinearDrive conf
   }
   if (!_flgOnlyZ)
   {
-   
    x_a=new OutputPort(_configlineardrive.XA_Port); 
    x_b=new OutputPort(_configlineardrive.XB_Port); 
    y_a=new OutputPort(_configlineardrive.YA_Port); 
@@ -62,7 +61,6 @@ LinearDriverPico2040::LinearDriverPico2040(bool flgOnlyZ, ConfigLinearDrive conf
   }
   else
   {
-  
    z_a=new OutputPort(_configlineardrive.ZA_Port); 
    z_b=new OutputPort(_configlineardrive.ZB_Port);  
   /*

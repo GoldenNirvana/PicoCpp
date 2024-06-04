@@ -120,7 +120,6 @@ private:
   Point pos_, prev_point;
   Config conf_;
 public:
- //  ConfigHardWare _confighardware;
 };
 extern Scanner *scanner;
 #endif

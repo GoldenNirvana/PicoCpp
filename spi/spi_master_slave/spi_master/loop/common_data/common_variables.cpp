@@ -1,11 +1,11 @@
 #include "common_variables.hpp"
 
 //////////////////////////////////////////////
-std::string  SOFTVERSION="24.06.03.2 HWAMB";
+std::string  SOFTVERSION="24.06.04.1 HWAMB";
 std::string  SoftHARDWAREVERSION="0.1";
 int8_t       HARDWAREVERSION=0;   // PICO=0 ; MotherBoard=1
 //int8_t       HARDWAREVERSION_I=-1;
-// std::string  HARDWAREVERSION="2.0"; //new hardware
+//std::string  HARDWAREVERSION="2.0"; //new hardware
 std::string afc;  //dataout string
 std::vector<int32_t> vector;
 std::vector<int32_t> vupdateparams;
@@ -15,7 +15,7 @@ std::atomic<int16_t>      ALGCODE;
 std::atomic<bool> CONFIG_UPDATE;
 std::atomic<bool> STOP;
 std::atomic<bool> TheadDone;   //need dor synchronization with PC 
-std::atomic<bool> DrawDone;
+std::atomic<bool> DrawDone;    //need dor synchronization with PC 
 std::atomic<bool> ADC_IS_READY_TO_READ = true;
 bool AD9833_SENDER = false;
 bool AD8400_SENDER = false;

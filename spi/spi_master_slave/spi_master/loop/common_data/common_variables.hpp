@@ -63,8 +63,8 @@
 #define porty                    1
 
 extern std::string  SOFTVERSION;
-extern std::string  SoftHARDWAREVERSION;  ///  {0,1,....} or {0.1, 1.1...} 
-extern int8_t       HARDWAREVERSION;  //PICO=0; MotherBoard=1
+extern std::string  SoftHARDWAREVERSION;  //  {0,1,....} or {0.1, 1.1...} 
+extern int8_t       HARDWAREVERSION;      //PICO=0; MotherBoard=1
 extern uint32_t     DEBUG_LEVEL;
 extern std::string afc;
 extern uint16_t spiBuf[8];
@@ -76,7 +76,7 @@ extern int32_t vectorSize;
 extern bool AD9833_SENDER;
 extern bool AD8400_SENDER;
 extern bool AD8400_SET_GAIN;   // AD8400
-extern bool AD5664;            //
+extern bool AD5664;            
 
 extern bool ADC_ENABLE_DISABLE;//AD7606
 //extern bool ADC_RESET;         //AD7606     
@@ -91,23 +91,22 @@ extern std::atomic<int16_t> ALGCODE;
 extern std::atomic<bool> CONFIG_UPDATE;
 extern std::atomic<bool> STOP;
 extern std::atomic<bool> TheadDone;   //need dor synchronization with PC 
-extern std::atomic<bool> DrawDone;
+extern std::atomic<bool> DrawDone;    //need dor synchronization with PC 
 extern std::atomic<bool> ADC_IS_READY_TO_READ;
 
 extern bool flgParamsUpdated;
-extern bool flgDebug;
+extern bool flgDebug;    // output diagnostics
 extern bool flgVirtual;  // Virtual device for debuging and simulation
 extern bool flgСritical_section;
-extern bool flgUseUART;  //
+extern bool flgUseUART;  
 extern uint8_t ZPin;
-extern uint8_t AmplPin; //amplitude
-extern uint8_t IPin;    //current
+extern uint8_t AmplPin;       //amplitude
+extern uint8_t IPin;          //current
 extern uint8_t flgDebugLevel; //  leveldebug
-extern int16_t ZValue; //for simulation
-extern int16_t SignalValue; //for simulation //  
+extern int16_t ZValue;        //for simulation
+extern int16_t SignalValue;   //for simulation   
 extern int16_t ZMaxValue;
 extern int32_t ShiftDac;
 
-//extern volatile int32_t current_channel;
 extern critical_section_t criticalSection;
 #endif //PICO_EXAMPLES_COMMON_VARIABLES_HPP
