@@ -1962,7 +1962,7 @@ void Scanner::LID_move_toZ0(int lid_name, int freq, int scv, int n, int dir)  //
   debugdata.emplace_back(dir);
   sendStrData("code"+std::to_string(DEBUG)+" autorising done ",debugdata,100,true);
  } 
-  if (!flgVirtual) delete(hardware->linearDriver); 
+ // if (!flgVirtual) delete(hardware->linearDriver); 
 }
 void Scanner::positioningXYZ(std::vector<int32_t> &vector)
 {
@@ -2172,7 +2172,7 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
   TheadDone = false;
   sendStrData("code"+std::to_string(END)+"end");
   hardware->dark();
- if (!flgVirtual) delete(hardware->linearDriver);
+ //if (!flgVirtual) delete(hardware->linearDriver);
 }
 
  int16_t  Scanner::DACZMove( int16_t Z0, int16_t dZ, int16_t stepsize, uint16_t delay )   // stepsize=+-1  sign  -> dir 
@@ -2732,7 +2732,7 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
   } 
   TheadDone = false;
   sendStrData("code"+std::to_string(END)+"end");
- if (!flgVirtual) delete(hardware->linearDriver);
+ //if (!flgVirtual) delete(hardware->linearDriver);
 }
 
 void Scanner::
@@ -3010,7 +3010,7 @@ testpiezomover(std::vector<int32_t> &vector)
   } 
   TheadDone = false;
   sendStrData("code"+std::to_string(END)+"end");
-  if (!flgVirtual) delete(hardware->linearDriver);
+ // if (!flgVirtual) delete(hardware->linearDriver);
  }   //test mover
 
 void Scanner::start_frqscan()
