@@ -27,7 +27,7 @@ class LinearDriverPico2040: public LinearDriverBase
  public:
    LinearDriverPico2040(bool flgOnlyZ,ConfigLinearDrive configlineardrive);  
   ~LinearDriverPico2040();
-   void activate(int command, int freq, int p, int n, bool dir) const override;
+   void activate(int command, int freq, int duty, int n, bool dir) const override;
 };
 
 class LinearDriverMotherBoard: public LinearDriverBase

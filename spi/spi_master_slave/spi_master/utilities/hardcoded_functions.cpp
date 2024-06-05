@@ -273,8 +273,8 @@ void HARDWARE::setLoopSign(int8_t value)
 {
   switch (value)
  {
-   case 0:{signloopport->disable(); break;}
-   case 1:{signloopport->enable(); break;}
+   case 0:{signloopport->disable(); break;} // +
+   case 1:{signloopport->enable(); break; } // -
  }
 }
 
@@ -282,16 +282,16 @@ void HARDWARE::setSignal_In_Loop(int8_t value)
 {
     switch (value)
  {
-  case 0:{integrator_inport->disable(); break;}
-  case 1:{integrator_inport->enable(); break;} // I_STM
+  case 0:{integrator_inport->disable(); break;}// Ampl
+  case 1:{integrator_inport->enable();  break;}// I
  }
 } 
-void HARDWARE::useSDModulateI_STM(int8_t value)
+void HARDWARE::useModulateI(int8_t value)
 { 
   switch (value)
  {
   case 0:{i_stmport->disable(); break;} 
-  case 1:{i_stmport->enable(); break;}//SD ->Loop use модуляцию I_STM
+  case 1:{i_stmport->enable(); break;} //Loop use модуляцию I->SD
  }
 }
  
@@ -313,13 +313,13 @@ void HARDWARE::setModulateU(int8_t value)
  }
 }
 
-void HARDWARE::init_commutation(uint8_t sensor ,uint8_t loopsign ,uint8_t signal_in_loop , uint8_t usemod_i_stm,uint8_t usemod_u)
+void HARDWARE::init_commutation(uint8_t sensor ,uint8_t loopsign ,uint8_t signal_in_loop , uint8_t usemod_i,uint8_t usemod_u)
 {
  setLoopSign(loopsign);
  setSignal_In_Loop(signal_in_loop);
  setModulateU(usemod_u);
  setSensor(sensor); 
- useSDModulateI_STM(usemod_i_stm);
+ useModulateI(usemod_i);
 }
 void HARDWARE::init_SPI( uint8_t port ,uint8_t v2 ,uint8_t v3, uint8_t v4 )
 {

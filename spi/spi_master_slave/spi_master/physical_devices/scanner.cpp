@@ -1941,14 +1941,14 @@ void Scanner::move_to(const Point &point, uint16_t delay)
   }
 }
 
-void Scanner::LID_move_toZ0(int lid_name, int freq, int scv, int n, int dir)  //отвестись в безопасную начальную точку по Z
+void Scanner::LID_move_toZ0(int lid_name, int freq, int duty, int n, int dir)  //отвестись в безопасную начальную точку по Z
 {
  // sleep_ms(1000);
  if (!flgVirtual)
  {
   hardware->retract();  //втянуть сканер
   sleep_ms(50);
-  if (!flgVirtual)  hardware->linearDriver->activate(lid_name, freq, scv, std::abs(n), dir);
+  if (!flgVirtual)  hardware->linearDriver->activate(lid_name, freq,duty, std::abs(n), dir);
   hardware->protract();  //вытянуть сканер
  } 
   sleep_ms(1000);
@@ -1970,12 +1970,12 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
   const int touch = 2;
   int16_t ln;  
   bool ldir;
-  int16_t freq, scv;
+  int16_t freq, duty;
   uint16_t flgDev;
  // SET VALUE FROM RX_CORE
           lid_name=(uint8_t)vector[1]; //  int lid_name
               freq=vector[2]; 
-               scv=vector[3]; 
+              duty=vector[3]; 
                 ln=abs((int16_t)vector[4]); //  int nsteps
               ldir=(bool)vector[5]; //  int dir
         GATE_Z_MAX=(uint16_t)vector[6]; //  int Z gate max
@@ -2037,7 +2037,7 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
       status = none;
       if (!flgVirtual) //add mf
       {
-        hardware->linearDriver->activate(lid_name, freq, scv, std::abs(ln), ldir);
+        hardware->linearDriver->activate(lid_name, freq, duty, std::abs(ln), ldir);
       } 
       else  {    }
       debugdata.emplace_back(status);
@@ -2115,7 +2115,7 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
          break;
         }
        }
-        hardware->linearDriver->activate(lid_name, freq, scv, std::abs(ln), ldir);
+        hardware->linearDriver->activate(lid_name, freq, duty, std::abs(ln), ldir);
       } 
       else //virtual
       {
@@ -2515,7 +2515,7 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
 
   int16_t  SET_POINT;
   int16_t  GATE_Z_MAX, GATE_Z_MIN;
-  int16_t  freq, scv;//
+  int16_t  freq, duty;//
   int16_t  GAIN, NSTEPS;
   uint16_t INTDELAY, SCANNERDECAY;
   int16_t  flgDev;
@@ -2530,7 +2530,7 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
   GAIN           =(uint16_t)vector[6]; // gain  //240320
   SCANNERDECAY   =(uint16_t)vector[7]; // scannerDelay 
   freq           =(int16_t) vector[8]; // freq
-  scv            =(int16_t) vector[9]; // scv
+  duty           =(int16_t) vector[9]; // scv
   flgDev         =(int16_t) vector[10];//  0= SFM, 1=STM ;SICMAC-2; SICMDC-3;  device type
   Bias           =(int16_t) vector[11];// Voltage need for STM,SICM
  //need to add channel Bias ????
@@ -2692,7 +2692,7 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
     {
       hardware->retract();  //втянуть сканнер
       sleep_ms(SCANNERDECAY);
-      hardware->linearDriver->activate(99, freq, scv, std::abs(NSTEPS), NSTEPS > 0);
+      hardware->linearDriver->activate(99, freq, duty, std::abs(NSTEPS), NSTEPS > 0);
       hardware->protract(); //вытянуть
     }
   } //while

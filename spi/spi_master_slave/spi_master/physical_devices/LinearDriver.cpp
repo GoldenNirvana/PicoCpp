@@ -77,7 +77,7 @@ LinearDriverMotherBoard::~LinearDriverMotherBoard()
    turnon_z->disable();
  }
 
-void LinearDriverPico2040::activate(int command, int freq, int p, int n, bool dir)  const ///
+void LinearDriverPico2040::activate(int command, int freq, int duty, int n, bool dir)  const ///
 {
   OutputPort *ptrA = z_a;
   OutputPort *ptrB = z_b;
@@ -98,7 +98,7 @@ void LinearDriverPico2040::activate(int command, int freq, int p, int n, bool di
     ptrB = z_b;
   }
   double t_abs =(double)(1000000 / freq);        // 2000                     // mf 23108
-  double t_low =(double)(p * t_abs / 1000);  //  750 * 2000 / 1000000 = 1.5 // mf 23108
+  double t_low =(double)(duty * t_abs / 1000);  //  750 * 2000 / 1000000 = 1.5 // mf 23108
   double t_high = t_abs - t_low;    // 2 - 1.5 = 0.5
 
   if (dir)

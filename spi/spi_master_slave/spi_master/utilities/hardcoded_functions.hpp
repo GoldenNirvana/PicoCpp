@@ -80,19 +80,19 @@ public:
  
  void GetSOFTHARDWAREVersion();
 
- void set_Freq(uint32_t freq);       //установка заданной частоты генератора
+ void set_Freq(uint32_t freq);    // установка заданной частоты генератора
 
- void setLoopSign(int8_t value);
+ void setLoopSign(int8_t value);  // 0->+ ; 1-> -1
 
  void setSignal_In_Loop(int8_t value);
  
- void useSDModulateI_STM(int8_t value);
+ void useModulateI(int8_t value); // 0-> none; 1->use
  
- void setSensor(int8_t value);
+ void setSensor(int8_t value);    // cantilever=0;  probe =1
  
- void setModulateU(int8_t value);
+ void setModulateU(int8_t value); // 0-> none; 1->use
 
- void init_commutation(uint8_t sensor ,uint8_t loopsign ,uint8_t signal_in_loop , uint8_t usemod_i_stm,uint8_t usemod_u);
+ void init_commutation(uint8_t sensor ,uint8_t loopsign ,uint8_t signal_in_loop , uint8_t usemod_i,uint8_t usemod_u);
  
  void init_SPI(uint8_t port ,uint8_t v2 ,uint8_t v3, uint8_t v4); //инициирование SPI
 
