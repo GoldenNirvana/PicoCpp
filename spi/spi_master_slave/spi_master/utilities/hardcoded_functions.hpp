@@ -88,7 +88,7 @@ public:
  
  void useModulateI(int8_t value); // 0-> none; 1->use
  
- void setSensor(int8_t value);    // cantilever=0;  probe =1
+ void setSensor(int8_t value);    // cantilever=1;  probe =0
  
  void setModulateU(int8_t value); // 0-> none; 1->use
 
