@@ -84,9 +84,9 @@ public:
 
  void setLoopSign(int8_t value);  // 0->+ ; 1-> -1
 
- void setSignal_In_Loop(int8_t value);
+ void setSignal_In_Loop(int8_t value); // Ampl=1 ; I=0
  
- void useModulateI(int8_t value); // 0-> none; 1->use
+ void useModulateI(int8_t value); // 1-> none; 0->use
  
  void setSensor(int8_t value);    // cantilever=1;  probe =0
  

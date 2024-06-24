@@ -3,9 +3,10 @@
 //////////////////////////////////////////////
 std::string  SOFTVERSION="24.06.04.1 HWAMB";
 std::string  SoftHARDWAREVERSION="0.1";
-int8_t       HARDWAREVERSION=1;   // PICO=0 ; MotherBoard(WhiteBoard)=1
+int8_t       HARDWAREVERSION=1;   // PICO(BB)=0 ; MotherBoard(WhiteBoard)=1
 //int8_t       HARDWAREVERSION_I=-1;
 //std::string  HARDWAREVERSION="2.0"; //new hardware
+bool    flgUseFPGA = false;  //use PID ПЛИС
 std::string afc;  //dataout string
 std::vector<int32_t> vector;
 std::vector<int32_t> vupdateparams;
@@ -33,6 +34,7 @@ bool    flgDebug=false;
 bool    flgVirtual = false;     // флаг симуляции работа микроконтроллера
 uint8_t flgDebugLevel = 3;      // уровень отладки
 bool    flgUseUART = false;     // использовать UART для передачи данных
+
 //данные для симуляции 
 int16_t ZValue      = maxint16_t;
 int16_t SignalValue = maxint16_t;

@@ -199,18 +199,19 @@ void HARDWARE::setDefaultSettings( uint8_t dacBiasVSetPointPort, uint8_t  dacXYP
   
   retract();        //втянуть 240403 ???
 //************************************************************* 
- // init_commutation(sensor,signloop,signal_to_loop,usemod_i_stm,usemod_u);
+ // init_commutation(sensor,signloop,signal_to_loop,usenotmod_I,usemod_U);
  /*
-    default afm probe
-    sensor=1   probe=1;  cantilever =0
+    default afm probe ?????
+    sensor=0           // probe=0;  cantilever =1
     signLoop:=1;       // 1= -1 ; 0 = +1
-    usemod_u:=0;       // use mod U; not=0
-    usemod_i_stm:=0;   // use mod I  not=0
-    signal_to_loop:=1; // sd->to loop =1
+    signal_to_loop:=1; // sd->to loop =1 Ampl  
+    usemod_U:=0;       // use mod U; not=0
+    usenotmod_I:=1;       // use mod I not  =1 ; 
   */  
-   if (HARDWAREVERSION==1) //Mother board
+   if (HARDWAREVERSION==1) //Mother board(WB)
    {  
-    init_commutation(1 , 1 , 1 , 0, 0);  //afm
+     init_commutation(0 , 1 , 1 , 1, 0);   //afm
+    //init_commutation(1 , 1 , 1 , 0, 0);  //afm  240624
    }
   init_DACSetPointBiasV(dacBiasVSetPointPort);   //инициирование ЦАП1  SetPoint,BIAS
 
@@ -313,13 +314,13 @@ void HARDWARE::setModulateU(int8_t value)
  }
 }
 
-void HARDWARE::init_commutation(uint8_t sensor ,uint8_t loopsign ,uint8_t signal_in_loop , uint8_t usemod_i,uint8_t usemod_u)
-{
- setLoopSign(loopsign);
- setSignal_In_Loop(signal_in_loop);
- setModulateU(usemod_u);
+void HARDWARE::init_commutation(uint8_t sensor ,uint8_t loopsign ,uint8_t signal_in_loop , uint8_t usenotmod_I,uint8_t usemod_U)
+{ 
  setSensor(sensor); 
- useModulateI(usemod_i);
+ setLoopSign(loopsign);
+ setSignal_In_Loop(signal_in_loop); //Ampl or I
+ useModulateI(usenotmod_I);
+ setModulateU(usemod_U);
 }
 void HARDWARE::init_SPI( uint8_t port ,uint8_t v2 ,uint8_t v3, uint8_t v4 )
 {
