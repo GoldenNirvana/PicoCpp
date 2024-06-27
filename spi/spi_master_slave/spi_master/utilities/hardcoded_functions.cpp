@@ -272,11 +272,19 @@ void HARDWARE::get_result_from_adc()
 }
 void HARDWARE::setLoopSign(int8_t value)
 {
-  switch (value)
- {
-   case 0:{signloopport->disable(); break;} // +
-   case 1:{signloopport->enable(); break; } // -
- }
+  if (flgUseFPGA) 
+  {
+
+
+  }
+  else
+  {
+   switch (value)
+   {
+    case 0:{signloopport->disable(); break;} // +
+    case 1:{signloopport->enable(); break; } // -
+   }
+  } 
 }
 
 void HARDWARE::setSignal_In_Loop(int8_t value)

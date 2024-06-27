@@ -28,6 +28,17 @@ struct ConfigHardWare
   uint8_t FreezePort;   //26 заморозить сканнер=1; разморозить =0
   uint8_t ProtractPort; //27 втянуть    сканнер=1; вытянуть    =0
 };
+struct FPGAadress
+{
+ uint32_t wbKx[3];
+ uint32_t wbInMulKoef;
+ uint32_t wbInShift;
+ uint32_t wbOutMulKoef;
+ uint32_t wbOutShift;
+ uint32_t wbSetpoint;
+ uint32_t pidControl;
+};
+
 struct ConfigHardWareNew
 {
   uint8_t DACBiasVSetPointPort;  //2 DAC8563_1  BIAS SetPoint
@@ -75,6 +86,13 @@ struct ConfigLinearDriveNew
   uint8_t ZTurn_on_Port;        
 };
 
+extern uint8_t FPGADELIM;
+extern uint8_t FPGACRCPAR;
+extern uint8_t FPGAREAD;
+extern uint8_t FPGAWRITE;
+extern uint8_t FPGAASC;
+
+
 extern Spi               spi;
 //extern LinearDriver      *linearDriver;
 extern Decoder           decoder;
@@ -82,4 +100,5 @@ extern ConfigHardWare       confighardwarev0;
 extern ConfigHardWareNew    confighardwarev1;
 extern ConfigLinearDrive    configlineardrivev0;
 extern ConfigLinearDriveNew configlineardrivev1;
+extern FPGAadress           arrModule_0;
 #endif //PICO_EXAMPLES_DEVICE_VARIABLES_HPP
