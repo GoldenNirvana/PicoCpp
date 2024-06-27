@@ -5,7 +5,13 @@
 #include "../../utilities/base_types/decoder.hpp"
 //#include "../../physical_devices/LinearDriver.hpp"
 
+#define UART_ID uart1
+#define BAUD_RATEFPGA 400000
 
+// We are using pins 0 and 1, but see the GPIO function select table in the
+// datasheet for information on which other pins can be used.
+#define UART_TX_PIN 16
+#define UART_RX_PIN 17
 struct ConfigHardWare
 {
   uint8_t DACBiasVSetPointPort;  //2 DAC8563_1  BIAS SetPoint
