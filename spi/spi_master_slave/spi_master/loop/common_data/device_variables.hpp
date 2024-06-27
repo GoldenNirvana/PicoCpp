@@ -44,6 +44,20 @@ struct FPGAadress
  uint32_t wbSetpoint;
  uint32_t pidControl;
 };
+/*
+Rx Frame format big-endian Offs:
+  Size:      1       1       4        4         1         1
+Fields: [ DELIM ] [ CMD ] [ ADDR ] [<DATA>] [CRC/PAR] [ DELIM ]
+*/
+struct FPGAWriteData
+{
+ uint8_t  delimbegin;
+ uint8_t  cmd;
+ uint32_t addr;
+ uint32_t data;
+ uint8_t  crcpar;
+ uint8_t  delimend;
+ };
 
 struct ConfigHardWareNew
 {

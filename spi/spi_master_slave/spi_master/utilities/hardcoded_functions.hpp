@@ -3,6 +3,7 @@
 #include <vector>
 #include <ctime>
 #include <cstdint>
+#include <iostream> //add
 #include <hardware/clocks.h>
 
 #include "../utilities/base_types/io_ports.h"

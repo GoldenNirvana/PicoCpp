@@ -9,11 +9,11 @@
 #include <pico/multicore.h>
 #include <bitset>
 
-#define UART_TX_PIN 8
-#define UART_RX_PIN 9
+//#define UART_TX_PIN 8
+//#define UART_RX_PIN 9
 
-#define FPGAUART_TX_PIN 8
-#define FPGAUART_RX_PIN 9
+#define FPGAUART_TX_PIN 17 //!
+#define FPGAUART_RX_PIN 18 //!
 
 HARDWARE::HARDWARE(ConfigHardWare confighardware) 
 {
@@ -470,33 +470,64 @@ void HARDWARE::set_GainPID(uint16_t gain)
     binary[2] == '1' ? gainPID0->enable() : gainPID0->disable();
     binary[1] == '1' ? gainPID1->enable() : gainPID1->disable();
     binary[0] == '1' ? gainPID2->enable() : gainPID2->disable();
-  
-   /* 
+     /* 
     (ti&0x04) == 1 ? gainPID0->enable() : gainPID0->disable();
     (ti&0x02) == 1 ? gainPID1->enable() : gainPID1->disable();
     (ti&0x01) == 1 ? gainPID2->enable() : gainPID2->disable();
    */ 
     // отладка
-    uint8_t intBuf[1]; 
-    decoder.activePort(6);
-    Spi::setProperties(8, 0, 0);
-    intBuf[0] = 0;
-    spi_write_blocking(spi_default, intBuf, 1); 
-    intBuf[0] = tiadd;
-    spi_write_blocking(spi_default, intBuf, 1); 
-    decoder.activePort(7);
-   }
-   else  //add 240603
-   {
+     uint8_t intBuf[1]; 
+     decoder.activePort(6);
+     Spi::setProperties(8, 0, 0);
+     intBuf[0] = 0;
+     spi_write_blocking(spi_default, intBuf, 1); 
+     intBuf[0] = tiadd;
+     spi_write_blocking(spi_default, intBuf, 1); 
+     decoder.activePort(7);
+    }
+  }
+  else  //add 240603 WB
+  {
     ti=(uint8_t)gain;
     if (!flgVirtual) 
-    {  
-     std::string binary = std::bitset<3>(ti).to_string();
-     binary[2] == '1' ? gainPID0->enable() : gainPID0->disable();
-     binary[1] == '1' ? gainPID1->enable() : gainPID1->disable();
-     binary[0] == '1' ? gainPID2->enable() : gainPID2->disable();
+    { 
+     if (!flgUseFPGA)
+     { 
+      std::string binary = std::bitset<3>(ti).to_string();
+      binary[2] == '1' ? gainPID0->enable() : gainPID0->disable();
+      binary[1] == '1' ? gainPID1->enable() : gainPID1->disable();
+      binary[0] == '1' ? gainPID2->enable() : gainPID2->disable();
+     }
+     else 
+     { //UseFPGA
+   /*   
+     //  uart_write_blocking(uart0, const uint8_t *src, size_t len); FPGAadress AA 01 08400000 01020304 BB AA
+       FPGAWriteData  data;
+       data.delimbegin=0xAA;
+       data.delimend=0xAA;
+       data.crcpar=0xBB;
+       data.cmd=0x01;
+       data.addr=0x08430200;
+       data.data=gain;//0x00000005;
+//uint8_t *arr_bytes = reinterpret_cast<uint8_t *>(data);
+
+  char* my_s_bytes = reinterpret_cast<char*>(&my_s);
+  // or, if you prefer static_cast:
+  char* my_s_bytes = static_cast<char*>(static_cast<void*>(&my_s));
+MyStruct s;
+char [] buffer = new char[sizeof(s)];
+memcpy(&buffer, &s, sizeof(s));
+
+      char[] buffer = new char[sizeof(data)];
+      memcpy(&buffer, &data, sizeof(data));
+     if (uart_is_writable(uart0)) 
+     {
+       uart_write_blocking(uart0, buffer,sizeof(data));
+       //uart_write_blocking(uart_inst_t *uart, const uint8_t *src, size_t len)
+     }
+  */
+      }
     } 
-   } 
   } 
   if (flgDebug)  
   {
