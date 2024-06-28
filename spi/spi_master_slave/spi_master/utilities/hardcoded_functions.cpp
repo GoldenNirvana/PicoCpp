@@ -9,8 +9,8 @@
 #include <pico/multicore.h>
 #include <bitset>
 
-//#define UART_TX_PIN 8
-//#define UART_RX_PIN 9
+#define UART_TX_PIN 8
+#define UART_RX_PIN 9
 
 #define FPGAUART_TX_PIN 17 //!
 #define FPGAUART_RX_PIN 18 //!
