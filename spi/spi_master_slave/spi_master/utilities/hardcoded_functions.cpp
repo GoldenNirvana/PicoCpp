@@ -180,11 +180,11 @@ void HARDWARE::setDefaultSettings( uint8_t dacBiasVSetPointPort, uint8_t  dacXYP
   gpio_set_function(UART_TX_PIN, GPIO_FUNC_UART);
   gpio_set_function(UART_RX_PIN, GPIO_FUNC_UART); 
   gpio_pull_down(resetport->getPort());
-if (flgUseFPGA)
-{ uart_init(uart0, 400000); //add  240627
-  gpio_set_function(FPGAUART_TX_PIN, GPIO_FUNC_UART);
-  gpio_set_function(FPGAUART_RX_PIN, GPIO_FUNC_UART);
-}
+  if (flgUseFPGA)
+  { uart_init(uart0, 400000); //add  240627
+    gpio_set_function(FPGAUART_TX_PIN, GPIO_FUNC_UART);
+    gpio_set_function(FPGAUART_RX_PIN, GPIO_FUNC_UART);
+  }
 //#warning should be undeleted
 //  RX_core rxCore;
 // fixme mb should add & before isr
@@ -411,6 +411,13 @@ void HARDWARE::set_BiasV(int32_t BiasV)
  */
 }   
 
+void HARDWARE::WriteDataToFPGA(FPGAWriteData writedata)
+{
+
+
+
+  
+}
 void HARDWARE::set_SetPoint( int32_t SetPoint)
 {//  code  22, 2, 8, 0, 1, 0, value
   if (!flgVirtual)
@@ -460,7 +467,7 @@ void HARDWARE::set_GainPID(uint16_t gain)
 {
   uint8_t ti;
   uint8_t tiadd;
-  if (HARDWAREVERSION==0)
+  if (HARDWAREVERSION==0)  //BB
   {
    ti=(uint8_t)(gain>>8);
    tiadd=(uint8_t)(gain&0x00FF);
@@ -491,43 +498,11 @@ void HARDWARE::set_GainPID(uint16_t gain)
     ti=(uint8_t)gain;
     if (!flgVirtual) 
     { 
-     if (!flgUseFPGA)
-     { 
       std::string binary = std::bitset<3>(ti).to_string();
       binary[2] == '1' ? gainPID0->enable() : gainPID0->disable();
       binary[1] == '1' ? gainPID1->enable() : gainPID1->disable();
       binary[0] == '1' ? gainPID2->enable() : gainPID2->disable();
-     }
-     else 
-     { //UseFPGA
-   /*   
-     //  uart_write_blocking(uart0, const uint8_t *src, size_t len); FPGAadress AA 01 08400000 01020304 BB AA
-       FPGAWriteData  data;
-       data.delimbegin=0xAA;
-       data.delimend=0xAA;
-       data.crcpar=0xBB;
-       data.cmd=0x01;
-       data.addr=0x08430200;
-       data.data=gain;//0x00000005;
-//uint8_t *arr_bytes = reinterpret_cast<uint8_t *>(data);
-
-  char* my_s_bytes = reinterpret_cast<char*>(&my_s);
-  // or, if you prefer static_cast:
-  char* my_s_bytes = static_cast<char*>(static_cast<void*>(&my_s));
-MyStruct s;
-char [] buffer = new char[sizeof(s)];
-memcpy(&buffer, &s, sizeof(s));
-
-      char[] buffer = new char[sizeof(data)];
-      memcpy(&buffer, &data, sizeof(data));
-     if (uart_is_writable(uart0)) 
-     {
-       uart_write_blocking(uart0, buffer,sizeof(data));
-       //uart_write_blocking(uart_inst_t *uart, const uint8_t *src, size_t len)
-     }
-  */
-      }
-    } 
+    }
   } 
   if (flgDebug)  
   {

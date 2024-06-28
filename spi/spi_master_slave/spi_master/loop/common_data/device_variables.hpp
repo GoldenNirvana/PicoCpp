@@ -34,7 +34,7 @@ struct ConfigHardWare
   uint8_t FreezePort;   //26 заморозить сканнер=1; разморозить =0
   uint8_t ProtractPort; //27 втянуть    сканнер=1; вытянуть    =0
 };
-struct FPGAadress
+struct FPGAAdress
 {
  uint32_t wbKx[3];
  uint32_t wbInMulKoef;
@@ -58,7 +58,14 @@ struct FPGAWriteData
  uint8_t  crcpar;
  uint8_t  delimend;
  };
-
+struct FPGAReadData
+{
+ uint8_t  delimbegin;
+ uint8_t  cmd;
+ uint32_t addr;
+ uint8_t  crcpar;
+ uint8_t  delimend;
+ };
 struct ConfigHardWareNew
 {
   uint8_t DACBiasVSetPointPort;  //2 DAC8563_1  BIAS SetPoint

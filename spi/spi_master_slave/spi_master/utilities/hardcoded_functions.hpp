@@ -56,6 +56,8 @@ private:
 
  void activateBlue();
 
+ void WriteDataToFPGA(FPGAWriteData writedata);
+
 public:
    LinearDriverBase  *linearDriver;
 
