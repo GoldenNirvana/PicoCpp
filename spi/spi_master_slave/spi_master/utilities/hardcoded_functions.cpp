@@ -176,12 +176,13 @@ void HARDWARE::reset_ADCPort()
 void HARDWARE::setDefaultSettings( uint8_t dacBiasVSetPointPort, uint8_t  dacXYPort, uint8_t dacZPort)  
 {
   /// BASIC SETTINGS
-  uart_init(uart1, 115200);
+  uart_init(uart1, 115200); //????
   gpio_set_function(UART_TX_PIN, GPIO_FUNC_UART);
   gpio_set_function(UART_RX_PIN, GPIO_FUNC_UART); 
   gpio_pull_down(resetport->getPort());
   if (flgUseFPGA)
-  { uart_init(uart0, 400000); //add  240627
+  {
+    uart_init(FPGA_UART_ID, FPGA_BAUD_RATE); //add  240627
     gpio_set_function(FPGAUART_TX_PIN, GPIO_FUNC_UART);
     gpio_set_function(FPGAUART_RX_PIN, GPIO_FUNC_UART);
   }
@@ -413,10 +414,46 @@ void HARDWARE::set_BiasV(int32_t BiasV)
 
 void HARDWARE::WriteDataToFPGA(FPGAWriteData writedata)
 {
+  //UseFPGA
+   /*   
+     //  uart_write_blocking(uart0, const uint8_t *src, size_t len); FPGAadress AA 01 08400000 01020304 BB AA
+       FPGAWriteData  data;
+       data.delimbegin=0xAA;
+       data.delimend=0xAA;
+       data.crcpar=0xBB;
+       data.cmd=0x01;
+       data.addr=0x08430200;
+       data.data=gain;//0x00000005;
+//uint8_t *arr_bytes = reinterpret_cast<uint8_t *>(data);
 
-
-
-  
+  char* my_s_bytes = reinterpret_cast<char*>(&my_s);
+  // or, if you prefer static_cast:
+  char* my_s_bytes = static_cast<char*>(static_cast<void*>(&my_s));
+MyStruct s;
+*/
+  uint8_t *buffer = new uint8_t[sizeof(writedata)];
+  memcpy(&buffer, &writedata, sizeof(writedata));
+  if (flgDebug)  
+  {
+    std::vector<int32_t>  debugdata;   
+    std::string afcc;
+    afcc.clear();
+    afcc="code"+std::to_string(DEBUG); 
+    for (size_t j = 0; j < sizeof(writedata); ++j)
+    {
+     debugdata.emplace_back();
+     afcc +=',' + std::to_string(buffer[j]);
+    }
+    afcc +="\n";
+    std::cout << afcc;
+    afcc.clear();
+    debugdata.clear();
+  }
+  if (uart_is_writable(FPGA_UART_ID)) 
+  {
+    uart_write_blocking(FPGA_UART_ID, buffer,sizeof(writedata));
+    //uart_write_blocking(uart_inst_t *uart, const uint8_t *src, size_t len)
+  }
 }
 void HARDWARE::set_SetPoint( int32_t SetPoint)
 {//  code  22, 2, 8, 0, 1, 0, value
@@ -495,13 +532,23 @@ void HARDWARE::set_GainPID(uint16_t gain)
   }
   else  //add 240603 WB
   {
-    ti=(uint8_t)gain;
+    ti=(uint8_t)gain; 
     if (!flgVirtual) 
     { 
+     if (!flgUseFPGA)
+     {
       std::string binary = std::bitset<3>(ti).to_string();
       binary[2] == '1' ? gainPID0->enable() : gainPID0->disable();
       binary[1] == '1' ? gainPID1->enable() : gainPID1->disable();
       binary[0] == '1' ? gainPID2->enable() : gainPID2->disable();
+     }
+     else //UseFPGA
+     {
+      FPGAWriteData writedata;
+      writedata.addr=arrModule_0.wbKx[0];//  0x08430000;  //adress gain need sign
+      writedata.data=(uint32_t)ti; // gain need sign
+      WriteDataToFPGA(writedata);
+     }    
     }
   } 
   if (flgDebug)  

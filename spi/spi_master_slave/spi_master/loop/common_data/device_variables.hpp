@@ -5,13 +5,19 @@
 #include "../../utilities/base_types/decoder.hpp"
 //#include "../../physical_devices/LinearDriver.hpp"
 
-#define UART_ID uart1
-#define BAUD_RATEFPGA 400000
+#define FPGA_UART_ID  uart0
+#define FPGA_BAUD_RATE 400000
 
 // We are using pins 0 and 1, but see the GPIO function select table in the
 // datasheet for information on which other pins can be used.
 #define UART_TX_PIN 16
 #define UART_RX_PIN 17
+
+extern uint8_t FPGADELIM;
+extern uint8_t FPGACRCPAR;
+extern uint8_t FPGAREAD;
+extern uint8_t FPGAWRITE;
+extern uint8_t FPGAASC;
 struct ConfigHardWare
 {
   uint8_t DACBiasVSetPointPort;  //2 DAC8563_1  BIAS SetPoint
@@ -51,20 +57,20 @@ Fields: [ DELIM ] [ CMD ] [ ADDR ] [<DATA>] [CRC/PAR] [ DELIM ]
 */
 struct FPGAWriteData
 {
- uint8_t  delimbegin;
+ uint8_t  delimbegin=FPGADELIM;
  uint8_t  cmd;
  uint32_t addr;
  uint32_t data;
- uint8_t  crcpar;
- uint8_t  delimend;
+ uint8_t  crcpar=FPGACRCPAR;
+ uint8_t  delimend=FPGADELIM;
  };
 struct FPGAReadData
 {
- uint8_t  delimbegin;
+ uint8_t  delimbegin=FPGADELIM;
  uint8_t  cmd;
  uint32_t addr;
- uint8_t  crcpar;
- uint8_t  delimend;
+ uint8_t  crcpar=FPGACRCPAR;
+ uint8_t  delimend=FPGADELIM;
  };
 struct ConfigHardWareNew
 {
@@ -113,13 +119,6 @@ struct ConfigLinearDriveNew
   uint8_t ZTurn_on_Port;        
 };
 
-extern uint8_t FPGADELIM;
-extern uint8_t FPGACRCPAR;
-extern uint8_t FPGAREAD;
-extern uint8_t FPGAWRITE;
-extern uint8_t FPGAASC;
-
-
 extern Spi               spi;
 //extern LinearDriver      *linearDriver;
 extern Decoder           decoder;
@@ -127,5 +126,5 @@ extern ConfigHardWare       confighardwarev0;
 extern ConfigHardWareNew    confighardwarev1;
 extern ConfigLinearDrive    configlineardrivev0;
 extern ConfigLinearDriveNew configlineardrivev1;
-extern FPGAadress           arrModule_0;
+extern FPGAAdress           arrModule_0;
 #endif //PICO_EXAMPLES_DEVICE_VARIABLES_HPP
