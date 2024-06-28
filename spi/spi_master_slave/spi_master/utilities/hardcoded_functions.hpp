@@ -56,7 +56,11 @@ private:
 
  void activateBlue();
 
- void WriteDataToFPGA(FPGAWriteData writedata);
+ void  ReadDataFromFPGA(FPGAReadData readdata, uint8_t* dst);
+
+ void  WriteDataToFPGA(FPGAWriteData writedata);
+
+ void  AscResult(FPGAAscData ascdata, uint8_t* dst);
 
 public:
    LinearDriverBase  *linearDriver;

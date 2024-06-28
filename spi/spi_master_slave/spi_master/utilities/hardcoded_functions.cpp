@@ -411,48 +411,79 @@ void HARDWARE::set_BiasV(int32_t BiasV)
  }
  */
 }   
+void HARDWARE::ReadDataFromFPGA(FPGAReadData readdata,uint8_t* dst)
+{
+  uint8_t *buffer = new uint8_t[sizeof(readdata)];
+  memcpy(buffer, &readdata, sizeof(readdata));
+ // uint32_t *dst;
+  if (flgDebug)  
+  {
+    std::string afcc;
+    afcc.clear();
+    afcc="code"+std::to_string(DEBUG); 
+    for (size_t j = 0; j < sizeof(readdata); ++j)
+    {
+      afcc +=',' + std::to_string(buffer[j]);
+    }
+    afcc +="\n";
+    std::cout << afcc;
+    sleep_ms(200);
+    afcc.clear();
+  }
+  size_t len;
+  if (uart_is_readable(FPGA_UART_ID)) 
+  {
+    uart_read_blocking(FPGA_UART_ID, dst,len);   
+  }
+}
+void HARDWARE::AscResult(FPGAAscData ascdata, uint8_t* dst)
+{
+  uint8_t *buffer = new uint8_t[sizeof(ascdata)];
+  memcpy(buffer, &ascdata, sizeof(ascdata));
+  if (flgDebug)  
+  {
+    std::string afcc;
+    afcc.clear();
+    afcc="code"+std::to_string(DEBUG); 
+    for (size_t j = 0; j < sizeof(ascdata); ++j)
+    {
+      afcc +=',' + std::to_string(buffer[j]);
+    }
+    afcc +="\n";
+    std::cout << afcc;
+    sleep_ms(200);
+    afcc.clear();
+  }
+  size_t len;
+  if (uart_is_readable(FPGA_UART_ID)) 
+  {
+    uart_read_blocking(FPGA_UART_ID, dst,len);   
+  }
+}
 
 void HARDWARE::WriteDataToFPGA(FPGAWriteData writedata)
 {
-  //UseFPGA
-   /*   
-     //  uart_write_blocking(uart0, const uint8_t *src, size_t len); FPGAadress AA 01 08400000 01020304 BB AA
-       FPGAWriteData  data;
-       data.delimbegin=0xAA;
-       data.delimend=0xAA;
-       data.crcpar=0xBB;
-       data.cmd=0x01;
-       data.addr=0x08430200;
-       data.data=gain;//0x00000005;
-//uint8_t *arr_bytes = reinterpret_cast<uint8_t *>(data);
-
-  char* my_s_bytes = reinterpret_cast<char*>(&my_s);
-  // or, if you prefer static_cast:
-  char* my_s_bytes = static_cast<char*>(static_cast<void*>(&my_s));
-MyStruct s;
-*/
   uint8_t *buffer = new uint8_t[sizeof(writedata)];
-  memcpy(&buffer, &writedata, sizeof(writedata));
+  memcpy(buffer, &writedata, sizeof(writedata));
   if (flgDebug)  
   {
-    std::vector<int32_t>  debugdata;   
     std::string afcc;
     afcc.clear();
     afcc="code"+std::to_string(DEBUG); 
     for (size_t j = 0; j < sizeof(writedata); ++j)
     {
-     debugdata.emplace_back();
-     afcc +=',' + std::to_string(buffer[j]);
+      afcc +=',' + std::to_string(buffer[j]);
     }
     afcc +="\n";
     std::cout << afcc;
+    sleep_ms(200);
     afcc.clear();
-    debugdata.clear();
   }
   if (uart_is_writable(FPGA_UART_ID)) 
   {
     uart_write_blocking(FPGA_UART_ID, buffer,sizeof(writedata));
     //uart_write_blocking(uart_inst_t *uart, const uint8_t *src, size_t len)
+
   }
 }
 void HARDWARE::set_SetPoint( int32_t SetPoint)
@@ -545,11 +576,52 @@ void HARDWARE::set_GainPID(uint16_t gain)
      else //UseFPGA
      {
       FPGAWriteData writedata;
-      writedata.addr=arrModule_0.wbKx[0];//  0x08430000;  //adress gain need sign
+      writedata.addr=0x08430000;//arrModule_0.wbKx[0];//  0x08430000;  //adress gain need sign
+      writedata.delimbegin=0xAA;
+      writedata.cmd=0x01;
+      writedata.crcpar=0xBB;
+      writedata.delimend=0xAA;
       writedata.data=(uint32_t)ti; // gain need sign
+      std::string afcc;
+      afcc.clear();
+      afcc="code"+ std::to_string(DEBUG); 
+      afcc +=',' + std::to_string(writedata.delimbegin);
+      afcc +=',' + std::to_string(writedata.cmd);      
+      afcc +=',' + std::to_string(writedata.addr); 
+      afcc +=',' + std::to_string(writedata.data);
+      afcc +=',' + std::to_string(writedata.crcpar);
+      afcc +=',' + std::to_string(writedata.delimend);
+      afcc +="\n";
+      std::cout << afcc;
+      sleep_ms(200);
+      afcc.clear();
       WriteDataToFPGA(writedata);
      }    
     }
+    else 
+    {
+      FPGAWriteData writedata;
+      writedata.addr=arrModule_0.wbKx[0];
+      writedata.cmd=0x01;
+      writedata.data=(uint32_t)ti; // gain need sign
+    /*
+      std::string afcc;
+      afcc.clear();
+      afcc="code"+ std::to_string(DEBUG); 
+      afcc +=',' + std::to_string(writedata.delimbegin);
+      afcc +=',' + std::to_string(writedata.cmd);      
+      afcc +=',' + std::to_string(writedata.addr); 
+      afcc +=',' + std::to_string(writedata.data);
+      afcc +=',' + std::to_string(writedata.crcpar);
+      afcc +=',' + std::to_string(writedata.delimend);
+      afcc +="\n";
+      std::cout << afcc;
+      sleep_ms(200);
+      afcc.clear();
+    */  
+      WriteDataToFPGA(writedata);
+    }
+    
   } 
   if (flgDebug)  
   {

@@ -58,7 +58,7 @@ Fields: [ DELIM ] [ CMD ] [ ADDR ] [<DATA>] [CRC/PAR] [ DELIM ]
 struct FPGAWriteData
 {
  uint8_t  delimbegin=FPGADELIM;
- uint8_t  cmd;
+ uint8_t  cmd=FPGAWRITE;
  uint32_t addr;
  uint32_t data;
  uint8_t  crcpar=FPGACRCPAR;
@@ -67,7 +67,16 @@ struct FPGAWriteData
 struct FPGAReadData
 {
  uint8_t  delimbegin=FPGADELIM;
- uint8_t  cmd;
+ uint8_t  cmd=FPGAREAD;
+ uint32_t addr;
+ uint8_t  crcpar=FPGACRCPAR;
+ uint8_t  delimend=FPGADELIM;
+ };
+
+ struct FPGAAscData
+{
+ uint8_t  delimbegin=FPGADELIM;
+ uint8_t  cmd=FPGAASC;
  uint32_t addr;
  uint8_t  crcpar=FPGACRCPAR;
  uint8_t  delimend=FPGADELIM;
