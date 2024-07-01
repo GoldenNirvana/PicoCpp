@@ -460,7 +460,7 @@ void HARDWARE::set_GainPID(uint16_t gain)
 {
   uint8_t ti;
   uint8_t tiadd;
-  if (HARDWAREVERSION==0)
+  if (HARDWAREVERSION==0) //BB
   {
    ti=(uint8_t)(gain>>8);
    tiadd=(uint8_t)(gain&0x00FF);
