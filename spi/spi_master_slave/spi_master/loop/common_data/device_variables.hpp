@@ -1,5 +1,6 @@
 #ifndef PICO_EXAMPLES_DEVICE_VARIABLES_HPP
 #define PICO_EXAMPLES_DEVICE_VARIABLES_HPP
+#pragma  pack(push, 1)
 #include <pico.h>
 #include "../../utilities/base_types/Spi.hpp"
 #include "../../utilities/base_types/decoder.hpp"

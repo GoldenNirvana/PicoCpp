@@ -8,10 +8,10 @@
 
 #include <pico/multicore.h>
 #include <bitset>
-
-#define UART_TX_PIN 8
-#define UART_RX_PIN 9
-
+#define USB_UART_ID  uart1
+#define FPGA_UART_ID uart0
+#define USBUART_TX_PIN 8
+#define USBUART_RX_PIN 9
 #define FPGAUART_TX_PIN 17 //!
 #define FPGAUART_RX_PIN 18 //!
 
@@ -176,9 +176,10 @@ void HARDWARE::reset_ADCPort()
 void HARDWARE::setDefaultSettings( uint8_t dacBiasVSetPointPort, uint8_t  dacXYPort, uint8_t dacZPort)  
 {
   /// BASIC SETTINGS
-  uart_init(uart1, 115200); //????
-  gpio_set_function(UART_TX_PIN, GPIO_FUNC_UART);
-  gpio_set_function(UART_RX_PIN, GPIO_FUNC_UART); 
+  //uart_init(uart1, 115200); //????
+  uart_init(USB_UART_ID, 115200); //????
+  gpio_set_function(USBUART_TX_PIN, GPIO_FUNC_UART);
+  gpio_set_function(USBUART_RX_PIN, GPIO_FUNC_UART); 
   gpio_pull_down(resetport->getPort());
   if (flgUseFPGA)
   {
@@ -463,14 +464,16 @@ void HARDWARE::AscResult(FPGAAscData ascdata, uint8_t* dst)
 
 void HARDWARE::WriteDataToFPGA(FPGAWriteData writedata)
 {
-  uint8_t *buffer = new uint8_t[sizeof(writedata)];
-  memcpy(buffer, &writedata, sizeof(writedata));
+  size_t sz;
+  sz=sizeof(writedata);
+  uint8_t *buffer = new uint8_t[sz];
+  memcpy(buffer, &writedata,sz);
   if (flgDebug)  
   {
     std::string afcc;
     afcc.clear();
-    afcc="code"+std::to_string(DEBUG); 
-    for (size_t j = 0; j < sizeof(writedata); ++j)
+    afcc="code"+std::to_string(DEBUG)+','+std::to_string(sz); 
+    for (size_t j = 0; j < sz; ++j)
     {
       afcc +=',' + std::to_string(buffer[j]);
     }
@@ -479,18 +482,27 @@ void HARDWARE::WriteDataToFPGA(FPGAWriteData writedata)
     sleep_ms(200);
     afcc.clear();
   }
+
   if (uart_is_writable(FPGA_UART_ID)) 
   {
-    uart_write_blocking(FPGA_UART_ID, buffer,sizeof(writedata));
+    uart_write_blocking(FPGA_UART_ID, buffer,sz);
     //uart_write_blocking(uart_inst_t *uart, const uint8_t *src, size_t len)
-
   }
 }
 void HARDWARE::set_SetPoint( int32_t SetPoint)
 {//  code  22, 2, 8, 0, 1, 0, value
   if (!flgVirtual)
   {
-     dacbvspt->writeA(SetPoint+ShiftDac); // 240425 ?
+    if (!flgUseFPGA)
+     {  dacbvspt->writeA(SetPoint+ShiftDac); }// 240425 ?
+     else 
+     {
+      FPGAWriteData writedata;
+      writedata.addr=arrModule_0.wbSetpoint;
+      writedata.cmd=0x01;
+      writedata.data=(uint32_t)(SetPoint+ShiftDac);  
+      WriteDataToFPGA(writedata);
+     }
   } 
   // отладка
   if  (flgDebug)
@@ -576,25 +588,26 @@ void HARDWARE::set_GainPID(uint16_t gain)
      else //UseFPGA
      {
       FPGAWriteData writedata;
-      writedata.addr=0x08430000;//arrModule_0.wbKx[0];//  0x08430000;  //adress gain need sign
-      writedata.delimbegin=0xAA;
+      writedata.addr=arrModule_0.wbKx[0];//  0x08430000;  //adress gain need sign
       writedata.cmd=0x01;
-      writedata.crcpar=0xBB;
-      writedata.delimend=0xAA;
       writedata.data=(uint32_t)ti; // gain need sign
-      std::string afcc;
-      afcc.clear();
-      afcc="code"+ std::to_string(DEBUG); 
-      afcc +=',' + std::to_string(writedata.delimbegin);
-      afcc +=',' + std::to_string(writedata.cmd);      
-      afcc +=',' + std::to_string(writedata.addr); 
-      afcc +=',' + std::to_string(writedata.data);
-      afcc +=',' + std::to_string(writedata.crcpar);
-      afcc +=',' + std::to_string(writedata.delimend);
-      afcc +="\n";
-      std::cout << afcc;
-      sleep_ms(200);
-      afcc.clear();
+     /* if (flgDebug)
+      {     
+       std::string afcc;
+       afcc.clear();
+       afcc="code"+ std::to_string(DEBUG)+','+std::to_string(sizeof(writedata)); 
+       afcc +=',' + std::to_string(writedata.delimbegin);
+       afcc +=',' + std::to_string(writedata.cmd);      
+       afcc +=',' + std::to_string(writedata.addr); 
+       afcc +=',' + std::to_string(writedata.data);
+       afcc +=',' + std::to_string(writedata.crcpar);
+       afcc +=',' + std::to_string(writedata.delimend);
+       afcc +="\n";
+       std::cout << afcc;
+       sleep_ms(400);
+       afcc.clear();
+      }
+      */
       WriteDataToFPGA(writedata);
      }    
     }
@@ -607,7 +620,7 @@ void HARDWARE::set_GainPID(uint16_t gain)
     /*
       std::string afcc;
       afcc.clear();
-      afcc="code"+ std::to_string(DEBUG); 
+      afcc="code"+ std::to_string(DEBUG)+','+std::to_string(sizeof(writedata)); 
       afcc +=',' + std::to_string(writedata.delimbegin);
       afcc +=',' + std::to_string(writedata.cmd);      
       afcc +=',' + std::to_string(writedata.addr); 
