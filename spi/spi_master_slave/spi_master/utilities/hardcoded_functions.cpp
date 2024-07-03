@@ -8,13 +8,14 @@
 
 #include <pico/multicore.h>
 #include <bitset>
+/*
 #define USB_UART_ID  uart1
 #define FPGA_UART_ID uart0
 #define USBUART_TX_PIN 8
 #define USBUART_RX_PIN 9
 #define FPGAUART_TX_PIN 17 //!
 #define FPGAUART_RX_PIN 18 //!
-
+*/
 HARDWARE::HARDWARE(ConfigHardWare confighardware) 
 {
    /*   _confighardware=confighardware;
@@ -412,11 +413,10 @@ void HARDWARE::set_BiasV(int32_t BiasV)
  }
  */
 }   
-void HARDWARE::ReadDataFromFPGA(FPGAReadData readdata,uint8_t* dst)
+void HARDWARE::ReadDataFromFPGA(FPGAReadData readdata,uint8_t* dst, size_t len)
 {
   uint8_t *buffer = new uint8_t[sizeof(readdata)];
   memcpy(buffer, &readdata, sizeof(readdata));
- // uint32_t *dst;
   if (flgDebug)  
   {
     std::string afcc;
@@ -431,13 +431,12 @@ void HARDWARE::ReadDataFromFPGA(FPGAReadData readdata,uint8_t* dst)
     sleep_ms(200);
     afcc.clear();
   }
-  size_t len;
   if (uart_is_readable(FPGA_UART_ID)) 
   {
     uart_read_blocking(FPGA_UART_ID, dst,len);   
   }
 }
-void HARDWARE::AscResult(FPGAAscData ascdata, uint8_t* dst)
+void HARDWARE::AscResult(FPGAAscData ascdata, uint8_t* dst, size_t len)
 {
   uint8_t *buffer = new uint8_t[sizeof(ascdata)];
   memcpy(buffer, &ascdata, sizeof(ascdata));
@@ -455,7 +454,6 @@ void HARDWARE::AscResult(FPGAAscData ascdata, uint8_t* dst)
     sleep_ms(200);
     afcc.clear();
   }
-  size_t len;
   if (uart_is_readable(FPGA_UART_ID)) 
   {
     uart_read_blocking(FPGA_UART_ID, dst,len);   

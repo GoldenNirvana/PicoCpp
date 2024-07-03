@@ -1,24 +1,28 @@
 #ifndef PICO_EXAMPLES_DEVICE_VARIABLES_HPP
 #define PICO_EXAMPLES_DEVICE_VARIABLES_HPP
-#pragma  pack(push, 1)
+#pragma  pack(push, 1) //  240702 выравнивание структуры на границе byte
 #include <pico.h>
 #include "../../utilities/base_types/Spi.hpp"
 #include "../../utilities/base_types/decoder.hpp"
-//#include "../../physical_devices/LinearDriver.hpp"
-
-#define FPGA_UART_ID  uart0
-#define FPGA_BAUD_RATE 400000
 
 // We are using pins 0 and 1, but see the GPIO function select table in the
 // datasheet for information on which other pins can be used.
-#define UART_TX_PIN 16
-#define UART_RX_PIN 17
+//#define UART_TX_PIN 16 //240703
+//#define UART_RX_PIN 17 //240703
+#define USB_UART_ID     uart1//240703
+#define USBUART_TX_PIN  8
+#define USBUART_RX_PIN  9
+#define FPGAUART_TX_PIN 17 //!
+#define FPGAUART_RX_PIN 18 //!
+#define FPGA_UART_ID    uart0
+#define FPGA_BAUD_RATE  400000
 
 extern uint8_t FPGADELIM;
 extern uint8_t FPGACRCPAR;
 extern uint8_t FPGAREAD;
 extern uint8_t FPGAWRITE;
 extern uint8_t FPGAASC;
+
 struct ConfigHardWare
 {
   uint8_t DACBiasVSetPointPort;  //2 DAC8563_1  BIAS SetPoint
