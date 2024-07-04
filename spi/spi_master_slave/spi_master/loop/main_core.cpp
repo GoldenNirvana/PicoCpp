@@ -14,13 +14,13 @@ void  MainCore::setAlgCodeNone()
 
 void MainCore::launchOnCore1()
 { 
-   while (true)
+  while (true)
   {
     parse(vector,vupdateparams); //wait for data ! парсинг входящих данных из ПК 
     if (vector.size()!=0)
-   {
-    switch (vector[0])
     {
+     switch (vector[0])
+     {
      /* case  ADC_RESET: 
         ADC_RESET = true;
         break;

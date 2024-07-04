@@ -41,6 +41,7 @@
 #define RetractAlgCode           35
 #define ADC_RESET                36
 #define INITCOMMMUTATION         37
+#define USEPLDCmd                38  //использовать ПЛИС
 #define RESONANCE                40  //AD9833 
 #define SCANNING                 50
 #define MOVE_TOX0Y0              51  //переместиться в начальную точку  скана из начальной точке предыдущего скана
@@ -99,6 +100,7 @@ extern bool flgDebug;    // output diagnostics
 extern bool flgVirtual;  // Virtual device for debuging and simulation
 extern bool flgСritical_section;
 extern bool flgUseUART;  
+extern bool flgUseFPGA;  //Использовать ПЛИС
 extern uint8_t ZPin;
 extern uint8_t AmplPin;       //amplitude
 extern uint8_t IPin;          //current

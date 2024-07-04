@@ -5,7 +5,13 @@
 #include "../../utilities/base_types/decoder.hpp"
 //#include "../../physical_devices/LinearDriver.hpp"
 
+#define UART_ID uart1
+#define BAUD_RATEFPGA 400000
 
+// We are using pins 0 and 1, but see the GPIO function select table in the
+// datasheet for information on which other pins can be used.
+#define UART_TX_PIN 16
+#define UART_RX_PIN 17
 struct ConfigHardWare
 {
   uint8_t DACBiasVSetPointPort;  //2 DAC8563_1  BIAS SetPoint
@@ -28,6 +34,31 @@ struct ConfigHardWare
   uint8_t FreezePort;   //26 заморозить сканнер=1; разморозить =0
   uint8_t ProtractPort; //27 втянуть    сканнер=1; вытянуть    =0
 };
+struct FPGAadress
+{
+ uint32_t wbKx[3];
+ uint32_t wbInMulKoef;
+ uint32_t wbInShift;
+ uint32_t wbOutMulKoef;
+ uint32_t wbOutShift;
+ uint32_t wbSetpoint;
+ uint32_t pidControl;
+};
+/*
+Rx Frame format big-endian Offs:
+  Size:      1       1       4        4         1         1
+Fields: [ DELIM ] [ CMD ] [ ADDR ] [<DATA>] [CRC/PAR] [ DELIM ]
+*/
+struct FPGAWriteData
+{
+ uint8_t  delimbegin;
+ uint8_t  cmd;
+ uint32_t addr;
+ uint32_t data;
+ uint8_t  crcpar;
+ uint8_t  delimend;
+ };
+
 struct ConfigHardWareNew
 {
   uint8_t DACBiasVSetPointPort;  //2 DAC8563_1  BIAS SetPoint
@@ -75,6 +106,13 @@ struct ConfigLinearDriveNew
   uint8_t ZTurn_on_Port;        
 };
 
+extern uint8_t FPGADELIM;
+extern uint8_t FPGACRCPAR;
+extern uint8_t FPGAREAD;
+extern uint8_t FPGAWRITE;
+extern uint8_t FPGAASC;
+
+
 extern Spi               spi;
 //extern LinearDriver      *linearDriver;
 extern Decoder           decoder;
@@ -82,4 +120,5 @@ extern ConfigHardWare       confighardwarev0;
 extern ConfigHardWareNew    confighardwarev1;
 extern ConfigLinearDrive    configlineardrivev0;
 extern ConfigLinearDriveNew configlineardrivev1;
+extern FPGAadress           arrModule_0;
 #endif //PICO_EXAMPLES_DEVICE_VARIABLES_HPP

@@ -12,6 +12,9 @@
 #define UART_TX_PIN 8
 #define UART_RX_PIN 9
 
+#define FPGAUART_TX_PIN 17 //!
+#define FPGAUART_RX_PIN 18 //!
+
 HARDWARE::HARDWARE(ConfigHardWare confighardware) 
 {
    /*   _confighardware=confighardware;
@@ -174,12 +177,14 @@ void HARDWARE::setDefaultSettings( uint8_t dacBiasVSetPointPort, uint8_t  dacXYP
 {
   /// BASIC SETTINGS
   uart_init(uart1, 115200);
- // uart_init(uart0, 256000);
   gpio_set_function(UART_TX_PIN, GPIO_FUNC_UART);
-  gpio_set_function(UART_RX_PIN, GPIO_FUNC_UART);
-
+  gpio_set_function(UART_RX_PIN, GPIO_FUNC_UART); 
   gpio_pull_down(resetport->getPort());
-
+  if (flgUseFPGA)
+  { uart_init(uart0, 400000); //add  240627
+    gpio_set_function(FPGAUART_TX_PIN, GPIO_FUNC_UART);
+    gpio_set_function(FPGAUART_RX_PIN, GPIO_FUNC_UART);
+  }
 //#warning should be undeleted
 //  RX_core rxCore;
 // fixme mb should add & before isr
@@ -199,18 +204,19 @@ void HARDWARE::setDefaultSettings( uint8_t dacBiasVSetPointPort, uint8_t  dacXYP
   
   retract();        //втянуть 240403 ???
 //************************************************************* 
- // init_commutation(sensor,signloop,signal_to_loop,usemod_i_stm,usemod_u);
+ // init_commutation(sensor,signloop,signal_to_loop,usenotmod_I,usemod_U);
  /*
-    default afm probe
-    sensor=1   probe=1;  cantilever =0
+    default afm probe ?????
+    sensor=0           // probe=0;  cantilever =1
     signLoop:=1;       // 1= -1 ; 0 = +1
-    usemod_u:=0;       // use mod U; not=0
-    usemod_i_stm:=0;   // use mod I  not=0
-    signal_to_loop:=1; // sd->to loop =1
+    signal_to_loop:=1; // sd->to loop =1 Ampl  
+    usemod_U:=0;       // use mod U; not=0
+    usenotmod_I:=1;       // use mod I not  =1 ; 
   */  
-   if (HARDWAREVERSION==1) //Mother board
+   if (HARDWAREVERSION==1) //Mother board(WB)
    {  
-    init_commutation(1 , 1 , 1 , 0, 0);  //afm
+     init_commutation(0 , 1 , 1 , 1, 0);   //afm
+    //init_commutation(1 , 1 , 1 , 0, 0);  //afm  240624
    }
   init_DACSetPointBiasV(dacBiasVSetPointPort);   //инициирование ЦАП1  SetPoint,BIAS
 
@@ -271,11 +277,19 @@ void HARDWARE::get_result_from_adc()
 }
 void HARDWARE::setLoopSign(int8_t value)
 {
-  switch (value)
- {
-   case 0:{signloopport->disable(); break;} // +
-   case 1:{signloopport->enable(); break; } // -
- }
+  if (flgUseFPGA) 
+  {
+
+
+  }
+  else
+  {
+   switch (value)
+   {
+    case 0:{signloopport->disable(); break;} // +
+    case 1:{signloopport->enable(); break; } // -
+   }
+  } 
 }
 
 void HARDWARE::setSignal_In_Loop(int8_t value)
@@ -313,13 +327,13 @@ void HARDWARE::setModulateU(int8_t value)
  }
 }
 
-void HARDWARE::init_commutation(uint8_t sensor ,uint8_t loopsign ,uint8_t signal_in_loop , uint8_t usemod_i,uint8_t usemod_u)
-{
- setLoopSign(loopsign);
- setSignal_In_Loop(signal_in_loop);
- setModulateU(usemod_u);
+void HARDWARE::init_commutation(uint8_t sensor ,uint8_t loopsign ,uint8_t signal_in_loop , uint8_t usenotmod_I,uint8_t usemod_U)
+{ 
  setSensor(sensor); 
- useModulateI(usemod_i);
+ setLoopSign(loopsign);
+ setSignal_In_Loop(signal_in_loop); //Ampl or I
+ useModulateI(usenotmod_I);
+ setModulateU(usemod_U);
 }
 void HARDWARE::init_SPI( uint8_t port ,uint8_t v2 ,uint8_t v3, uint8_t v4 )
 {
@@ -446,7 +460,7 @@ void HARDWARE::set_GainPID(uint16_t gain)
 {
   uint8_t ti;
   uint8_t tiadd;
-  if (HARDWAREVERSION==0)
+  if (HARDWAREVERSION==0) //BB
   {
    ti=(uint8_t)(gain>>8);
    tiadd=(uint8_t)(gain&0x00FF);
@@ -456,33 +470,32 @@ void HARDWARE::set_GainPID(uint16_t gain)
     binary[2] == '1' ? gainPID0->enable() : gainPID0->disable();
     binary[1] == '1' ? gainPID1->enable() : gainPID1->disable();
     binary[0] == '1' ? gainPID2->enable() : gainPID2->disable();
-  
-   /* 
+     /* 
     (ti&0x04) == 1 ? gainPID0->enable() : gainPID0->disable();
     (ti&0x02) == 1 ? gainPID1->enable() : gainPID1->disable();
     (ti&0x01) == 1 ? gainPID2->enable() : gainPID2->disable();
    */ 
     // отладка
-    uint8_t intBuf[1]; 
-    decoder.activePort(6);
-    Spi::setProperties(8, 0, 0);
-    intBuf[0] = 0;
-    spi_write_blocking(spi_default, intBuf, 1); 
-    intBuf[0] = tiadd;
-    spi_write_blocking(spi_default, intBuf, 1); 
-    decoder.activePort(7);
-   }
-   else  //add 240603
-   {
+     uint8_t intBuf[1]; 
+     decoder.activePort(6);
+     Spi::setProperties(8, 0, 0);
+     intBuf[0] = 0;
+     spi_write_blocking(spi_default, intBuf, 1); 
+     intBuf[0] = tiadd;
+     spi_write_blocking(spi_default, intBuf, 1); 
+     decoder.activePort(7);
+    }
+  }
+  else  //add 240603 WB
+  {
     ti=(uint8_t)gain;
     if (!flgVirtual) 
-    {  
-     std::string binary = std::bitset<3>(ti).to_string();
-     binary[2] == '1' ? gainPID0->enable() : gainPID0->disable();
-     binary[1] == '1' ? gainPID1->enable() : gainPID1->disable();
-     binary[0] == '1' ? gainPID2->enable() : gainPID2->disable();
-    } 
-   } 
+    { 
+      std::string binary = std::bitset<3>(ti).to_string();
+      binary[2] == '1' ? gainPID0->enable() : gainPID0->disable();
+      binary[1] == '1' ? gainPID1->enable() : gainPID1->disable();
+      binary[0] == '1' ? gainPID2->enable() : gainPID2->disable();
+    }
   } 
   if (flgDebug)  
   {

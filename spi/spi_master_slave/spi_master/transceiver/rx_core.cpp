@@ -65,7 +65,10 @@ void RX_core::launchOnCore1()
       case SetUseCritialSectAlgCode: // флаг использовать Сritical_section
         flgСritical_section=(bool)vector[1]; 
         break;
-  //***************************************     
+  //***************************************  
+      case USEPLDCmd:
+       flgUseFPGA=true;    
+       break;       
       case ADC_GET_VALUECmd:            
         ADC_GET_VALUE = true;// прочитатать сигналы АЦП      
         break;
