@@ -178,16 +178,17 @@ void HARDWARE::setDefaultSettings( uint8_t dacBiasVSetPointPort, uint8_t  dacXYP
 {
   /// BASIC SETTINGS
   //uart_init(uart1, 115200); //????
-  uart_init(USB_UART_ID, 115200); //????
-  gpio_set_function(USBUART_TX_PIN, GPIO_FUNC_UART);
-  gpio_set_function(USBUART_RX_PIN, GPIO_FUNC_UART); 
-  gpio_pull_down(resetport->getPort());
+ // uart_init(USB_UART_ID, 115200); //????
+ // gpio_set_function(USBUART_TX_PIN, GPIO_FUNC_UART);
+ // gpio_set_function(USBUART_RX_PIN, GPIO_FUNC_UART); 
+ // gpio_pull_down(resetport->getPort());
   if (flgUseFPGA)
   {
     uart_init(FPGA_UART_ID, FPGA_BAUD_RATE); //add  240627
     gpio_set_function(FPGAUART_TX_PIN, GPIO_FUNC_UART);
     gpio_set_function(FPGAUART_RX_PIN, GPIO_FUNC_UART);
   }
+  gpio_pull_down(resetport->getPort());
 //#warning should be undeleted
 //  RX_core rxCore;
 // fixme mb should add & before isr
@@ -463,9 +464,11 @@ void HARDWARE::AscResult(FPGAAscData ascdata, uint8_t* dst, size_t len)
 void HARDWARE::WriteDataToFPGA(FPGAWriteData writedata)
 {
   size_t sz;
-  sz=sizeof(writedata);
+  uint32_t dt=writedata.data;
+  sz=sizeof(dt);//1;//sizeof(writedata);
   uint8_t *buffer = new uint8_t[sz];
-  memcpy(buffer, &writedata,sz);
+ // memcpy(buffer, &writedata,sz);
+  memcpy(buffer, &dt,sz);
   if (flgDebug)  
   {
     std::string afcc;
@@ -485,6 +488,25 @@ void HARDWARE::WriteDataToFPGA(FPGAWriteData writedata)
   {
     uart_write_blocking(FPGA_UART_ID, buffer,sz);
     //uart_write_blocking(uart_inst_t *uart, const uint8_t *src, size_t len)
+  }
+  if (uart_is_readable(FPGA_UART_ID)) 
+  {
+    uart_read_blocking(FPGA_UART_ID, buffer,sz);
+    //uart_write_blocking(uart_inst_t *uart, const uint8_t *src, size_t len)
+  }
+  if (flgDebug)  
+  {
+    std::string afcc;
+    afcc.clear();
+    afcc="code"+std::to_string(DEBUG)+','+std::to_string(sz); 
+    for (size_t j = 0; j < sz; ++j)
+    {
+      afcc +=',' + std::to_string(buffer[j]);
+    }
+    afcc +="\n";
+    std::cout << afcc;
+    sleep_ms(200);
+    afcc.clear();
   }
 }
 void HARDWARE::set_SetPoint( int32_t SetPoint)

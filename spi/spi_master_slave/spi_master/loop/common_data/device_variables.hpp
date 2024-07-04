@@ -9,12 +9,12 @@
 // datasheet for information on which other pins can be used.
 //#define UART_TX_PIN 16 //240703
 //#define UART_RX_PIN 17 //240703
-#define USB_UART_ID     uart1//240703
-#define USBUART_TX_PIN  8
-#define USBUART_RX_PIN  9
-#define FPGAUART_TX_PIN 17 //!
-#define FPGAUART_RX_PIN 18 //!
-#define FPGA_UART_ID    uart0
+//#define USB_UART_ID     uart1//240703
+//#define USBUART_TX_PIN  8
+//#define USBUART_RX_PIN  9
+#define FPGAUART_TX_PIN 8 //!
+#define FPGAUART_RX_PIN 9 //!
+#define FPGA_UART_ID    uart1
 #define FPGA_BAUD_RATE  400000
 
 extern uint8_t FPGADELIM;
