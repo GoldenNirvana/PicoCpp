@@ -6,7 +6,7 @@ std::string  SoftHARDWAREVERSION="0.1";
 int8_t       HARDWAREVERSION=0;   // PICO=0 ; MotherBoard=1
 //int8_t       HARDWAREVERSION_I=-1;
 //std::string  HARDWAREVERSION="2.0"; //new hardware
-bool    flgUseFPGA = true;  //use PID ПЛИС
+bool    flgUseFPGA = false;  //use PID ПЛИС
 std::string afc;  //dataout string
 std::vector<int32_t> vector;
 std::vector<int32_t> vupdateparams;
