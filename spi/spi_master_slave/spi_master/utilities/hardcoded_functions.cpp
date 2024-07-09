@@ -464,7 +464,7 @@ void HARDWARE::AscResult(FPGAAscData ascdata, uint8_t* dst, size_t len)
 void HARDWARE::WriteDataToFPGA(FPGAWriteData writedata)
 {
   size_t sz;
-  uint32_t dt=writedata.data;
+  uint8_t dt=writedata.data;
   sz=sizeof(dt);//1;//sizeof(writedata);
   uint8_t *buffer = new uint8_t[sz];
  // memcpy(buffer, &writedata,sz);
