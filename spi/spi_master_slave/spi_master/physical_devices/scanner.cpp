@@ -2642,7 +2642,7 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
     {
       if (NSTEPS >= 0)
       {
-        ZValue = ZValue - 500;
+        ZValue -=500;
       }
       else
       {
