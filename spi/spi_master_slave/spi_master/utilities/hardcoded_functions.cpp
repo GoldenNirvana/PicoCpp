@@ -659,7 +659,7 @@ void HARDWARE::set_GainPID(uint16_t gain)
     if (flgDebug)  
     {
      afc.clear();
-     afc = "code"+std::to_string(DEBUG)+"debug PID Gain "+ std::to_string(ti); 
+     afc = "code"+std::to_string(DEBUG)+"debug PID Gain "+ std::to_string(255-ti); 
     } 
   }  
   if (flgDebug)  

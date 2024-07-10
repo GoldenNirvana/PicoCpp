@@ -373,12 +373,15 @@ MainCore::MainCore()
    multicore_launch_core1(launchOnCore1);
    switch (HARDWAREVERSION)
    {       
-    case 0:{
+    case BB:
+           {
             scanner=new  Scanner(confighardwarev0); 
             scanner->hardware->setDefaultSettings(confighardwarev0.DACBiasVSetPointPort,confighardwarev0.DACXYPort,confighardwarev0.DACZPort);                 
             break; 
            }
-    case 1:{ //MotherBoard
+    case WB:
+    case WBFPGA:
+          { //MotherBoard + WBFPGA
             scanner=new  Scanner(confighardwarev1);
             scanner->hardware->setDefaultSettings(confighardwarev1.DACBiasVSetPointPort,confighardwarev1.DACXYPort,confighardwarev1.DACZPort);
             break;
