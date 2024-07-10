@@ -6,6 +6,10 @@
 #include <vector>
 #include <atomic>
 
+#define BB                       0
+#define WB                       1
+
+#define SFM                      0
 #define SFM                      0
 #define STM                      1
 #define SICMDC                   3  

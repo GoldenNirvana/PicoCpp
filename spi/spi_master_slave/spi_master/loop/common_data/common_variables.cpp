@@ -3,7 +3,7 @@
 //////////////////////////////////////////////
 std::string  SOFTVERSION="24.06.04.1 HWAMB";
 std::string  SoftHARDWAREVERSION="0.1";
-int8_t       HARDWAREVERSION=1;   // PICO=0 ; MotherBoard=1
+int8_t       HARDWAREVERSION=0;   // PICO=0 ; MotherBoard=1
 //int8_t       HARDWAREVERSION_I=-1;
 //std::string  HARDWAREVERSION="2.0"; //new hardware
 bool    flgUseFPGA = false;  //use PID ПЛИС
