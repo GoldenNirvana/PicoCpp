@@ -8,14 +8,7 @@
 
 #include <pico/multicore.h>
 #include <bitset>
-/*
-#define USB_UART_ID  uart1
-#define FPGA_UART_ID uart0
-#define USBUART_TX_PIN 8
-#define USBUART_RX_PIN 9
-#define FPGAUART_TX_PIN 17 //!
-#define FPGAUART_RX_PIN 18 //!
-*/
+
 HARDWARE::HARDWARE(ConfigHardWare confighardware) 
 {
    /*   _confighardware=confighardware;
@@ -182,7 +175,7 @@ void HARDWARE::setDefaultSettings( uint8_t dacBiasVSetPointPort, uint8_t  dacXYP
  // gpio_set_function(USBUART_TX_PIN, GPIO_FUNC_UART);
  // gpio_set_function(USBUART_RX_PIN, GPIO_FUNC_UART); 
  // gpio_pull_down(resetport->getPort());
-  if (flgUseFPGA)
+  if (HARDWAREVERSION==WBFPGA)
   {
     uart_init(FPGA_UART_ID, FPGA_BAUD_RATE); //add  240627
     gpio_set_function(FPGAUART_TX_PIN, GPIO_FUNC_UART);
@@ -281,7 +274,7 @@ void HARDWARE::get_result_from_adc()
 }
 void HARDWARE::setLoopSign(int8_t value)
 {
-  if (flgUseFPGA) 
+   if (HARDWAREVERSION==WBFPGA)
   {
 
 
@@ -513,7 +506,7 @@ void HARDWARE::set_SetPoint( int32_t SetPoint)
 {//  code  22, 2, 8, 0, 1, 0, value
   if (!flgVirtual)
   {
-    if (!flgUseFPGA)
+    if (HARDWAREVERSION!=WBFPGA)
      {  dacbvspt->writeA(SetPoint+ShiftDac); }// 240425 ?
      else 
      {
@@ -566,9 +559,9 @@ void HARDWARE::set_GainApmlMod(uint8_t gain)
 void HARDWARE::set_GainPID(uint16_t gain)
 {
   uint8_t ti;
-  uint8_t tiadd;
-  if (HARDWAREVERSION==0)  //BB
+  if (HARDWAREVERSION==BB)  //BB
   {
+   uint8_t tiadd;
    ti=(uint8_t)(gain>>8);
    tiadd=(uint8_t)(gain&0x00FF);
    if (!flgVirtual) 
@@ -582,7 +575,7 @@ void HARDWARE::set_GainPID(uint16_t gain)
     (ti&0x02) == 1 ? gainPID1->enable() : gainPID1->disable();
     (ti&0x01) == 1 ? gainPID2->enable() : gainPID2->disable();
    */ 
-    // отладка
+    // отладка SPI
      uint8_t intBuf[1]; 
      decoder.activePort(6);
      Spi::setProperties(8, 0, 0);
@@ -592,20 +585,29 @@ void HARDWARE::set_GainPID(uint16_t gain)
      spi_write_blocking(spi_default, intBuf, 1); 
      decoder.activePort(7);
     }
-  }
-  else  //add 240603 WB
+    if (flgDebug)  
+    {
+     afc.clear();
+     afc = "code"+std::to_string(DEBUG)+"debug PID Gain "+ std::to_string(ti)+' '+ std::to_string(tiadd);
+    }  
+  }  
+  else  //add 240603 WB+WBFPGA
   {
     ti=(uint8_t)gain; 
     if (!flgVirtual) 
     { 
-     if (!flgUseFPGA)
+     if (HARDWAREVERSION!=WBFPGA)
      {
-      std::string binary = std::bitset<3>(ti).to_string();
-      binary[2] == '1' ? gainPID0->enable() : gainPID0->disable();
-      binary[1] == '1' ? gainPID1->enable() : gainPID1->disable();
-      binary[0] == '1' ? gainPID2->enable() : gainPID2->disable();
+      uint8_t intBuf[1]; 
+      decoder.activePort(6);
+      Spi::setProperties(8, 0, 0);
+      intBuf[0] = 0;
+      spi_write_blocking(spi_default, intBuf, 1); 
+      intBuf[0] = ti;
+      spi_write_blocking(spi_default, intBuf, 1); 
+      decoder.activePort(7);
      }
-     else //UseFPGA
+     else //Use FPGA
      {
       FPGAWriteData writedata;
       writedata.addr=arrModule_0.wbKx[0];//  0x08430000;  //adress gain need sign
@@ -631,7 +633,7 @@ void HARDWARE::set_GainPID(uint16_t gain)
       WriteDataToFPGA(writedata);
      }    
     }
-    else 
+    else //virtual
     {
       FPGAWriteData writedata;
       writedata.addr=arrModule_0.wbKx[0];
@@ -652,18 +654,16 @@ void HARDWARE::set_GainPID(uint16_t gain)
       sleep_ms(200);
       afcc.clear();
     */  
-      WriteDataToFPGA(writedata);
+    //  WriteDataToFPGA(writedata);
     }
-    
-  } 
+    if (flgDebug)  
+    {
+     afc.clear();
+     afc = "code"+std::to_string(DEBUG)+"debug PID Gain "+ std::to_string(ti); 
+    } 
+  }  
   if (flgDebug)  
   {
-   afc.clear();
-   if (HARDWAREVERSION==0)
-   {
-     afc = "code"+std::to_string(DEBUG)+"debug PID Gain "+ std::to_string(ti)+' '+ std::to_string(tiadd);
-   }
-   else afc = "code"+std::to_string(DEBUG)+"debug PID Gain "+ std::to_string(ti);
    afc += +"\n";
    std::cout << afc;
    afc.clear();

@@ -12,6 +12,10 @@
 #define maxint16_t               32767
 #define minint16_t              -32768
 
+#define BB                        0
+#define WB                        1
+#define WBFPGA                    2
+
 #define ALGNONE                   0
 #define VersionCmd               10
 #define ChangeHardWare           11
