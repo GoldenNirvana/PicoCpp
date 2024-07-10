@@ -112,6 +112,7 @@ extern uint8_t flgDebugLevel; //  leveldebug
 extern int16_t ZValue;        //for simulation
 extern int16_t SignalValue;   //for simulation   
 extern int16_t ZMaxValue;
+extern int16_t SignalMaxValue;
 extern int32_t ShiftDac;
 
 extern critical_section_t criticalSection;

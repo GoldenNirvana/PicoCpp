@@ -38,6 +38,7 @@ bool    flgUseUART = false;     // использовать UART для пере
 int16_t ZValue      = maxint16_t;
 int16_t SignalValue = maxint16_t;
 int16_t ZMaxValue   = maxint16_t;
+int16_t SignalMaxValue   = maxint16_t; //add 240710
 int32_t ShiftDac    = 32768;
 
 uint8_t ZPin    = 0; // Z

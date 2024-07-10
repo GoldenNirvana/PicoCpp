@@ -124,7 +124,7 @@ HARDWARE::~HARDWARE()
     delete(gainPID2);
     delete(freezeport);
     delete(protractport);
-   if (HARDWAREVERSION==1)
+   if (HARDWAREVERSION>=BB) //WB+WBFPGA
    {       
      delete(modulateuport);
      delete(i_stmport);
@@ -210,7 +210,7 @@ void HARDWARE::setDefaultSettings( uint8_t dacBiasVSetPointPort, uint8_t  dacXYP
     usemod_U:=0;       // use mod U; not=0
     usenotmod_I:=1;       // use mod I not  =1 ; 
   */  
-   if (HARDWAREVERSION==1) //Mother board(WB)
+   if (HARDWAREVERSION>=BB) //Mother board(WB) WBFPGA
    {  
      init_commutation(0 , 1 , 1 , 1, 0);   //afm
     //init_commutation(1 , 1 , 1 , 0, 0);  //afm  240624

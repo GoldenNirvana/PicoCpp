@@ -2511,8 +2511,8 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
   const int ok = 3;
   const int touch = 2;
   const int stopdone = 1;
-  uint16_t ZMaxValue = 32767;
-
+ // uint16_t ZMaxValue = 32767;
+ // uint16_t SignalMaxValue =32767;
   int16_t  SET_POINT;
   int16_t  GATE_Z_MAX, GATE_Z_MIN;
   int16_t  freq, duty;//
@@ -2642,12 +2642,15 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
     {
       if (NSTEPS >= 0)
       {
-        ZValue = ZValue - 500;
+        ZValue -=  500;
+        SignalValue-=500;
       }
       else
       {
         if ((ZMaxValue - ZValue) > 0) { ZValue += 500; }
                                  else { ZValue = maxint16_t; }
+        if ((SignalMaxValue - SignalValue) > 0) { SignalValue += 500; }
+                                           else { SignalValue = maxint16_t; }                                 
       }
       buf_status[1] = ZValue;
       buf_status[2] = SignalValue;
