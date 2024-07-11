@@ -491,10 +491,14 @@ void HARDWARE::set_GainPID(uint16_t gain)
     ti=(uint8_t)gain;
     if (!flgVirtual) 
     { 
-      std::string binary = std::bitset<3>(ti).to_string();
-      binary[2] == '1' ? gainPID0->enable() : gainPID0->disable();
-      binary[1] == '1' ? gainPID1->enable() : gainPID1->disable();
-      binary[0] == '1' ? gainPID2->enable() : gainPID2->disable();
+      uint8_t intBuf[1]; 
+     decoder.activePort(6);
+     Spi::setProperties(8, 0, 0);
+     intBuf[0] = 0;
+     spi_write_blocking(spi_default, intBuf, 1); 
+     intBuf[0] = ti;
+     spi_write_blocking(spi_default, intBuf, 1); 
+     decoder.activePort(7);
     }
   } 
   if (flgDebug)  
