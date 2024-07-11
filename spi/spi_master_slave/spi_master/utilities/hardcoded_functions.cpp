@@ -280,7 +280,7 @@ void HARDWARE::get_result_from_adc()
 }
 void HARDWARE::setLoopSign(int8_t value)
 {
-  if (flgUseFPGA) 
+  if (HARDWAREVERSION>=BB) 
   {
 
 

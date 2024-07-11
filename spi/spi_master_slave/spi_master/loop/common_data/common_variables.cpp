@@ -3,10 +3,9 @@
 //////////////////////////////////////////////
 std::string  SOFTVERSION="24.06.04.1 HWAMB";
 std::string  SoftHARDWAREVERSION="0.1";
-int8_t       HARDWAREVERSION=BB;   // BB PICO=0 ; WB MotherBoard=1
+int8_t       HARDWAREVERSION=WB;   // BB PICO=0 ; WB MotherBoard=1
 //int8_t       HARDWAREVERSION_I=-1;
 //std::string  HARDWAREVERSION="2.0"; //new hardware
-bool    flgUseFPGA = false;  //use PID ПЛИС
 std::string afc;  //dataout string
 std::vector<int32_t> vector;
 std::vector<int32_t> vupdateparams;
