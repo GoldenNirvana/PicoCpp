@@ -130,7 +130,7 @@ HARDWARE::~HARDWARE()
     delete(gainPID2);
     delete(freezeport);
     delete(protractport);
-   if (HARDWAREVERSION==1)
+   if (HARDWAREVERSION>BB)
    {       
      delete(modulateuport);
      delete(i_stmport);
@@ -176,7 +176,7 @@ void HARDWARE::reset_ADCPort()
 void HARDWARE::setDefaultSettings( uint8_t dacBiasVSetPointPort, uint8_t  dacXYPort, uint8_t dacZPort)  
 {
   /// BASIC SETTINGS
-  uart_init(uart1, 115200);
+  uart_init(UART_ID, BAUD_RATEFPGA);
   gpio_set_function(UART_TX_PIN, GPIO_FUNC_UART);
   gpio_set_function(UART_RX_PIN, GPIO_FUNC_UART); 
   gpio_pull_down(resetport->getPort());
@@ -213,7 +213,7 @@ void HARDWARE::setDefaultSettings( uint8_t dacBiasVSetPointPort, uint8_t  dacXYP
     usemod_U:=0;       // use mod U; not=0
     usenotmod_I:=1;       // use mod I not  =1 ; 
   */  
-   if (HARDWAREVERSION==1) //Mother board(WB)
+   if (HARDWAREVERSION>BB) //Mother board(WB)
    {  
      init_commutation(0 , 1 , 1 , 1, 0);   //afm
     //init_commutation(1 , 1 , 1 , 0, 0);  //afm  240624
@@ -460,7 +460,7 @@ void HARDWARE::set_GainPID(uint16_t gain)
 {
   uint8_t ti;
   uint8_t tiadd;
-  if (HARDWAREVERSION==0) //BB
+  if (HARDWAREVERSION==BB) //BB
   {
    ti=(uint8_t)(gain>>8);
    tiadd=(uint8_t)(gain&0x00FF);
@@ -475,7 +475,7 @@ void HARDWARE::set_GainPID(uint16_t gain)
     (ti&0x02) == 1 ? gainPID1->enable() : gainPID1->disable();
     (ti&0x01) == 1 ? gainPID2->enable() : gainPID2->disable();
    */ 
-    // отладка
+    // use SPI
      uint8_t intBuf[1]; 
      decoder.activePort(6);
      Spi::setProperties(8, 0, 0);
@@ -504,7 +504,7 @@ void HARDWARE::set_GainPID(uint16_t gain)
   if (flgDebug)  
   {
    afc.clear();
-   if (HARDWAREVERSION==0)
+   if (HARDWAREVERSION==BB)
    {
      afc = "code"+std::to_string(DEBUG)+"debug PID Gain "+ std::to_string(ti)+' '+ std::to_string(tiadd);
    }
