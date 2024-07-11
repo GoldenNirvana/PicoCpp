@@ -380,7 +380,7 @@ MainCore::MainCore()
             break; 
            }
     case WB:
-    case WBFPGA:
+    case BBFPGA:
           { //WB+ WBFPGA
             scanner=new  Scanner(confighardwarev1);
             scanner->hardware->setDefaultSettings(confighardwarev1.DACBiasVSetPointPort,confighardwarev1.DACXYPort,confighardwarev1.DACZPort);

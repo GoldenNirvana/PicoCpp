@@ -14,7 +14,7 @@
 
 #define BB                        0
 #define WB                        1
-#define WBFPGA                    2
+#define BBFPGA                    2
 
 #define ALGNONE                   0
 #define VersionCmd               10

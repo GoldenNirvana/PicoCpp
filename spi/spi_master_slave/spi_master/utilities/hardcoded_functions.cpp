@@ -124,7 +124,7 @@ HARDWARE::~HARDWARE()
     delete(gainPID2);
     delete(freezeport);
     delete(protractport);
-   if (HARDWAREVERSION>=BB) //WB+WBFPGA
+   if (HARDWAREVERSION>BB) //WB+WBFPGA
    {       
      delete(modulateuport);
      delete(i_stmport);
@@ -175,7 +175,7 @@ void HARDWARE::setDefaultSettings( uint8_t dacBiasVSetPointPort, uint8_t  dacXYP
  // gpio_set_function(USBUART_TX_PIN, GPIO_FUNC_UART);
  // gpio_set_function(USBUART_RX_PIN, GPIO_FUNC_UART); 
  // gpio_pull_down(resetport->getPort());
-  if (HARDWAREVERSION==WBFPGA)
+  if (HARDWAREVERSION==BBFPGA)
   {
     uart_init(FPGA_UART_ID, FPGA_BAUD_RATE); //add  240627
     gpio_set_function(FPGAUART_TX_PIN, GPIO_FUNC_UART);
@@ -210,7 +210,7 @@ void HARDWARE::setDefaultSettings( uint8_t dacBiasVSetPointPort, uint8_t  dacXYP
     usemod_U:=0;       // use mod U; not=0
     usenotmod_I:=1;       // use mod I not  =1 ; 
   */  
-   if (HARDWAREVERSION>=BB) //Mother board(WB) WBFPGA
+   if (HARDWAREVERSION>BB) //Mother board(WB) WBFPGA
    {  
      init_commutation(0 , 1 , 1 , 1, 0);   //afm
     //init_commutation(1 , 1 , 1 , 0, 0);  //afm  240624
@@ -274,7 +274,7 @@ void HARDWARE::get_result_from_adc()
 }
 void HARDWARE::setLoopSign(int8_t value)
 {
-   if (HARDWAREVERSION==WBFPGA)
+   if (HARDWAREVERSION==BBFPGA)
   {
 
 
@@ -506,7 +506,7 @@ void HARDWARE::set_SetPoint( int32_t SetPoint)
 {//  code  22, 2, 8, 0, 1, 0, value
   if (!flgVirtual)
   {
-    if (HARDWAREVERSION!=WBFPGA)
+    if (HARDWAREVERSION!=BBFPGA)
      {  dacbvspt->writeA(SetPoint+ShiftDac); }// 240425 ?
      else 
      {
@@ -596,7 +596,7 @@ void HARDWARE::set_GainPID(uint16_t gain)
     ti=(uint8_t)gain; 
     if (!flgVirtual) 
     { 
-     if (HARDWAREVERSION!=WBFPGA)
+     if (HARDWAREVERSION!=BBFPGA)
      {
       uint8_t intBuf[1]; 
       decoder.activePort(6);
