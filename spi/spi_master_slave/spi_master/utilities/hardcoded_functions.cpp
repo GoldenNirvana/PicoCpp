@@ -180,11 +180,13 @@ void HARDWARE::setDefaultSettings( uint8_t dacBiasVSetPointPort, uint8_t  dacXYP
   gpio_set_function(UART_TX_PIN, GPIO_FUNC_UART);
   gpio_set_function(UART_RX_PIN, GPIO_FUNC_UART); 
   gpio_pull_down(resetport->getPort());
+  /*
   if (flgUseFPGA)
   { uart_init(uart0, 400000); //add  240627
     gpio_set_function(FPGAUART_TX_PIN, GPIO_FUNC_UART);
     gpio_set_function(FPGAUART_RX_PIN, GPIO_FUNC_UART);
   }
+  */
 //#warning should be undeleted
 //  RX_core rxCore;
 // fixme mb should add & before isr
