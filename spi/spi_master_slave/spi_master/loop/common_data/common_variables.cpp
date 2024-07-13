@@ -3,10 +3,8 @@
 //////////////////////////////////////////////
 std::string  SOFTVERSION="24.06.04.1 HWABBWBFPGA";
 std::string  SoftHARDWAREVERSION="0.1";
-int8_t       HARDWAREVERSION=2;   // PICO(BB)=0 ; MotherBoard(WhiteBoard=WB)=1; WhiteBoard+FPGA(WBFPGA)=2 ПЛИС;
+int8_t       HARDWAREVERSION=2;   // PICO(BB)=0 ; MotherBoard(WhiteBoard=WB)=1; BlueBoard+FPGA(BBFPGA)=2 ПЛИС;
 //int8_t       HARDWAREVERSION_I=-1;
-//std::string  HARDWAREVERSION="2.0"; //new hardware
-// bool    flgUseFPGA = true;  //use PID 
 std::string afc;  //dataout string
 std::vector<int32_t> vector;
 std::vector<int32_t> vupdateparams;
