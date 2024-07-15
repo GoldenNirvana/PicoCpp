@@ -33,6 +33,8 @@ void Scanner::sendStrData(std::string const& header)
 
 void Scanner::sendStrData(std::string const& header, std::vector<int32_t> &data, const uint16_t delay,const bool flg)
 {
+ if (!flgTUD)
+ { 
   std::string afcc;
   afcc.clear();
   afcc=header; 
@@ -45,40 +47,113 @@ void Scanner::sendStrData(std::string const& header, std::vector<int32_t> &data,
   afcc +="\n";
   std::cout << afcc;
   afcc.clear();
+ }
+ else
+ {
+   if (tud_cdc_connected())
+      {
+        uint32_t count;
+        count=data.size(); 
+        uint8_t buf[6+count]; 
+      //  for (size_t j = 0; j < 6; ++j) buf[j]=header[j];
+      //  uint8_t *buffer = new uint8_t[count+6];
+
+         memcpy(buf, header.c_str(),6);
+         memcpy(&buf+6, &data,count);
+        tud_cdc_write(buf, 6+count);
+        tud_cdc_write_flush();
+      }
+ }     
   if (flg) data.clear();
   sleep_ms(delay);
 }
 
 void Scanner::sendStrData(std::string const& header,std::vector<int16_t> &data, const uint16_t delay, const bool flg)
 {
-  std::string afcc;
-  afcc.clear();
-  afcc=header;
-  for (size_t j = 0; j < data.size(); ++j)
+  if (!flgTUD) 
   {
-   afcc +=',' + std::to_string(data[j]);
+   std::string afcc;
+   afcc.clear();
+   afcc=header;
+   for (size_t j = 0; j < data.size(); ++j)
+   {
+    afcc +=',' + std::to_string(data[j]);
+   }
+   afcc +="\n";
+   std::cout << afcc;
+   afcc.clear();
   }
-  afcc +="\n";
-  std::cout << afcc;
-  afcc.clear();
+  else
+  {
+     if (tud_cdc_connected())
+      {
+        uint32_t count;
+        count=data.size(); 
+        uint8_t* buf; 
+      //  for (size_t j = 0; j < 6; ++j) buf[j]=header[j];
+      //  uint8_t *buffer = new uint8_t[count+6];
+
+         memcpy(buf, header.c_str(),6);
+      //   memcpy(buf+6, &data,count);
+        tud_cdc_write(buf, 6);
+        tud_cdc_write_flush();
+      }
+  } 
   sleep_ms(delay);
   if (flg) data.clear();
 }
+void Scanner::sendData(std::vector<int16_t> &data, const uint16_t delay, const bool flg)
+{
+      if (tud_cdc_connected())
+      {
+        uint32_t count;
+        count=data.size(); 
+        uint8_t* buf; 
+      //  for (size_t j = 0; j < 6; ++j) buf[j]=header[j];
+      //  uint8_t *buffer = new uint8_t[count+6];
 
+      //   memcpy(buf, header.c_str(),6);
+        memcpy(buf, &data,count);
+        tud_cdc_write(buf, count);
+        tud_cdc_write_flush();
+      }
+   
+  sleep_ms(delay);
+  if (flg) data.clear();
+}
 void Scanner::sendStrData(std::string const& header,std::vector<uint16_t> &data, const uint16_t delay, const bool flg)
 {
-  std::string afcc;
-  afcc.clear();
-  afcc=header;
-   //for (auto & element :data) 
-  for (size_t j = 0; j < data.size(); ++j)
+  if (!flgTUD) 
   {
+   std::string afcc;
+   afcc.clear();
+   afcc=header;
+   //for (auto & element :data) 
+   for (size_t j = 0; j < data.size(); ++j)
+   {
  // afc +=',' + std::to_string(element);
-   afcc +=',' + std::to_string(data[j]);
+    afcc +=',' + std::to_string(data[j]);
+   }
+   afcc +="\n";
+   std::cout << afcc;
+   afcc.clear();
   }
-  afcc +="\n";
-  std::cout << afcc;
-  afcc.clear();
+  else
+  {
+ if (tud_cdc_connected())
+      {
+        uint32_t count;
+        count=data.size(); 
+        uint8_t* buf; 
+      //  for (size_t j = 0; j < 6; ++j) buf[j]=header[j];
+      //  uint8_t *buffer = new uint8_t[count+6];
+
+         memcpy(buf, header.c_str(),6);
+     //    memcpy(buf+6, &data,count);
+        tud_cdc_write(buf, 6);
+        tud_cdc_write_flush();
+      }
+  } 
   sleep_ms(delay);
   if (flg) data.clear();
 }
@@ -97,7 +172,7 @@ void Scanner::readDATALin()
   {   
    debugdata.emplace_back(szx);
    debugdata.emplace_back(szy);
-   sendStrData("code"+std::to_string(DEBUG)+" linxny ",debugdata,400,true);
+   sendStrData(code+std::to_string(DEBUG)+" linxny ",debugdata,400,true);
   } 
    for (size_t j = 0; j <szx; ++j)
    {
@@ -132,17 +207,21 @@ void Scanner::readADC()
                  break;  
                 } 
    }         
-        debugdata.emplace_back(ZValue);
-        debugdata.emplace_back(SignalValue);
-        debugdata.emplace_back(vector[1]);
-        sendStrData("code"+std::to_string(ADC_READCmd),debugdata,100,true);
+
+      debugdata.emplace_back(ZValue);
+      debugdata.emplace_back(SignalValue);
+      debugdata.emplace_back(vector[1]);
+     sendStrData(code+std::to_string(ADC_READCmd),debugdata,100,true);
   } 
   else
-  {
-        debugdata.emplace_back(ZValue);
-        debugdata.emplace_back(SignalValue);
-        debugdata.emplace_back(vector[1]);
-        sendStrData("code"+std::to_string(ADC_READCmd),debugdata,100,true);     
+  { 
+        debugdatatud.emplace_back(cdvalue);
+        debugdatatud.emplace_back(ADC_READCmd);
+        debugdatatud.emplace_back(ZValue);
+        debugdatatud.emplace_back(SignalValue);
+        debugdatatud.emplace_back(vector[1]);
+        debugdatatud.emplace_back(0x0D0A);
+        sendData(debugdatatud,100,true);     
   }
 }
 bool Scanner::getHoppingFlg() //получить флаг- установлен ли флаг сканирования прыжками
@@ -196,7 +275,7 @@ struct Config
    }
    debugdata.emplace_back(pos_.x);
    debugdata.emplace_back(pos_.y);
-   sendStrData("code"+std::to_string(DEBUG)+" scan parameters",debugdata,100,true);
+   sendStrData(code+std::to_string(DEBUG)+" scan parameters",debugdata,100,true);
   } 
 
   uint16_t stepsx;
@@ -382,7 +461,7 @@ struct Config
      count0++;
     } 
     DrawDone = false;
-    sendStrData("code"+std::to_string(SCANNING),vector_data,60,true); //240314  60
+    sendStrData(code+std::to_string(SCANNING),vector_data,60,true); //240314  60
 
     if (CONFIG_UPDATE)
     {
@@ -399,7 +478,7 @@ struct Config
        {
         debugdata.emplace_back(vupdateparams[j]);
        }
-       sendStrData("code"+std::to_string(DEBUG)+" scan parameters update",debugdata,100,true); //240314 100
+       sendStrData(code+std::to_string(DEBUG)+" scan parameters update",debugdata,100,true); //240314 100
       }
      if (flgСritical_section)  critical_section_enter_blocking(&criticalSection); 
       vupdateparams.clear();
@@ -429,13 +508,13 @@ struct Config
       }
       //    dark();
      } 
-      sendStrData("code"+std::to_string(PARAMUPDATEDCmd)); //!!!!!!!!!!!!!!!!!240314
+      sendStrData(code+std::to_string(PARAMUPDATEDCmd)); //!!!!!!!!!!!!!!!!!240314
     }
     if (STOP)  
     {
       STOP = false;
       sleep_ms(200);
-      sendStrData("code"+std::to_string(STOPPED)+"stopped");
+      sendStrData(code+std::to_string(STOPPED)+"stopped");
       break;
     }
     //next line
@@ -493,7 +572,7 @@ struct Config
   } 
   TheadDone = false;
   hardware->green();
-  sendStrData("code"+std::to_string(END)+"end"); 
+  sendStrData(code+std::to_string(END)+"end"); 
   hardware->activateDark();
   hardware->dark();
 }
@@ -510,9 +589,9 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
    }
    debugdata.emplace_back(pos_.x);
    debugdata.emplace_back(pos_.y);
-   sendStrData("code"+std::to_string(DEBUG)+" scan lin parameters",debugdata,200,true);//200//
-   sendStrData("code"+std::to_string(DEBUG)+" linx ",data_LinX,200,false);
-   sendStrData("code"+std::to_string(DEBUG)+" liny ",data_LinY,100,false);
+   sendStrData(code+std::to_string(DEBUG)+" scan lin parameters",debugdata,200,true);//200//
+   sendStrData(code+std::to_string(DEBUG)+" linx ",data_LinX,200,false);
+   sendStrData(code+std::to_string(DEBUG)+" liny ",data_LinY,100,false);
   }
   uint16_t stepsx;
   uint16_t stepsy;
@@ -686,7 +765,7 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
     } 
      DrawDone = false;
   
-    sendStrData("code"+std::to_string(SCANNING),vector_data,40,true); //100
+    sendStrData(code+std::to_string(SCANNING),vector_data,40,true); //100
  
     if (CONFIG_UPDATE)
     {
@@ -703,7 +782,7 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
        {
         debugdata.emplace_back(vector[j]);
        }
-       sendStrData("code"+std::to_string(DEBUG)+ " parameters update",debugdata,100,true);
+       sendStrData(code+std::to_string(DEBUG)+ " parameters update",debugdata,100,true);
       } 
       vupdateparams.clear();
     }
@@ -711,7 +790,7 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
     {
       STOP = false;
       sleep_ms(100);
-      sendStrData("code"+std::to_string(STOPPED)+"stopped");
+      sendStrData(code+std::to_string(STOPPED)+"stopped");
       break;
     }
     // next line
@@ -788,7 +867,7 @@ void Scanner::start_scanlin(std::vector<int32_t> &vector) //сканирован
   } 
   TheadDone = false;
   hardware->green();
-  sendStrData("code"+std::to_string(END)+"end"); 
+  sendStrData(code+std::to_string(END)+"end"); 
    hardware->dark();
 }
 
@@ -833,7 +912,7 @@ struct Config
     debugdata.emplace_back(vector[j]);
    }
    debugdata.emplace_back(RAND_MAX);
-   sendStrData("code"+std::to_string(DEBUG)+" hoping scan parameters",debugdata,100,true);
+   sendStrData(code+std::to_string(DEBUG)+" hoping scan parameters",debugdata,100,true);
   } 
   uint16_t stepsx;
   uint16_t stepsy;
@@ -1100,13 +1179,13 @@ struct Config
      } 
       DrawDone = false;
 //*****************************************************************
-    sendStrData("code"+std::to_string(SCANNING),vector_data,60,true); //send data 60
+    sendStrData(code+std::to_string(SCANNING),vector_data,60,true); //send data 60
 //*****************************************************************
     if (STOP)  // stop
     {
       STOP = false;
       sleep_ms(300);
-      sendStrData("code"+std::to_string(STOPPED)+"stopped");
+      sendStrData(code+std::to_string(STOPPED)+"stopped");
       break;
     }
     if (CONFIG_UPDATE)
@@ -1133,7 +1212,7 @@ struct Config
        {
         debugdata.emplace_back(vupdateparams[j]);
        }
-       sendStrData("code"+std::to_string(DEBUG)+" hoping parameters update",debugdata,100,true);
+       sendStrData(code+std::to_string(DEBUG)+" hoping parameters update",debugdata,100,true);
       } 
       if (flgСritical_section) critical_section_enter_blocking(&criticalSection); 
        vupdateparams.clear();
@@ -1163,7 +1242,7 @@ struct Config
       }
      }
       if (flgDebug)
-      { sendStrData("code"+std::to_string(PARAMUPDATEDCmd));} //240314
+      { sendStrData(code+std::to_string(PARAMUPDATEDCmd));} //240314
     } //update
       if (!flgVirtual)
       {
@@ -1213,7 +1292,7 @@ struct Config
   } 
   TheadDone = false;
   conf_.flgHoping=0;
-  sendStrData("code"+std::to_string(END)+"end");
+  sendStrData(code+std::to_string(END)+"end");
  // activateDark();
 }
 
@@ -1228,7 +1307,7 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
    {
     debugdata.emplace_back(vector[j]);
    }
-   sendStrData("code"+std::to_string(DEBUG)+" hoping scan parameters",debugdata,100,true);
+   sendStrData(code+std::to_string(DEBUG)+" hoping scan parameters",debugdata,100,true);
   }
   uint16_t stepsx;
   uint16_t stepsy;
@@ -1494,13 +1573,13 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
      } 
       DrawDone = false; 
 //*******************************************************  
-    sendStrData("code"+std::to_string(SCANNING),vector_data,60,true);
+    sendStrData(code+std::to_string(SCANNING),vector_data,60,true);
 //********************************************************
     if (STOP)  // stop
     {
       STOP = false;
       sleep_ms(300);
-      sendStrData("code"+std::to_string(STOPPED)+"stopped");
+      sendStrData(code+std::to_string(STOPPED)+"stopped");
       break;
     }  
     if (CONFIG_UPDATE)
@@ -1528,7 +1607,7 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
        {
         debugdata.emplace_back(vector[j]);
        }
-       sendStrData("code"+std::to_string(DEBUG)+" parameters update",debugdata,100,true);
+       sendStrData(code+std::to_string(DEBUG)+" parameters update",debugdata,100,true);
       }
     }
 ///move next line
@@ -1625,7 +1704,7 @@ void Scanner::start_hopingscanlin(std::vector<int32_t> &vector)
   } 
   TheadDone = false;
   conf_.flgHoping=0;
-  sendStrData("code"+std::to_string(END)+"end");
+  sendStrData(code+std::to_string(END)+"end");
   hardware->activateDark();
 } //hoppinglin
 
@@ -1655,7 +1734,7 @@ void Scanner::start_fastscan(std::vector<int32_t> &vector)
    debugdata.emplace_back(pos_.x);
    debugdata.emplace_back(pos_.y);
    debugdata.emplace_back(conf_.flgOneFrame);
-   sendStrData("code"+std::to_string(DEBUG)+" fastscan parameters",debugdata,100,true);
+   sendStrData(code+std::to_string(DEBUG)+" fastscan parameters",debugdata,100,true);
   }
   uint16_t stepsx;
   uint16_t stepsy;
@@ -1792,7 +1871,7 @@ void Scanner::start_fastscan(std::vector<int32_t> &vector)
       }
     } //i
   //  sendStrData("debug end fastscan");
-    std::string str="code"+std::to_string(FASTSCANNING);
+    std::string str=code+std::to_string(FASTSCANNING);
     sendStrData(str,vector_data,100,true);
     stop_scan();  //возврат в начальную точку скана
     if (conf_.flgOneFrame == 1) 
@@ -1826,7 +1905,7 @@ void Scanner::start_fastscan(std::vector<int32_t> &vector)
     count++;
   } 
   TheadDone = false;
-  sendStrData("code"+std::to_string(END)+"end");
+  sendStrData(code+std::to_string(END)+"end");
   hardware->activateDark();
 }
 
@@ -1838,7 +1917,7 @@ void Scanner::stop_scan()
    debugdata.emplace_back(prev_point.y);
    debugdata.emplace_back(pos_.x);
    debugdata.emplace_back(pos_.y);
-   sendStrData("code"+std::to_string(DEBUG)+" stopscan parameters",debugdata,100,true);
+   sendStrData(code+std::to_string(DEBUG)+" stopscan parameters",debugdata,100,true);
    sleep_ms(400);
   }
   move_to(prev_point, 10);
@@ -1849,7 +1928,7 @@ void Scanner::stop_scan()
    debugdata.emplace_back(prev_point.y);
    debugdata.emplace_back(pos_.x);
    debugdata.emplace_back(pos_.y);
-   sendStrData("code"+std::to_string(DEBUG)+" stopscan parameters",debugdata,100,true);
+   sendStrData(code+std::to_string(DEBUG)+" stopscan parameters",debugdata,100,true);
   }
 }
 
@@ -1863,7 +1942,7 @@ Point Scanner::getX0Y0()
   sleep_ms(200);
   debugdata.emplace_back(pos_.x);
   debugdata.emplace_back(pos_.y);
-  sendStrData("code"+std::to_string(GET_CURRENTX0Y0),debugdata,100,true);
+  sendStrData(code+std::to_string(GET_CURRENTX0Y0),debugdata,100,true);
   return pos_;
 }
 
@@ -1883,7 +1962,7 @@ void Scanner::move_toX0Y0(uint16_t x, uint16_t y, uint16_t delay, int8_t flg)
    debugdata.emplace_back(delay);
    debugdata.emplace_back(pos_.x);
    debugdata.emplace_back(pos_.y);
-   sendStrData("code"+std::to_string(DEBUG)+" moveto parameters",debugdata,200,true);
+   sendStrData(code+std::to_string(DEBUG)+" moveto parameters",debugdata,200,true);
   }
   if (flg==1)
   {
@@ -1897,7 +1976,7 @@ void Scanner::move_toX0Y0(uint16_t x, uint16_t y, uint16_t delay, int8_t flg)
     sleep_ms(delay);
   }
   sleep_ms(200);
-  sendStrData("code"+std::to_string(STOPPED)+"stopped");
+  sendStrData(code+std::to_string(STOPPED)+"stopped");
    int16_t count = 0;
   while ((!TheadDone) || (count<20) )//ожидание ответа ПК для синхронизации
   {
@@ -1905,7 +1984,7 @@ void Scanner::move_toX0Y0(uint16_t x, uint16_t y, uint16_t delay, int8_t flg)
     count++;
   } 
   TheadDone = false;
-  sendStrData("code"+std::to_string(END)+"end");
+  sendStrData(code+std::to_string(END)+"end");
 }
 
 void Scanner::move_to(const Point &point, uint16_t delay)
@@ -1956,7 +2035,7 @@ void Scanner::LID_move_toZ0(int lid_name, int freq, int duty, int n, int dir)  /
  {  
   debugdata.emplace_back(n);
   debugdata.emplace_back(dir);
-  sendStrData("code"+std::to_string(DEBUG)+" autorising done ",debugdata,100,true);
+  sendStrData(code+std::to_string(DEBUG)+" autorising done ",debugdata,100,true);
  } 
 }
 void Scanner::positioningXYZ(std::vector<int32_t> &vector)
@@ -1990,7 +2069,7 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
     {
      debugdata.emplace_back(vector[j]);
     }
-    sendStrData("code"+std::to_string(DEBUG)+" parameters posisionXYZ ",debugdata,100,true);
+    sendStrData(code+std::to_string(DEBUG)+" parameters posisionXYZ ",debugdata,100,true);
    } 
 
    if (!flgVirtual) 
@@ -2030,7 +2109,7 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
          {
           debugdata.emplace_back(vupdateparams[j]);
          }
-         sendStrData("code"+std::to_string(DEBUG)+"posXYZ parameters update",debugdata,100,true);
+         sendStrData(code+std::to_string(DEBUG)+"posXYZ parameters update",debugdata,100,true);
         }   
         vupdateparams.clear();
       }
@@ -2043,7 +2122,7 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
       debugdata.emplace_back(status);
       debugdata.emplace_back(ZValue);
       debugdata.emplace_back(SignalValue);
-      sendStrData("code"+ std::to_string(lid_name) ,debugdata,100,true);
+      sendStrData(code+ std::to_string(lid_name) ,debugdata,100,true);
     }
   }
   if (lid_name == 99) //Z
@@ -2066,7 +2145,7 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
          {
           debugdata.emplace_back(vector[j]);
          }
-         sendStrData("code"+std::to_string(DEBUG)+" parameters posistionXYZ update",debugdata,100,true);
+         sendStrData(code+std::to_string(DEBUG)+" parameters posistionXYZ update",debugdata,100,true);
         } 
       // vupdateparams.clear();
       if (flgСritical_section)  critical_section_enter_blocking(&criticalSection); 
@@ -2140,15 +2219,15 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
       debugdata.emplace_back(status);
       debugdata.emplace_back(ZValue);
       debugdata.emplace_back(SignalValue);
-      sendStrData("code"+ std::to_string(lid_name) ,debugdata,100,true);
+      sendStrData(code+ std::to_string(lid_name) ,debugdata,100,true);
     }
   }
    STOP=false;
    debugdata.emplace_back(status);
    debugdata.emplace_back(ZValue);
    debugdata.emplace_back(SignalValue);
-   sendStrData("code"+ std::to_string(lid_name) ,debugdata,200,true);
-   sendStrData("code"+std::to_string(STOPPED)+"stopped");
+   sendStrData(code+ std::to_string(lid_name) ,debugdata,200,true);
+   sendStrData(code+std::to_string(STOPPED)+"stopped");
    int16_t count = 0;
   while ((!TheadDone) || (count<20) )//ожидание ответа ПК для синхронизации
   {
@@ -2156,7 +2235,7 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
     count++;
   } 
   TheadDone = false;
-  sendStrData("code"+std::to_string(END)+"end");
+  sendStrData(code+std::to_string(END)+"end");
   hardware->dark();
 }
 
@@ -2247,7 +2326,7 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
   {
     debugdata.emplace_back(vector[j]);
   }
-  sendStrData("code"+std::to_string(DEBUG)+" AI_Z parameters",debugdata,100,true);
+  sendStrData(code+std::to_string(DEBUG)+" AI_Z parameters",debugdata,100,true);
  } 
  //start
   SignalValue=0;
@@ -2340,7 +2419,7 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
      deltaZ = DACZMove( deltaZ, ZStep, 1, MicrostepDelay); 
      Zt=Zt-ZStep;
   } //i
-  sendStrData("code"+std::to_string(SPECTROSOPY_AIZ),vectorA_Z,100,true); 
+  sendStrData(code+std::to_string(SPECTROSOPY_AIZ),vectorA_Z,100,true); 
   //move to DACZ zero point 
   sleep_ms(300);
   dlt=abs(deltaZ);
@@ -2365,7 +2444,7 @@ void Scanner::spectroscopyAIZ(std::vector<int32_t> &vector) // спектрос�
     count++;
   } 
   TheadDone = false;
-  sendStrData("code"+std::to_string(END)+"end");
+  sendStrData(code+std::to_string(END)+"end");
 }
 
 void Scanner::spectroscopyIV(std::vector<int32_t> &vector)
@@ -2397,7 +2476,7 @@ void Scanner::spectroscopyIV(std::vector<int32_t> &vector)
   {
     debugdata.emplace_back(vector[j]);
   }
-  sendStrData("code"+std::to_string(DEBUG)+" I_V parameters",debugdata,100,true);
+  sendStrData(code+std::to_string(DEBUG)+" I_V parameters",debugdata,100,true);
  } 
 ///////////////////////////////////////////////////  
 // if(!flgVirtual)  freezeLOOP(200); 240325
@@ -2461,7 +2540,7 @@ void Scanner::spectroscopyIV(std::vector<int32_t> &vector)
        dacU+=UStep;
       }
       sleep_ms(100);
-      sendStrData("code"+std::to_string(SPECTROSOPY_IV),vectorI_V,100,true); //65 
+      sendStrData(code+std::to_string(SPECTROSOPY_IV),vectorI_V,100,true); //65 
   //move to start point
   }// j Curves  
     //возврат к исходному напряжению
@@ -2502,7 +2581,7 @@ void Scanner::spectroscopyIV(std::vector<int32_t> &vector)
     count++;
   } 
   TheadDone = false;
-  sendStrData("code"+std::to_string(END)+"end");  
+  sendStrData(code+std::to_string(END)+"end");  
 }
 
 void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
@@ -2542,7 +2621,7 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
   {
     debugdata.emplace_back(vector[j]);
   } 
-  sendStrData("code"+std::to_string(DEBUG)+" approach parameters  ",debugdata,100,true);
+  sendStrData(code+std::to_string(DEBUG)+" approach parameters  ",debugdata,100,true);
  } 
   hardware->set_SetPoint(SET_POINT); 
   if (flgDev!=SFM) hardware->set_BiasV(Bias);  
@@ -2571,7 +2650,7 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
   buf_status.push_back(ZValue);
   buf_status.push_back(SignalValue);
 
-  sendStrData( "code"+std::to_string(APPROACH),buf_status,100,false);
+  sendStrData( code+std::to_string(APPROACH),buf_status,100,false);
   while (true)
   { 
     sleep_ms(INTDELAY);
@@ -2583,7 +2662,7 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
       buf_status[1] = ZValue;
       buf_status[2] = SignalValue;
       sleep_ms(200);
-      sendStrData("code"+std::to_string(STOPPED)+" stopped");
+      sendStrData(code+std::to_string(STOPPED)+" stopped");
     //  sleep_ms(200); //24/02/02
       break;
     }
@@ -2609,7 +2688,7 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
        {
         debugdata.emplace_back(vupdateparams[j]);
        }
-       sendStrData("code"+std::to_string(DEBUG)+" parameters update",debugdata,200,true);
+       sendStrData(code+std::to_string(DEBUG)+" parameters update",debugdata,200,true);
       } 
      if (flgСritical_section)  critical_section_enter_blocking(&criticalSection); 
       vupdateparams.clear();
@@ -2689,7 +2768,7 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
         if (buf_status[0] == ok)  { break; }
       }
     } //NSTEPS>0
-    sendStrData( "code"+std::to_string(APPROACH),buf_status,100,false);//75
+    sendStrData( code+std::to_string(APPROACH),buf_status,100,false);//75
     /**/
     if (!flgVirtual)
     {
@@ -2699,7 +2778,7 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
       hardware->protract(); //вытянуть
     }
   } //while
-  sendStrData( "code"+std::to_string(APPROACH),buf_status,100,false);
+  sendStrData( code+std::to_string(APPROACH),buf_status,100,false);
   if (!flgVirtual)
   {
     hardware->protract();//вытянуть
@@ -2713,7 +2792,7 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
     count++;
   } 
   TheadDone = false;
-  sendStrData("code"+std::to_string(END)+"end");
+  sendStrData(code+std::to_string(END)+"end");
 }
 
 void Scanner::
@@ -2741,7 +2820,7 @@ testpiezomover(std::vector<int32_t> &vector)
   {
     debugdata.emplace_back(vector[j]);
   } 
-  sendStrData("code"+std::to_string(DEBUG)+" test motor steps parameters  ",debugdata,300,true);
+  sendStrData(code+std::to_string(DEBUG)+" test motor steps parameters  ",debugdata,300,true);
  }
   flgstop=0;
   if (!flgVirtual)
@@ -2759,7 +2838,7 @@ testpiezomover(std::vector<int32_t> &vector)
      buf_status.push_back(NSTEPS);
      buf_status.push_back(0); //cycle nmb
      buf_status.push_back(0);
-     sendStrData( "code"+std::to_string(TESTMOVER),buf_status,100,true);
+     sendStrData( code+std::to_string(TESTMOVER),buf_status,100,true);
     // проверить, в воротах ли Z
     step = NSTEPS;          // NSTEPS > 0 - сближение
    // Идти вниз до мин. точки
@@ -2770,7 +2849,7 @@ testpiezomover(std::vector<int32_t> &vector)
          STOP=false;
          flgstop=1;
          sleep_ms(200);  
-         sendStrData("code"+std::to_string(STOPPED)+"stopped");
+         sendStrData(code+std::to_string(STOPPED)+"stopped");
          break;
         }
           //steps
@@ -2796,7 +2875,7 @@ testpiezomover(std::vector<int32_t> &vector)
         buf_status.push_back(step);
         buf_status.push_back(0); //cycle nmb
         buf_status.push_back(0);
-        sendStrData( "code"+std::to_string(TESTMOVER),buf_status,100,true);
+        sendStrData( code+std::to_string(TESTMOVER),buf_status,100,true);
       };
       // циклическое хождение между воротами
       int16_t i=0;
@@ -2812,7 +2891,7 @@ testpiezomover(std::vector<int32_t> &vector)
          STOP=false;
          flgstop=1;
          sleep_ms(200); 
-         sendStrData("code"+std::to_string(STOPPED)+"stopped");
+         sendStrData(code+std::to_string(STOPPED)+"stopped");
          break;
         }                                    
         if (!flgVirtual)
@@ -2834,7 +2913,7 @@ testpiezomover(std::vector<int32_t> &vector)
         buf_status.push_back(step);
         buf_status.push_back(i); //cycle nmb
         buf_status.push_back(0);
-        sendStrData( "code"+std::to_string(TESTMOVER),buf_status,100,true);  
+        sendStrData( code+std::to_string(TESTMOVER),buf_status,100,true);  
        } //while
        step = NSTEPS;
        while (ZValue > GATE_Z_MIN)          // идти до нижних ворот
@@ -2844,7 +2923,7 @@ testpiezomover(std::vector<int32_t> &vector)
          {
           flgstop=1;
           sleep_ms(200);
-          sendStrData("code"+std::to_string(STOPPED)+"stopped");
+          sendStrData(code+std::to_string(STOPPED)+"stopped");
           break;
          }
          if (!flgVirtual)
@@ -2866,7 +2945,7 @@ testpiezomover(std::vector<int32_t> &vector)
          buf_status.push_back(step);
          buf_status.push_back(i); //cycle nmb
          buf_status.push_back(0);
-         sendStrData( "code"+std::to_string(TESTMOVER),buf_status,100,true);       
+         sendStrData( code+std::to_string(TESTMOVER),buf_status,100,true);       
        } // while
      if (CONFIG_UPDATE)
      {
@@ -2881,7 +2960,7 @@ testpiezomover(std::vector<int32_t> &vector)
         {
          debugdata.emplace_back(vupdateparams[j]);
         }
-        sendStrData("code"+std::to_string(DEBUG)+" test piezo parameters update",debugdata,200,true);
+        sendStrData(code+std::to_string(DEBUG)+" test piezo parameters update",debugdata,200,true);
        } 
         vupdateparams.clear();
        }
@@ -2910,7 +2989,7 @@ testpiezomover(std::vector<int32_t> &vector)
             if (STOP)
             {
              sleep_ms(200);
-             sendStrData("code"+std::to_string(STOPPED)+"stopped");
+             sendStrData(code+std::to_string(STOPPED)+"stopped");
              break;
             }
             if (!flgVirtual)
@@ -2932,7 +3011,7 @@ testpiezomover(std::vector<int32_t> &vector)
               buf_status.push_back(step);
               buf_status.push_back(i); //cycle nmb
               buf_status.push_back(0);
-              sendStrData( "code"+std::to_string(TESTMOVER),buf_status,100,true); 
+              sendStrData( code+std::to_string(TESTMOVER),buf_status,100,true); 
             };
           }
           else
@@ -2943,7 +3022,7 @@ testpiezomover(std::vector<int32_t> &vector)
              if (STOP)
              {
               sleep_ms(200);
-              sendStrData("code"+std::to_string(STOPPED)+"stopped");
+              sendStrData(code+std::to_string(STOPPED)+"stopped");
               break;
              }
              if (!flgVirtual)
@@ -2965,7 +3044,7 @@ testpiezomover(std::vector<int32_t> &vector)
               buf_status.push_back(step);
               buf_status.push_back(i); //cycle nmb
               buf_status.push_back(0);
-              sendStrData( "code"+std::to_string(TESTMOVER),buf_status,100,true); 
+              sendStrData( code+std::to_string(TESTMOVER),buf_status,100,true); 
             };
           }     
        }
@@ -2975,7 +3054,7 @@ testpiezomover(std::vector<int32_t> &vector)
             buf_status.push_back(step);
             buf_status.push_back(i); //cycle nmb
             buf_status.push_back(1); //признак конца
-            sendStrData( "code"+std::to_string(TESTMOVER),buf_status,100,true);    
+            sendStrData( code+std::to_string(TESTMOVER),buf_status,100,true);    
 ///////////////////////////////////////////////////////////////////////////////////
   int16_t count = 0;
   while ((!TheadDone) || (count<20) )//ожидание ответа ПК для синхронизации
@@ -2984,7 +3063,7 @@ testpiezomover(std::vector<int32_t> &vector)
     count++;
   } 
   TheadDone = false;
-  sendStrData("code"+std::to_string(END)+"end");
+  sendStrData(code+std::to_string(END)+"end");
  }   //test mover
 
 void Scanner::start_frqscan()
@@ -3009,7 +3088,7 @@ void Scanner::start_frqscan()
    {
     debugdata.emplace_back(vector[j]);
    }
-   sendStrData("code"+std::to_string(DEBUG)+" frq scan parameters ",debugdata,100,true);
+   sendStrData(code+std::to_string(DEBUG)+" frq scan parameters ",debugdata,100,true);
   }
   std::vector<int32_t> data;
   freq=freqstart;
@@ -3035,7 +3114,7 @@ void Scanner::start_frqscan()
     sleep_ms(10);
     freq += freqstep;
   }
-  sendStrData("code"+std::to_string(RESONANCE),data,100,true);
+  sendStrData(code+std::to_string(RESONANCE),data,100,true);
    int16_t count = 0;
   while ((!TheadDone) || (count<20) )//ожидание ответа ПК для синхронизации
   {
@@ -3043,6 +3122,6 @@ void Scanner::start_frqscan()
     count++;
   } 
   TheadDone = false;
-  sendStrData("code"+std::to_string(END)+"end");
+  sendStrData(code+std::to_string(END)+"end");
 }
 

@@ -4,6 +4,7 @@
 std::string  SOFTVERSION="24.06.04.1 HWABBWBFPGA";
 std::string  SoftHARDWAREVERSION="0.1";
 int8_t       HARDWAREVERSION=2;   // PICO(BB)=0 ; MotherBoard(WhiteBoard=WB)=1; BlueBoard+FPGA(BBFPGA)=2 ПЛИС;
+bool         flgTUD=true;
 //int8_t       HARDWAREVERSION_I=-1;
 std::string afc;  //dataout string
 std::vector<int32_t> vector;
@@ -16,6 +17,7 @@ std::atomic<bool> STOP;
 std::atomic<bool> TheadDone;   //need dor synchronization with PC 
 std::atomic<bool> DrawDone;    //need dor synchronization with PC 
 std::atomic<bool> ADC_IS_READY_TO_READ = true;
+std::string  code="cd"; 
 bool AD9833_SENDER = false;
 bool AD8400_SENDER = false;
 bool AD8400_SET_GAIN = false;

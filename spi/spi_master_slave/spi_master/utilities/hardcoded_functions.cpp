@@ -226,7 +226,7 @@ void HARDWARE::setDefaultSettings( uint8_t dacBiasVSetPointPort, uint8_t  dacXYP
 void HARDWARE::GetSOFTHARDWAREVersion()
 {
   afc.clear();
-  afc = "code"+std::to_string(VersionCmd)+"soft "+ SOFTVERSION+" softhardware ver"+SoftHARDWAREVERSION
+  afc = code+std::to_string(VersionCmd)+"soft "+ SOFTVERSION+" softhardware ver"+SoftHARDWAREVERSION
   +", hardware "+std::to_string(HARDWAREVERSION);
   afc += +"\n";
   std::cout << afc;
@@ -343,7 +343,7 @@ void HARDWARE::init_DACSetPointBiasV(uint8_t spiport) //  4 для подста�
   dacbvspt->initialize(spiport); //code 23
 /*
   afc.clear();
-  afc = "code"+std::to_string(DEBUG)+ "debug Init DACSPB " + std::to_string(port);
+  afc = code+std::to_string(DEBUG)+ "debug Init DACSPB " + std::to_string(port);
   afc += +"\n";
   std::cout << afc;
   afc.clear();
@@ -358,7 +358,7 @@ void HARDWARE::init_DACXY(uint8_t spiport) //spi port
   dacxy->writeA(0);
   dacxy->writeB(0);
  /* afc.clear();
-  afc ="code"+std::to_string(DEBUG)+ "debug Init DACXY 0,0 port=" + std::to_string(port);
+  afc =code+std::to_string(DEBUG)+ "debug Init DACXY 0,0 port=" + std::to_string(port);
   afc += +"\n";
   std::cout << afc;
   afc.clear();
@@ -372,7 +372,7 @@ void HARDWARE::init_DACZ(uint8_t spiport)
   set_DACZ(0); 
  /*
   afc.clear();
-  afc ="code"+std::to_string(DEBUG)+ "debug Init DACZ 0 port=" + std::to_string(port);
+  afc =code+std::to_string(DEBUG)+ "debug Init DACZ 0 port=" + std::to_string(port);
   afc += +"\n";
   std::cout << afc;
   afc.clear();
@@ -399,7 +399,7 @@ void HARDWARE::set_BiasV(int32_t BiasV)
  if  (flgDebug)
  {
   afc.clear();
-  afc ="code"+std::to_string(DEBUG)+ "debug Bias"+ std::to_string(Bias);
+  afc =code+std::to_string(DEBUG)+ "debug Bias"+ std::to_string(Bias);
   afc += +"\n";
   std::cout << afc;
   afc.clear();
@@ -415,7 +415,7 @@ void HARDWARE::ReadDataFromFPGA(FPGAReadData readdata,uint8_t* dst, size_t len)
   {
     std::string afcc;
     afcc.clear();
-    afcc="code"+std::to_string(DEBUG); 
+    afcc=code+std::to_string(DEBUG); 
     for (size_t j = 0; j < sizeof(readdata); ++j)
     {
       afcc +=',' + std::to_string(buffer[j]);
@@ -438,7 +438,7 @@ void HARDWARE::AscResult(FPGAAscData ascdata, uint8_t* dst, size_t len)
   {
     std::string afcc;
     afcc.clear();
-    afcc="code"+std::to_string(DEBUG); 
+    afcc=code+std::to_string(DEBUG); 
     for (size_t j = 0; j < sizeof(ascdata); ++j)
     {
       afcc +=',' + std::to_string(buffer[j]);
@@ -466,7 +466,7 @@ void HARDWARE::WriteDataToFPGA(FPGAWriteData writedata)
   {
     std::string afcc;
     afcc.clear();
-    afcc="code"+std::to_string(DEBUG)+','+std::to_string(sz); 
+    afcc=code+std::to_string(DEBUG)+','+std::to_string(sz); 
     for (size_t j = 0; j < sz; ++j)
     {
       afcc +=',' + std::to_string(buffer[j]);
@@ -491,7 +491,7 @@ void HARDWARE::WriteDataToFPGA(FPGAWriteData writedata)
   {
     std::string afcc;
     afcc.clear();
-    afcc="code"+std::to_string(DEBUG)+','+std::to_string(sz); 
+    afcc=code+std::to_string(DEBUG)+','+std::to_string(sz); 
     for (size_t j = 0; j < sz; ++j)
     {
       afcc +=',' + std::to_string(buffer[j]);
@@ -521,7 +521,7 @@ void HARDWARE::set_SetPoint( int32_t SetPoint)
   if  (flgDebug)
   {
    afc.clear();
-   afc ="code"+std::to_string(DEBUG)+ "debug SetPoint "+ std::to_string(SetPoint);
+   afc =code+std::to_string(DEBUG)+ "debug SetPoint "+ std::to_string(SetPoint);
    afc += +"\n";
    std::cout << afc;
    afc.clear();
@@ -548,7 +548,7 @@ void HARDWARE::set_GainApmlMod(uint8_t gain)
   if (flgDebug)  
   {
    afc.clear();
-   afc ="code"+std::to_string(DEBUG)+ "debug Ampl Gain "+ std::to_string(gain);
+   afc =code+std::to_string(DEBUG)+ "debug Ampl Gain "+ std::to_string(gain);
    afc += +"\n";
    std::cout << afc;
    afc.clear();
@@ -588,7 +588,7 @@ void HARDWARE::set_GainPID(uint16_t gain)
     if (flgDebug)  
     {
      afc.clear();
-     afc = "code"+std::to_string(DEBUG)+"debug PID Gain "+ std::to_string(ti)+' '+ std::to_string(tiadd);
+     afc = code+std::to_string(DEBUG)+"debug PID Gain "+ std::to_string(ti)+' '+ std::to_string(tiadd);
     }  
   }  
   else  //add 240603 WB+WBFPGA
@@ -617,7 +617,7 @@ void HARDWARE::set_GainPID(uint16_t gain)
       {     
        std::string afcc;
        afcc.clear();
-       afcc="code"+ std::to_string(DEBUG)+','+std::to_string(sizeof(writedata)); 
+       afcc=code+ std::to_string(DEBUG)+','+std::to_string(sizeof(writedata)); 
        afcc +=',' + std::to_string(writedata.delimbegin);
        afcc +=',' + std::to_string(writedata.cmd);      
        afcc +=',' + std::to_string(writedata.addr); 
@@ -642,7 +642,7 @@ void HARDWARE::set_GainPID(uint16_t gain)
     /*
       std::string afcc;
       afcc.clear();
-      afcc="code"+ std::to_string(DEBUG)+','+std::to_string(sizeof(writedata)); 
+      afcc=code+ std::to_string(DEBUG)+','+std::to_string(sizeof(writedata)); 
       afcc +=',' + std::to_string(writedata.delimbegin);
       afcc +=',' + std::to_string(writedata.cmd);      
       afcc +=',' + std::to_string(writedata.addr); 
@@ -659,7 +659,7 @@ void HARDWARE::set_GainPID(uint16_t gain)
     if (flgDebug)  
     {
      afc.clear();
-     afc = "code"+std::to_string(DEBUG)+"debug PID Gain "+ std::to_string(255-ti); 
+     afc = code+std::to_string(DEBUG)+"debug PID Gain "+ std::to_string(255-ti); 
     } 
   }  
   if (flgDebug)  

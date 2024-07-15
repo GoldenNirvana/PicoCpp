@@ -66,13 +66,15 @@
 
 #define portx                    0
 #define porty                    1
-
+#define cdvalue                  0x6364  //'cd'
+extern std::string  code;  
 extern std::string  SOFTVERSION;
 extern std::string  SoftHARDWAREVERSION;  //  {0,1,....} or {0.1, 1.1...} 
 extern int8_t       HARDWAREVERSION;      //PICO=0; MotherBoard=1
+extern bool         flgTUD;  //
 extern uint32_t     DEBUG_LEVEL;
-extern std::string afc;
-extern uint16_t spiBuf[8];
+extern std::string  afc;
+extern uint16_t     spiBuf[8];
 
 extern std::vector<int32_t> vector;
 extern std::vector<int32_t> vupdateparams;

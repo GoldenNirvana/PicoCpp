@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include "tusb.h" //240713
 //#include <random>
 #include "../physical_devices/LinearDriver.hpp" //24/05/06
 #include "../utilities/base_types/Point.hpp"
@@ -55,6 +56,8 @@ private:
   void sendStrData(std::string const& header,std::vector<uint16_t> &data, const uint16_t delay,const bool flg);
   void sendStrData(std::string const& header,std::vector<int16_t>  &data, const uint16_t delay,const bool flg); //flg clear data
   void sendStrData(std::string const& header);
+  void sendData(std::vector<int16_t>  &data, const uint16_t delay,const bool flg); //flg clear data
+
 
 public:
 
@@ -117,6 +120,7 @@ private:
   std::vector<int32_t>  vectorA_Z;
   std::vector<int16_t>  vectorI_V;
   std::vector<int32_t>  debugdata; 
+  std::vector<int16_t>  debugdatatud; 
   Point pos_, prev_point;
   Config conf_;
 public:
