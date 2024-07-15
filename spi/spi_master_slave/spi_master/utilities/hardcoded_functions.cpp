@@ -418,9 +418,9 @@ void HARDWARE::ReadDataFromFPGA(FPGAReadData readdata,uint8_t* dst, size_t len)
     afcc=code+std::to_string(DEBUG); 
     for (size_t j = 0; j < sizeof(readdata); ++j)
     {
-      afcc +=',' + std::to_string(buffer[j]);
+      afcc +=separator + std::to_string(buffer[j]);
     }
-    afcc +="\n";
+    afcc +=endln;
     std::cout << afcc;
     sleep_ms(200);
     afcc.clear();
@@ -441,9 +441,9 @@ void HARDWARE::AscResult(FPGAAscData ascdata, uint8_t* dst, size_t len)
     afcc=code+std::to_string(DEBUG); 
     for (size_t j = 0; j < sizeof(ascdata); ++j)
     {
-      afcc +=',' + std::to_string(buffer[j]);
+      afcc +=separator + std::to_string(buffer[j]);
     }
-    afcc +="\n";
+    afcc +=endln;
     std::cout << afcc;
     sleep_ms(200);
     afcc.clear();
@@ -466,12 +466,12 @@ void HARDWARE::WriteDataToFPGA(FPGAWriteData writedata)
   {
     std::string afcc;
     afcc.clear();
-    afcc=code+std::to_string(DEBUG)+','+std::to_string(sz); 
+    afcc=code+std::to_string(DEBUG)+separator+std::to_string(sz); 
     for (size_t j = 0; j < sz; ++j)
     {
-      afcc +=',' + std::to_string(buffer[j]);
+      afcc +=separator + std::to_string(buffer[j]);
     }
-    afcc +="\n";
+    afcc +=endln;
     std::cout << afcc;
     sleep_ms(200);
     afcc.clear();
@@ -491,12 +491,12 @@ void HARDWARE::WriteDataToFPGA(FPGAWriteData writedata)
   {
     std::string afcc;
     afcc.clear();
-    afcc=code+std::to_string(DEBUG)+','+std::to_string(sz); 
+    afcc=code+std::to_string(DEBUG)+separator+std::to_string(sz); 
     for (size_t j = 0; j < sz; ++j)
     {
-      afcc +=',' + std::to_string(buffer[j]);
+      afcc +=separator + std::to_string(buffer[j]);
     }
-    afcc +="\n";
+    afcc +=endln;
     std::cout << afcc;
     sleep_ms(200);
     afcc.clear();
@@ -522,7 +522,7 @@ void HARDWARE::set_SetPoint( int32_t SetPoint)
   {
    afc.clear();
    afc =code+std::to_string(DEBUG)+ "debug SetPoint "+ std::to_string(SetPoint);
-   afc += +"\n";
+   afc += endln;
    std::cout << afc;
    afc.clear();
    sleep_ms(100); 
@@ -549,7 +549,7 @@ void HARDWARE::set_GainApmlMod(uint8_t gain)
   {
    afc.clear();
    afc =code+std::to_string(DEBUG)+ "debug Ampl Gain "+ std::to_string(gain);
-   afc += +"\n";
+   afc += endln;
    std::cout << afc;
    afc.clear();
    sleep_ms(100); 

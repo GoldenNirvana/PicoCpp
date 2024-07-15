@@ -399,13 +399,13 @@ void MainCore::parse(std::vector<int32_t> &vec)
 {
   std::string s;
   getline(std::cin, s);
-  Parser parser(s.data(), ',');
+  Parser parser(s.data(),separator);//','); //240715
   vectorSize = parser.parseInts(vec);
 }
 void MainCore::parse(std::vector<int32_t> &vec,std::vector<int32_t> &vparams)
 {
   std::string s;
   getline(std::cin, s);
-  Parser parser(s.data(), ',');
+  Parser parser(s.data(),separator); //','); 240715
   vectorSize = parser.parseInts(vec,vparams);
 }

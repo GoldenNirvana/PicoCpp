@@ -40,7 +40,7 @@ void Scanner::sendStrData(std::string const& header, std::vector<int32_t> &data,
   for (size_t j = 0; j < data.size(); ++j)
   {
  // afc +=',' + std::to_string(element);
-   afcc +=',' + std::to_string(data[j]);
+   afcc +=separator + std::to_string(data[j]);
   }
   afcc +=endln;//"\n";
   std::cout << afcc;
@@ -56,7 +56,7 @@ void Scanner::sendStrData(std::string const& header,std::vector<int16_t> &data, 
   afcc=header;
   for (size_t j = 0; j < data.size(); ++j)
   {
-   afcc +=',' + std::to_string(data[j]);
+   afcc +=separator + std::to_string(data[j]);
   }
   afcc +=endln;//"\n";
   std::cout << afcc;
@@ -74,7 +74,7 @@ void Scanner::sendStrData(std::string const& header,std::vector<uint16_t> &data,
   for (size_t j = 0; j < data.size(); ++j)
   {
  // afc +=',' + std::to_string(element);
-   afcc +=',' + std::to_string(data[j]);
+   afcc +=separator + std::to_string(data[j]);
   }
   afcc +=endln;//"\n";
   std::cout << afcc;

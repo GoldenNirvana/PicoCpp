@@ -155,7 +155,7 @@ void RX_core::parse(std::vector<int32_t> &vec)
   std::string s;
   getline(std::cin, s);
   // todo mb add const_cast
-  Parser parser(s.data(), ',');
+  Parser parser(s.data(), separator);
   vectorSize = parser.parseInts(vec);
 }
 void RX_core::parse(std::vector<int32_t> &vec,std::vector<int32_t> &vparams)
@@ -163,7 +163,7 @@ void RX_core::parse(std::vector<int32_t> &vec,std::vector<int32_t> &vparams)
   std::string s;
   getline(std::cin, s);
   // todo mb add const_cast
-  Parser parser(s.data(), ',');
+  Parser parser(s.data(), separator);
   vectorSize = parser.parseInts(vec,vparams);
 }
 
