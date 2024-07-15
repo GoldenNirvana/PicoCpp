@@ -27,7 +27,7 @@ LinearDriverPico2040::LinearDriverPico2040(bool flgOnlyZ, ConfigLinearDrive conf
   {
    afc.clear();
    afc =code+std::to_string(DEBUG)+ "Pico2040 ";
-   afc += +"\n";
+   afc += endln;//"\n";
    std::cout << afc;
    afc.clear();
    sleep_ms(100); 
@@ -59,7 +59,7 @@ LinearDriverMotherBoard::~LinearDriverMotherBoard()
   {
    afc.clear();
    afc =code+std::to_string(DEBUG)+ " MB Pico2040 ";
-   afc += +"\n";
+   afc += endln;//"\n";
    std::cout << afc;
    afc.clear();
    sleep_ms(100); 
@@ -132,7 +132,7 @@ void LinearDriverMotherBoard::activate(int command, int freq, int p, int n, bool
   {
    afc.clear();
    afc =code+std::to_string(DEBUG)+ " MB Pico2040 active ";
-   afc += +"\n";
+   afc += +endln;//"\n";
    std::cout << afc;
    afc.clear();
    sleep_ms(100); 

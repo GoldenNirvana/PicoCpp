@@ -25,7 +25,7 @@ void Scanner::sendStrData(std::string const& header)
  std::string afcc;
   afcc.clear();
   afcc=header; 
-  afcc +="\n";
+  afcc +=endln;//"\n";
   std::cout << afcc;
   afcc.clear();
  // sleep_ms(100);
@@ -42,7 +42,7 @@ void Scanner::sendStrData(std::string const& header, std::vector<int32_t> &data,
  // afc +=',' + std::to_string(element);
    afcc +=',' + std::to_string(data[j]);
   }
-  afcc +="\n";
+  afcc +=endln;//"\n";
   std::cout << afcc;
   afcc.clear();
   if (flg) data.clear();
@@ -58,7 +58,7 @@ void Scanner::sendStrData(std::string const& header,std::vector<int16_t> &data, 
   {
    afcc +=',' + std::to_string(data[j]);
   }
-  afcc +="\n";
+  afcc +=endln;//"\n";
   std::cout << afcc;
   afcc.clear();
   sleep_ms(delay);
@@ -76,7 +76,7 @@ void Scanner::sendStrData(std::string const& header,std::vector<uint16_t> &data,
  // afc +=',' + std::to_string(element);
    afcc +=',' + std::to_string(data[j]);
   }
-  afcc +="\n";
+  afcc +=endln;//"\n";
   std::cout << afcc;
   afcc.clear();
   sleep_ms(delay);

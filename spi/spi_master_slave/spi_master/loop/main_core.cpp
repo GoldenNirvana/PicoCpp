@@ -35,7 +35,7 @@ void MainCore::launchOnCore1()
         flgDebug=(bool)vector[1];
         afc.clear();
         afc = code+std::to_string(DEBUG)+"debug Set Debug "+ std::to_string(flgDebug);
-        afc += +"\n";
+        afc += endln;//"\n";
         std::cout << afc;
         afc.clear();
         sleep_ms(100); 
@@ -95,7 +95,7 @@ case ChangeHardWare:
                 ALGCODE=ALGNONE;
                 afc.clear();
                 afc =code+std::to_string(ChangeHardWare)+ " hardware "+ std::to_string(vector[1]);
-                afc += +"\n";
+                afc += endln;//"\n";
                 std::cout << afc;
                 afc.clear();
                 sleep_ms(300);       
@@ -213,11 +213,11 @@ case SCANNING:
                 if (flgСritical_section) critical_section_exit(&criticalSection);
                 if (!scanner->getHoppingFlg()){
                                               if (!scanner->getLinearFlg()) {scanner->start_scan(vector);   }
-                                              else                         {scanner->start_scanlin(vector);}    
+                                              else                          {scanner->start_scanlin(vector);}    
                                              }
                 else                         {
                                               if (!scanner->getLinearFlg()) {scanner->start_hopingscan(vector);   }
-                                              else                         {scanner->start_hopingscanlin(vector);}
+                                              else                          {scanner->start_hopingscanlin(vector);}
                                              }
                 if (flgСritical_section) critical_section_enter_blocking(&criticalSection);
                  DrawDone=true;
@@ -248,8 +248,6 @@ case SENDDATALIN:
                 scanner->readDATALin();
                 break;
               }              
- 
-
 case SET_PID_GAIN:
               {
                 ALGCODE=ALGNONE;

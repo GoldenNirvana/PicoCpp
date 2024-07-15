@@ -18,6 +18,8 @@ std::atomic<bool> DrawDone;    //need dor synchronization with PC
 std::atomic<bool> ADC_IS_READY_TO_READ = true;
 
 const std::string  code="code";  
+const std::string  endln="\n";
+
 bool AD9833_SENDER = false;
 bool AD8400_SENDER = false;
 bool AD8400_SET_GAIN = false;

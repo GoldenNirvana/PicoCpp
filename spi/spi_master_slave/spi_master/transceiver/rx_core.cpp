@@ -45,7 +45,7 @@ void RX_core::launchOnCore1()
         flgVirtual=(bool)vector[1];
         afc.clear();
         afc = code+std::to_string(DEBUG)+" virtual "+ std::to_string(flgVirtual);
-        afc += +"\n";
+        afc +=endln;//"\n";
         std::cout << afc;
         afc.clear();
         sleep_ms(100); 
@@ -57,7 +57,7 @@ void RX_core::launchOnCore1()
         flgDebug=(bool)(vector[1]);
         afc.clear();
         afc = code+std::to_string(DEBUG)+"debug Set Debug "+ std::to_string(flgDebug);
-        afc += +"\n";
+        afc +=endln;//"\n";
         std::cout << afc;
         afc.clear();
         sleep_ms(100); 
@@ -112,13 +112,13 @@ void RX_core::serialPrintBuffer(const uint16_t *const buf, int len)
   {
     std::cout << buf[i] << ' ';
   }
-  std::cout << "\n";
+  std::cout << endln;//"\n";
  }
 } 
 void RX_core::serialPrint2Buffer(const uint16_t *const buf)
 {
  // uint64_t a = time_us_64();
-  std::cout << "code12,"<< std::to_string(buf[0]) << ','<<std::to_string( buf[1]) <<"\n";
+  std::cout <<code+ "12,"<< std::to_string(buf[0]) << ','<<std::to_string( buf[1]) <<"\n";
 }
 
 void RX_core::serialPrintBuffer(const uint8_t *const buf, int len)
@@ -133,7 +133,7 @@ void RX_core::serialPrintBuffer(const uint8_t *const buf, int len)
   {
     std::cout << buf[i] << ' ';
   }
-  std::cout << "\n";
+  std::cout << endln;//"\n";
  }
 }
 /*
