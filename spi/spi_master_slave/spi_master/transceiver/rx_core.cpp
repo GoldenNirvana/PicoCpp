@@ -44,7 +44,7 @@ void RX_core::launchOnCore1()
       case VirtualCmd : //флаг симуляции работы микроконтроллера      
         flgVirtual=(bool)vector[1];
         afc.clear();
-        afc = "code"+std::to_string(DEBUG)+" virtual "+ std::to_string(flgVirtual);
+        afc = code+std::to_string(DEBUG)+" virtual "+ std::to_string(flgVirtual);
         afc += +"\n";
         std::cout << afc;
         afc.clear();
@@ -56,7 +56,7 @@ void RX_core::launchOnCore1()
       case DebugCmd: // флаг вывода отладочной информации  =1, нет =0
         flgDebug=(bool)(vector[1]);
         afc.clear();
-        afc = "code"+std::to_string(DEBUG)+"debug Set Debug "+ std::to_string(flgDebug);
+        afc = code+std::to_string(DEBUG)+"debug Set Debug "+ std::to_string(flgDebug);
         afc += +"\n";
         std::cout << afc;
         afc.clear();

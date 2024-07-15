@@ -34,7 +34,7 @@ void MainCore::launchOnCore1()
       case DebugCmd: // флаг вывода отладочной информации  =1, нет =0
         flgDebug=(bool)vector[1];
         afc.clear();
-        afc = "code"+std::to_string(DEBUG)+"debug Set Debug "+ std::to_string(flgDebug);
+        afc = code+std::to_string(DEBUG)+"debug Set Debug "+ std::to_string(flgDebug);
         afc += +"\n";
         std::cout << afc;
         afc.clear();
@@ -94,7 +94,7 @@ case ChangeHardWare:
               {
                 ALGCODE=ALGNONE;
                 afc.clear();
-                afc ="code"+std::to_string(ChangeHardWare)+ " hardware "+ std::to_string(vector[1]);
+                afc =code+std::to_string(ChangeHardWare)+ " hardware "+ std::to_string(vector[1]);
                 afc += +"\n";
                 std::cout << afc;
                 afc.clear();
@@ -118,7 +118,7 @@ case ChangeHardWare:
                   if (scanner==nullptr) 
                   {
                    afc.clear();
-                   afc ="code"+std::to_string(ChangeHardWare)+ "error new scanner create "+std::to_string(HARDWAREVERSION);
+                   afc =code+std::to_string(ChangeHardWare)+ "error new scanner create "+std::to_string(HARDWAREVERSION);
                    std::cout << afc;
                    afc.clear();
                    sleep_ms(100); 
@@ -390,7 +390,7 @@ MainCore::MainCore()
    if (scanner==nullptr) 
    {
      afc.clear();
-     afc ="code"+std::to_string(ChangeHardWare)+ "error new scanner create "+std::to_string(HARDWAREVERSION);
+     afc =code+std::to_string(ChangeHardWare)+ "error new scanner create "+std::to_string(HARDWAREVERSION);
      std::cout << afc;
      afc.clear();
      sleep_ms(100); 
