@@ -16,6 +16,8 @@ std::atomic<bool> STOP;
 std::atomic<bool> TheadDone;   //need dor synchronization with PC 
 std::atomic<bool> DrawDone;    //need dor synchronization with PC 
 std::atomic<bool> ADC_IS_READY_TO_READ = true;
+
+std::string  code="code";  
 bool AD9833_SENDER = false;
 bool AD8400_SENDER = false;
 bool AD8400_SET_GAIN = false;
