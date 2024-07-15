@@ -664,7 +664,7 @@ void HARDWARE::set_GainPID(uint16_t gain)
   }  
   if (flgDebug)  
   {
-   afc += +"\n";
+   afc += endln;
    std::cout << afc;
    afc.clear();
    sleep_ms(100); 
