@@ -32,6 +32,8 @@ bool ADC_ENABLE_DISABLE = false;
 bool ADC_READ_FOREVER = false;
 bool ADC_GET_VALUE = false;
 //************************************************
+
+bool    flgUseTUD=false;
 bool    flgParamsUpdated=false;
 bool    flgСritical_section=true;
 bool    flgDebug=false;
