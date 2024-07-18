@@ -477,12 +477,12 @@ void HARDWARE::WriteDataToFPGA(FPGAWriteData writedata)
     afcc.clear();
   }
 
-  if (uart_is_writable(FPGA_UART_ID)) 
+  while (!uart_is_writable(FPGA_UART_ID)) {sleep_ms(10);} 
   {
     uart_write_blocking(FPGA_UART_ID, buffer,sz);
     //uart_write_blocking(uart_inst_t *uart, const uint8_t *src, size_t len)
   }
-  if (uart_is_readable(FPGA_UART_ID)) 
+  while (!uart_is_readable(FPGA_UART_ID)) {sleep_ms(10);}
   {
     uart_read_blocking(FPGA_UART_ID, buffer,sz);
     //uart_write_blocking(uart_inst_t *uart, const uint8_t *src, size_t len)

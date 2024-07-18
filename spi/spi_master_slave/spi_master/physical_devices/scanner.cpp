@@ -30,7 +30,7 @@ void Scanner::sendStrData(std::string const& header)
   afcc.clear();
  // sleep_ms(100);
 }
- void sendData(uint_8 algcode,std::vector<int16_t>  &data, const uint16_t delay,const bool flg)//TUD
+ void Scanner::sendData(uint8_t algcode,std::vector<int16_t>  &data, const uint16_t delay,const bool flg)//TUD
  {
 
 
