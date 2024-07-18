@@ -463,7 +463,8 @@ void HARDWARE::WriteDataToFPGA(FPGAWriteData writedata)
 {
   size_t sz;
   uint8_t dt=writedata.data;
-  sz=sizeof(dt);//1;//sizeof(writedata);
+  //sz=sizeof(dt);//1;//sizeof(writedata);
+  sz=sizeof(writedata);
   uint8_t *buffer = new uint8_t[sz];
  // memcpy(buffer, &writedata,sz);
   memcpy(buffer, &dt,sz);
