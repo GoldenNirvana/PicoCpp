@@ -180,6 +180,11 @@ void HARDWARE::setDefaultSettings( uint8_t dacBiasVSetPointPort, uint8_t  dacXYP
     uart_init(FPGA_UART_ID, FPGA_BAUD_RATE); //add  240627
     gpio_set_function(FPGAUART_TX_PIN, GPIO_FUNC_UART);
     gpio_set_function(FPGAUART_RX_PIN, GPIO_FUNC_UART);
+     
+    // Enable UART
+      uart_set_hw_flow(FPGA_UART_ID, false, false);
+      uart_set_format(FPGA_UART_ID, 8, 1, UART_PARITY_NONE);
+      uart_set_fifo_enabled(FPGA_UART_ID,true);// true);
   }
   gpio_pull_down(resetport->getPort());
 //#warning should be undeleted
