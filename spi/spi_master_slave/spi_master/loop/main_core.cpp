@@ -251,7 +251,8 @@ case SENDDATALIN:
 case SET_PID_GAIN:
               {
                 ALGCODE=ALGNONE;
-                scanner->hardware->set_GainPID((uint16_t)vector[1]);  
+                if (HARDWAREVERSION!=BBFPGA) scanner->hardware->set_GainPID((uint16_t)vector[1]);
+                else                         scanner->hardware->set_GainPID((uint32_t)vector[1]); 
                 break; 
               }  
 case SET_AMPLMOD_GAIN: // усиление раскачка зонда 
