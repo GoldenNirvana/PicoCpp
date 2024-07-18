@@ -560,7 +560,19 @@ void HARDWARE::set_GainApmlMod(uint8_t gain)
    sleep_ms(100); 
   } 
 }
-
+void HARDWARE::set_GainPID(uint32_t gain)
+{
+      FPGAWriteData writedata;
+      writedata.addr=arrModule_0.wbKx[0];
+      writedata.cmd=0x01;
+      writedata.data=(uint32_t)gain;
+      WriteDataToFPGA(writedata);
+    if (flgDebug)  
+    {
+     afc.clear();
+     afc = code+std::to_string(DEBUG)+"debug PID Gain "+ std::to_string(writedata.data);      
+    } 
+}
 void HARDWARE::set_GainPID(uint16_t gain)
 {
   uint8_t ti;
