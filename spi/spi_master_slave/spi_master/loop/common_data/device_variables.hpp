@@ -15,7 +15,7 @@
 #define FPGAUART_TX_PIN 8 //!
 #define FPGAUART_RX_PIN 9 //!
 #define FPGA_UART_ID    uart1
-#define FPGA_BAUD_RATE  400000
+#define FPGA_BAUD_RATE  115200//400000
 
 extern uint8_t FPGADELIM;
 extern uint8_t FPGACRCPAR;

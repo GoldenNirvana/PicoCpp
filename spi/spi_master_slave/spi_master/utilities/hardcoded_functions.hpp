@@ -116,6 +116,8 @@ public:
  void set_GainApmlMod(uint8_t gain); //установить усиления модуляции амплитуды
 
  void set_GainPID(uint16_t gain);    //установить усиления ПИД
+ 
+ void set_GainPID(uint32_t gain);
 
  void set_DACXY(uint8_t channel, uint16_t value); 
 

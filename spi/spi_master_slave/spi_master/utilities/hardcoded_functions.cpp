@@ -180,6 +180,11 @@ void HARDWARE::setDefaultSettings( uint8_t dacBiasVSetPointPort, uint8_t  dacXYP
     uart_init(FPGA_UART_ID, FPGA_BAUD_RATE); //add  240627
     gpio_set_function(FPGAUART_TX_PIN, GPIO_FUNC_UART);
     gpio_set_function(FPGAUART_RX_PIN, GPIO_FUNC_UART);
+    
+    // Enable UART
+      uart_set_hw_flow(FPGA_UART_ID, false, false);
+      uart_set_format(FPGA_UART_ID, 8, 1, UART_PARITY_NONE);
+      uart_set_fifo_enabled(FPGA_UART_ID,false);// true);
   }
   gpio_pull_down(resetport->getPort());
 //#warning should be undeleted
@@ -457,16 +462,19 @@ void HARDWARE::AscResult(FPGAAscData ascdata, uint8_t* dst, size_t len)
 void HARDWARE::WriteDataToFPGA(FPGAWriteData writedata)
 {
   size_t sz;
-  uint8_t dt=writedata.data;
-  sz=sizeof(dt);//1;//sizeof(writedata);
-  uint8_t *buffer = new uint8_t[sz];
- // memcpy(buffer, &writedata,sz);
-  memcpy(buffer, &dt,sz);
+ // uint32_t dt=writedata.data;
+ // sz=sizeof(dt);//1;//
+  sz=sizeof(writedata);
+  uint8_t buf[1];
+  uint8_t buffer[sz];
+  uint8_t inbuffer[sz];
+  memcpy(buffer, &writedata,sz);
+//  memcpy(buffer, &dt,sz);
   if (flgDebug)  
   {
     std::string afcc;
     afcc.clear();
-    afcc=code+std::to_string(DEBUG)+separator+std::to_string(sz); 
+    afcc=code+std::to_string(DEBUG)+"send FPGA "+separator+std::to_string(sz); 
     for (size_t j = 0; j < sz; ++j)
     {
       afcc +=separator + std::to_string(buffer[j]);
@@ -476,25 +484,38 @@ void HARDWARE::WriteDataToFPGA(FPGAWriteData writedata)
     sleep_ms(200);
     afcc.clear();
   }
+  
+    for (size_t i = 0; i < sz; i++)
+    {  
+     while  (!uart_is_writable(FPGA_UART_ID)) {sleep_ms(10);}
+     // uint8_t val;
+      buf[0]=buffer[i]; 
+      uart_write_blocking(FPGA_UART_ID, buf,1);
+        // sleep_ms(40);
+    }
+   
+  // uart_write_blocking(FPGA_UART_ID, buffer,sz);
+    //uart_write_blocking(uart_inst_t *uart, const uint8_t *src, size_t len)
+ 
+ // sleep_ms(400);
+   for (size_t i = 0; i < sz; i++)
+   {
+     while (!uart_is_readable(FPGA_UART_ID)) {sleep_ms(10);} 
+      uart_read_blocking(FPGA_UART_ID,buf,1);
+      inbuffer[i]=buf[0];
+    // sleep_ms(40);
+   }
+   //  uart_read_blocking(FPGA_UART_ID, inbuffer,sz);
+    //uart_write_blocking(uart_inst_t *uart, const uint8_t *src, size_t len)
 
-  if (uart_is_writable(FPGA_UART_ID)) 
-  {
-    uart_write_blocking(FPGA_UART_ID, buffer,sz);
-    //uart_write_blocking(uart_inst_t *uart, const uint8_t *src, size_t len)
-  }
-  if (uart_is_readable(FPGA_UART_ID)) 
-  {
-    uart_read_blocking(FPGA_UART_ID, buffer,sz);
-    //uart_write_blocking(uart_inst_t *uart, const uint8_t *src, size_t len)
-  }
   if (flgDebug)  
   {
     std::string afcc;
     afcc.clear();
-    afcc=code+std::to_string(DEBUG)+separator+std::to_string(sz); 
+    afcc=code+std::to_string(DEBUG)+"read FPGA"+separator+std::to_string(sz); 
     for (size_t j = 0; j < sz; ++j)
     {
-      afcc +=separator + std::to_string(buffer[j]);
+      afcc +=separator + std::to_string(inbuffer[j]);
     }
     afcc +=endln;
     std::cout << afcc;
@@ -555,7 +576,19 @@ void HARDWARE::set_GainApmlMod(uint8_t gain)
    sleep_ms(100); 
   } 
 }
-
+void HARDWARE::set_GainPID(uint32_t gain)
+{
+      FPGAWriteData writedata;
+      writedata.addr=arrModule_0.wbKx[0];
+      writedata.cmd=0x01;
+      writedata.data=(uint32_t)gain;
+      WriteDataToFPGA(writedata);
+    if (flgDebug)  
+    {
+     afc.clear();
+     afc = code+std::to_string(DEBUG)+"debug PID Gain "+ std::to_string(writedata.data);      
+    } 
+}
 void HARDWARE::set_GainPID(uint16_t gain)
 {
   uint8_t ti;
@@ -638,7 +671,7 @@ void HARDWARE::set_GainPID(uint16_t gain)
       FPGAWriteData writedata;
       writedata.addr=arrModule_0.wbKx[0];
       writedata.cmd=0x01;
-      writedata.data=(uint32_t)ti; // gain need sign
+      writedata.data=(uint32_t)gain; // gain need sign
     /*
       std::string afcc;
       afcc.clear();
@@ -654,7 +687,7 @@ void HARDWARE::set_GainPID(uint16_t gain)
       sleep_ms(200);
       afcc.clear();
     */  
-    //  WriteDataToFPGA(writedata);
+      WriteDataToFPGA(writedata);
     }
     if (flgDebug)  
     {
