@@ -101,11 +101,13 @@ extern std::atomic<bool> STOP;
 extern std::atomic<bool> TheadDone;   //need dor synchronization with PC 
 extern std::atomic<bool> DrawDone;    //need dor synchronization with PC 
 extern std::atomic<bool> ADC_IS_READY_TO_READ;
+extern std::atomic<bool> flgVirtual; 
+extern std::atomic<bool> flgDebug;
 
 extern bool flgUseTUD;
 extern bool flgParamsUpdated;
-extern bool flgDebug;    // output diagnostics
-extern bool flgVirtual;  // Virtual device for debuging and simulation
+//extern bool flgDebug;    // output diagnostics
+//extern bool flgVirtual;  // Virtual device for debuging and simulation
 extern bool flgСritical_section;
 extern bool flgUseUART;  
 extern bool flgUseFPGA;  //Использовать ПЛИС

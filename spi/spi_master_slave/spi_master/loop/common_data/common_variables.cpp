@@ -16,7 +16,8 @@ std::atomic<bool> STOP;
 std::atomic<bool> TheadDone;   //need dor synchronization with PC 
 std::atomic<bool> DrawDone;    //need dor synchronization with PC 
 std::atomic<bool> ADC_IS_READY_TO_READ = true;
-
+std::atomic<bool> flgVirtual = false; 
+std::atomic<bool> flgDebug=false;
 const std::string  code="code";  
 const std::string  endln="\n";
 const char  separator=',';
@@ -36,8 +37,8 @@ bool ADC_GET_VALUE = false;
 bool    flgUseTUD=false;
 bool    flgParamsUpdated=false;
 bool    flgСritical_section=true;
-bool    flgDebug=false;
-bool    flgVirtual = false;     // флаг симуляции работа микроконтроллера
+//bool    flgDebug=false;
+//bool    flgVirtual = false;     // флаг симуляции работа микроконтроллера
 uint8_t flgDebugLevel = 3;      // уровень отладки
 bool    flgUseUART = false;     // использовать UART для передачи данных
 //данные для симуляции 

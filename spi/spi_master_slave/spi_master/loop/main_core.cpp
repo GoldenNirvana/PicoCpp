@@ -26,7 +26,14 @@ void MainCore::launchOnCore1()
         break;
      */   
       case VirtualCmd : //флаг симуляции работы микроконтроллера      
-        flgVirtual=(bool)vector[1];
+    //    flgVirtual=(bool)vector[1];
+          flgVirtual=(bool)vector[1];
+          afc.clear();
+          afc = code+std::to_string(DEBUG)+"set virtual "+ std::to_string(vector[1]);
+          afc +=endln;//"\n";
+          std::cout << afc;
+          afc.clear();
+          sleep_ms(100);               
         break;
       case DebugLevelCmd: // флаг вывода отладочной информации debug level =2;  =3 запрет вывода!
         flgDebugLevel=vector[1];
@@ -90,6 +97,20 @@ case VersionCmd:
                 scanner->hardware->GetSOFTHARDWAREVersion();
                 break;
               } 
+/*
+ case  VirtualCmd:
+              {
+                ALGCODE=ALGNONE;
+                flgVirtual=(bool)vector[1];
+                afc.clear();
+                afc = code+std::to_string(DEBUG)+" virtual "+ std::to_string(vector[1]);
+                afc +=endln;//"\n";
+                std::cout << afc;
+                afc.clear();
+              //  sleep_ms(100);               
+                break;
+              }
+*/              
 case ChangeHardWare:
               {
                 ALGCODE=ALGNONE;

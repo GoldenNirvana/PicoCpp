@@ -41,22 +41,23 @@ void RX_core::launchOnCore1()
    {
     switch (vector[0])
     { 
-      case VirtualCmd : //флаг симуляции работы микроконтроллера      
+     /* case VirtualCmd : //флаг симуляции работы микроконтроллера      
         flgVirtual=(bool)vector[1];
         afc.clear();
-        afc = code+std::to_string(DEBUG)+" virtual "+ std::to_string(flgVirtual);
+        afc = code+std::to_string(DEBUG)+" virtual "+ std::to_string(vector[1]);
         afc +=endln;//"\n";
         std::cout << afc;
         afc.clear();
         sleep_ms(100); 
         break;
+     */   
       case DebugLevelCmd: // флаг вывода отладочной информации debug level =2;  =3 запрет вывода!
         flgDebugLevel=vector[1];
         break;    
       case DebugCmd: // флаг вывода отладочной информации  =1, нет =0
         flgDebug=(bool)(vector[1]);
         afc.clear();
-        afc = code+std::to_string(DEBUG)+"debug Set Debug "+ std::to_string(flgDebug);
+        afc = code+std::to_string(DEBUG)+"debug Set Debug "+ std::to_string(vector[1]);
         afc +=endln;//"\n";
         std::cout << afc;
         afc.clear();
