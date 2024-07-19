@@ -476,7 +476,7 @@ void HARDWARE::WriteDataToFPGA(FPGAWriteData writedata)
   {
     std::string afcc;
     afcc.clear();
-    afcc=code+std::to_string(DEBUG)+"FPGA"+separator+std::to_string(sz); 
+    afcc=code+std::to_string(DEBUG)+"FPGA send"+separator+std::to_string(sz); 
     for (size_t j = 0; j < sz; ++j)
     {
       afcc +=separator + std::to_string(buffer[j]);
@@ -502,7 +502,7 @@ void HARDWARE::WriteDataToFPGA(FPGAWriteData writedata)
   {
     std::string afcc;
     afcc.clear();
-    afcc=code+std::to_string(DEBUG)+"FPGA"+separator+std::to_string(sz); 
+    afcc=code+std::to_string(DEBUG)+"FPGA get"+separator+std::to_string(sz); 
     for (size_t j = 0; j < sz; ++j)
     {
       afcc +=separator + std::to_string(buffer[j]);
@@ -664,12 +664,12 @@ void HARDWARE::set_GainPID(uint32_t gain)
       sleep_ms(200);
       afcc.clear();
     */  
-    //  WriteDataToFPGA(writedata);
+      WriteDataToFPGA(writedata);
     }
     if (flgDebug)  
     {
      afc.clear();
-     afc = code+std::to_string(DEBUG)+"debug PID Gain "+ std::to_string(255-ti); 
+     afc = code+std::to_string(DEBUG)+"debug PID Gain FPGA "+ std::to_string(255-(uint8_t)gain); 
     } 
   }  
   if (flgDebug)  
