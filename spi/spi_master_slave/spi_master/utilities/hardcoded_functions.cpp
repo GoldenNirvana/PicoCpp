@@ -567,10 +567,10 @@ void HARDWARE::set_GainApmlMod(uint8_t gain)
   } 
 }
 void HARDWARE::set_GainPID(uint32_t gain)
-{  
+{ 
+    uint8_t ti; 
   if (HARDWAREVERSION==BB)  //BB
   {
-   uint8_t ti;
    uint8_t tiadd;
    ti=(uint8_t)(gain>>8);
    tiadd=(uint8_t)(gain&0x00FF);
