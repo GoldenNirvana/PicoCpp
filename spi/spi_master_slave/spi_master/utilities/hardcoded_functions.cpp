@@ -567,12 +567,118 @@ void HARDWARE::set_GainApmlMod(uint8_t gain)
   } 
 }
 void HARDWARE::set_GainPID(uint32_t gain)
-{
+{  
+  if (HARDWAREVERSION==BB)  //BB
+  {
+   uint8_t ti;
+   uint8_t tiadd;
+   ti=(uint8_t)(gain>>8);
+   tiadd=(uint8_t)(gain&0x00FF);
+   if (!flgVirtual) 
+   {  
+    std::string binary = std::bitset<3>(ti).to_string();
+    binary[2] == '1' ? gainPID0->enable() : gainPID0->disable();
+    binary[1] == '1' ? gainPID1->enable() : gainPID1->disable();
+    binary[0] == '1' ? gainPID2->enable() : gainPID2->disable();
+     /* 
+    (ti&0x04) == 1 ? gainPID0->enable() : gainPID0->disable();
+    (ti&0x02) == 1 ? gainPID1->enable() : gainPID1->disable();
+    (ti&0x01) == 1 ? gainPID2->enable() : gainPID2->disable();
+   */ 
+    // отладка SPI
+     uint8_t intBuf[1]; 
+     decoder.activePort(6);
+     Spi::setProperties(8, 0, 0);
+     intBuf[0] = 0;
+     spi_write_blocking(spi_default, intBuf, 1); 
+     intBuf[0] = tiadd;
+     spi_write_blocking(spi_default, intBuf, 1); 
+     decoder.activePort(7);
+    }
+    if (flgDebug)  
+    {
+     afc.clear();
+     afc = code+std::to_string(DEBUG)+"debug PID Gain "+ std::to_string(ti)+' '+ std::to_string(tiadd);
+    }  
+  }  
+  else  //add 240603 WB+WBFPGA
+  {  
+    if (!flgVirtual) 
+    { 
+     if (HARDWAREVERSION!=BBFPGA)
+     {
+      ti=(uint8_t)gain;
+      uint8_t intBuf[1]; 
+      decoder.activePort(6);
+      Spi::setProperties(8, 0, 0);
+      intBuf[0] = 0;
+      spi_write_blocking(spi_default, intBuf, 1); 
+      intBuf[0] = ti;
+      spi_write_blocking(spi_default, intBuf, 1); 
+      decoder.activePort(7);
+     }
+     else //Use FPGA
+     {
+      FPGAWriteData writedata;
+      writedata.addr=arrModule_0.wbKx[0];//  0x08430000;  //adress gain need sign
+      writedata.cmd=0x01;
+      writedata.data=(uint32_t)gain; // gain need sign
+     /* if (flgDebug)
+      {     
+       std::string afcc;
+       afcc.clear();
+       afcc=code+ std::to_string(DEBUG)+','+std::to_string(sizeof(writedata)); 
+       afcc +=',' + std::to_string(writedata.delimbegin);
+       afcc +=',' + std::to_string(writedata.cmd);      
+       afcc +=',' + std::to_string(writedata.addr); 
+       afcc +=',' + std::to_string(writedata.data);
+       afcc +=',' + std::to_string(writedata.crcpar);
+       afcc +=',' + std::to_string(writedata.delimend);
+       afcc +="\n";
+       std::cout << afcc;
+       sleep_ms(400);
+       afcc.clear();
+      }
+      */
+      WriteDataToFPGA(writedata);
+     }    
+    }
+    else //virtual
+    {
       FPGAWriteData writedata;
       writedata.addr=arrModule_0.wbKx[0];
       writedata.cmd=0x01;
-      writedata.data=(uint32_t)gain;  
-      WriteDataToFPGA(writedata);
+      writedata.data=(uint32_t)gain; // gain need sign
+    /*
+      std::string afcc;
+      afcc.clear();
+      afcc=code+ std::to_string(DEBUG)+','+std::to_string(sizeof(writedata)); 
+      afcc +=',' + std::to_string(writedata.delimbegin);
+      afcc +=',' + std::to_string(writedata.cmd);      
+      afcc +=',' + std::to_string(writedata.addr); 
+      afcc +=',' + std::to_string(writedata.data);
+      afcc +=',' + std::to_string(writedata.crcpar);
+      afcc +=',' + std::to_string(writedata.delimend);
+      afcc +="\n";
+      std::cout << afcc;
+      sleep_ms(200);
+      afcc.clear();
+    */  
+    //  WriteDataToFPGA(writedata);
+    }
+    if (flgDebug)  
+    {
+     afc.clear();
+     afc = code+std::to_string(DEBUG)+"debug PID Gain "+ std::to_string(255-ti); 
+    } 
+  }  
+  if (flgDebug)  
+  {
+   afc += endln;
+   std::cout << afc;
+   afc.clear();
+   sleep_ms(100); 
+  }  
  }
 void HARDWARE::set_GainPID(uint16_t gain)
 {
