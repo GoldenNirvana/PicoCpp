@@ -200,10 +200,16 @@ void HARDWARE::setDefaultSettings( uint8_t dacBiasVSetPointPort, uint8_t  dacXYP
   gpio_pull_down(resetport->getPort());
   ledPort->enable();
   dark();
+  /*if (HARDWAREVERSION==BB)
+  {
+    uint16_t ti=7<<8; set_GainPID(ti); //240403  ?????
+  }
+  else
+  { } //установить минимальное усиление 240209 
+  */
+  uint32_t gain=7; 
+ // set_GainPID(gain); // not virtual; not debug!
 
-  uint16_t ti=7<<8; //240403
-  set_GainPID(ti);  //установить минимальное усиление 240209
-  
   retract();        //втянуть 240403 ???
 //************************************************************* 
  // init_commutation(sensor,signloop,signal_to_loop,usenotmod_I,usemod_U);
@@ -665,7 +671,7 @@ void HARDWARE::set_GainPID(uint32_t gain)
       sleep_ms(200);
       afcc.clear();
     */  
-    //  WriteDataToFPGA(writedata);
+      WriteDataToFPGA(writedata);
     }
     if (flgDebug)  
     {

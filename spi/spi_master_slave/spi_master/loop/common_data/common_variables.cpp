@@ -3,7 +3,7 @@
 //////////////////////////////////////////////
 std::string  SOFTVERSION="24.06.04.1 HWABBWBFPGA";
 std::string  SoftHARDWAREVERSION="0.1";
-int8_t       HARDWAREVERSION=1;   // PICO(BB)=0 ; MotherBoard(WhiteBoard=WB)=1; BlueBoard+FPGA(BBFPGA)=2 ПЛИС;
+int8_t       HARDWAREVERSION=2;   // PICO(BB)=0 ; MotherBoard(WhiteBoard=WB)=1; BlueBoard+FPGA(BBFPGA)=2 ПЛИС;
 //int8_t       HARDWAREVERSION_I=-1;
 std::string afc;  //dataout string
 std::vector<int32_t> vector;
@@ -11,17 +11,17 @@ std::vector<int32_t> vupdateparams;
 int32_t vectorSize;
 uint16_t spiBuf[8];
 std::atomic<int16_t>      ALGCODE;
-std::atomic<bool> CONFIG_UPDATE;
-std::atomic<bool> STOP;
-std::atomic<bool> TheadDone;   //need dor synchronization with PC 
-std::atomic<bool> DrawDone;    //need dor synchronization with PC 
-std::atomic<bool> ADC_IS_READY_TO_READ = true;
-std::atomic<bool> flgVirtual = false; 
-std::atomic<bool> flgDebug=false;
+std::atomic<bool>  CONFIG_UPDATE;
+std::atomic<bool>  STOP;
+std::atomic<bool>  TheadDone;   //need dor synchronization with PC 
+std::atomic<bool>  DrawDone;    //need dor synchronization with PC 
+std::atomic<bool>  ADC_IS_READY_TO_READ = true;
+std::atomic<bool>  flgVirtual = false; // start value!!! setPIDGain
+std::atomic<bool>  flgDebug   = false; // strat value!!!
+
 const std::string  code="code";  
 const std::string  endln="\n";
-const char  separator=',';
-
+const char         separator=',';
 
 bool AD9833_SENDER = false;
 bool AD8400_SENDER = false;
