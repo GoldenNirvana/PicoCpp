@@ -208,7 +208,7 @@ void HARDWARE::setDefaultSettings( uint8_t dacBiasVSetPointPort, uint8_t  dacXYP
   { } //установить минимальное усиление 240209 
   */
   uint32_t gain=7; 
- // set_GainPID(gain); // not virtual; not debug!
+  set_GainPID(gain); // not virtual; not debug!
 
   retract();        //втянуть 240403 ???
 //************************************************************* 
@@ -471,9 +471,9 @@ void HARDWARE::WriteDataToFPGA(FPGAWriteData writedata)
   //uint8_t dt=writedata.data;
   //sz=sizeof(dt);//1;//sizeof(writedata);
   sz=sizeof(writedata);
- // uint8_t buf[1];
+  //uint8_t buf[1];
   uint8_t buffer[sz];
-  //uint8_t inbuffer[sz];
+ // uint8_t inbuffer[sz];
   memcpy(buffer, &writedata,sz);
  // uint8_t *buffer = new uint8_t[sz];
  // memcpy(buffer, &writedata,sz);
@@ -482,7 +482,7 @@ void HARDWARE::WriteDataToFPGA(FPGAWriteData writedata)
   {
     std::string afcc;
     afcc.clear();
-    afcc=code+std::to_string(DEBUG)+"FPGA"+separator+std::to_string(sz); 
+    afcc=code+std::to_string(DEBUG)+"FPGA send"+separator+std::to_string(sz); 
     for (size_t j = 0; j < sz; ++j)
     {
       afcc +=separator + std::to_string(buffer[j]);
@@ -492,24 +492,30 @@ void HARDWARE::WriteDataToFPGA(FPGAWriteData writedata)
     sleep_ms(200);
     afcc.clear();
   }
-  if (uart_is_writable(FPGA_UART_ID))
- // while (!uart_is_writable(FPGA_UART_ID)) {sleep_ms(10);} 
+  for (size_t i = 0; i < sz; i++)
   {
-    uart_write_blocking(FPGA_UART_ID, buffer,sz);
+   if (uart_is_writable(FPGA_UART_ID))
+ // while (!uart_is_writable(FPGA_UART_ID)) {sleep_ms(10);} 
+   {
+    uart_write_blocking(FPGA_UART_ID, (buffer+i),1);//sz);
     //uart_write_blocking(uart_inst_t *uart, const uint8_t *src, size_t len)
+   }
   }
   sleep_ms(200);
-  if (uart_is_readable(FPGA_UART_ID))
-  //while (!uart_is_readable(FPGA_UART_ID)) {sleep_ms(10);}
+ // if (uart_is_readable(FPGA_UART_ID))
+  for (size_t i = 0; i < sz; i++)
   {
-    uart_read_blocking(FPGA_UART_ID, buffer,sz);
+    while (!uart_is_readable(FPGA_UART_ID)) {sleep_ms(10);}
+    {
+     uart_read_blocking(FPGA_UART_ID, (buffer+i),1);//sz);
     //uart_write_blocking(uart_inst_t *uart, const uint8_t *src, size_t len)
-  }
+   }
+  } 
   if (flgDebug)  
   {
     std::string afcc;
     afcc.clear();
-    afcc=code+std::to_string(DEBUG)+"FPGA"+separator+std::to_string(sz); 
+    afcc=code+std::to_string(DEBUG)+"FPGA get"+separator+std::to_string(sz); 
     for (size_t j = 0; j < sz; ++j)
     {
       afcc +=separator + std::to_string(buffer[j]);
@@ -676,7 +682,7 @@ void HARDWARE::set_GainPID(uint32_t gain)
     if (flgDebug)  
     {
      afc.clear();
-     afc = code+std::to_string(DEBUG)+"debug PID Gain "+ std::to_string(255-ti); 
+     afc = code+std::to_string(DEBUG)+"debug PID Gain WB "+ std::to_string(255-gain); 
     } 
   }  
   if (flgDebug)  
