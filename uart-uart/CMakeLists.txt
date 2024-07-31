@@ -16,12 +16,12 @@ set(PICO_EXAMPLES_PATH ${PROJECT_SOURCE_DIR})
 
 # Initialize the SDK
 pico_sdk_init()
-include(example_auto_set_url.cmake)
+
 # Add blink example
-add_subdirectory(blink)
+
 
 # Add hello world example
-add_subdirectory(hello_world)
+
 
 add_compile_options(-Wall
         -Wno-format          # int != int32_t as far as the compiler is concerned because gcc has int32_t as long int
@@ -32,26 +32,23 @@ add_compile_options(-Wall
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
 # Hardware-specific examples in subdirectories:
-add_subdirectory(adc)
-add_subdirectory(clocks)
-add_subdirectory(cmake)
-add_subdirectory(divider)
-add_subdirectory(dma)
-add_subdirectory(flash)
-add_subdirectory(gpio)
-add_subdirectory(i2c)
-add_subdirectory(interp)
-add_subdirectory(multicore)
-add_subdirectory(picoboard)
-add_subdirectory(pico_w)
-add_subdirectory(pio)
-add_subdirectory(pwm)
-add_subdirectory(reset)
-add_subdirectory(rtc)
-add_subdirectory(spi)
-add_subdirectory(system)
-add_subdirectory(timer)
-add_subdirectory(uart)
-add_subdirectory(uart-uart)
-add_subdirectory(usb)
-add_subdirectory(watchdog)
+add_executable(uart_uart uart.cpp)
+# Pull in basic dependencies
+target_link_libraries(uart_uart pico_stdlib hardware_uart)
+#target_link_libraries(spi_master pico_stdlib hardware_spi)
+
+pico_enable_stdio_usb(spi_master 1)
+pico_enable_stdio_uart(spi_master 1) 
+
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O2")
+#set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -Werror")
+#add_compile_options(-Werror)
+#set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O3")
+
+# create map/bin/hex file etc.
+pico_add_extra_outputs(uart_uart)
+pico_add_uf2_output(uart_uart)
+
+
+
+
