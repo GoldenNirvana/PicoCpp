@@ -69,7 +69,7 @@ int main() {
           uart_read_blocking(FPGA_UART_ID, inbuffer,sz);
       //     uart_read_blocking(FPGA_UART_ID, buf,1);
         //  inbuffer[i]=buf[0];
-      //    sleep_ms(20);
+          sleep_ms(20);
       }
     //    uart_read_blocking(FPGA_UART_ID , inbuffer,sz);
         //uart_write_blocking(uart_inst_t *uart, const uint8_t *src, size_t len)
