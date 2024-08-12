@@ -63,14 +63,13 @@ int main() {
     while (true)         
     { 
     //  for (size_t i = 0; i < sz; i++)
-      {
       if(uart_is_readable(FPGA_UART_ID ))      
-      // while (!uart_is_readable(FPGA_UART_ID )) {sleep_ms(10);}     
+      {// while (!uart_is_readable(FPGA_UART_ID )) {sleep_ms(10);}     
           uart_read_blocking(FPGA_UART_ID, inbuffer,sz);
       //     uart_read_blocking(FPGA_UART_ID, buf,1);
         //  inbuffer[i]=buf[0];
           sleep_ms(20);
-      }
+     
     //    uart_read_blocking(FPGA_UART_ID , inbuffer,sz);
         //uart_write_blocking(uart_inst_t *uart, const uint8_t *src, size_t len)
    //     sleep_ms(400);
@@ -79,7 +78,7 @@ int main() {
          outbuffer[i]=inbuffer[i]; 
         }
   //   for (size_t i = 0; i < sz; i++)
-     {
+     //{
      //  if (uart_is_writable(FPGA_UART_ID ))       
        while (!uart_is_writable(FPGA_UART_ID )) { sleep_ms(10);}
       
@@ -91,7 +90,7 @@ int main() {
       //   uart_write_blocking(FPGA_UART_ID, buf,1);
      //    sleep_ms(20);             
      //    uart_write_blocking(FPGA_UART_ID, &outbuffer[i],1);
-     }
+      }
     //   uart_write_blocking(FPGA_UART_ID , outbuffer,sz);
         //uart_write_blocking(uart_inst_t *uart, const uint8_t *src, size_t len)
     }
