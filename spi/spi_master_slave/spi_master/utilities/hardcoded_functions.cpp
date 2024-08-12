@@ -208,7 +208,7 @@ void HARDWARE::setDefaultSettings( uint8_t dacBiasVSetPointPort, uint8_t  dacXYP
   { } //установить минимальное усиление 240209 
   */
   uint32_t gain=7; 
-  set_GainPID(gain); // not virtual; not debug!
+ // set_GainPID(gain); // not virtual; not debug!
 
   retract();        //втянуть 240403 ???
 //************************************************************* 
@@ -471,7 +471,7 @@ void HARDWARE::WriteDataToFPGA(FPGAWriteData writedata)
   //uint8_t dt=writedata.data;
   //sz=sizeof(dt);//1;//sizeof(writedata);
   sz=sizeof(writedata);
-  //uint8_t buf[1];
+  uint8_t buf[1];
   uint8_t buffer[sz];
  // uint8_t inbuffer[sz];
   memcpy(buffer, &writedata,sz);
@@ -492,24 +492,30 @@ void HARDWARE::WriteDataToFPGA(FPGAWriteData writedata)
     sleep_ms(200);
     afcc.clear();
   }
- // for (size_t i = 0; i < sz; i++)
+ for (size_t i = 0; i < sz; i++)
   {
-   if (uart_is_writable(FPGA_UART_ID))
-  // while (!uart_is_writable(FPGA_UART_ID)) {sleep_ms(10);} 
+ //  if (uart_is_writable(FPGA_UART_ID))
+   while (!uart_is_writable(FPGA_UART_ID)) {sleep_ms(10);} 
    {
-    uart_write_blocking(FPGA_UART_ID, buffer,sz);//sz);
+    buf[0]= buffer[i];
+    //uart_write_blocking(FPGA_UART_ID, buffer,sz);//sz);
+    uart_write_blocking(FPGA_UART_ID, buf,1);//sz);
+    sleep_ms(30);
     //uart_write_blocking(uart_inst_t *uart, const uint8_t *src, size_t len)
    }
   }
   sleep_ms(200);
  // if (uart_is_readable(FPGA_UART_ID))
-//  for (size_t i = 0; i < sz; i++)
+  for (size_t i = 0; i < sz; i++)
   {
     while (!uart_is_readable(FPGA_UART_ID)) {sleep_ms(10);}
     {
-     uart_read_blocking(FPGA_UART_ID, buffer,sz);//sz);
-    //uart_write_blocking(uart_inst_t *uart, const uint8_t *src, size_t len)
-   }
+ //    uart_read_blocking(FPGA_UART_ID, buffer,sz);//sz);
+      uart_read_blocking(FPGA_UART_ID, buf,1);
+      buffer[i]=buf[0];
+      sleep_ms(30);
+     //uart_write_blocking(uart_inst_t *uart, const uint8_t *src, size_t len)
+    }
   } 
   if (flgDebug)  
   {

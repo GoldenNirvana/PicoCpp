@@ -3,7 +3,7 @@
 //////////////////////////////////////////////
 std::string  SOFTVERSION="24.06.04.1 HWABBWBFPGA";
 std::string  SoftHARDWAREVERSION="0.1";
-int8_t       HARDWAREVERSION=2;   // PICO(BB)=0 ; MotherBoard(WhiteBoard=WB)=1; BlueBoard+FPGA(BBFPGA)=2 ПЛИС;
+int8_t       HARDWAREVERSION=2;//2;   // PICO(BB)=0 ; MotherBoard(WhiteBoard=WB)=1; BlueBoard+FPGA(BBFPGA)=2 ПЛИС;
 //int8_t       HARDWAREVERSION_I=-1;
 std::string afc;  //dataout string
 std::vector<int32_t> vector;
