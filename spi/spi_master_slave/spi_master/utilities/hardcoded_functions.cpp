@@ -45,10 +45,7 @@ HARDWARE::HARDWARE(ConfigHardWare confighardware)
      gainPID2=new OutputPort(confighardware.GainPID2); 
    freezeport=new OutputPort(confighardware.FreezePort);//заморозить/разморозить ПИД 
  protractport=new OutputPort(confighardware.ProtractPort);//вытянуть сканнер /втянуть сканнер  
-  if (!flgVirtual)
-  {
-    linearDriver=new LinearDriverPico2040(true,configlineardrivev0);   
-  }
+ linearDriver=new LinearDriverPico2040(true,configlineardrivev0);   
 }
 HARDWARE::HARDWARE(ConfigHardWareNew confighardware) 
 {
@@ -75,7 +72,7 @@ HARDWARE::HARDWARE(ConfigHardWareNew confighardware)
         sensorport=new OutputPort(confighardware.SD_2Port);        // порты  настройки СД Cantilever=0; 1-Piezo
       signloopport=new OutputPort(confighardware.SignLoopPort);    // знак ПИД // 0=+ ; 1=-
  integrator_inport=new OutputPort(confighardware.Interator_InPort);// выбор вход сигнала на ПИД из1-SD; 0=ПТН(I) 
- 
+      linearDriver=new LinearDriverMotherBoard(configlineardrivev1);   
  /*
       dacbspt=new DAC8563(_confighardware.DACBiasSetPointMode); //set mode DAC BIAS,SetPoint
         dacxy=new DAC8563(_confighardware.DACXYMode);   //set mode DAC X,Y
@@ -100,10 +97,6 @@ modulateuport=new OutputPort(_confighardware.ModulateUPort);   // вкл=1; вы
   signloopport=new OutputPort(_confighardware.SignLoopPort);    // знак ПИД // 0=+ ; 1=-
  integrator_inport=new OutputPort(_confighardware.Interator_InPort);// выбор вход сигнала на ПИД из1-SD; 0=ПТН(I) 
  */
-  if (!flgVirtual)
-  {
-   linearDriver=new LinearDriverMotherBoard(configlineardrivev1);  
-  }
 }
 
 HARDWARE::~HARDWARE()
@@ -132,7 +125,7 @@ HARDWARE::~HARDWARE()
      delete(signloopport);
      delete(integrator_inport);
    }
- if (linearDriver!=0) delete(linearDriver);
+   if (linearDriver!=0) delete(linearDriver);
 // io_ports.clear();
 }
 /*
@@ -169,8 +162,8 @@ void HARDWARE::reset_ADCPort()
 }
 void HARDWARE::setDefaultSettings( uint8_t dacBiasVSetPointPort, uint8_t  dacXYPort, uint8_t dacZPort)  
 {
-  /// BASIC SETTINGS
-  //uart_init(uart1, 115200); //????
+ // BASIC SETTINGS
+ // uart_init(uart1, 115200); //????
  // uart_init(USB_UART_ID, 115200); //????
  // gpio_set_function(USBUART_TX_PIN, GPIO_FUNC_UART);
  // gpio_set_function(USBUART_RX_PIN, GPIO_FUNC_UART); 
@@ -179,16 +172,16 @@ void HARDWARE::setDefaultSettings( uint8_t dacBiasVSetPointPort, uint8_t  dacXYP
   {
     uart_init(FPGA_UART_ID, FPGA_BAUD_RATE); //add  240627
     gpio_set_function(FPGAUART_TX_PIN, GPIO_FUNC_UART);
-    gpio_set_function(FPGAUART_RX_PIN, GPIO_FUNC_UART);
-     
+    gpio_set_function(FPGAUART_RX_PIN, GPIO_FUNC_UART);  
     // Enable UART
-      uart_set_hw_flow(FPGA_UART_ID, false, false);
-      uart_set_format(FPGA_UART_ID, 8, 1, UART_PARITY_NONE);
-      uart_set_fifo_enabled(FPGA_UART_ID,true);// true);
+   // uart_set_hw_flow(FPGA_UART_ID, false, false);
+    uart_set_hw_flow(FPGA_UART_ID,true, true);
+    uart_set_format(FPGA_UART_ID, 8, 1, UART_PARITY_NONE);
+    uart_set_fifo_enabled(FPGA_UART_ID,true);// true);
   }
   gpio_pull_down(resetport->getPort());
-//#warning should be undeleted
-//  RX_core rxCore;
+// #warning should be undeleted
+// RX_core rxCore;
 // fixme mb should add & before isr
   gpio_set_irq_enabled_with_callback(busyport->getPort(), GPIO_IRQ_EDGE_FALL, true, RX_core::comReceiveISR);
 
@@ -208,7 +201,7 @@ void HARDWARE::setDefaultSettings( uint8_t dacBiasVSetPointPort, uint8_t  dacXYP
   { } //установить минимальное усиление 240209 
   */
   uint32_t gain=7; 
-  set_GainPID(gain); // not virtual; not debug!
+  //set_GainPID(gain); // not virtual; not debug!
 
   retract();        //втянуть 240403 ???
 //************************************************************* 
@@ -522,7 +515,7 @@ void HARDWARE::WriteDataToFPGA(FPGAWriteData writedata)
     std::string afcc;
     afcc.clear();
     afcc=code+std::to_string(DEBUG)+"FPGA get"+separator+std::to_string(sz); 
-    for (size_t j = 0; j < sz; ++j)
+    for (size_t j = 0; j <sz; ++j)
     {
       afcc +=separator + std::to_string(buffer[j]);
     }

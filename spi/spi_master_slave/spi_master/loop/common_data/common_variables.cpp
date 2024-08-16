@@ -3,14 +3,14 @@
 //////////////////////////////////////////////
 std::string  SOFTVERSION="24.06.04.1 HWABBWBFPGA";
 std::string  SoftHARDWAREVERSION="0.1";
-int8_t       HARDWAREVERSION=2;//2;   // PICO(BB)=0 ; MotherBoard(WhiteBoard=WB)=1; BlueBoard+FPGA(BBFPGA)=2 ПЛИС;
+int8_t       HARDWAREVERSION=2;   // PICO(BB)=0 ; MotherBoard(WhiteBoard=WB)=1; BlueBoard+FPGA(BBFPGA)=2 ПЛИС;
 //int8_t       HARDWAREVERSION_I=-1;
 std::string afc;  //dataout string
 std::vector<int32_t> vector;
 std::vector<int32_t> vupdateparams;
 int32_t vectorSize;
 uint16_t spiBuf[8];
-std::atomic<int16_t>      ALGCODE;
+std::atomic<int16_t>     ALGCODE;
 std::atomic<bool>  CONFIG_UPDATE;
 std::atomic<bool>  STOP;
 std::atomic<bool>  TheadDone;   //need dor synchronization with PC 
@@ -37,8 +37,6 @@ bool ADC_GET_VALUE = false;
 bool    flgUseTUD=false;
 bool    flgParamsUpdated=false;
 bool    flgСritical_section=true;
-//bool    flgDebug=false;
-//bool    flgVirtual = false;     // флаг симуляции работа микроконтроллера
 uint8_t flgDebugLevel = 3;      // уровень отладки
 bool    flgUseUART = false;     // использовать UART для передачи данных
 //данные для симуляции 

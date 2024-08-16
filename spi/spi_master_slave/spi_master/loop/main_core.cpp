@@ -94,6 +94,12 @@ case   ALGNONE:{break;}
 case VersionCmd:
               {
                 ALGCODE=ALGNONE;
+                afc.clear();
+                afc = code+std::to_string(DEBUG)+" get version ";
+                afc +=endln;//"\n";
+                std::cout << afc;
+                afc.clear();
+                sleep_ms(100);
                 scanner->hardware->GetSOFTHARDWAREVersion();
                 break;
               } 
