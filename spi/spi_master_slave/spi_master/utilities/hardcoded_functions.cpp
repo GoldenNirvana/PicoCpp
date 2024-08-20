@@ -9,7 +9,7 @@
 #include <pico/multicore.h>
 #include <bitset>
 
-HARDWARE::HARDWARE(ConfigHardWare confighardware) 
+HARDWARE::HARDWARE(ConfigHardWare confighardware)   // BB  mother BB+FPGA
 {
    /*   _confighardware=confighardware;
       dacbspt=new DAC8563(_confighardware.DACBiasSetPointMode); //set mode DAC BIAS,SetPoint
@@ -47,7 +47,7 @@ HARDWARE::HARDWARE(ConfigHardWare confighardware)
  protractport=new OutputPort(confighardware.ProtractPort);//вытянуть сканнер /втянуть сканнер  
  linearDriver=new LinearDriverPico2040(true,configlineardrivev0);   
 }
-HARDWARE::HARDWARE(ConfigHardWareNew confighardware) 
+HARDWARE::HARDWARE(ConfigHardWareNew confighardware) // WB
 {
   //    _confighardware=confighardware;
       dacbvspt=new DAC8563(confighardware.DACBiasVSetPointMode); //set mode DAC BIAS,SetPoint

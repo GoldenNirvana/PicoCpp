@@ -406,12 +406,18 @@ MainCore::MainCore()
             break; 
            }
     case WB:
-    case BBFPGA:
-          { //WB+ WBFPGA
+          {
             scanner=new  Scanner(confighardwarev1);
             scanner->hardware->setDefaultSettings(confighardwarev1.DACBiasVSetPointPort,confighardwarev1.DACXYPort,confighardwarev1.DACZPort);
-            break;
-           }
+            break; 
+
+          }
+    case BBFPGA:
+          { //BB+ WBFPGA
+            scanner=new  Scanner(confighardwarev0); 
+            scanner->hardware->setDefaultSettings(confighardwarev0.DACBiasVSetPointPort,confighardwarev0.DACXYPort,confighardwarev0.DACZPort);                 
+            break; 
+          }
    } 
    if (scanner==nullptr) 
    {
