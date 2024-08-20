@@ -174,10 +174,11 @@ void HARDWARE::setDefaultSettings( uint8_t dacBiasVSetPointPort, uint8_t  dacXYP
     gpio_set_function(FPGAUART_TX_PIN, GPIO_FUNC_UART);
     gpio_set_function(FPGAUART_RX_PIN, GPIO_FUNC_UART);  
     // Enable UART
-   // uart_set_hw_flow(FPGA_UART_ID, false, false);
-    uart_set_hw_flow(FPGA_UART_ID,true, true);
+    uart_set_hw_flow(FPGA_UART_ID, false, false);
+
     uart_set_format(FPGA_UART_ID, 8, 1, UART_PARITY_NONE);
-    uart_set_fifo_enabled(FPGA_UART_ID,true);// true);
+    uart_set_fifo_enabled(FPGA_UART_ID,true);// true);  
+   // uart_set_hw_flow(FPGA_UART_ID,true, true);
   }
   gpio_pull_down(resetport->getPort());
 // #warning should be undeleted
@@ -460,12 +461,19 @@ void HARDWARE::AscResult(FPGAAscData ascdata, uint8_t* dst, size_t len)
 
 void HARDWARE::WriteDataToFPGA(FPGAWriteData writedata)
 {
+ /*
+  truct.pack("BBBBBBBBBBBB",self.DELIM, self.CMD_WRITE,\
+            (address&0xFF000000)>>24,(address&0x00FF0000)>>16, (address&0x0000FF00)>>8,(address&0x000000FF),\
+            (data&0xFF000000)>>24,(data&0x00FF0000)>>16, (data&0x0000FF00)>>8,(data&0x000000FF),\
+            self.CMD_CRC, self.DELIM\
+ */           
   size_t sz;
   //uint8_t dt=writedata.data;
   //sz=sizeof(dt);//1;//sizeof(writedata);
   sz=sizeof(writedata);
   uint8_t buf[1];
   uint8_t buffer[sz];
+  uint8_t outbuffer[sz];
  // uint8_t inbuffer[sz];
   memcpy(buffer, &writedata,sz);
  // uint8_t *buffer = new uint8_t[sz];
@@ -487,29 +495,31 @@ void HARDWARE::WriteDataToFPGA(FPGAWriteData writedata)
   }
  //for (size_t i = 0; i < sz; i++)
   {
-   if (uart_is_writable(FPGA_UART_ID))
- //  while (!uart_is_writable(FPGA_UART_ID)) {sleep_ms(10);} 
+  // if (uart_is_writable(FPGA_UART_ID))
+   while (!uart_is_writable(FPGA_UART_ID)) {sleep_ms(100);} 
    {
    // buf[0]= buffer[i];
-    uart_write_blocking(FPGA_UART_ID, buffer,sz);//sz);
+    uart_write_blocking(FPGA_UART_ID, buffer,sz);
     //uart_write_blocking(FPGA_UART_ID, buf,1);//sz);
     sleep_ms(30);
     //uart_write_blocking(uart_inst_t *uart, const uint8_t *src, size_t len)
    }
   }
-  sleep_ms(200);
+ // sleep_ms(200);
  // if (uart_is_readable(FPGA_UART_ID))
  // for (size_t i = 0; i < sz; i++)
  // {
-    while (!uart_is_readable(FPGA_UART_ID)) {sleep_ms(10);}
+    while (!uart_is_readable(FPGA_UART_ID)) {sleep_ms(100);}
     {
-     uart_read_blocking(FPGA_UART_ID, buffer,sz);//sz);
+     uart_read_blocking(FPGA_UART_ID, outbuffer,sz);//sz);
   //    uart_read_blocking(FPGA_UART_ID, buf,1);
   //    buffer[i]=buf[0];
-      sleep_ms(30);
+   //   sleep_ms(30);
      //uart_write_blocking(uart_inst_t *uart, const uint8_t *src, size_t len)
     }
- // } 
+
+     sleep_ms(200);
+ 
   if (flgDebug)  
   {
     std::string afcc;
@@ -517,7 +527,7 @@ void HARDWARE::WriteDataToFPGA(FPGAWriteData writedata)
     afcc=code+std::to_string(DEBUG)+"FPGA get"+separator+std::to_string(sz); 
     for (size_t j = 0; j <sz; ++j)
     {
-      afcc +=separator + std::to_string(buffer[j]);
+      afcc +=separator + std::to_string(outbuffer[j]);
     }
     afcc +=endln;
     std::cout << afcc;

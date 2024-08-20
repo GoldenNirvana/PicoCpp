@@ -55,10 +55,11 @@ int main() {
       gpio_set_function(FPGAUART_RX_PIN, GPIO_FUNC_UART);
 
     // Enable UART
-   //uart_set_hw_flow(FPGA_UART_ID, false, false);
-      uart_set_hw_flow(FPGA_UART_ID,true, true);
+      uart_set_hw_flow(FPGA_UART_ID, false, false);
+
       uart_set_format(FPGA_UART_ID, 8, 1, UART_PARITY_NONE);
-      uart_set_fifo_enabled(FPGA_UART_ID, true);
+      uart_set_fifo_enabled(FPGA_UART_ID, true);  
+     // uart_set_hw_flow(FPGA_UART_ID,true, true);
    //   while (true)         
       { 
     //  for (size_t i = 0; i < sz; i++)
@@ -69,7 +70,7 @@ int main() {
     while (true)         
     { 
     //  for (size_t i = 0; i < sz; i++)
-      if(uart_is_readable(FPGA_UART_ID ))      
+      while (!uart_is_readable(FPGA_UART_ID)) {sleep_ms(100);}// if(uart_is_readable(FPGA_UART_ID ))      
       {     
          uart_read_blocking(FPGA_UART_ID, inbuffer,sz);
          sleep_ms(20);
@@ -78,8 +79,16 @@ int main() {
     //    {
     //     outbuffer[i]=inbuffer[i]; 
     //    }
-     
-       while (!uart_is_writable(FPGA_UART_ID )) { sleep_ms(10);}     
+ /*
+            while (!uart_is_writable(FPGA_UART_ID )) { sleep_ms(10);}     
+       //     const char* message = "Hello, UART!";
+       //     size_t len = strlen(message);
+       //     uart_write_blocking(FPGA_UART_ID, (const uint8_t*)message, len);
+        uart_write_blocking(FPGA_UART_ID,inbuffer,sz);
+        sleep_ms(400);
+*/
+     //  for (size_t i = 0; i < sz; i++)   outbuffer[i]=i; 
+          while (!uart_is_writable(FPGA_UART_ID )) { sleep_ms(10);}     
        //     const char* message = "Hello, UART!";
        //     size_t len = strlen(message);
        //     uart_write_blocking(FPGA_UART_ID, (const uint8_t*)message, len);
