@@ -622,7 +622,7 @@ void HARDWARE::set_GainPID(uint32_t gain)
     if (flgDebug)  
     {
      afc.clear();
-     afc = code+std::to_string(DEBUG)+"debug PID Gain ti="+ std::to_string(ti)+'ti add='+ std::to_string(tiadd);
+     afc = code+std::to_string(DEBUG)+"debug PID Gain ti="+ std::to_string(ti)+"ti add="+ std::to_string(tiadd);
     }  
   } //BB 
   else  //add 240603 WB+WBFPGA
