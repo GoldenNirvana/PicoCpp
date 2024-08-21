@@ -47,9 +47,7 @@ int main() {
   int main()
   {
       size_t sz=12;  
-      uint8_t inbuffer[sz];     
-   //   uint8_t outbuffer[sz];
-   //   uint8_t buf[1];      
+      uint8_t inbuffer[sz];        
       stdio_init_all();  
       uart_init(FPGA_UART_ID, FPGA_BAUD_RATE); //add  240627
       gpio_set_function(FPGAUART_TX_PIN, GPIO_FUNC_UART);
