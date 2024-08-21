@@ -201,10 +201,23 @@ void HARDWARE::setDefaultSettings( uint8_t dacBiasVSetPointPort, uint8_t  dacXYP
   else
   { } //установить минимальное усиление 240209 
   */
+  if (HARDWAREVERSION==WB) //Mother board(WB) WBFPGA
+  {  
+     init_commutation(0 , 1 , 1 , 1, 0);   //afm
+    //init_commutation(1 , 1 , 1 , 0, 0);  //afm  240624
+  } 
+  init_DACSetPointBiasV(dacBiasVSetPointPort);   //инициирование ЦАП1  SetPoint,BIAS
+  init_DACXY(dacXYPort);    //инициирование ЦАП2  DACXY
+ 
   uint32_t gain=7; 
-  //set_GainPID(gain); // not virtual; not debug!
+  if (HARDWAREVERSION!=BBFPGA)
+  {
+    set_GainPID(gain); // not virtual; not debug!
+    retract();         //втянуть    
+    init_DACZ(dacZPort);      //инициирование ЦАП3  DACZ
+    set_DACZ(0); 
+  }
 
-  retract();        //втянуть 240403 ???
 //************************************************************* 
  // init_commutation(sensor,signloop,signal_to_loop,usenotmod_I,usemod_U);
  /*
@@ -215,16 +228,8 @@ void HARDWARE::setDefaultSettings( uint8_t dacBiasVSetPointPort, uint8_t  dacXYP
     usemod_U:=0;       // use mod U; not=0
     usenotmod_I:=1;       // use mod I not  =1 ; 
   */  
-   if (HARDWAREVERSION>BB) //Mother board(WB) WBFPGA
-   {  
-     init_commutation(0 , 1 , 1 , 1, 0);   //afm
-    //init_commutation(1 , 1 , 1 , 0, 0);  //afm  240624
-   }
-  init_DACSetPointBiasV(dacBiasVSetPointPort);   //инициирование ЦАП1  SetPoint,BIAS
 
-  init_DACXY(dacXYPort);    //инициирование ЦАП2  DACXY
- 
-  init_DACZ(dacZPort);      //инициирование ЦАП3  DACZ
+//  init_DACZ(dacZPort);      //инициирование ЦАП3  DACZ
   
 }
 

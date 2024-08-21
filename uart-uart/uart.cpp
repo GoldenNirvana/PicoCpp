@@ -66,12 +66,8 @@ int main() {
      //  if(uart_is_readable(FPGA_UART_ID )) uart_read_blocking(FPGA_UART_ID, buf,1);
    //    else break;    
       }  
- while (true)         
-    { 
-        std::cout << afc;
-    }
-    while (true)         
-    { 
+  while (true)         
+  { 
     //  for (size_t i = 0; i < sz; i++)
       while (!uart_is_readable(FPGA_UART_ID)) {sleep_ms(100);}// if(uart_is_readable(FPGA_UART_ID ))      
       {     
@@ -97,17 +93,16 @@ int main() {
        //     uart_write_blocking(FPGA_UART_ID, (const uint8_t*)message, len);
         uart_write_blocking(FPGA_UART_ID,inbuffer,sz);
        }
-std::string afc ;
-  afc.clear();
-  afc ="debug"; 
+   std::string afc ;
+   afc.clear();
+   afc ="debug"; 
    for (size_t i = 0; i < sz; i++)
    {afc+= std::to_string(inbuffer[i]);}
-
-      afc += +"\n";
-      std::cout << afc;
-      afc.clear();
-      sleep_ms(100);
-    }
-       sleep_ms(100);
+    afc += +"\n";
+    std::cout << afc;
+    afc.clear();
+    sleep_ms(100);
+  }
+   sleep_ms(100);
  }     
 
