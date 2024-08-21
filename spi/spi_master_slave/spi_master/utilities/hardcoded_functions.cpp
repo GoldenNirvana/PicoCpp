@@ -466,11 +466,11 @@ void HARDWARE::AscResult(FPGAAscData ascdata, uint8_t* dst, size_t len)
 
 void HARDWARE::WriteDataToFPGA(FPGAWriteData writedata)
 {
- /*
-  truct.pack("BBBBBBBBBBBB",self.DELIM, self.CMD_WRITE,\
-            (address&0xFF000000)>>24,(address&0x00FF0000)>>16, (address&0x0000FF00)>>8,(address&0x000000FF),\
-            (data&0xFF000000)>>24,(data&0x00FF0000)>>16, (data&0x0000FF00)>>8,(data&0x000000FF),\
-            self.CMD_CRC, self.DELIM\
+ /* big_endian !!!! старшие - младшие байты
+    truct.pack("BBBBBBBBBBBB",self.DELIM, self.CMD_WRITE,\
+    (address&0xFF000000)>>24,(address&0x00FF0000)>>16, (address&0x0000FF00)>>8,(address&0x000000FF),\
+    (data&0xFF000000)>>24,(data&0x00FF0000)>>16, (data&0x0000FF00)>>8,(data&0x000000FF),\
+    self.CMD_CRC, self.DELIM\
  */           
   size_t sz;
   sz=sizeof(writedata);
@@ -478,12 +478,25 @@ void HARDWARE::WriteDataToFPGA(FPGAWriteData writedata)
   uint8_t buffer[sz];
   uint8_t outbuffer[sz];
  // uint8_t inbuffer[sz];
-  memcpy(buffer, &writedata,sz);
+  buffer[0]=writedata.delimbegin;
+  buffer[1]=writedata.cmd;
+  buffer[2]=(writedata.addr&0xFF000000)>>24;
+  buffer[3]=(writedata.addr&0x00FF0000)>>16;  
+  buffer[4]=(writedata.addr&0x0000FF00)>>8;
+  buffer[5]= writedata.addr&0x000000FF;
+  buffer[6]=(writedata.data&0xFF000000)>>24;
+  buffer[7]=(writedata.data&0x00FF0000)>>16;;
+  buffer[8]=(writedata.data&0x0000FF00)>>8;
+  buffer[9]= writedata.data&0x000000FF;
+  buffer[10]=writedata.crcpar;
+  buffer[11]=writedata.delimend;
+  
+ // memcpy(buffer, &writedata,sz);
   if (flgDebug)  
   {
     std::string afcc;
     afcc.clear();
-    afcc=code+std::to_string(DEBUG)+"FPGA send"+separator+std::to_string(sz); 
+    afcc=code+std::to_string(DEBUG)+"FPGA send Big-Endian"+separator+std::to_string(sz); 
     for (size_t j = 0; j < sz; ++j)
     {
       afcc +=separator + std::to_string(buffer[j]);
@@ -517,14 +530,13 @@ void HARDWARE::WriteDataToFPGA(FPGAWriteData writedata)
    //   sleep_ms(30);
      //uart_write_blocking(uart_inst_t *uart, const uint8_t *src, size_t len)
     }
-
-     sleep_ms(200);
+//  sleep_ms(200);
  
   if (flgDebug)  
   {
     std::string afcc;
     afcc.clear();
-    afcc=code+std::to_string(DEBUG)+"FPGA get"+separator+std::to_string(sz); 
+    afcc=code+std::to_string(DEBUG)+"FPGA get Big_endian"+separator+std::to_string(sz); 
     for (size_t j = 0; j <sz; ++j)
     {
       afcc +=separator + std::to_string(outbuffer[j]);
@@ -552,6 +564,17 @@ void HARDWARE::set_SetPoint( int32_t SetPoint)
       WriteDataToFPGA(writedata);
      }
   } 
+  else
+  {
+    if (HARDWAREVERSION==BBFPGA)
+    {
+      FPGAWriteData writedata;
+      writedata.addr=arrModule_0.wbSetpoint;
+      writedata.cmd=0x01;
+      writedata.data=(uint32_t)(SetPoint+ShiftDac);  
+      WriteDataToFPGA(writedata);
+    }
+  }
   // отладка
   if  (flgDebug)
   {
@@ -629,7 +652,7 @@ void HARDWARE::set_GainPID(uint32_t gain)
   {  
     if (!flgVirtual) 
     { 
-     if (HARDWAREVERSION!=BBFPGA)
+     if (HARDWAREVERSION==WB)
      {
       ti=(uint8_t)gain;
       uint8_t intBuf[1]; 

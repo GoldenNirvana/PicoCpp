@@ -16,6 +16,7 @@ ConfigLinearDriveNew configlineardrivev1({18,19,20,21,22});
 FPGAAdress           arrModule_0(
                       {
                        0x08430000,//wbKx[0]
+                       0x08430004,//wbKx[1]
                        0x08430008,//wbKx[2]
                        0x0843000C,//wbInMulKoef
                        0x08430010,//wbInShift
