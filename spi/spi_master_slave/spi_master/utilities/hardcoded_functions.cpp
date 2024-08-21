@@ -379,7 +379,7 @@ void HARDWARE::init_DACXY(uint8_t spiport) //spi port
 void HARDWARE::init_DACZ(uint8_t spiport)
 {
   dacz->initialize(spiport); //code 27
-  set_DACZ(0); 
+//  set_DACZ(0); //240921
  /*
   afc.clear();
   afc =code+std::to_string(DEBUG)+ "debug Init DACZ 0 port=" + std::to_string(port);
@@ -473,17 +473,12 @@ void HARDWARE::WriteDataToFPGA(FPGAWriteData writedata)
             self.CMD_CRC, self.DELIM\
  */           
   size_t sz;
-  //uint8_t dt=writedata.data;
-  //sz=sizeof(dt);//1;//sizeof(writedata);
   sz=sizeof(writedata);
   uint8_t buf[1];
   uint8_t buffer[sz];
   uint8_t outbuffer[sz];
  // uint8_t inbuffer[sz];
   memcpy(buffer, &writedata,sz);
- // uint8_t *buffer = new uint8_t[sz];
- // memcpy(buffer, &writedata,sz);
- // memcpy(buffer, &dt,sz);
   if (flgDebug)  
   {
     std::string afcc;
@@ -545,7 +540,9 @@ void HARDWARE::set_SetPoint( int32_t SetPoint)
   if (!flgVirtual)
   {
     if (HARDWAREVERSION!=BBFPGA)
-     {  dacbvspt->writeA(SetPoint+ShiftDac); }// 240425 ?
+     { 
+       dacbvspt->writeA(SetPoint+ShiftDac);
+     }
      else 
      {
       FPGAWriteData writedata;
@@ -625,9 +622,9 @@ void HARDWARE::set_GainPID(uint32_t gain)
     if (flgDebug)  
     {
      afc.clear();
-     afc = code+std::to_string(DEBUG)+"debug PID Gain "+ std::to_string(ti)+' '+ std::to_string(tiadd);
+     afc = code+std::to_string(DEBUG)+"debug PID Gain ti="+ std::to_string(ti)+'ti add='+ std::to_string(tiadd);
     }  
-  }  
+  } //BB 
   else  //add 240603 WB+WBFPGA
   {  
     if (!flgVirtual) 
@@ -650,49 +647,20 @@ void HARDWARE::set_GainPID(uint32_t gain)
       writedata.addr=arrModule_0.wbKx[0];//  0x08430000;  //adress gain need sign
       writedata.cmd=0x01;
       writedata.data=(uint32_t)gain; // gain need sign
-     /* if (flgDebug)
-      {     
-       std::string afcc;
-       afcc.clear();
-       afcc=code+ std::to_string(DEBUG)+','+std::to_string(sizeof(writedata)); 
-       afcc +=',' + std::to_string(writedata.delimbegin);
-       afcc +=',' + std::to_string(writedata.cmd);      
-       afcc +=',' + std::to_string(writedata.addr); 
-       afcc +=',' + std::to_string(writedata.data);
-       afcc +=',' + std::to_string(writedata.crcpar);
-       afcc +=',' + std::to_string(writedata.delimend);
-       afcc +="\n";
-       std::cout << afcc;
-       sleep_ms(400);
-       afcc.clear();
-      }
-      */
       WriteDataToFPGA(writedata);
      }    
     }
     else //virtual
     {
+     if (HARDWAREVERSION==BBFPGA) //for test
+     {
       FPGAWriteData writedata;
       writedata.addr=arrModule_0.wbKx[0];
       writedata.cmd=0x01;
       writedata.data=(uint32_t)gain; // gain need sign
-    /*
-      std::string afcc;
-      afcc.clear();
-      afcc=code+ std::to_string(DEBUG)+','+std::to_string(sizeof(writedata)); 
-      afcc +=',' + std::to_string(writedata.delimbegin);
-      afcc +=',' + std::to_string(writedata.cmd);      
-      afcc +=',' + std::to_string(writedata.addr); 
-      afcc +=',' + std::to_string(writedata.data);
-      afcc +=',' + std::to_string(writedata.crcpar);
-      afcc +=',' + std::to_string(writedata.delimend);
-      afcc +="\n";
-      std::cout << afcc;
-      sleep_ms(200);
-      afcc.clear();
-    */  
       WriteDataToFPGA(writedata);
-    }
+     }
+    } 
     if (flgDebug)  
     {
      afc.clear();
@@ -747,7 +715,7 @@ void HARDWARE::set_GainPID(uint16_t gain)
     ti=(uint8_t)gain; 
     if (!flgVirtual) 
     { 
-     if (HARDWAREVERSION!=BBFPGA)
+     if (HARDWAREVERSION==WB)
      {
       uint8_t intBuf[1]; 
       decoder.activePort(6);
@@ -764,53 +732,24 @@ void HARDWARE::set_GainPID(uint16_t gain)
       writedata.addr=arrModule_0.wbKx[0];//  0x08430000;  //adress gain need sign
       writedata.cmd=0x01;
       writedata.data=(uint32_t)ti; // gain need sign
-     /* if (flgDebug)
-      {     
-       std::string afcc;
-       afcc.clear();
-       afcc=code+ std::to_string(DEBUG)+','+std::to_string(sizeof(writedata)); 
-       afcc +=',' + std::to_string(writedata.delimbegin);
-       afcc +=',' + std::to_string(writedata.cmd);      
-       afcc +=',' + std::to_string(writedata.addr); 
-       afcc +=',' + std::to_string(writedata.data);
-       afcc +=',' + std::to_string(writedata.crcpar);
-       afcc +=',' + std::to_string(writedata.delimend);
-       afcc +="\n";
-       std::cout << afcc;
-       sleep_ms(400);
-       afcc.clear();
-      }
-      */
       WriteDataToFPGA(writedata);
      }    
     }
     else //virtual
     {
+     if (HARDWAREVERSION==BBFPGA)
+     {
       FPGAWriteData writedata;
       writedata.addr=arrModule_0.wbKx[0];
       writedata.cmd=0x01;
       writedata.data=(uint32_t)ti; // gain need sign
-    /*
-      std::string afcc;
-      afcc.clear();
-      afcc=code+ std::to_string(DEBUG)+','+std::to_string(sizeof(writedata)); 
-      afcc +=',' + std::to_string(writedata.delimbegin);
-      afcc +=',' + std::to_string(writedata.cmd);      
-      afcc +=',' + std::to_string(writedata.addr); 
-      afcc +=',' + std::to_string(writedata.data);
-      afcc +=',' + std::to_string(writedata.crcpar);
-      afcc +=',' + std::to_string(writedata.delimend);
-      afcc +="\n";
-      std::cout << afcc;
-      sleep_ms(200);
-      afcc.clear();
-    */  
-    //  WriteDataToFPGA(writedata);
-    }
-    if (flgDebug)  
-    {
-     afc.clear();
-     afc = code+std::to_string(DEBUG)+"debug PID Gain "+ std::to_string(255-ti); 
+      WriteDataToFPGA(writedata);
+     }
+     if (flgDebug)  
+     {
+      afc.clear();
+      afc = code+std::to_string(DEBUG)+"debug PID Gain "+ std::to_string(255-ti); 
+     } 
     } 
   }  
   if (flgDebug)  
@@ -846,9 +785,20 @@ void HARDWARE::set_DACXY(uint8_t channel, uint16_t value)
 
 void HARDWARE::set_DACZ(int16_t value) 
 {
-  dacz->setSpiProps(); 
-  dacz->writeA(int32_t(value)+ShiftDac);
-  sleep_us(2);// 240405
+  if (HARDWAREVERSION!=BBFPGA)
+  { 
+   dacz->setSpiProps(); 
+   dacz->writeA(int32_t(value)+ShiftDac);
+   sleep_us(2);// 240405 
+  }
+  else //BBFPGA
+  {
+   FPGAWriteData writedata;
+   writedata.addr=arrModule_0.wbOutShift;
+   writedata.cmd=0x01;
+   writedata.data=(uint32_t)(int32_t(value)+ShiftDac);  
+   WriteDataToFPGA(writedata);
+  }
 }
 
 
