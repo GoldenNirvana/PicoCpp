@@ -42,7 +42,7 @@ int main() {
 #define FPGAUART_TX_PIN 8 //!
 #define FPGAUART_RX_PIN 9 //!
 #define FPGA_UART_ID    uart1
-#define FPGA_BAUD_RATE  9600 //115200//400000 // 57600
+#define FPGA_BAUD_RATE  115200//400000 // 57600
    
   int main()
   {
@@ -88,7 +88,7 @@ int main() {
       afc.clear();
       afc ="debug"; 
       for (size_t i = 0; i < sz; i++)
-      { afc+= std::to_string(inbuffer[i]);}
+      { afc+=','+std::to_string(inbuffer[i]);}
         afc += "\n";
         std::cout << afc;
         afc.clear();

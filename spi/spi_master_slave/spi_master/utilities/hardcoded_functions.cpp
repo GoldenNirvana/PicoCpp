@@ -474,10 +474,8 @@ void HARDWARE::WriteDataToFPGA(FPGAWriteData writedata)
  */           
   size_t sz;
   sz=sizeof(writedata);
-  uint8_t buf[1];
   uint8_t buffer[sz];
   uint8_t outbuffer[sz];
- // uint8_t inbuffer[sz];
   buffer[0]=writedata.delimbegin;
   buffer[1]=writedata.cmd;
   buffer[2]=(writedata.addr&0xFF000000)>>24;
@@ -506,30 +504,17 @@ void HARDWARE::WriteDataToFPGA(FPGAWriteData writedata)
     sleep_ms(200);
     afcc.clear();
   }
- //for (size_t i = 0; i < sz; i++)
+  while (!uart_is_writable(FPGA_UART_ID)) {sleep_ms(100);} 
   {
-  // if (uart_is_writable(FPGA_UART_ID))
-   while (!uart_is_writable(FPGA_UART_ID)) {sleep_ms(100);} 
-   {
-   // buf[0]= buffer[i];
     uart_write_blocking(FPGA_UART_ID, buffer,sz);
-    //uart_write_blocking(FPGA_UART_ID, buf,1);//sz);
     sleep_ms(30);
     //uart_write_blocking(uart_inst_t *uart, const uint8_t *src, size_t len)
-   }
   }
- // sleep_ms(200);
- // if (uart_is_readable(FPGA_UART_ID))
- // for (size_t i = 0; i < sz; i++)
- // {
-    while (!uart_is_readable(FPGA_UART_ID)) {sleep_ms(100);}
-    {
-     uart_read_blocking(FPGA_UART_ID, outbuffer,sz);//sz);
-  //    uart_read_blocking(FPGA_UART_ID, buf,1);
-  //    buffer[i]=buf[0];
-   //   sleep_ms(30);
-     //uart_write_blocking(uart_inst_t *uart, const uint8_t *src, size_t len)
-    }
+
+  while (!uart_is_readable(FPGA_UART_ID)) {sleep_ms(100);}
+  {
+   uart_read_blocking(FPGA_UART_ID, outbuffer,sz);//sz);
+  }
 //  sleep_ms(200);
  
   if (flgDebug)  
@@ -817,7 +802,7 @@ void HARDWARE::set_DACZ(int16_t value)
   else //BBFPGA
   {
    FPGAWriteData writedata;
-   writedata.addr=arrModule_0.wbOutShift;
+   writedata.addr=arrModule_0.wbOutShift; //?????
    writedata.cmd=0x01;
    writedata.data=(uint32_t)(int32_t(value)+ShiftDac);  
    WriteDataToFPGA(writedata);
@@ -844,17 +829,41 @@ uint16_t *HARDWARE::repeatTwoTimes()
 
 void HARDWARE::retract() //втянуть
 {
+ if (HARDWAREVERSION!=BBFPGA)
+ {
   protractport->enable();  //  port 6   элемент массива портов 
+ }
+ else
+ {
+   FPGAWriteData writedata;
+   writedata.addr=arrModule_0.pidControl;
+   writedata.cmd=0x01;
+   writedata.data=0;  
+   WriteDataToFPGA(writedata);
+ }
+
 }
 void HARDWARE::retract(int16_t HeightJump) //втянуть на HeightJump
 {
  retract(); 
- set_DACZ(-abs(HeightJump)); 
+ set_DACZ(-abs(HeightJump));
 }
 
 void HARDWARE::protract() //вытянуть
 {
+ if (HARDWAREVERSION!=BBFPGA)
+ {
   protractport->disable();  //port 6
+ } 
+ else
+ {
+   FPGAWriteData writedata;
+   writedata.addr=arrModule_0.pidControl;
+   writedata.cmd=0x01;
+   writedata.data=1;  
+   WriteDataToFPGA(writedata);
+ }
+
 }
 /*
 void HARDWARE::protract(uint16_t delay,int16_t DacZ0,int16_t HeightJump) //вытянуть
