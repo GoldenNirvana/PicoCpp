@@ -46,6 +46,7 @@
 #define ADC_RESET                36
 #define INITCOMMMUTATION         37
 #define USEPLDCmd                38  //использовать ПЛИС
+#define SET_PID_GAINFPGA         39
 #define RESONANCE                40  //AD9833 
 #define SCANNING                 50
 #define MOVE_TOX0Y0              51  //переместиться в начальную точку  скана из начальной точке предыдущего скана
@@ -69,13 +70,13 @@
 
 extern const std::string  code;  
 extern const std::string  endln;
-extern const char  separator;
+extern const char   separator;
 extern std::string  SOFTVERSION;
 extern std::string  SoftHARDWAREVERSION;  //  {0,1,....} or {0.1, 1.1...} 
 extern int8_t       HARDWAREVERSION;      //PICO=0; MotherBoard=1
 extern uint32_t     DEBUG_LEVEL;
-extern std::string afc;
-extern uint16_t spiBuf[8];
+extern std::string  afc;
+extern uint16_t     spiBuf[8];
 
 extern std::vector<int32_t> vector;
 extern std::vector<int32_t> vupdateparams;
@@ -120,6 +121,6 @@ extern int16_t SignalValue;   //for simulation
 extern int16_t ZMaxValue;
 extern int16_t SignalMaxValue;
 extern int32_t ShiftDac;
-
+extern int8_t  SetPointScale;
 extern critical_section_t criticalSection;
 #endif //PICO_EXAMPLES_COMMON_VARIABLES_HPP

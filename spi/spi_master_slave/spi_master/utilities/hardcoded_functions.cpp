@@ -170,6 +170,8 @@ void HARDWARE::setDefaultSettings( uint8_t dacBiasVSetPointPort, uint8_t  dacXYP
  // gpio_pull_down(resetport->getPort());
   if (HARDWAREVERSION==BBFPGA)
   {
+    ShiftDac=0;
+    SetPointScale=2;
     uart_init(FPGA_UART_ID, FPGA_BAUD_RATE); //add  240627
     gpio_set_function(FPGAUART_TX_PIN, GPIO_FUNC_UART);
     gpio_set_function(FPGAUART_RX_PIN, GPIO_FUNC_UART);  
@@ -473,6 +475,7 @@ void HARDWARE::WriteDataToFPGA(FPGAWriteData writedata)
     self.CMD_CRC, self.DELIM\
  */           
   size_t sz;
+  size_t szok=8;
   sz=sizeof(writedata);
   uint8_t buffer[sz];
   uint8_t outbuffer[sz];
@@ -513,7 +516,7 @@ void HARDWARE::WriteDataToFPGA(FPGAWriteData writedata)
 
   while (!uart_is_readable(FPGA_UART_ID)) {sleep_ms(100);}
   {
-   uart_read_blocking(FPGA_UART_ID, outbuffer,sz);//sz);
+   uart_read_blocking(FPGA_UART_ID, outbuffer,szok);
   }
 //  sleep_ms(200);
  
@@ -522,7 +525,7 @@ void HARDWARE::WriteDataToFPGA(FPGAWriteData writedata)
     std::string afcc;
     afcc.clear();
     afcc=code+std::to_string(DEBUG)+"FPGA get Big_endian"+separator+std::to_string(sz); 
-    for (size_t j = 0; j <sz; ++j)
+    for (size_t j = 0; j <szok; ++j)
     {
       afcc +=separator + std::to_string(outbuffer[j]);
     }
@@ -545,7 +548,7 @@ void HARDWARE::set_SetPoint( int32_t SetPoint)
       FPGAWriteData writedata;
       writedata.addr=arrModule_0.wbSetpoint;
       writedata.cmd=0x01;
-      writedata.data=(uint32_t)(SetPoint+ShiftDac);  
+      writedata.data=SetPointScale*(uint32_t)(SetPoint+ShiftDac);  
       WriteDataToFPGA(writedata);
      }
   } 
@@ -556,7 +559,7 @@ void HARDWARE::set_SetPoint( int32_t SetPoint)
       FPGAWriteData writedata;
       writedata.addr=arrModule_0.wbSetpoint;
       writedata.cmd=0x01;
-      writedata.data=(uint32_t)(SetPoint+ShiftDac);  
+      writedata.data=SetPointScale*(uint32_t)(SetPoint+ShiftDac);  
       WriteDataToFPGA(writedata);
     }
   }
@@ -675,6 +678,37 @@ void HARDWARE::set_GainPID(uint32_t gain)
      afc = code+std::to_string(DEBUG)+"debug PID Gain WB "+ std::to_string(255-gain); 
     } 
   }  
+  if (flgDebug)  
+  {
+   afc += endln;
+   std::cout << afc;
+   afc.clear();
+   sleep_ms(100); 
+  }  
+ }
+ void HARDWARE::set_GainPIDFPGA(uint32_t gain)
+ { 
+    if (!flgVirtual) 
+    { 
+      FPGAWriteData writedata;
+      writedata.addr=arrModule_0.wbKx[0];//  0x08430000;  //adress gain need sign
+      writedata.cmd=0x01;
+      writedata.data=(uint32_t)gain; // gain need sign
+      WriteDataToFPGA(writedata);  
+    }
+    else //virtual
+    {
+      FPGAWriteData writedata;
+      writedata.addr=arrModule_0.wbKx[0];
+      writedata.cmd=0x01;
+      writedata.data=(uint32_t)gain; // gain need sign
+      WriteDataToFPGA(writedata);
+    } 
+    if (flgDebug)  
+    {
+     afc.clear();
+     afc = code+std::to_string(DEBUG)+"debug PID Gain FPGA "+ std::to_string(gain); 
+    }  
   if (flgDebug)  
   {
    afc += endln;
@@ -838,7 +872,7 @@ void HARDWARE::retract() //втянуть
    FPGAWriteData writedata;
    writedata.addr=arrModule_0.pidControl;
    writedata.cmd=0x01;
-   writedata.data=0;  
+   writedata.data=3;  
    WriteDataToFPGA(writedata);
  }
 
@@ -877,14 +911,36 @@ void HARDWARE::protract(uint16_t delay,int16_t DacZ0,int16_t HeightJump) //вы�
 
 void HARDWARE::freezeLOOP(uint16_t delay)    // заморозить ПИД
 {
+ if (HARDWAREVERSION!=BBFPGA)
+ {
   freezeport->enable(); // 5 элемент массива портов ???
   sleep_ms(delay);
+ }
+ else 
+ {
+   FPGAWriteData writedata;
+   writedata.addr=arrModule_0.pidControl;
+   writedata.cmd=0x01;
+   writedata.data=0;  
+   WriteDataToFPGA(writedata);
+ }
 }
 
 void HARDWARE::unfreezeLOOP(uint16_t delay)  // разморозить ПИД
 {
-  freezeport->disable();  // 5 элемент массива портов ???
+if (HARDWAREVERSION!=BBFPGA)
+ {
+  freezeport->disable(); // 5 элемент массива портов ???
   sleep_ms(delay);
+ }
+ else 
+ {
+   FPGAWriteData writedata;
+   writedata.addr=arrModule_0.pidControl;
+   writedata.cmd=0x01;
+   writedata.data=1;  
+   WriteDataToFPGA(writedata);
+ }
 }
 void HARDWARE::activateError()
 {

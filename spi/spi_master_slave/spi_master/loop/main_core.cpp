@@ -282,6 +282,12 @@ case SET_PID_GAIN:
                 else                         scanner->hardware->set_GainPID((uint32_t)vector[1]); 
                 break; 
               }  
+case SET_PID_GAINFPGA:
+              {
+                ALGCODE=ALGNONE;
+                scanner->hardware->set_GainPIDFPGA((uint32_t)vector[1]); 
+                break; 
+              }   
 case SET_AMPLMOD_GAIN: // усиление раскачка зонда 
               {
                 ALGCODE=ALGNONE;

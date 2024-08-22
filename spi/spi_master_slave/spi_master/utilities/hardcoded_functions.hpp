@@ -118,6 +118,8 @@ public:
  void set_GainPID(uint16_t gain);    //установить усиления ПИД
 
  void set_GainPID(uint32_t gain);    //установить усиления ПИД
+
+ void set_GainPIDFPGA(uint32_t gain);    //установить усиления ПИД
  
  void set_DACXY(uint8_t channel, uint16_t value); 
 

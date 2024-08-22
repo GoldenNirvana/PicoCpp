@@ -45,7 +45,7 @@ int16_t SignalValue = maxint16_t;
 int16_t ZMaxValue   = maxint16_t;
 int16_t SignalMaxValue   = maxint16_t; //add 240710
 int32_t ShiftDac    = 32768;
-
+int8_t  SetPointScale=1;
 uint8_t ZPin    = 0; // Z
 uint8_t AmplPin = 1; // амплитуда
 uint8_t IPin    = 2; // ток  
