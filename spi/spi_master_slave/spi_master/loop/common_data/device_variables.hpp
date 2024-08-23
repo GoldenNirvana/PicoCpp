@@ -25,7 +25,12 @@ extern uint8_t FPGAASC;
 extern uint32_t ZAdress;
 extern uint32_t AmplAdress;
 extern uint32_t IAdress;
-
+extern ADCData adcdata;
+struct ADCData
+{
+ int16_t Z;
+ int16_t Signal;
+}
 struct ConfigHardWare //BB and BBFPGA
 {
   uint8_t DACBiasVSetPointPort;  //2 DAC8563_1  BIAS SetPoint

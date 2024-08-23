@@ -1,5 +1,6 @@
 #include "device_variables.hpp"
 
+ADCData adcdata;
 uint8_t  FPGADELIM=0x0A;
 uint8_t FPGACRCPAR=0xBB;
 uint8_t   FPGAREAD=0x00;
