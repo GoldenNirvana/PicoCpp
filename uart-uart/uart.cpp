@@ -52,17 +52,10 @@ int main() {
       uart_init(FPGA_UART_ID, FPGA_BAUD_RATE); //add  240627
       gpio_set_function(FPGAUART_TX_PIN, GPIO_FUNC_UART);
       gpio_set_function(FPGAUART_RX_PIN, GPIO_FUNC_UART);
-
     // Enable UART
       uart_set_hw_flow(FPGA_UART_ID, false, false);
       uart_set_format(FPGA_UART_ID, 8, 1, UART_PARITY_NONE);
       uart_set_fifo_enabled(FPGA_UART_ID, true);  
-   // uart_set_hw_flow(FPGA_UART_ID,true, true);
-   //   while (true)         
-   //  for (size_t i = 0; i < sz; i++)
-   //  if(uart_is_readable(FPGA_UART_ID )) uart_read_blocking(FPGA_UART_ID, buf,1);
-   //    else break;    
-     
   while (true)         
   { 
     //  for (size_t i = 0; i < sz; i++)
