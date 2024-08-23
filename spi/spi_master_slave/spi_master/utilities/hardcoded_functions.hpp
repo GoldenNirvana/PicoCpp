@@ -56,8 +56,6 @@ private:
 
  void activateBlue();
 
- void  ReadDataFromFPGA(FPGAReadData readdata, uint8_t* dst, size_t len);
-
  void  WriteDataToFPGA(FPGAWriteData writedata);
 
  void  AscResult(FPGAAscData ascdata, uint8_t* dst, size_t len);
@@ -136,6 +134,8 @@ public:
  void move_scannerY(int y);
 
  uint16_t *getValuesFromAdc();  // чтение АЦП
+ 
+ uint32_t  ReadDataFromFPGA(FPGAReadData readdata);
 
  void retract();       // втянуть сканер
 

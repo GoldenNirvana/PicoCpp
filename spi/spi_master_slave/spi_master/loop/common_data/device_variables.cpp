@@ -1,10 +1,10 @@
 #include "device_variables.hpp"
 
-uint8_t FPGADELIM=0xAA;
+uint8_t  FPGADELIM=0x0A;
 uint8_t FPGACRCPAR=0xBB;
-uint8_t FPGAREAD=0x00;
-uint8_t FPGAWRITE=0x01;
-uint8_t FPGAASC=0x80;
+uint8_t   FPGAREAD=0x00;
+uint8_t  FPGAWRITE=0x01;
+uint8_t    FPGAASC=0x80;
 
 Spi                  spi;
 Decoder              decoder(4, 5, 6);  
@@ -16,7 +16,7 @@ ConfigLinearDriveNew configlineardrivev1({18,19,20,21,22});
 FPGAAdress           arrModule_0(
                       {
                        0x08430000,//wbKx[0]
-                       0x08430004,//wbKx[1]
+                       0x08430004,//wbKx[1] //интегратор
                        0x08430008,//wbKx[2]
                        0x0843000C,//wbInMulKoef
                        0x08430010,//wbInShift

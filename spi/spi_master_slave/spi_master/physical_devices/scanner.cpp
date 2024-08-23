@@ -118,6 +118,42 @@ void Scanner::readDATALin()
 //  sendStrData("debug liny ",data_LinY,400,false);
 }
 
+void Scanner::readFPGA()
+{
+  if (!flgVirtual)
+  {
+     hardware->getValuesFromAdc();
+  //logger(ptr, 8);
+   ZValue = (int16_t)spiBuf[ZPin];
+      switch (vector[1]) //прибор
+   {
+        case SFM: //SFM=0
+                {
+                 SignalValue = (int16_t) spiBuf[AmplPin];
+                 break;  
+                } 
+        case STM://STM=1
+     case SICMDC://SICMDC=3  
+                {
+                 SignalValue = (int16_t) spiBuf[IPin];
+                 break;  
+                } 
+   }         
+        debugdata.emplace_back(ZValue);
+        debugdata.emplace_back(SignalValue);
+        debugdata.emplace_back(vector[1]);
+        sendStrData(code+std::to_string(ADC_READCmd),debugdata,100,true);
+  } 
+  else
+  {
+        debugdata.emplace_back(ZValue);
+        debugdata.emplace_back(SignalValue);
+        debugdata.emplace_back(vector[1]);
+        sendStrData(code+std::to_string(ADC_READCmd),debugdata,100,true);     
+  }
+
+
+}
 void Scanner::readADC()
 {
   if (!flgVirtual)

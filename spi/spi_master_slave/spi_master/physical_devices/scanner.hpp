@@ -100,6 +100,8 @@ public:
 
   void readADC();
 
+  void readFPGA();
+
   void stopAll();
 
   void readDATALin();

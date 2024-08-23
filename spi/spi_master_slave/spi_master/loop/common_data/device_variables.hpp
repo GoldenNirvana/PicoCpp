@@ -23,7 +23,7 @@ extern uint8_t FPGAREAD;
 extern uint8_t FPGAWRITE;
 extern uint8_t FPGAASC;
 
-struct ConfigHardWare
+struct ConfigHardWare //BB and BBFPGA
 {
   uint8_t DACBiasVSetPointPort;  //2 DAC8563_1  BIAS SetPoint
   uint8_t DACBiasVSetPointMode;  //1 DAC8563_1  BIAS SetPoint
@@ -51,7 +51,7 @@ struct FPGAAdress
  uint32_t wbInMulKoef;
  uint32_t wbInShift;
  uint32_t wbOutMulKoef;
- uint32_t wbOutShift;
+ uint32_t wbOutShift; //DACZ
  uint32_t wbSetpoint;
  uint32_t pidControl;
 };
@@ -86,7 +86,7 @@ struct FPGAReadData
  uint8_t  crcpar=FPGACRCPAR;
  uint8_t  delimend=FPGADELIM;
  };
-struct ConfigHardWareNew
+struct ConfigHardWareNew  //WB
 {
   uint8_t DACBiasVSetPointPort;  //2 DAC8563_1  BIAS SetPoint
   uint8_t DACBiasVSetPointMode;  //1 DAC8563_1  BIAS SetPoint
@@ -133,9 +133,9 @@ struct ConfigLinearDriveNew
   uint8_t ZTurn_on_Port;        
 };
 
-extern Spi               spi;
+extern Spi                  spi;
 //extern LinearDriver      *linearDriver;
-extern Decoder           decoder;
+extern Decoder              decoder;
 extern ConfigHardWare       confighardwarev0;
 extern ConfigHardWareNew    confighardwarev1;
 extern ConfigLinearDrive    configlineardrivev0;

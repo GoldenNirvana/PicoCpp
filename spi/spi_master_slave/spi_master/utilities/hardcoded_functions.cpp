@@ -419,32 +419,50 @@ void HARDWARE::set_BiasV(int32_t BiasV)
  }
  */
 }   
-void HARDWARE::ReadDataFromFPGA(FPGAReadData readdata,uint8_t* dst, size_t len)
+uint32_t HARDWARE::ReadDataFromFPGA(FPGAReadData readdata)
 {
-  uint8_t *buffer = new uint8_t[sizeof(readdata)];
-  memcpy(buffer, &readdata, sizeof(readdata));
+  uint8_t szread=8;
+  uint8_t szasc=12;
+  uint8_t outbuffer[szread];
+  uint8_t inbuffer[szasc];
+  outbuffer[0]=readdata.delimbegin;
+  outbuffer[1]=readdata.cmd;
+  outbuffer[2]=(readdata.addr&0xFF000000)>>24;
+  outbuffer[3]=(readdata.addr&0x00FF0000)>>16;  
+  outbuffer[4]=(readdata.addr&0x0000FF00)>>8;
+  outbuffer[5]=readdata.addr&0x000000FF;
+  outbuffer[6]=readdata.crcpar;
+  outbuffer[7]=readdata.delimend;
   if (flgDebug)  
   {
     std::string afcc;
     afcc.clear();
     afcc=code+std::to_string(DEBUG); 
-    for (size_t j = 0; j < sizeof(readdata); ++j)
+    for (size_t j = 0; j < szread; ++j)
     {
-      afcc +=separator + std::to_string(buffer[j]);
+      afcc +=separator + std::to_string(outbuffer[j]);
     }
     afcc +=endln;
     std::cout << afcc;
     sleep_ms(200);
     afcc.clear();
   }
-  if (uart_is_readable(FPGA_UART_ID)) 
+  while (!uart_is_writable(FPGA_UART_ID)){sleep_ms(30);}  
   {
-    uart_read_blocking(FPGA_UART_ID, dst,len);   
+    uart_write_blocking(FPGA_UART_ID, outbuffer,szread);
+    sleep_ms(30);
   }
+  while (!uart_is_readable(FPGA_UART_ID)){sleep_ms(30);}  
+  {
+    uart_read_blocking(FPGA_UART_ID, inbuffer,szasc);   
+  }
+  uint32_t res;
+  res=(inbuffer[6]<<24)+(inbuffer[7]<<16)+(inbuffer[8]<<8)+inbuffer[9];
+  return res;
 }
 void HARDWARE::AscResult(FPGAAscData ascdata, uint8_t* dst, size_t len)
 {
-  uint8_t *buffer = new uint8_t[sizeof(ascdata)];
+  uint8_t buffer[8];
   memcpy(buffer, &ascdata, sizeof(ascdata));
   if (flgDebug)  
   {
@@ -474,11 +492,12 @@ void HARDWARE::WriteDataToFPGA(FPGAWriteData writedata)
     (data&0xFF000000)>>24,(data&0x00FF0000)>>16, (data&0x0000FF00)>>8,(data&0x000000FF),\
     self.CMD_CRC, self.DELIM\
  */           
-  size_t sz;
-  size_t szok=8;
-  sz=sizeof(writedata);
-  uint8_t buffer[sz];
-  uint8_t outbuffer[sz];
+  size_t szwrite;
+  size_t szasc=8; //for ASC FPGA
+  size_t szread=8;
+  szwrite=sizeof(writedata);
+  uint8_t buffer[szwrite];
+  uint8_t outbuffer[szasc];
   buffer[0]=writedata.delimbegin;
   buffer[1]=writedata.cmd;
   buffer[2]=(writedata.addr&0xFF000000)>>24;
@@ -497,8 +516,8 @@ void HARDWARE::WriteDataToFPGA(FPGAWriteData writedata)
   {
     std::string afcc;
     afcc.clear();
-    afcc=code+std::to_string(DEBUG)+"FPGA send Big-Endian"+separator+std::to_string(sz); 
-    for (size_t j = 0; j < sz; ++j)
+    afcc=code+std::to_string(DEBUG)+"FPGA send Big-Endian"+separator+std::to_string(szwrite); 
+    for (size_t j = 0; j < szwrite; ++j)
     {
       afcc +=separator + std::to_string(buffer[j]);
     }
@@ -509,14 +528,14 @@ void HARDWARE::WriteDataToFPGA(FPGAWriteData writedata)
   }
   while (!uart_is_writable(FPGA_UART_ID)) {sleep_ms(100);} 
   {
-    uart_write_blocking(FPGA_UART_ID, buffer,sz);
+    uart_write_blocking(FPGA_UART_ID, buffer,szwrite);
     sleep_ms(30);
     //uart_write_blocking(uart_inst_t *uart, const uint8_t *src, size_t len)
   }
 
   while (!uart_is_readable(FPGA_UART_ID)) {sleep_ms(100);}
   {
-   uart_read_blocking(FPGA_UART_ID, outbuffer,szok);
+   uart_read_blocking(FPGA_UART_ID, outbuffer,szasc);
   }
 //  sleep_ms(200);
  
@@ -524,8 +543,8 @@ void HARDWARE::WriteDataToFPGA(FPGAWriteData writedata)
   {
     std::string afcc;
     afcc.clear();
-    afcc=code+std::to_string(DEBUG)+"FPGA get Big_endian"+separator+std::to_string(sz); 
-    for (size_t j = 0; j <szok; ++j)
+    afcc=code+std::to_string(DEBUG)+"FPGA get Big_endian"+separator+std::to_string(szasc); 
+    for (size_t j = 0; j <szasc; ++j)
     {
       afcc +=separator + std::to_string(outbuffer[j]);
     }
