@@ -22,6 +22,9 @@ extern uint8_t FPGACRCPAR;
 extern uint8_t FPGAREAD;
 extern uint8_t FPGAWRITE;
 extern uint8_t FPGAASC;
+extern uint32_t ZAdress;
+extern uint32_t AmplAdress;
+extern uint32_t IAdress;
 
 struct ConfigHardWare //BB and BBFPGA
 {

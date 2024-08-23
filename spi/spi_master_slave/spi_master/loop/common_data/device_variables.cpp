@@ -5,6 +5,9 @@ uint8_t FPGACRCPAR=0xBB;
 uint8_t   FPGAREAD=0x00;
 uint8_t  FPGAWRITE=0x01;
 uint8_t    FPGAASC=0x80;
+uint32_t ZAdress=0x08410004;
+uint32_t AmplAdress=0x08410008;
+uint32_t IAdress=0x0841000C;
 
 Spi                  spi;
 Decoder              decoder(4, 5, 6);  

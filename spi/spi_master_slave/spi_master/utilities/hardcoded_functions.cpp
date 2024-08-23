@@ -865,8 +865,33 @@ void HARDWARE::set_DACZ(int16_t value)
 
 uint16_t *HARDWARE::getValuesFromAdc()
 {
-  repeatTwoTimes();
-  return repeatTwoTimes();
+   if (HARDWAREVERSION!=BBFPGA)
+  { 
+   repeatTwoTimes();
+   return repeatTwoTimes();
+  }
+  else
+  {
+     FPGAReadData readdata;
+     readdata.adrr=ZAdress;
+     ZValue = (int16_t)ReadDataFromFPGA(readdata)
+      switch (vector[1]) //прибор
+   {
+        case SFM: //SFM=0
+                {
+                 readdata.adrr=AmplAdress;
+                 SignalValue = (int16_t)ReadDataFromFPGA(readdata);
+                 break;  
+                } 
+        case STM://STM=1
+     case SICMDC://SICMDC=3  
+                {
+                 readdata.adrr=IAdress;
+                 SignalValue = (int16_t)ReadDataFromFPGA(readdata);
+                 break;  
+                } 
+   }         
+  }
 }
 
 uint16_t *HARDWARE::repeatTwoTimes()
