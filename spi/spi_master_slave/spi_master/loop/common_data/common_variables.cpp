@@ -39,7 +39,7 @@ bool    flgParamsUpdated=false;
 bool    flgСritical_section=true;
 uint8_t flgDebugLevel = 3;      // уровень отладки
 bool    flgUseUART = false;     // использовать UART для передачи данных
-ADCData adcdata;
+
 //данные для симуляции 
 int16_t ZValue      = maxint16_t;
 int16_t SignalValue = maxint16_t;

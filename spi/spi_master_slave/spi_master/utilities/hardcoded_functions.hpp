@@ -133,10 +133,13 @@ public:
 
  void move_scannerY(int y);
 
- uint16_t *getValuesFromAdc();  // чтение АЦП
- 
- uint32_t  ReadDataFromFPGA(FPGAReadData readdata);
+ //uint16_t *getValuesFromAdc();  // чтение АЦП
+ void      getValuesFromAdc();  // чтение АЦП
 
+ uint32_t  ReadDataFromFPGA(FPGAReadData readdata);
+ 
+ void ReadDataFromFPGAArray();
+ 
  void retract();       // втянуть сканер
 
  void retract(int16_t HeightJump); //втянуть на HeightJump

@@ -419,6 +419,47 @@ void HARDWARE::set_BiasV(int32_t BiasV)
  }
  */
 }   
+void HARDWARE::ReadDataFromFPGAArray()
+{
+  uint8_t szread=4;
+  uint8_t szasc=40;  //array adc
+  uint8_t outbuffer[szread];
+  uint8_t inbuffer[szasc];
+  FPGAReadDataArray readdata;
+  outbuffer[0]=readdata.delimbegin;
+  outbuffer[1]=readdata.cmd;
+  outbuffer[2]=readdata.crcpar;
+  outbuffer[3]=readdata.delimend;
+  if (flgDebug)  
+  {
+    std::string afcc;
+    afcc.clear();
+    afcc=code+std::to_string(DEBUG); 
+    for (size_t j = 0; j < szread; ++j)
+    {
+      afcc +=separator + std::to_string(outbuffer[j]);
+    }
+    afcc +=endln;
+    std::cout << afcc;
+    sleep_ms(200);
+    afcc.clear();
+  }
+  while (!uart_is_writable(FPGA_UART_ID)){sleep_ms(30);}  
+  {
+    uart_write_blocking(FPGA_UART_ID, outbuffer,szread);
+    sleep_ms(30);
+  }
+  while (!uart_is_readable(FPGA_UART_ID)){sleep_ms(30);}  
+  {
+    uart_read_blocking(FPGA_UART_ID, inbuffer,szasc);   
+  }
+  uint8_t k=0;
+  for (size_t i = 0; i < 8; i++)
+  {
+   spiBuf[i]=(inbuffer[k+1]<<24)+(inbuffer[k+2]<<16)+(inbuffer[k+3]<<8)+inbuffer[k+4];
+   k+=4;
+  }
+}
 uint32_t HARDWARE::ReadDataFromFPGA(FPGAReadData readdata)
 {
   uint8_t szread=8;
@@ -863,34 +904,18 @@ void HARDWARE::set_DACZ(int16_t value)
 }
 
 
-uint16_t *HARDWARE::getValuesFromAdc()
+//uint16_t *getValuesFromAdc();  // чтение АЦП
+void HARDWARE::getValuesFromAdc()  // чтение АЦП
 {
-   if (HARDWAREVERSION!=BBFPGA)
+  if (HARDWAREVERSION!=BBFPGA)
   { 
    repeatTwoTimes();
-   return repeatTwoTimes();
+  // return repeatTwoTimes();
+   repeatTwoTimes();
   }
   else
   {
-     FPGAReadData readdata;
-     readdata.adrr=ZAdress;
-     ZValue = (int16_t)ReadDataFromFPGA(readdata)
-      switch (vector[1]) //прибор
-   {
-        case SFM: //SFM=0
-                {
-                 readdata.adrr=AmplAdress;
-                 SignalValue = (int16_t)ReadDataFromFPGA(readdata);
-                 break;  
-                } 
-        case STM://STM=1
-     case SICMDC://SICMDC=3  
-                {
-                 readdata.adrr=IAdress;
-                 SignalValue = (int16_t)ReadDataFromFPGA(readdata);
-                 break;  
-                } 
-   }         
+     ReadDataFromFPGAArray();         
   }
 }
 
