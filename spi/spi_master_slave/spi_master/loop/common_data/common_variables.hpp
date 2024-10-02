@@ -30,12 +30,12 @@
 #define SET_SETPOINT             20  //DAC8563_1
 #define SET_PID_GAIN             21
 #define SET_AMPLMOD_GAIN         22
-#define InitDAC_SET_POINT        23  //DAC8563_1 
-#define InitDAC_BIAS             41
+//#define InitDAC_SET_POINT        23  //DAC8563_1 
+//#define InitDAC_BIAS             41
 #define ADC_GET_VALUECmd         24  // don't use
 #define SetDACZeroCmd            25
-#define InitDAC_Z                26  //DAC8563_3
-#define InitDAC_XY               27  //DAC8563_2
+//#define InitDAC_Z                26  //DAC8563_3
+//#define InitDAC_XY               27  //DAC8563_2
 #define SET_Z                    28  //DAC8563_3
 #define SET_XY                   29  //DAC8563_SET_VOLTAGE_2
 #define FREQ_SET                 30  //AD9833
@@ -45,7 +45,7 @@
 #define SetUseCritialSectAlgCode 34
 #define RetractAlgCode           35
 #define ADC_RESET                36
-#define INITCOMMMUTATION         37
+//#define INITCOMMMUTATION         37
 #define USEPLDCmd                38  //использовать ПЛИС
 #define SET_PID_GAINFPGA         39
 #define RESONANCE                40  //AD9833 

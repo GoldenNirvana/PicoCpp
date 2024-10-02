@@ -656,6 +656,7 @@ void HARDWARE::WriteDataToFPGA(FPGAWriteData writedata)
     afcc.clear();
   }
 }
+
 void HARDWARE::set_SetPoint( int32_t SetPoint)
 {//  code  22, 2, 8, 0, 1, 0, value
   if (!flgVirtual)

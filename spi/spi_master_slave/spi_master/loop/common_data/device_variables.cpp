@@ -13,8 +13,61 @@ uint32_t IAdress=0x0841000C;
 
 Spi                  spi;
 Decoder              decoder(4, 5, 6);  
-ConfigHardWare       confighardwarev0({2,2,1,1,3,2,4,1,16,7,10,17,PICO_DEFAULT_LED_PIN,23,11,12,13,14,15,26,27});
-ConfigHardWareNew    confighardwarev1({2,2,1,1,3,2,4,1,16,7,10,17,PICO_DEFAULT_LED_PIN,23,13,14,15,26,27,28,11,12,8,13});
+ConfigHardWare       confighardwarev0
+                      (
+                       {                        
+                        2, //DACSetPointPort
+                        1, //DACSetPointMode
+                        2, //DACBiasVPort
+                        1, //DACBiasVMode
+                        3, //DACXYPort
+                        2, //DACXYMode
+                        4, //DACZport
+                        1, //DACZMode
+                        16,//BUSYPort
+                        7, //CONV
+                        10,//DEC
+                        17,//ResetPort
+                        PICO_DEFAULT_LED_PIN,//LEDPort
+                        23,//RDBPort
+                        11,//IO1_0
+                        12,//IO1_1
+                        13,//GainPID0
+                        14,//GainPID1
+                        15,//GainPID2
+                        26,//FreezePort  заморозить сканнер=1; разморозить =0
+                        27 //ProtractPor  втянуть    сканнер=1; вытянуть    =0
+                       }
+                      );
+ConfigHardWareNew    confighardwarev1
+                      (
+                       {
+                        2,//SetPointPort 
+                        1,//SetPointMode
+                        2,//BiasVPort
+                        1,//BiasVMode
+                        3,//DACXYPort
+                        2,//DACXYMode
+                        4,//DACZPort
+                        1,//DACZMode
+                        16,//BUSYPort
+                        7, //CONV
+                        10,//DEC
+                        17,// ResetPort
+                        PICO_DEFAULT_LED_PIN,//LEDPort
+                        23,//RDBPort
+                        13,//GainPID0
+                        14,//GainPID1
+                        15,//GainPID2
+                        26,//FreezePort   заморозить сканнер=1; разморозить =0
+                        27,//ProtractPort втянуть    сканнер=1; вытянуть    =0
+                        28,//ModulateUPort вкл=1; выкд=0 модуляцию U  
+                        11,//SD_1Port Порты  настройки СД I_STM=1; 0 =др
+                        12,//SD_2Port порты  настройки СД Cantilever=0; 1-Piezo
+                        8, //SignLoopPort знак ПИД // 0=+ ; 1=-
+                        13 //Interator_InPort выбор вход сигнала на ПИД из1-SD; 0=ПТН(I) 
+                        }
+                       );
 ConfigLinearDrive    configlineardrivev0({18,19,20,21,22,28});
 ConfigLinearDriveNew configlineardrivev1({18,19,20,21,22});
 
