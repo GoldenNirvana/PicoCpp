@@ -294,6 +294,7 @@ case SET_AMPLMOD_GAIN: // усиление раскачка зонда
                 scanner->hardware->set_GainApmlMod((uint8_t)vector[1]);
                 break;
               }  
+/*
 case INITCOMMMUTATION:
               {
                ALGCODE=ALGNONE;
@@ -301,6 +302,7 @@ case INITCOMMMUTATION:
                          (uint8_t)vector[2],(uint8_t)vector[3],(uint8_t)vector[4],(uint8_t)vector[5]);
                 break;
               }  
+              
 case InitDAC_SET_POINT:
               {
                 ALGCODE=ALGNONE;
@@ -331,6 +333,7 @@ case InitDAC_XY:
                 scanner->hardware->init_DACXY(vector[1]);
                 break; 
               } 
+*/              
 case SetDACZeroCmd:
               {
                 ALGCODE=ALGNONE;

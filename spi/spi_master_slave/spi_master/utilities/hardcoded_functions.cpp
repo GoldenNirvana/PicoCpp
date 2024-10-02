@@ -180,7 +180,6 @@ void HARDWARE::setDefaultSettings(ConfigHardWare  confighardwarev)  // BB,BBFPGA
     gpio_set_function(FPGAUART_RX_PIN, GPIO_FUNC_UART);  
     // Enable UART
     uart_set_hw_flow(FPGA_UART_ID, false, false);
-
     uart_set_format(FPGA_UART_ID, 8, 1, UART_PARITY_NONE);
     uart_set_fifo_enabled(FPGA_UART_ID,true);// true);  
    // uart_set_hw_flow(FPGA_UART_ID,true, true);
@@ -209,11 +208,11 @@ void HARDWARE::setDefaultSettings(ConfigHardWare  confighardwarev)  // BB,BBFPGA
    init_DACSetPoint(confighardwarev.DACSetPointPort);   //инициирование ЦАП1  SetPoint
    init_DACBiasV(confighardwarev.DACBiasVPort);   //инициирование ЦАП1  BIAS
    init_DACXY(confighardwarev.DACXYPort);    //инициирование ЦАП2  DACXY
-    uint32_t gain=7; 
-    set_GainPID(gain); // not virtual; not debug!
-    retract();         //втянуть    
-    init_DACZ(confighardwarev0.DACZPort);      //инициирование ЦАП3  DACZ
-    set_DACZ(0); 
+   uint32_t gain=7; 
+   set_GainPID(gain); // not virtual; not debug!
+   retract();         //втянуть    
+   init_DACZ(confighardwarev0.DACZPort);      //инициирование ЦАП3  DACZ
+   set_DACZ(0); 
 
 //************************************************************* 
  // init_commutation(sensor,signloop,signal_to_loop,usenotmod_I,usemod_U);
@@ -252,7 +251,7 @@ void HARDWARE::setDefaultSettings(ConfigHardWareNew  confighardwarev) //WB
   gpio_pull_down(resetport->getPort());
   ledPort->enable();
   dark();
-  init_commutation(0 , 1 , 1 , 1, 0);   //afm
+  init_commutation(0 , 1 , 1 , 1, 0);   //default afm
     //init_commutation(1 , 1 , 1 , 0, 0);  //afm  240624
   init_DACSetPoint(confighardwarev.DACSetPointPort);   //инициирование ЦАП1  SetPoint
   init_DACBiasV(confighardwarev.DACBiasVPort);   //инициирование ЦАП1  BIAS
