@@ -29,7 +29,8 @@ HARDWARE::HARDWARE(ConfigHardWare confighardware)   // BB  mother BB+FPGA
    freezeport=new OutputPort(_confighardware.FreezePort);//заморозить/разморозить ПИД 
  protractport=new OutputPort(_confighardware.ProtractPort);//вытянуть сканнер /втянуть сканнер  
  */
-      dacbvspt=new DAC8563(confighardware.DACBiasVSetPointMode); //set mode DAC BIAS,SetPoint
+       dacspt=new DAC8563(confighardware.DACSetPointMode); //set mode DAC BIAS,SetPoint
+        dacbv=new DAC8563(confighardware.DACBiasVMode); //set mode DAC BIAS,SetPoint
         dacxy=new DAC8563(confighardware.DACXYMode);   //set mode DAC X,Y
          dacz=new DAC8563(confighardware.DACZMode);    //set mode DAC Z  
      busyport=new InputPort(confighardware.BUSYPort);
@@ -50,7 +51,8 @@ HARDWARE::HARDWARE(ConfigHardWare confighardware)   // BB  mother BB+FPGA
 HARDWARE::HARDWARE(ConfigHardWareNew confighardware) // WB
 {
   //    _confighardware=confighardware;
-      dacbvspt=new DAC8563(confighardware.DACBiasVSetPointMode); //set mode DAC BIAS,SetPoint
+       dacspt=new DAC8563(confighardware.DACSetPointMode); //set mode DAC BIAS,SetPoint
+        dacbv=new DAC8563(confighardware.DACBiasVMode); //set mode DAC BIAS,SetPoint
         dacxy=new DAC8563(confighardware.DACXYMode);   //set mode DAC X,Y
          dacz=new DAC8563(confighardware.DACZMode);    //set mode DAC Z  
      busyport=new InputPort(confighardware.BUSYPort);
@@ -101,7 +103,8 @@ modulateuport=new OutputPort(_confighardware.ModulateUPort);   // вкл=1; вы
 
 HARDWARE::~HARDWARE()
 {
-    delete(dacbvspt);
+    delete(dacspt);
+    delete(dacbv);
     delete(dacxy);
     delete(dacz);
     delete(busyport);
@@ -160,7 +163,7 @@ void HARDWARE::reset_ADCPort()
   sleep_us(10);
   resetport->disable();
 }
-void HARDWARE::setDefaultSettings( uint8_t dacBiasVSetPointPort, uint8_t  dacXYPort, uint8_t dacZPort)  
+void HARDWARE::setDefaultSettings(ConfigHardWare  confighardwarev)  // BB,BBFPGA
 {
  // BASIC SETTINGS
  // uart_init(uart1, 115200); //????
@@ -203,22 +206,14 @@ void HARDWARE::setDefaultSettings( uint8_t dacBiasVSetPointPort, uint8_t  dacXYP
   else
   { } //установить минимальное усиление 240209 
   */
-  if (HARDWAREVERSION==WB) //Mother board(WB) WBFPGA
-  {  
-     init_commutation(0 , 1 , 1 , 1, 0);   //afm
-    //init_commutation(1 , 1 , 1 , 0, 0);  //afm  240624
-  } 
-  init_DACSetPointBiasV(dacBiasVSetPointPort);   //инициирование ЦАП1  SetPoint,BIAS
-  init_DACXY(dacXYPort);    //инициирование ЦАП2  DACXY
- 
-  uint32_t gain=7; 
-  if (HARDWAREVERSION!=BBFPGA)
-  {
+   init_DACSetPoint(confighardwarev.DACSetPointPort);   //инициирование ЦАП1  SetPoint
+   init_DACBiasV(confighardwarev.DACBiasVPort);   //инициирование ЦАП1  BIAS
+   init_DACXY(confighardwarev.DACXYPort);    //инициирование ЦАП2  DACXY
+    uint32_t gain=7; 
     set_GainPID(gain); // not virtual; not debug!
     retract();         //втянуть    
-    init_DACZ(dacZPort);      //инициирование ЦАП3  DACZ
+    init_DACZ(confighardwarev0.DACZPort);      //инициирование ЦАП3  DACZ
     set_DACZ(0); 
-  }
 
 //************************************************************* 
  // init_commutation(sensor,signloop,signal_to_loop,usenotmod_I,usemod_U);
@@ -234,7 +229,54 @@ void HARDWARE::setDefaultSettings( uint8_t dacBiasVSetPointPort, uint8_t  dacXYP
 //  init_DACZ(dacZPort);      //инициирование ЦАП3  DACZ
   
 }
+void HARDWARE::setDefaultSettings(ConfigHardWareNew  confighardwarev) //WB  
+{
+ // BASIC SETTINGS
+ // uart_init(uart1, 115200); //????
+ // uart_init(USB_UART_ID, 115200); //????
+ // gpio_set_function(USBUART_TX_PIN, GPIO_FUNC_UART);
+ // gpio_set_function(USBUART_RX_PIN, GPIO_FUNC_UART); 
+ // gpio_pull_down(resetport->getPort());
 
+  gpio_pull_down(resetport->getPort());
+// #warning should be undeleted
+// RX_core rxCore;
+// fixme mb should add & before isr
+  gpio_set_irq_enabled_with_callback(busyport->getPort(), GPIO_IRQ_EDGE_FALL, true, RX_core::comReceiveISR);
+
+ // multicore_launch_core1(RX_core::launchOnCore1); // 240508 ??
+
+  dec->enable();
+  conv->enable();
+  resetport->disable();
+  gpio_pull_down(resetport->getPort());
+  ledPort->enable();
+  dark();
+  init_commutation(0 , 1 , 1 , 1, 0);   //afm
+    //init_commutation(1 , 1 , 1 , 0, 0);  //afm  240624
+  init_DACSetPoint(confighardwarev.DACSetPointPort);   //инициирование ЦАП1  SetPoint
+  init_DACBiasV(confighardwarev.DACBiasVPort);   //инициирование ЦАП1  BIAS
+  init_DACXY(confighardwarev.DACXYPort);    //инициирование ЦАП2  DACXY
+  uint32_t gain=7; 
+  set_GainPID(gain); // not virtual; not debug!
+  retract();         //втянуть    
+  init_DACZ(confighardwarev0.DACZPort);      //инициирование ЦАП3  DACZ
+  set_DACZ(0); 
+
+//************************************************************* 
+ // init_commutation(sensor,signloop,signal_to_loop,usenotmod_I,usemod_U);
+ /*
+    default afm probe ?????
+    sensor=0           // probe=0;  cantilever =1
+    signLoop:=1;       // 1= -1 ; 0 = +1
+    signal_to_loop:=1; // sd->to loop =1 Ampl  
+    usemod_U:=0;       // use mod U; not=0
+    usenotmod_I:=1;       // use mod I not  =1 ; 
+  */  
+
+//  init_DACZ(dacZPort);      //инициирование ЦАП3  DACZ
+  
+}
 void HARDWARE::GetSOFTHARDWAREVersion()
 {
   afc.clear();
@@ -350,9 +392,9 @@ void HARDWARE::init_SPI( uint8_t port ,uint8_t v2 ,uint8_t v3, uint8_t v4 )
  Spi::setProperties(v2, v3, v4);
 }
 
-void HARDWARE::init_DACSetPointBiasV(uint8_t spiport) //  4 для подставки
+void HARDWARE::init_DACSetPoint(uint8_t spiport) //  4 для подставки
 {
-  dacbvspt->initialize(spiport); //code 23
+  dacspt->initialize(spiport); //code 23
 /*
   afc.clear();
   afc = code+std::to_string(DEBUG)+ "debug Init DACSPB " + std::to_string(port);
@@ -362,7 +404,18 @@ void HARDWARE::init_DACSetPointBiasV(uint8_t spiport) //  4 для подста�
   sleep_ms(100);
  */
 }
-
+void HARDWARE::init_DACBiasV(uint8_t spiport) //  4 для подставки
+{
+  dacbv->initialize(spiport); //code 23
+/*
+  afc.clear();
+  afc = code+std::to_string(DEBUG)+ "debug Init DACSPB " + std::to_string(port);
+  afc += +"\n";
+  std::cout << afc;
+  afc.clear();
+  sleep_ms(100);
+ */
+}
 void HARDWARE::init_DACXY(uint8_t spiport) //spi port
 {
   dacxy->initialize(spiport); //code 27
@@ -405,8 +458,18 @@ void HARDWARE::set_BiasV(int32_t BiasV)
 //   code  22 , 2, 8, 0, 1, 1, value 
   if (!flgVirtual)
   { 
-     dacbvspt->writeB(BiasV+ShiftDac);
+     dacbv->writeB(BiasV+ShiftDac);
   }	
+   switch (HARDWAREVERSION)
+      {
+      case WB:
+         dacbv->writeA(BiasV+ShiftDac);
+        break;
+      case BB:
+      case BBFPGA:
+         dacbv->writeB(BiasV+ShiftDac);
+        break;       
+      }
   /*
  if  (flgDebug)
  {
@@ -535,7 +598,6 @@ void HARDWARE::WriteDataToFPGA(FPGAWriteData writedata)
  */           
   size_t szwrite;
   size_t szasc=8; //for ASC FPGA
-  size_t szread=8;
   szwrite=sizeof(writedata);
   uint8_t buffer[szwrite];
   uint8_t outbuffer[szasc];
@@ -599,17 +661,21 @@ void HARDWARE::set_SetPoint( int32_t SetPoint)
 {//  code  22, 2, 8, 0, 1, 0, value
   if (!flgVirtual)
   {
-    if (HARDWAREVERSION!=BBFPGA)
-     { 
-       dacbvspt->writeA(SetPoint+ShiftDac);
-     }
-     else 
-     {
-      FPGAWriteData writedata;
-      writedata.addr=arrModule_0.wbSetpoint;
-      writedata.cmd=0x01;
-      writedata.data=SetPointScale*(uint32_t)(SetPoint+ShiftDac);  
-      WriteDataToFPGA(writedata);
+      switch (HARDWAREVERSION)
+      {
+      case WB:
+        dacspt->writeB(SetPoint+ShiftDac);
+        break;
+      case BB:
+        dacspt->writeA(SetPoint+ShiftDac);
+        break;       
+      case BBFPGA:
+        FPGAWriteData writedata;
+        writedata.addr=arrModule_0.wbSetpoint;
+        writedata.cmd=0x01;
+        writedata.data=SetPointScale*(uint32_t)(SetPoint+ShiftDac);  
+        WriteDataToFPGA(writedata);
+        break;
      }
   } 
   else
@@ -915,7 +981,7 @@ void HARDWARE::getValuesFromAdc()  // чтение АЦП
   }
   else
   {
-     ReadDataFromFPGAArray();         
+   ReadDataFromFPGAArray();         
   }
 }
 

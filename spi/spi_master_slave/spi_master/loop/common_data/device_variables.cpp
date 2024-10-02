@@ -1,7 +1,7 @@
 #include "device_variables.hpp"
 
 //ADCData adcdata;
-uint8_t  FPGADELIM=0x0A;
+uint8_t  FPGADELIM=0x0A; //0xAA?
 uint8_t FPGACRCPAR=0xBB;
 uint8_t   FPGAREAD=0x00;
 uint8_t  FPGAWRITE=0x01;
@@ -13,8 +13,8 @@ uint32_t IAdress=0x0841000C;
 
 Spi                  spi;
 Decoder              decoder(4, 5, 6);  
-ConfigHardWare       confighardwarev0({2,1,3,2,4,1,16,7,10,17,PICO_DEFAULT_LED_PIN,23,11,12,13,14,15,26,27});
-ConfigHardWareNew    confighardwarev1({2,1,3,2,4,1,16,7,10,17,PICO_DEFAULT_LED_PIN,23,13,14,15,26,27,28,11,12,8,13});
+ConfigHardWare       confighardwarev0({2,2,1,1,3,2,4,1,16,7,10,17,PICO_DEFAULT_LED_PIN,23,11,12,13,14,15,26,27});
+ConfigHardWareNew    confighardwarev1({2,2,1,1,3,2,4,1,16,7,10,17,PICO_DEFAULT_LED_PIN,23,13,14,15,26,27,28,11,12,8,13});
 ConfigLinearDrive    configlineardrivev0({18,19,20,21,22,28});
 ConfigLinearDriveNew configlineardrivev1({18,19,20,21,22});
 

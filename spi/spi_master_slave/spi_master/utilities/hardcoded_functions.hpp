@@ -19,7 +19,8 @@ class HARDWARE
 {
 // WARNING HARDCODED FUNCTIONS
 private:
- DAC8563    *dacbvspt; // DAC BIAS,SetPoint
+ DAC8563    *dacspt; // DAC BIAS,SetPoint
+ DAC8563    *dacbv; // DAC BIAS,SetPoint
  DAC8563    *dacxy;   // DAC X,Y
  DAC8563    *dacz;    // DAC Z
  InputPort  *busyport;     // FIXME TEMP!!!
@@ -56,9 +57,9 @@ private:
 
  void activateBlue();
 
- void  WriteDataToFPGA(FPGAWriteData writedata);
+ void WriteDataToFPGA(FPGAWriteData writedata);
 
- void  AscResult(FPGAAscData ascdata, uint8_t* dst, size_t len);
+ void AscResult(FPGAAscData ascdata, uint8_t* dst, size_t len);
 
 public:
    LinearDriverBase  *linearDriver;
@@ -81,7 +82,9 @@ public:
 
 [[noreturn]] void activateError();
  //инициирование ЦАП1  SetPoint,BIAS
- void setDefaultSettings( uint8_t dacBiasVSetPointPort, uint8_t  dacXYPort, uint8_t dacZPort);   
+ void setDefaultSettings( ConfigHardWare  confighardware);      //BB,BBFPGA
+
+ void setDefaultSettings( ConfigHardWareNew  confighardware);   //WB
  
  void GetSOFTHARDWAREVersion();
 
@@ -102,6 +105,10 @@ public:
  void init_SPI(uint8_t port ,uint8_t v2 ,uint8_t v3, uint8_t v4); //инициирование SPI
 
  void init_DACSetPointBiasV(uint8_t spiport);  //инициирование ЦАП1  SetPoint,BIASV
+ 
+ void init_DACSetPoint(uint8_t spiport);  
+
+ void init_DACBiasV(uint8_t spiport);  
 
  void init_DACXY(uint8_t spiport);   //инициирование ЦАП2  XY
 

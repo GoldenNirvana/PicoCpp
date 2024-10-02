@@ -35,8 +35,10 @@ struct ADCData
 extern ADCData adcdata;
 struct ConfigHardWare //BB and BBFPGA
 {
-  uint8_t DACBiasVSetPointPort;  //2 DAC8563_1  BIAS SetPoint
-  uint8_t DACBiasVSetPointMode;  //1 DAC8563_1  BIAS SetPoint
+  uint8_t DACSetPointPort;  //2 DAC8563_1  BIAS SetPoint
+  uint8_t DACBiasVPort;  //2 DAC8563_1  BIAS SetPoint
+  uint8_t DACSetPointMode;  //1 DAC8563_1  BIAS SetPoint
+  uint8_t DACBiasVMode;  //1 DAC8563_1  BIAS SetPoint
   uint8_t DACXYPort;    //3 DAC8563_2  XY
   uint8_t DACXYMode;    //2 DAC8563_2  XY
   uint8_t DACZPort;     //4 dac8563_3  Z
@@ -104,8 +106,10 @@ struct FPGAReadDataArray
  };
 struct ConfigHardWareNew  //WB
 {
-  uint8_t DACBiasVSetPointPort;  //2 DAC8563_1  BIAS SetPoint
-  uint8_t DACBiasVSetPointMode;  //1 DAC8563_1  BIAS SetPoint
+  uint8_t DACSetPointPort;    //2 DAC8563_1  BIAS SetPoint
+  uint8_t DACBiasVPort;    //2
+  uint8_t DACBiasVMode;    //1 DAC8563_1  BIAS SetPoint
+  uint8_t DACSetPointMode; //1 DAC8563_1  BIAS SetPoint
   uint8_t DACXYPort;    //3 DAC8563_2  XY
   uint8_t DACXYMode;    //2 DAC8563_2  XY
   uint8_t DACZPort;     //4 dac8563_3  Z

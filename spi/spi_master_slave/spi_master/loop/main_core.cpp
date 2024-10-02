@@ -133,12 +133,12 @@ case ChangeHardWare:
                   {       
                     case 0:{
                              scanner=new  Scanner(confighardwarev0); 
-                             scanner->hardware->setDefaultSettings(confighardwarev0.DACBiasVSetPointPort,confighardwarev0.DACXYPort,confighardwarev0.DACZPort);                 
+                             scanner->hardware->setDefaultSettings(confighardwarev0);                 
                              break; 
                            }
                     case 1:{
                              scanner=new  Scanner(confighardwarev1);
-                             scanner->hardware->setDefaultSettings(confighardwarev1.DACBiasVSetPointPort,confighardwarev1.DACXYPort,confighardwarev1.DACZPort);
+                             scanner->hardware->setDefaultSettings(confighardwarev1);
                              break;
                            }
                   } 
@@ -301,12 +301,24 @@ case INITCOMMMUTATION:
                          (uint8_t)vector[2],(uint8_t)vector[3],(uint8_t)vector[4],(uint8_t)vector[5]);
                 break;
               }  
-case InitDAC_BIAS_SET_POINT:
+case InitDAC_SET_POINT:
               {
                 ALGCODE=ALGNONE;
-                if (!flgVirtual)   scanner->hardware->init_DACSetPointBiasV(vector[1]);       
+                if (!flgVirtual) 
+                {
+                   scanner->hardware->init_DACSetPoint(vector[1]);            
+                }
                 break;         
-              }   
+              }
+case InitDAC_BIAS:
+              {
+                ALGCODE=ALGNONE;
+                if (!flgVirtual) 
+                {      
+                   scanner->hardware->init_DACBiasV(vector[1]);       
+                }
+                break;         
+              }                 
 case InitDAC_Z:
               {
                 ALGCODE=ALGNONE;
@@ -408,20 +420,20 @@ MainCore::MainCore()
     case BB:
            {
             scanner=new  Scanner(confighardwarev0); 
-            scanner->hardware->setDefaultSettings(confighardwarev0.DACBiasVSetPointPort,confighardwarev0.DACXYPort,confighardwarev0.DACZPort);                 
+            scanner->hardware->setDefaultSettings(confighardwarev0);                 
             break; 
            }
     case WB:
           {
             scanner=new  Scanner(confighardwarev1);
-            scanner->hardware->setDefaultSettings(confighardwarev1.DACBiasVSetPointPort,confighardwarev1.DACXYPort,confighardwarev1.DACZPort);
+            scanner->hardware->setDefaultSettings(confighardwarev1);
             break; 
 
           }
     case BBFPGA:
           { //BB+ WBFPGA
             scanner=new  Scanner(confighardwarev0); 
-            scanner->hardware->setDefaultSettings(confighardwarev0.DACBiasVSetPointPort,confighardwarev0.DACXYPort,confighardwarev0.DACZPort);                 
+            scanner->hardware->setDefaultSettings(confighardwarev0);                 
             break; 
           }
    } 
