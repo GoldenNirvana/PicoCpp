@@ -69,7 +69,8 @@ ConfigHardWareNew    confighardwarev1
                         }
                        );
 ConfigLinearDrive    configlineardrivev0({18,19,20,21,22,28});
-ConfigLinearDriveNew configlineardrivev1({18,19,20,21,22});
+//ConfigLinearDriveNew configlineardrivev1({18,19,20,21,22}); //2241003
+ConfigLinearDriveNew configlineardrivev1({18,19,22,21,20});
 
 FPGAAdress           arrModule_0(
                       {
