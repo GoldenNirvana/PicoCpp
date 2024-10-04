@@ -2013,6 +2013,7 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
   const int touch = 2;
   int16_t ln;  
   bool ldir;
+  bool APPROACHDIR;
   int16_t freq, duty;
   uint16_t flgDev;
  // SET VALUE FROM RX_CORE
@@ -2021,10 +2022,11 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
               duty=vector[3]; 
                 ln=abs((int16_t)vector[4]); //  int nsteps
               ldir=(bool)vector[5]; //  int dir
-        GATE_Z_MAX=(uint16_t)vector[6]; //  int Z gate max
-        GATE_Z_MIN=(uint16_t)vector[7]; //  int Z gate min
-            flgDev=(uint16_t)vector[8]; //  0= SFM, 1=STM ;SICMAC-2; SICMDC-3;  device type
-     flgSICMPrePos=(uint16_t)vector[9];
+       APPROACHDIR=(bool)vector[6]
+        GATE_Z_MAX=(uint16_t)vector[7]; //  int Z gate max
+        GATE_Z_MIN=(uint16_t)vector[8]; //  int Z gate min
+            flgDev=(uint16_t)vector[9]; //  0= SFM, 1=STM ;SICMAC-2; SICMDC-3;  device type
+     flgSICMPrePos=(uint16_t)vector[10];
    //   pos_data[7] / //  0= SFM, 1=STM ;SICMAC-2; SICMDC-3;  device type
   //    pos_data[8]/ //  Voltage
    if (flgDebug)
@@ -2060,16 +2062,17 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
       if (CONFIG_UPDATE)
       {
         CONFIG_UPDATE = false;
-        ln = vupdateparams[1]; // with sign
-        GATE_Z_MAX = (uint16_t)vupdateparams[2];
-        GATE_Z_MIN = (uint16_t)vupdateparams[3];
-        ldir = 0;
-        if (ln > 0) ldir = 1;
+         ln  = vupdateparams[1]; // with sign
+        ldir = vupdateparams[2]; // with sign
+        GATE_Z_MAX = (uint16_t)vupdateparams[3];
+        GATE_Z_MIN = (uint16_t)vupdateparams[4];
+     //   ldir = 0;
+     //   if (ln > 0) ldir = 1;
         ln = abs(ln);
         sleep_ms(100);
         if (flgDebug)
         {  
-         for (int j =0; j <= 3; ++j)
+         for (int j =0; j <= 4; ++j)
          {
           debugdata.emplace_back(vupdateparams[j]);
          }
@@ -2098,10 +2101,9 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
       { 
         CONFIG_UPDATE = false;
                    ln = (int16_t)vector[1];
-           GATE_Z_MAX = (uint16_t)vector[2];
-           GATE_Z_MIN = (uint16_t)vector[3];
-        ldir = 0;
-        if (ln > 0) ldir = 1;
+                 ldir = (int16_t)vector[2]; 
+           GATE_Z_MAX = (uint16_t)vector[3];
+           GATE_Z_MIN = (uint16_t)vector[4];
         sleep_ms(100);
         if (flgDebug)
         {  
@@ -2136,7 +2138,7 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
         // check if z > <
        if (flgSICMPrePos!=1)
        {
-        if (ldir == 1)
+        if (ldir == APPROACHDIR)
         {
           if (ZValue < GATE_Z_MIN)
           {
@@ -2162,7 +2164,7 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
       } 
       else //virtual
       {
-        if (ldir == 1) { ZValue -= ln; }
+        if (ldir == APPROACHDIR) { ZValue -= ln; }
         else
         {
           if (ZValue < (ZMaxValue - ln)) { ZValue += ln;       }
@@ -2563,19 +2565,22 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
   uint16_t INTDELAY, SCANNERDECAY;
   int16_t  flgDev;
   int16_t  Bias;
-
+  bool     DIR;
+  bool     APPROACHDIR ;
   // SET VALUE FROM RX_CORE
   SET_POINT      =(int16_t) vector[1]; // set point
   GATE_Z_MAX     =(int16_t) vector[2]; // max
   GATE_Z_MIN     =(int16_t) vector[3]; // min
   NSTEPS         =(int16_t) vector[4]; // steps 
-  INTDELAY       =(uint16_t)vector[5]; // initdelay
-  GAIN           =(uint16_t)vector[6]; // gain  //240320
-  SCANNERDECAY   =(uint16_t)vector[7]; // scannerDelay 
-  freq           =(int16_t) vector[8]; // freq
-  duty           =(int16_t) vector[9]; // scv
-  flgDev         =(int16_t) vector[10];//  0= SFM, 1=STM ;SICMAC-2; SICMDC-3;  device type
-  Bias           =(int16_t) vector[11];// Voltage need for STM,SICM
+  DIR            =(bool)    vector[5]; //  int dir
+  APPROACHDIR    =(bool)    vector[6]; //  APPRoach
+  INTDELAY       =(uint16_t)vector[7]; // initdelay
+  GAIN           =(uint16_t)vector[8]; // gain  //240320
+  SCANNERDECAY   =(uint16_t)vector[9]; // scannerDelay 
+  freq           =(int16_t) vector[10]; // freq
+  duty           =(int16_t) vector[11]; // scv
+  flgDev         =(int16_t) vector[12];//  0= SFM, 1=STM ;SICMAC-2; SICMDC-3;  device type
+  Bias           =(int16_t) vector[13];// Voltage need for STM,SICM
  //need to add channel Bias ????
  //need to add channel SetPoint ????
  // ZValue=-1000;
@@ -2637,9 +2642,10 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
       GATE_Z_MAX   = vupdateparams[2];
       GATE_Z_MIN   = vupdateparams[3];
       NSTEPS       = vupdateparams[4];
-      INTDELAY     = vupdateparams[5];
-      GAIN         =(uint16_t) vupdateparams[6];
-      SCANNERDECAY = vupdateparams[7];
+      DIR          =(bool)vupdateparams[5]; //  int dir
+      INTDELAY     = vupdateparams[6];
+      GAIN         =(uint16_t) vupdateparams[7];
+      SCANNERDECAY = vupdateparams[8];
      
      // if (flgDev!=SFM) set_Bias(1,Bias);  240211
       hardware->set_SetPoint(SET_POINT); 
@@ -2683,10 +2689,11 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
     }
     else
     {
-      if (NSTEPS >= 0)
+     // if (NSTEPS >= 0)
+      if(APPROACHDIR==DIR)
       {
-        ZValue -=  500;
-        SignalValue-=500;
+            ZValue -= 500;
+        SignalValue-= 500;
       }
       else
       {
@@ -2699,7 +2706,8 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
       buf_status[2] = SignalValue;
     }
 
-    if (NSTEPS >= 0) // test for gate approaching
+   // if (NSTEPS >= 0) // test for gate approaching
+    if(APPROACHDIR==DIR)
     {
       if (ZValue <= GATE_Z_MIN)
       {
@@ -2738,7 +2746,7 @@ void Scanner::approacphm(std::vector<int32_t> &vector) //uint16_t
     {
       hardware->retract();  //втянуть сканнер
       sleep_ms(SCANNERDECAY);
-      hardware->linearDriver->activate(99, freq, duty, std::abs(NSTEPS), NSTEPS > 0);
+      hardware->linearDriver->activate(99, freq, duty, std::abs(NSTEPS), DIR);
       hardware->protract(); //вытянуть
     }
   } //while
