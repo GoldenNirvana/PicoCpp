@@ -2022,7 +2022,7 @@ void Scanner::positioningXYZ(std::vector<int32_t> &vector)
               duty=vector[3]; 
                 ln=abs((int16_t)vector[4]); //  int nsteps
               ldir=(bool)vector[5]; //  int dir
-       APPROACHDIR=(bool)vector[6]
+       APPROACHDIR=(bool)vector[6];
         GATE_Z_MAX=(uint16_t)vector[7]; //  int Z gate max
         GATE_Z_MIN=(uint16_t)vector[8]; //  int Z gate min
             flgDev=(uint16_t)vector[9]; //  0= SFM, 1=STM ;SICMAC-2; SICMDC-3;  device type
