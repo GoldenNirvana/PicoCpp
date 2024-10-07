@@ -42,7 +42,7 @@ ConfigHardWare       confighardwarev0
 ConfigHardWareNew    confighardwarev1
                       (
                        {
-                        2,//SetPointPort 
+                        4,//SetPointPort 
                         1,//SetPointMode
                         2,//BiasVPort
                         1,//BiasVMode
